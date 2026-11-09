@@ -1,37 +1,139 @@
 :root {
   --color-background: #0f172a;
+  --color-card: #1b2336;
+  --color-border: #475569;
   --color-foreground: #f8fafc;
   --color-muted-foreground: #94a3b8;
   --color-accent: #22c55e;
-  --color-destructive: #ef4444;
+  --color-on-accent: #0f172a;
+  --color-destructive: #f87171;
   color-scheme: dark;
   font-family: system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
   background: var(--color-background);
   color: var(--color-foreground);
 }
 
 main {
+  box-sizing: border-box;
+  max-width: 28rem;
+  margin: 0 auto;
   padding: 1rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.check {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+}
+
+.check input {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-accent);
+}
+
+/* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
+input:not([type='checkbox']),
+select,
+button {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-card);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+}
+
+button {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: 2px;
+}
+
+.chance {
+  display: grid;
+  margin: 1.5rem 0 1rem;
   text-align: center;
 }
 
-[data-status='online'] {
+.chance strong {
   color: var(--color-accent);
+  font-size: 3rem;
 }
 
-[data-status='offline'] {
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+caption {
+  padding-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+th,
+td {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--color-border);
+  text-align: left;
+}
+
+th:last-child,
+td:last-child {
+  text-align: right;
+}
+
+[role='alert'] {
   color: var(--color-destructive);
 }
 
-.detail,
+.hint,
 footer {
   color: var(--color-muted-foreground);
   font-size: 0.875rem;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
 }

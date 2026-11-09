@@ -5,15 +5,18 @@ Zenless Zone Zero).
 
 > Fan project. Not affiliated with or endorsed by HoYoverse.
 
-This is the project skeleton: a FastAPI backend, a React + TypeScript frontend, one Docker image
-and CI. The two features come next:
+## Features
 
-- **Build optimizer** — import characters by UID, compute damage, search for the best artifact set.
-- **Wish tracker** — pity and 50/50 tracking, Monte Carlo forecast for upcoming banners.
+- **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
+  many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Genshin Impact limited
+  character banner for now. Capturing Radiance is not modelled, so real odds are slightly better.
+
+Planned: wish history import, a build optimizer (import by UID, damage calculation, best artifact
+search), Honkai: Star Rail and Zenless Zone Zero banners.
 
 ## Stack
 
-- `backend/` — Python, FastAPI, pytest, ruff, managed with [uv](https://docs.astral.sh/uv/)
+- `backend/` — Python, FastAPI, pytest, ruff, mypy, managed with [uv](https://docs.astral.sh/uv/)
 - `frontend/` — React, TypeScript, Vite, Vitest, oxlint
 - API types in `frontend/src/api/schema.d.ts` are generated from the backend's OpenAPI schema
 
@@ -32,21 +35,17 @@ npm install
 npm run dev
 ```
 
-After changing an API route or model, regenerate the frontend types:
-
-```sh
-cd frontend
-npm run gen:api
-```
-
-CI fails if the committed types do not match the backend.
+After changing an API route or model, `./check.sh` (or `npm run gen:api` in `frontend/`)
+regenerates the frontend types. CI fails if the committed types do not match the backend.
 
 ## Checks
 
 ```sh
-cd backend && uv run ruff check . && uv run ruff format --check . && uv run pytest
-cd frontend && npm run lint && npm test && npm run build
+./check.sh
 ```
+
+Runs everything CI runs: ruff, mypy and pytest for the backend; type generation, oxlint, Vitest
+and a production build for the frontend.
 
 ## Docker
 

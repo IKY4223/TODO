@@ -6,7 +6,10 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from app.wishes.api import router as wishes_router
+
 app = FastAPI(title="HoYo Toolkit API")
+app.include_router(wishes_router)
 
 
 class Health(BaseModel):

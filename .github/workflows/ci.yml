@@ -3,24 +3,10 @@ name: CI
 on: push
 
 jobs:
-  backend:
+  check:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
-      - run: uv sync --frozen
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run pytest
-
-  frontend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
+    env:
+      UV_LOCKED: 1 # fail instead of silently updating a stale uv.lock
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
@@ -30,11 +16,10 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      - name: API types match the backend schema
-        run: npm run gen:api && git diff --exit-code src/api/schema.d.ts
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
+        working-directory: frontend
+      - run: ./check.sh
+      - name: Generated API types are committed
+        run: git diff --exit-code
 
   docker:
     runs-on: ubuntu-latest
