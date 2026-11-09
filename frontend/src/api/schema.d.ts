@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/showcase/{uid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Showcase */
+        get: operations["showcase_api_showcase__uid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -42,6 +59,41 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Artifact */
+        Artifact: {
+            slot: components["schemas"]["Slot"];
+            /** Set Name */
+            set_name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            main: components["schemas"]["Stat"];
+            /** Subs */
+            subs: components["schemas"]["Stat"][];
+        };
+        /** Character */
+        Character: {
+            /** Name */
+            name: string;
+            element: components["schemas"]["Element"] | null;
+            /** Level */
+            level: number;
+            /** Constellation */
+            constellation: number;
+            /** Talents */
+            talents: number[];
+            /** Stats */
+            stats: components["schemas"]["Stat"][];
+            weapon: components["schemas"]["Weapon"];
+            /** Artifacts */
+            artifacts: components["schemas"]["Artifact"][];
+        };
+        /**
+         * Element
+         * @enum {string}
+         */
+        Element: "pyro" | "hydro" | "electro" | "cryo" | "anemo" | "geo" | "dendro";
         /** Forecast */
         Forecast: {
             /** Probability */
@@ -71,6 +123,33 @@ export interface components {
             /** Pulls */
             pulls: number;
         };
+        /** Showcase */
+        Showcase: {
+            /** Uid */
+            uid: string;
+            /** Nickname */
+            nickname: string;
+            /** Adventure Rank */
+            adventure_rank: number;
+            /** Characters */
+            characters: components["schemas"]["Character"][];
+        };
+        /**
+         * Slot
+         * @enum {string}
+         */
+        Slot: "flower" | "plume" | "sands" | "goblet" | "circlet";
+        /** Stat */
+        Stat: {
+            key: components["schemas"]["StatKey"];
+            /** Value */
+            value: number;
+        };
+        /**
+         * StatKey
+         * @enum {string}
+         */
+        StatKey: "hp" | "hp_percent" | "atk" | "atk_percent" | "def" | "def_percent" | "elemental_mastery" | "energy_recharge" | "crit_rate" | "crit_dmg" | "healing_bonus" | "physical_dmg" | "pyro_dmg" | "hydro_dmg" | "electro_dmg" | "cryo_dmg" | "anemo_dmg" | "geo_dmg" | "dendro_dmg";
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -84,6 +163,17 @@ export interface components {
             /** Context */
             ctx?: Record<string, never>;
         };
+        /** Weapon */
+        Weapon: {
+            /** Name */
+            name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            /** Refinement */
+            refinement: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -93,6 +183,38 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    showcase_api_showcase__uid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description In-game UID */
+                uid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Showcase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     wish_forecast_api_wishes_forecast_get: {
         parameters: {
             query: {

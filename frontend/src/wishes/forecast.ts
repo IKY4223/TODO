@@ -1,4 +1,4 @@
-import { getJson, isRecord } from '../api/http'
+import { getJson, isArrayOf, isRecord } from '../api/http'
 import type { components, paths } from '../api/schema'
 
 export type Forecast = components['schemas']['Forecast']
@@ -14,8 +14,7 @@ const isForecast = (value: unknown): value is Forecast =>
   isRecord(value) &&
   typeof value.probability === 'number' &&
   typeof value.guaranteed_at === 'number' &&
-  Array.isArray(value.milestones) &&
-  value.milestones.every(isMilestone)
+  isArrayOf(value.milestones, isMilestone)
 
 export async function fetchForecast(query: ForecastQuery): Promise<Forecast> {
   const search = new URLSearchParams(

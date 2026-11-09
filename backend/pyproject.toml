@@ -28,4 +28,4 @@ dev = [
 
 [tool.mypy]
 strict = true
-files = ["app", "tests"]
+files = ["app", "tests", "scripts"]

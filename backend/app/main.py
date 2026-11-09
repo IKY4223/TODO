@@ -6,9 +6,11 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from app.showcase.api import router as showcase_router
 from app.wishes.api import router as wishes_router
 
 app = FastAPI(title="HoYo Toolkit API")
+app.include_router(showcase_router)
 app.include_router(wishes_router)
 
 

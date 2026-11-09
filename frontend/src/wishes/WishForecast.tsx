@@ -1,11 +1,6 @@
-import { type JSX, type SubmitEvent, useState } from 'react'
+import type { JSX, SubmitEvent } from 'react'
+import { useRequest } from '../api/useRequest'
 import { type Forecast, type ForecastQuery, fetchForecast } from './forecast'
-
-type ForecastState =
-  | { readonly status: 'idle' }
-  | { readonly status: 'loading' }
-  | { readonly status: 'failed'; readonly message: string }
-  | { readonly status: 'ready'; readonly forecast: Forecast }
 
 // The API enforces the same limits (backend/app/wishes/api.py); these only guide the input.
 const MAX_PITY = 89
@@ -66,24 +61,19 @@ function ForecastResult({ forecast }: { readonly forecast: Forecast }): JSX.Elem
 }
 
 export function WishForecast(): JSX.Element {
-  const [state, setState] = useState<ForecastState>({ status: 'idle' })
+  const [state, run] = useRequest<Forecast>()
 
-  const submit = async (event: SubmitEvent<HTMLFormElement>): Promise<void> => {
+  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     const query = readQuery(event.currentTarget)
-    setState({ status: 'loading' })
-    try {
-      setState({ status: 'ready', forecast: await fetchForecast(query) })
-    } catch (error) {
-      setState({ status: 'failed', message: error instanceof Error ? error.message : String(error) })
-    }
+    void run(() => fetchForecast(query))
   }
 
   return (
     <section aria-labelledby="forecast-title">
       <h2 id="forecast-title">Wish forecast</h2>
       <p className="hint">Genshin Impact · limited character banner</p>
-      <form onSubmit={(event) => void submit(event)}>
+      <form onSubmit={submit}>
         <label>
           Pulls since last 5★
           <input
@@ -128,7 +118,7 @@ export function WishForecast(): JSX.Element {
       {'message' in state && <p role="alert">Could not calculate: {state.message}</p>}
       <div aria-live="polite">
         {state.status === 'loading' && <p className="hint">Calculating…</p>}
-        {'forecast' in state && <ForecastResult forecast={state.forecast} />}
+        {'data' in state && <ForecastResult forecast={state.data} />}
       </div>
     </section>
   )

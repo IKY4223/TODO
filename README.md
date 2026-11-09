@@ -7,12 +7,16 @@ Zenless Zone Zero).
 
 ## Features
 
+- **Character builds** — enter a UID and see every character in the player's showcase: final
+  stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
-  many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Genshin Impact limited
-  character banner for now. Capturing Radiance is not modelled, so real odds are slightly better.
+  many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
+  not modelled, so real odds are slightly better.
 
-Planned: wish history import, a build optimizer (import by UID, damage calculation, best artifact
-search), Honkai: Star Rail and Zenless Zone Zero banners.
+Both cover Genshin Impact for now.
+
+Planned: damage calculation and a best-artifact search on top of the imported builds, then
+Honkai: Star Rail and Zenless Zone Zero.
 
 ## Stack
 
@@ -37,6 +41,18 @@ npm run dev
 
 After changing an API route or model, `./check.sh` (or `npm run gen:api` in `frontend/`)
 regenerates the frontend types. CI fails if the committed types do not match the backend.
+
+## Game data
+
+`backend/app/showcase/gamedata.json` maps the ids Enka.Network returns to names. Rebuild it after
+each game version:
+
+```sh
+cd backend
+uv run python scripts/sync_gamedata.py
+```
+
+A character released since the last rebuild still shows up, as "Unknown character".
 
 ## Checks
 
