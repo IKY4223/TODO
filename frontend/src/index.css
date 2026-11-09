@@ -1,0 +1,37 @@
+:root {
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #22c55e;
+  --color-destructive: #ef4444;
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+main {
+  padding: 1rem;
+  text-align: center;
+}
+
+[data-status='online'] {
+  color: var(--color-accent);
+}
+
+[data-status='offline'] {
+  color: var(--color-destructive);
+}
+
+.detail,
+footer {
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+}
