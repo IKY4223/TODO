@@ -93,7 +93,7 @@ async function openEverything(page: Page): Promise<void> {
 
 test('fits the screen and keeps every control easy to touch', async ({ page }) => {
   await openEverything(page)
-  const layout = await page.evaluate(() => {
+  const layout = await page.evaluate((minHeight) => {
     const selector = 'input:not([type=checkbox]), select, button, summary, nav a'
     // The other tool stays mounted but hidden, so only what is on screen counts.
     const controls = [...document.querySelectorAll(selector)].filter((control) =>
@@ -102,17 +102,21 @@ test('fits the screen and keeps every control easy to touch', async ({ page }) =
     return {
       controls: controls.length,
       overflows: document.documentElement.scrollWidth > window.innerWidth,
-      smallestControl: Math.min(...controls.map((control) => control.getBoundingClientRect().height)),
+      // Named, so a failure says which control is too small.
+      tooSmall: controls
+        .map((control) => ({ control, height: control.getBoundingClientRect().height }))
+        .filter(({ height }) => height < minHeight)
+        .map(({ control, height }) => `${control.tagName} "${control.textContent.trim()}" is ${height}px`),
       smallestInputFont: Math.min(
         ...controls
           .filter((control) => control.matches('input, select'))
           .map((input) => Number.parseFloat(getComputedStyle(input).fontSize)),
       ),
     }
-  })
+  }, MIN_TOUCH_TARGET_PX)
   expect(layout.controls).toBeGreaterThan(MIN_CONTROLS_ON_SCREEN) // the filter must not empty the check
   expect(layout.overflows).toBe(false)
-  expect(layout.smallestControl).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET_PX)
+  expect(layout.tooSmall).toEqual([])
   expect(layout.smallestInputFont).toBeGreaterThanOrEqual(MIN_INPUT_FONT_PX) // smaller makes iOS zoom in
 })
 

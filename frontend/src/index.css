@@ -200,6 +200,8 @@ td:last-child {
 
 /* Padding, not flex: flex would drop the marker that shows the list opens. */
 .card summary {
+  box-sizing: border-box;
+  min-height: 2.75rem; /* the text's own height depends on the device's font */
   padding: 0.75rem 0;
   cursor: pointer;
   user-select: none; /* a quick open-and-close must not select the label */
