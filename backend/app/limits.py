@@ -9,12 +9,15 @@ import json
 from app.damage import api as damage
 from app.showcase import api as showcase
 from app.wishes import api as wishes
+from app.wishes import history
 from app.wishes.engine import GENSHIN_CHARACTER
 
 LIMITS: dict[str, int | str] = {
     "MAX_PITY": GENSHIN_CHARACTER.hard_pity - 1,
     "MAX_COPIES": wishes.MAX_COPIES,
     "MAX_PULLS": wishes.MAX_PULLS,
+    "MAX_LINK_LENGTH": wishes.MAX_LINK_LENGTH,
+    "HISTORY_PAGE_SIZE": history.PAGE_SIZE,
     "UID_PATTERN": showcase.UID_PATTERN,
     "MAX_MULTIPLIER": damage.MAX_MULTIPLIER,
     "MAX_ENEMY_LEVEL": damage.MAX_ENEMY_LEVEL,

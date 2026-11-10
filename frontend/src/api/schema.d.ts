@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/wishes/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Wish History */
+        post: operations["wish_history_api_wishes_history_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -185,12 +202,52 @@ export interface components {
              */
             status: "ok";
         };
+        /** HistoryRequest */
+        HistoryRequest: {
+            /**
+             * Link
+             * @description The wish history link, or the text it is in
+             */
+            link: string;
+            /**
+             * Banner
+             * @enum {string}
+             */
+            banner: "100" | "200" | "301" | "302" | "500";
+            /**
+             * End Id
+             * @description Return pulls older than this one; 0 for the newest
+             */
+            end_id: string;
+        };
         /** Milestone */
         Milestone: {
             /** Chance */
             chance: number;
             /** Pulls */
             pulls: number;
+        };
+        /** Page */
+        Page: {
+            /** Uid */
+            uid: string | null;
+            /** Pulls */
+            pulls: components["schemas"]["Pull"][];
+        };
+        /** Pull */
+        Pull: {
+            /** Id */
+            id: string;
+            /** Banner */
+            banner: string;
+            /** Time */
+            time: string;
+            /** Name */
+            name: string;
+            /** Kind */
+            kind: string;
+            /** Rank */
+            rank: number;
         };
         /**
          * Reaction
@@ -355,6 +412,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Forecast"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    wish_history_api_wishes_history_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HistoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page"];
                 };
             };
             /** @description Validation Error */

@@ -11,3 +11,4 @@ def fresh_rate_limits() -> None:
     damage_api.limiter.clear()
     showcase_api.limiter.clear()
     wishes_api.limiter.clear()
+    wishes_api.history_limiter.clear()

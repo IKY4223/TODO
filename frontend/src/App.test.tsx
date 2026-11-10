@@ -29,3 +29,10 @@ test('falls back to builds for an unknown address', () => {
   render(<App />)
   expect(heading('Character builds')).not.toBeNull()
 })
+
+test('wish history has its own address', async () => {
+  render(<App />)
+  window.location.hash = '#history'
+  expect(await screen.findByRole('heading', { name: 'Wish history' })).toBeDefined()
+  expect(screen.getByRole('link', { name: 'History' }).getAttribute('aria-current')).toBe('page')
+})

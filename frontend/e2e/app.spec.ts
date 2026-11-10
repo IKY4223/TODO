@@ -3,9 +3,18 @@ import { expect, type Locator, type Page, test } from '@playwright/test'
 
 const UID = '700000001' // served from backend/tests/fixtures/enka_showcase.json
 const MISSING_UID = '404000000'
+// What Android's error page reads once the wish history fails to reload (see WishHistory.tsx).
+const ANDROID_TEXT =
+  'Webpage not available\n\nThe webpage at https://webstatic-sea.hoyoverse.com/genshin/event/' +
+  'e20190909gacha-v3/index.html?authkey_ver=1&authkey=a%2Bb%2Fc%3D%3D&lang=en#/log could not be ' +
+  'loaded because:\n\nnet::ERR_INTERNET_DISCONNECTED'
+// The import pauses between banners so HoYoverse does not refuse it.
+const IMPORT_TIMEOUT_MS = 30_000
 const MIN_TOUCH_TARGET_PX = 44
 const MIN_INPUT_FONT_PX = 16
 const MIN_CONTROLS_ON_SCREEN = 10
+// Three tabs, two instruction toggles, the text box, two buttons.
+const MIN_HISTORY_CONTROLS = 8
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
@@ -91,10 +100,17 @@ async function openEverything(page: Page): Promise<void> {
   })
 }
 
-test('fits the screen and keeps every control easy to touch', async ({ page }) => {
-  await openEverything(page)
-  const layout = await page.evaluate((minHeight) => {
-    const selector = 'input:not([type=checkbox]), select, button, summary, nav a'
+interface Layout {
+  readonly controls: number
+  readonly overflows: boolean
+  readonly tooSmall: readonly string[]
+  readonly smallestInputFont: number
+}
+
+/** What a phone user would trip over: sideways scrolling, tiny controls, zooming inputs. */
+async function measureLayout(page: Page): Promise<Layout> {
+  return page.evaluate((minHeight) => {
+    const selector = 'input:not([type=checkbox]), select, textarea, button, summary, nav a'
     // The other tool stays mounted but hidden, so only what is on screen counts.
     const controls = [...document.querySelectorAll(selector)].filter((control) =>
       control.checkVisibility(),
@@ -109,15 +125,23 @@ test('fits the screen and keeps every control easy to touch', async ({ page }) =
         .map(({ control, height }) => `${control.tagName} "${control.textContent.trim()}" is ${height}px`),
       smallestInputFont: Math.min(
         ...controls
-          .filter((control) => control.matches('input, select'))
+          .filter((control) => control.matches('input, select, textarea'))
           .map((input) => Number.parseFloat(getComputedStyle(input).fontSize)),
       ),
     }
   }, MIN_TOUCH_TARGET_PX)
-  expect(layout.controls).toBeGreaterThan(MIN_CONTROLS_ON_SCREEN) // the filter must not empty the check
+}
+
+function expectPhoneFriendly(layout: Layout, minControls: number): void {
+  expect(layout.controls).toBeGreaterThanOrEqual(minControls) // the filter must not empty the check
   expect(layout.overflows).toBe(false)
   expect(layout.tooSmall).toEqual([])
   expect(layout.smallestInputFont).toBeGreaterThanOrEqual(MIN_INPUT_FONT_PX) // smaller makes iOS zoom in
+}
+
+test('fits the screen and keeps every control easy to touch', async ({ page }) => {
+  await openEverything(page)
+  expectPhoneFriendly(await measureLayout(page), MIN_CONTROLS_ON_SCREEN)
 })
 
 test('has no accessibility violations in either tool', async ({ page }) => {
@@ -129,4 +153,26 @@ test('has no accessibility violations in either tool', async ({ page }) => {
   await page.getByRole('button', { name: 'Calculate', exact: true }).click()
   await expect(page.getByRole('table')).toBeVisible()
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+})
+
+test('imports wish history from the text Android shows and keeps it on the device', async ({ page }) => {
+  test.setTimeout(IMPORT_TIMEOUT_MS * 2)
+  await page.getByRole('link', { name: 'History' }).click()
+  await page.getByLabel('Text from the error page').fill(ANDROID_TEXT)
+  await page.getByRole('button', { name: 'Import history' }).click()
+  // Served by backend/tests/gacha_fixture.py: 25 character pulls, 3 standard ones.
+  await expect(page.getByRole('status')).toHaveText('28 new pulls imported.', { timeout: IMPORT_TIMEOUT_MS })
+  await expect(page.getByLabel('Text from the error page')).toHaveValue('')
+
+  const character = card(page, 'Character Event')
+  await expect(character.getByText('15 pulls since the last 5★')).toBeVisible()
+  await expect(character.getByRole('row', { name: 'Furina 10' })).toBeVisible()
+  await expect(card(page, 'Standard').getByText('3 pulls since the last 5★')).toBeVisible()
+
+  expectPhoneFriendly(await measureLayout(page), MIN_HISTORY_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+
+  await page.reload()
+  await expect(card(page, 'Character Event').getByText('15 pulls since the last 5★')).toBeVisible()
+  expect(problems).toEqual([])
 })

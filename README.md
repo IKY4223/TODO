@@ -13,15 +13,20 @@ Zenless Zone Zero).
   scaling stat, damage bonus, reaction and enemy, and get average, crit and non-crit damage.
   Multipliers are typed in by hand; shred, flat additions and transformative reactions are not
   modelled.
+- **Wish history** — import the whole wish history straight from a phone: on Android, copy the
+  text of the error page the game's history shows offline and paste it in. Shows every banner's
+  pity and each 5★ with the pulls it took. Pulls are saved only on the device; the link, which
+  opens the history to anyone for about a day, is used for the import and never kept. Global
+  servers only.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
 
-All three cover Genshin Impact for now. Character, weapon and artifact images are loaded from
+All of them cover Genshin Impact for now. Character, weapon and artifact images are loaded from
 Enka.Network.
 
-Planned: talent multipliers from game data, a best-artifact search, wish history import with
-luck statistics, then Honkai: Star Rail. Zenless Zone Zero is undecided.
+Planned: talent multipliers from game data, a best-artifact search, luck statistics from the
+imported history, then Honkai: Star Rail. Zenless Zone Zero is undecided.
 
 ## Stack
 
@@ -80,7 +85,8 @@ against the real backend with Enka.Network replaced by a recorded response.
 
 ## Request limits
 
-Each client gets 10 showcase requests and 60 forecast or damage requests a minute; past that the API answers
+Each client gets 10 showcase requests, 150 wish history pages and 60 forecast or damage requests
+a minute; past that the API answers
 429 with a `Retry-After` header. Clients are told apart by address, so behind a reverse proxy set
 `FORWARDED_ALLOW_IPS` to the proxy's address, or every visitor will share one allowance.
 

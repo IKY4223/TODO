@@ -20,7 +20,9 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - The UI is mobile-first: it must work at 360px wide with 16px inputs and 44px touch targets.
 - `backend/app/showcase/gamedata.json` is generated: run `uv run python scripts/sync_gamedata.py`
   in `backend/` after each game version, never edit it by hand.
-- Tests never call Enka.Network. They use `backend/tests/fixtures/enka_showcase.json`.
+- Tests never call Enka.Network or HoYoverse. They use `backend/tests/fixtures/enka_showcase.json`
+  and `backend/tests/gacha_fixture.py`.
+- A wish history link is a secret: never log it, store it or put it in a URL the app requests.
 - Work on a branch and open a pull request into `main`; the owner merges it.
 - Game rates the publisher does not document are community estimates. Say so in a comment, and
   mark every mechanic left out with a `shortcut:` comment.

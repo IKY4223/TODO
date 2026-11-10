@@ -2,11 +2,13 @@ import { type JSX, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './ErrorBoundary'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { WishForecast } from './wishes/WishForecast'
+import { WishHistory } from './wishes/WishHistory'
 
 // Each tool lives at its own #address, so the browser's back button and bookmarks work.
 const TOOLS = {
   builds: { label: 'Builds', element: <CharacterShowcase /> },
   wishes: { label: 'Wishes', element: <WishForecast /> },
+  history: { label: 'History', element: <WishHistory /> },
 } as const
 type Tool = keyof typeof TOOLS
 

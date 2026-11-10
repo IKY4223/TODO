@@ -1,16 +1,19 @@
-"""The app with Enka.Network replaced by the test fixture, for the browser tests.
+"""The app with Enka.Network and HoYoverse replaced by test fixtures, for the browser tests.
 
 Run: STATIC_DIR=../frontend/dist uv run python -m tests.e2e_server <port>
 """
 
 import sys
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 import uvicorn
 
 from app.main import app
 from app.showcase import api
 from app.showcase.enka import EnkaError
+from app.wishes import api as wishes_api
+from tests.gacha_fixture import body
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "enka_showcase.json").read_bytes()
 MISSING_UID = "404000000"
@@ -23,7 +26,13 @@ def fetch(uid: str) -> bytes:
     return FIXTURE
 
 
+def fetch_history(url: str) -> bytes:
+    params = parse_qs(urlsplit(url).query)
+    return body(params["gacha_type"][0], params["end_id"][0])
+
+
 app.dependency_overrides[api.get_fetch] = lambda: fetch
+app.dependency_overrides[wishes_api.get_history_fetch] = lambda: fetch_history
 # The whole suite arrives from one address within a minute.
 api.limiter.limit = 10_000
 
