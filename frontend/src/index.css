@@ -33,6 +33,34 @@ h2 {
   font-size: 1.25rem;
 }
 
+h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+nav {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.5rem;
+}
+
+nav a {
+  display: grid;
+  place-items: center;
+  min-height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+nav a[aria-current] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 form {
   display: grid;
   gap: 1rem;
@@ -121,6 +149,107 @@ td {
 th:last-child,
 td:last-child {
   text-align: right;
+}
+
+.cards,
+.card ul {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-left: 0.25rem solid var(--element, var(--color-border));
+  border-radius: 0.5rem;
+  background: var(--color-card);
+}
+
+.card p {
+  margin: 0.5rem 0;
+}
+
+.card dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0.75rem 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.card dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.card dt {
+  color: var(--color-muted-foreground);
+}
+
+.card dd {
+  margin: 0;
+}
+
+.card form {
+  margin-bottom: 0.75rem;
+}
+
+/* Padding, not flex: flex would drop the marker that shows the list opens. */
+.card summary {
+  box-sizing: border-box;
+  min-height: 2.75rem; /* the text's own height depends on the device's font */
+  padding: 0.75rem 0;
+  cursor: pointer;
+  user-select: none; /* a quick open-and-close must not select the label */
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item div {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.item img {
+  flex: none;
+  border-radius: 0.5rem;
+  background: var(--color-background);
+}
+
+[data-element='pyro'] {
+  --element: #f97316;
+}
+
+[data-element='hydro'] {
+  --element: #38bdf8;
+}
+
+[data-element='electro'] {
+  --element: #c084fc;
+}
+
+[data-element='cryo'] {
+  --element: #a5f3fc;
+}
+
+[data-element='anemo'] {
+  --element: #5eead4;
+}
+
+[data-element='geo'] {
+  --element: #facc15;
+}
+
+[data-element='dendro'] {
+  --element: #84cc16;
 }
 
 [role='alert'] {

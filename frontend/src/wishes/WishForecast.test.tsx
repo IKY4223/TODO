@@ -32,9 +32,9 @@ function calculate(respond: () => Promise<Response>): ReturnType<typeof vi.fn> {
 test('asks the API with the entered values', async () => {
   const fetchMock = calculate(async () => Response.json(FORECAST))
   await screen.findByText('43.2%')
-  expect(fetchMock).toHaveBeenCalledWith(
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
     '/api/wishes/forecast?pity=10&guaranteed=true&copies=2&pulls=80',
-  )
+  ])
 })
 
 test('shows the chance and the pulls needed for each milestone', async () => {

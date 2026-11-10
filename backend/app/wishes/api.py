@@ -1,14 +1,17 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 
+from app.ratelimit import RateLimiter, limited
 from app.wishes.engine import GENSHIN_CHARACTER, Forecast, forecast
 
 MAX_COPIES = 7  # C0 through C6
 MAX_PULLS = 2000
 
-router = APIRouter(prefix="/api/wishes", tags=["wishes"])
+limiter = RateLimiter(limit=60, window=60)
+
+router = APIRouter(prefix="/api/wishes", tags=["wishes"], dependencies=[Depends(limited(limiter))])
 
 
 class ForecastQuery(BaseModel):

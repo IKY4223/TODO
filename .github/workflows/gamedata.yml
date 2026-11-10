@@ -1,0 +1,21 @@
+name: Game data
+
+# A new game version adds characters, weapons and artifact sets that gamedata.json lacks.
+on:
+  schedule:
+    - cron: "17 5 * * 1" # Mondays
+  workflow_dispatch:
+
+jobs:
+  fresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run python scripts/sync_gamedata.py
+        working-directory: backend
+      - name: gamedata.json matches the current game version
+        run: |
+          git diff --exit-code --stat && exit 0
+          echo "::error::Game data is out of date. Run backend/scripts/sync_gamedata.py and open a pull request."
+          exit 1

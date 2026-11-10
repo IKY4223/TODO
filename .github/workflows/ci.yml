@@ -17,6 +17,8 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
       - run: ./check.sh
       - name: Generated API types are committed
         run: git diff --exit-code
@@ -25,4 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: docker build .
+      - run: docker build -t hoyo-toolkit .
+      - name: The image serves the API and the frontend
+        run: |
+          docker run -d -p 8000:8000 hoyo-toolkit
+          curl -fsS --retry 10 --retry-delay 1 --retry-all-errors http://localhost:8000/api/health
+          curl -fsS http://localhost:8000/ | grep -q '<div id="root">'
