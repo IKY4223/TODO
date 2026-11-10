@@ -3,6 +3,8 @@ import { afterEach, expect, test, vi } from 'vitest'
 import { CharacterShowcase } from './CharacterShowcase'
 import type { Showcase } from './showcase'
 
+const ICONS = 'https://enka.network/ui/'
+
 const SHOWCASE: Showcase = {
   uid: '618285856',
   nickname: 'Lumine',
@@ -19,7 +21,13 @@ const SHOWCASE: Showcase = {
         { key: 'crit_rate', value: 0.5194 },
         { key: 'physical_dmg', value: 1.083 },
       ],
-      weapon: { name: 'Skyward Harp', rarity: 5, level: 90, refinement: 2 },
+      weapon: {
+        name: 'Skyward Harp',
+        rarity: 5,
+        level: 90,
+        refinement: 2,
+        icon: `${ICONS}UI_EquipIcon_Bow_Dvalin.png`,
+      },
       artifacts: [
         {
           slot: 'flower',
@@ -33,8 +41,10 @@ const SHOWCASE: Showcase = {
             { key: 'crit_dmg', value: 0.187 },
             { key: 'elemental_mastery', value: 19 },
           ],
+          icon: `${ICONS}UI_RelicIcon_15008_4.png`,
         },
       ],
+      icon: `${ICONS}UI_AvatarIcon_Ambor.png`,
     },
   ],
 }
@@ -89,6 +99,27 @@ test('shows the weapon and each artifact with its stats', async () => {
   expect(screen.getByText('Flower · Bloodstained Chivalry +20')).toBeDefined()
   expect(screen.getByText('HP 4,780')).toBeDefined()
   expect(screen.getByText('DEF 37 · ATK 11.1% · CRIT DMG 18.7% · EM 19')).toBeDefined()
+})
+
+const iconSources = (): (string | null)[] =>
+  [...document.querySelectorAll('img')].map((image) => image.getAttribute('src'))
+
+test('shows the character, weapon and artifact icons', async () => {
+  load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Amber')
+  expect(iconSources()).toEqual([
+    `${ICONS}UI_AvatarIcon_Ambor.png`,
+    `${ICONS}UI_EquipIcon_Bow_Dvalin.png`,
+    `${ICONS}UI_RelicIcon_15008_4.png`,
+  ])
+})
+
+test('leaves out an icon the API does not have', async () => {
+  const amber = SHOWCASE.characters[0]
+  const bare = { ...amber, icon: null, weapon: { ...amber.weapon, icon: null }, artifacts: [] }
+  load(async () => Response.json({ ...SHOWCASE, characters: [bare] }))
+  await screen.findByText('Amber')
+  expect(iconSources()).toEqual([])
 })
 
 test('lists a character whose element and talents are unknown', async () => {

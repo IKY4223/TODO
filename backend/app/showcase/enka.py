@@ -1,5 +1,6 @@
 """Enka.Network client: fetches a player's showcase and converts it to this app's model."""
 
+import re
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -10,6 +11,7 @@ from app.showcase.gamedata import GAMEDATA
 from app.showcase.models import Artifact, Character, Showcase, Slot, Stat, StatKey, Weapon
 
 ENKA_URL = "https://enka.network/api/uid/{uid}"
+ICON_URL = "https://enka.network/ui/{name}.png"
 USER_AGENT = "hoyo-toolkit"  # Enka asks every client to identify itself
 TIMEOUT_SECONDS = 10
 DEFAULT_TTL_SECONDS = 60
@@ -18,6 +20,10 @@ UNKNOWN_CHARACTER = "Unknown character"
 UNKNOWN_WEAPON = "Unknown weapon"
 UNKNOWN_SET = "Unknown set"
 LEVEL_PROP = "4001"
+
+# Letters, digits and underscores, like "UI_RelicIcon_15008_4"; rejects "../x" and "a.png?b".
+# https://regex101.com/?flavor=python&regex=%5Cw%2B&flags=a&testString=UI_RelicIcon_15008_4%0A..%2Fx%0Aa.png%3Fb
+ICON_NAME = re.compile(r"\w+", re.ASCII)
 
 FIGHT_PROPS = {
     "FIGHT_PROP_HP": StatKey.HP,
@@ -104,6 +110,7 @@ class _SubStat(_Enka):
 
 
 class _ArtifactFlat(_Enka):
+    icon: str | None = None
     rank_level: int
     equip_type: str
     set_id: int
@@ -121,6 +128,7 @@ class _Artifact(_Enka):
 
 
 class _WeaponFlat(_Enka):
+    icon: str | None = None
     rank_level: int
 
 
@@ -170,6 +178,11 @@ def fetch(uid: str) -> bytes:
         raise EnkaError(None) from error
 
 
+def _icon(name: str | None) -> str | None:
+    """The image URL, unless the name could make the URL point anywhere but one Enka image."""
+    return ICON_URL.format(name=name) if name and ICON_NAME.fullmatch(name) else None
+
+
 def _stat(prop: str, value: float) -> Stat:
     key = FIGHT_PROPS[prop]
     return Stat(key, value if key in FLAT_STATS else value / 100)
@@ -184,6 +197,7 @@ def _artifact(item: _Artifact) -> Artifact:
         level=item.reliquary.level - 1,  # Enka counts artifact levels from 1
         main=_stat(flat.reliquary_mainstat.main_prop_id, flat.reliquary_mainstat.stat_value),
         subs=tuple(_stat(sub.append_prop_id, sub.stat_value) for sub in flat.reliquary_substats),
+        icon=_icon(flat.icon),
     )
 
 
@@ -193,15 +207,14 @@ def _weapon(item: _Weapon) -> Weapon:
         rarity=item.flat.rank_level,
         level=item.weapon.level,
         refinement=1 + next(iter(item.weapon.affix_map.values()), 0),  # Enka counts from 0
+        icon=_icon(item.flat.icon),
     )
 
 
 def _stats(fight: dict[str, float]) -> tuple[Stat, ...]:
-    stats = [Stat(key, fight.get(prop, 0.0)) for prop, key in TOTALS.items()]
-    best = max(DMG_BONUSES, key=lambda prop: fight.get(prop, 0.0))
-    if fight.get(best, 0.0) > 0:
-        stats.append(Stat(DMG_BONUSES[best], fight[best]))
-    return tuple(stats)
+    totals = [Stat(key, fight.get(prop, 0.0)) for prop, key in TOTALS.items()]
+    bonuses = [Stat(key, fight[prop]) for prop, key in DMG_BONUSES.items() if fight.get(prop)]
+    return (*totals, *bonuses)
 
 
 def _character(avatar: _Avatar) -> Character:
@@ -227,6 +240,7 @@ def _character(avatar: _Avatar) -> Character:
         artifacts=tuple(
             _artifact(item) for item in avatar.equip_list if isinstance(item, _Artifact)
         ),
+        icon=_icon(data.icon) if data else None,
     )
 
 

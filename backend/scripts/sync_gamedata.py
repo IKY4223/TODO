@@ -35,6 +35,11 @@ def main() -> None:
             key: {
                 "name": names[str(avatar["NameTextMapHash"])],
                 "element": ELEMENTS[avatar["Element"]],
+                # SideIconName is "/ui/UI_AvatarIcon_Side_Ambor.png"; the portrait has no "Side_".
+                "icon": avatar["SideIconName"]
+                .removeprefix("/ui/")
+                .removesuffix(".png")
+                .replace("Side_", ""),
                 # Talent ids in display order, each with the id constellations boost it by.
                 "talents": [
                     [skill, avatar["ProudMap"][str(skill)]] for skill in avatar["SkillOrder"]

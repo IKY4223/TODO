@@ -2,6 +2,7 @@
  "characters": {
   "10000002": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Ayaka",
    "name": "Kamisato Ayaka",
    "talents": [
     [
@@ -20,6 +21,7 @@
   },
   "10000003": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Qin",
    "name": "Jean",
    "talents": [
     [
@@ -38,6 +40,7 @@
   },
   "10000005": {
    "element": null,
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -56,6 +59,7 @@
   },
   "10000005-501": {
    "element": null,
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -74,6 +78,7 @@
   },
   "10000005-502": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -92,6 +97,7 @@
   },
   "10000005-503": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -110,6 +116,7 @@
   },
   "10000005-504": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -128,6 +135,7 @@
   },
   "10000005-505": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -146,6 +154,7 @@
   },
   "10000005-506": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -164,6 +173,7 @@
   },
   "10000005-507": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -182,6 +192,7 @@
   },
   "10000005-508": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_PlayerBoy",
    "name": "Traveler",
    "talents": [
     [
@@ -200,6 +211,7 @@
   },
   "10000006": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Lisa",
    "name": "Lisa",
    "talents": [
     [
@@ -218,6 +230,7 @@
   },
   "10000007": {
    "element": null,
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -236,6 +249,7 @@
   },
   "10000007-701": {
    "element": null,
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -254,6 +268,7 @@
   },
   "10000007-702": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -272,6 +287,7 @@
   },
   "10000007-703": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -290,6 +306,7 @@
   },
   "10000007-704": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -308,6 +325,7 @@
   },
   "10000007-705": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -326,6 +344,7 @@
   },
   "10000007-706": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -344,6 +363,7 @@
   },
   "10000007-707": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -362,6 +382,7 @@
   },
   "10000007-708": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_PlayerGirl",
    "name": "Traveler",
    "talents": [
     [
@@ -380,6 +401,7 @@
   },
   "10000014": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Barbara",
    "name": "Barbara",
    "talents": [
     [
@@ -398,6 +420,7 @@
   },
   "10000015": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Kaeya",
    "name": "Kaeya",
    "talents": [
     [
@@ -416,6 +439,7 @@
   },
   "10000016": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Diluc",
    "name": "Diluc",
    "talents": [
     [
@@ -434,6 +458,7 @@
   },
   "10000020": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Razor",
    "name": "Razor",
    "talents": [
     [
@@ -452,6 +477,7 @@
   },
   "10000021": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Ambor",
    "name": "Amber",
    "talents": [
     [
@@ -470,6 +496,7 @@
   },
   "10000022": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Venti",
    "name": "Venti",
    "talents": [
     [
@@ -488,6 +515,7 @@
   },
   "10000023": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Xiangling",
    "name": "Xiangling",
    "talents": [
     [
@@ -506,6 +534,7 @@
   },
   "10000024": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Beidou",
    "name": "Beidou",
    "talents": [
     [
@@ -524,6 +553,7 @@
   },
   "10000025": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Xingqiu",
    "name": "Xingqiu",
    "talents": [
     [
@@ -542,6 +572,7 @@
   },
   "10000026": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Xiao",
    "name": "Xiao",
    "talents": [
     [
@@ -560,6 +591,7 @@
   },
   "10000027": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Ningguang",
    "name": "Ningguang",
    "talents": [
     [
@@ -578,6 +610,7 @@
   },
   "10000029": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Klee",
    "name": "Klee",
    "talents": [
     [
@@ -596,6 +629,7 @@
   },
   "10000030": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Zhongli",
    "name": "Zhongli",
    "talents": [
     [
@@ -614,6 +648,7 @@
   },
   "10000031": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Fischl",
    "name": "Fischl",
    "talents": [
     [
@@ -632,6 +667,7 @@
   },
   "10000032": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Bennett",
    "name": "Bennett",
    "talents": [
     [
@@ -650,6 +686,7 @@
   },
   "10000033": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Tartaglia",
    "name": "Tartaglia",
    "talents": [
     [
@@ -668,6 +705,7 @@
   },
   "10000034": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Noel",
    "name": "Noelle",
    "talents": [
     [
@@ -686,6 +724,7 @@
   },
   "10000035": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Qiqi",
    "name": "Qiqi",
    "talents": [
     [
@@ -704,6 +743,7 @@
   },
   "10000036": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Chongyun",
    "name": "Chongyun",
    "talents": [
     [
@@ -722,6 +762,7 @@
   },
   "10000037": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Ganyu",
    "name": "Ganyu",
    "talents": [
     [
@@ -740,6 +781,7 @@
   },
   "10000038": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Albedo",
    "name": "Albedo",
    "talents": [
     [
@@ -758,6 +800,7 @@
   },
   "10000039": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Diona",
    "name": "Diona",
    "talents": [
     [
@@ -776,6 +819,7 @@
   },
   "10000041": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Mona",
    "name": "Mona",
    "talents": [
     [
@@ -794,6 +838,7 @@
   },
   "10000042": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Keqing",
    "name": "Keqing",
    "talents": [
     [
@@ -812,6 +857,7 @@
   },
   "10000043": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Sucrose",
    "name": "Sucrose",
    "talents": [
     [
@@ -830,6 +876,7 @@
   },
   "10000044": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Xinyan",
    "name": "Xinyan",
    "talents": [
     [
@@ -848,6 +895,7 @@
   },
   "10000045": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Rosaria",
    "name": "Rosaria",
    "talents": [
     [
@@ -866,6 +914,7 @@
   },
   "10000046": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Hutao",
    "name": "Hu Tao",
    "talents": [
     [
@@ -884,6 +933,7 @@
   },
   "10000047": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Kazuha",
    "name": "Kaedehara Kazuha",
    "talents": [
     [
@@ -902,6 +952,7 @@
   },
   "10000048": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Feiyan",
    "name": "Yanfei",
    "talents": [
     [
@@ -920,6 +971,7 @@
   },
   "10000049": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Yoimiya",
    "name": "Yoimiya",
    "talents": [
     [
@@ -938,6 +990,7 @@
   },
   "10000050": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Tohma",
    "name": "Thoma",
    "talents": [
     [
@@ -956,6 +1009,7 @@
   },
   "10000051": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Eula",
    "name": "Eula",
    "talents": [
     [
@@ -974,6 +1028,7 @@
   },
   "10000052": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Shougun",
    "name": "Raiden Shogun",
    "talents": [
     [
@@ -992,6 +1047,7 @@
   },
   "10000053": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Sayu",
    "name": "Sayu",
    "talents": [
     [
@@ -1010,6 +1066,7 @@
   },
   "10000054": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Kokomi",
    "name": "Sangonomiya Kokomi",
    "talents": [
     [
@@ -1028,6 +1085,7 @@
   },
   "10000055": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Gorou",
    "name": "Gorou",
    "talents": [
     [
@@ -1046,6 +1104,7 @@
   },
   "10000056": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Sara",
    "name": "Kujou Sara",
    "talents": [
     [
@@ -1064,6 +1123,7 @@
   },
   "10000057": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Itto",
    "name": "Arataki Itto",
    "talents": [
     [
@@ -1082,6 +1142,7 @@
   },
   "10000058": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Yae",
    "name": "Yae Miko",
    "talents": [
     [
@@ -1100,6 +1161,7 @@
   },
   "10000059": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Heizo",
    "name": "Shikanoin Heizou",
    "talents": [
     [
@@ -1118,6 +1180,7 @@
   },
   "10000060": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Yelan",
    "name": "Yelan",
    "talents": [
     [
@@ -1136,6 +1199,7 @@
   },
   "10000061": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Momoka",
    "name": "Kirara",
    "talents": [
     [
@@ -1154,6 +1218,7 @@
   },
   "10000062": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Aloy",
    "name": "Aloy",
    "talents": [
     [
@@ -1172,6 +1237,7 @@
   },
   "10000063": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Shenhe",
    "name": "Shenhe",
    "talents": [
     [
@@ -1190,6 +1256,7 @@
   },
   "10000064": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Yunjin",
    "name": "Yun Jin",
    "talents": [
     [
@@ -1208,6 +1275,7 @@
   },
   "10000065": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Shinobu",
    "name": "Kuki Shinobu",
    "talents": [
     [
@@ -1226,6 +1294,7 @@
   },
   "10000066": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Ayato",
    "name": "Kamisato Ayato",
    "talents": [
     [
@@ -1244,6 +1313,7 @@
   },
   "10000067": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Collei",
    "name": "Collei",
    "talents": [
     [
@@ -1262,6 +1332,7 @@
   },
   "10000068": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Dori",
    "name": "Dori",
    "talents": [
     [
@@ -1280,6 +1351,7 @@
   },
   "10000069": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Tighnari",
    "name": "Tighnari",
    "talents": [
     [
@@ -1298,6 +1370,7 @@
   },
   "10000070": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Nilou",
    "name": "Nilou",
    "talents": [
     [
@@ -1316,6 +1389,7 @@
   },
   "10000071": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Cyno",
    "name": "Cyno",
    "talents": [
     [
@@ -1334,6 +1408,7 @@
   },
   "10000072": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Candace",
    "name": "Candace",
    "talents": [
     [
@@ -1352,6 +1427,7 @@
   },
   "10000073": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Nahida",
    "name": "Nahida",
    "talents": [
     [
@@ -1370,6 +1446,7 @@
   },
   "10000074": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Layla",
    "name": "Layla",
    "talents": [
     [
@@ -1388,6 +1465,7 @@
   },
   "10000075": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Wanderer",
    "name": "Wanderer",
    "talents": [
     [
@@ -1406,6 +1484,7 @@
   },
   "10000076": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Faruzan",
    "name": "Faruzan",
    "talents": [
     [
@@ -1424,6 +1503,7 @@
   },
   "10000077": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Yaoyao",
    "name": "Yaoyao",
    "talents": [
     [
@@ -1442,6 +1522,7 @@
   },
   "10000078": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Alhatham",
    "name": "Alhaitham",
    "talents": [
     [
@@ -1460,6 +1541,7 @@
   },
   "10000079": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Dehya",
    "name": "Dehya",
    "talents": [
     [
@@ -1478,6 +1560,7 @@
   },
   "10000080": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Mika",
    "name": "Mika",
    "talents": [
     [
@@ -1496,6 +1579,7 @@
   },
   "10000081": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Kaveh",
    "name": "Kaveh",
    "talents": [
     [
@@ -1514,6 +1598,7 @@
   },
   "10000082": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Baizhuer",
    "name": "Baizhu",
    "talents": [
     [
@@ -1532,6 +1617,7 @@
   },
   "10000083": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Linette",
    "name": "Lynette",
    "talents": [
     [
@@ -1550,6 +1636,7 @@
   },
   "10000084": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Liney",
    "name": "Lyney",
    "talents": [
     [
@@ -1568,6 +1655,7 @@
   },
   "10000085": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Freminet",
    "name": "Freminet",
    "talents": [
     [
@@ -1586,6 +1674,7 @@
   },
   "10000086": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Wriothesley",
    "name": "Wriothesley",
    "talents": [
     [
@@ -1604,6 +1693,7 @@
   },
   "10000087": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Neuvillette",
    "name": "Neuvillette",
    "talents": [
     [
@@ -1622,6 +1712,7 @@
   },
   "10000088": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Charlotte",
    "name": "Charlotte",
    "talents": [
     [
@@ -1640,6 +1731,7 @@
   },
   "10000089": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Furina",
    "name": "Furina",
    "talents": [
     [
@@ -1658,6 +1750,7 @@
   },
   "10000090": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Chevreuse",
    "name": "Chevreuse",
    "talents": [
     [
@@ -1676,6 +1769,7 @@
   },
   "10000091": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Navia",
    "name": "Navia",
    "talents": [
     [
@@ -1694,6 +1788,7 @@
   },
   "10000092": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Gaming",
    "name": "Gaming",
    "talents": [
     [
@@ -1712,6 +1807,7 @@
   },
   "10000093": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Liuyun",
    "name": "Xianyun",
    "talents": [
     [
@@ -1730,6 +1826,7 @@
   },
   "10000094": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Chiori",
    "name": "Chiori",
    "talents": [
     [
@@ -1748,6 +1845,7 @@
   },
   "10000095": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Sigewinne",
    "name": "Sigewinne",
    "talents": [
     [
@@ -1766,6 +1864,7 @@
   },
   "10000096": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Arlecchino",
    "name": "Arlecchino",
    "talents": [
     [
@@ -1784,6 +1883,7 @@
   },
   "10000097": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Sethos",
    "name": "Sethos",
    "talents": [
     [
@@ -1802,6 +1902,7 @@
   },
   "10000098": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Clorinde",
    "name": "Clorinde",
    "talents": [
     [
@@ -1820,6 +1921,7 @@
   },
   "10000099": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Emilie",
    "name": "Emilie",
    "talents": [
     [
@@ -1838,6 +1940,7 @@
   },
   "10000100": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Kachina",
    "name": "Kachina",
    "talents": [
     [
@@ -1856,6 +1959,7 @@
   },
   "10000101": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Kinich",
    "name": "Kinich",
    "talents": [
     [
@@ -1874,6 +1978,7 @@
   },
   "10000102": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Mualani",
    "name": "Mualani",
    "talents": [
     [
@@ -1892,6 +1997,7 @@
   },
   "10000103": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Xilonen",
    "name": "Xilonen",
    "talents": [
     [
@@ -1910,6 +2016,7 @@
   },
   "10000104": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Chasca",
    "name": "Chasca",
    "talents": [
     [
@@ -1928,6 +2035,7 @@
   },
   "10000105": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Olorun",
    "name": "Ororon",
    "talents": [
     [
@@ -1946,6 +2054,7 @@
   },
   "10000106": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Mavuika",
    "name": "Mavuika",
    "talents": [
     [
@@ -1964,6 +2073,7 @@
   },
   "10000107": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Citlali",
    "name": "Citlali",
    "talents": [
     [
@@ -1982,6 +2092,7 @@
   },
   "10000108": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Lanyan",
    "name": "Lan Yan",
    "talents": [
     [
@@ -2000,6 +2111,7 @@
   },
   "10000109": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Mizuki",
    "name": "Yumemizuki Mizuki",
    "talents": [
     [
@@ -2018,6 +2130,7 @@
   },
   "10000110": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Iansan",
    "name": "Iansan",
    "talents": [
     [
@@ -2036,6 +2149,7 @@
   },
   "10000111": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Varesa",
    "name": "Varesa",
    "talents": [
     [
@@ -2054,6 +2168,7 @@
   },
   "10000112": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Escoffier",
    "name": "Escoffier",
    "talents": [
     [
@@ -2072,6 +2187,7 @@
   },
   "10000113": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Ifa",
    "name": "Ifa",
    "talents": [
     [
@@ -2090,6 +2206,7 @@
   },
   "10000114": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_SkirkNew",
    "name": "Skirk",
    "talents": [
     [
@@ -2108,6 +2225,7 @@
   },
   "10000115": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Dahlia",
    "name": "Dahlia",
    "talents": [
     [
@@ -2126,6 +2244,7 @@
   },
   "10000116": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Ineffa",
    "name": "Ineffa",
    "talents": [
     [
@@ -2144,6 +2263,7 @@
   },
   "10000117-11701": {
    "element": null,
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2162,6 +2282,7 @@
   },
   "10000117-11702": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2180,6 +2301,7 @@
   },
   "10000117-11703": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2198,6 +2320,7 @@
   },
   "10000117-11704": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2216,6 +2339,7 @@
   },
   "10000117-11705": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2234,6 +2358,7 @@
   },
   "10000117-11706": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2252,6 +2377,7 @@
   },
   "10000117-11707": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2270,6 +2396,7 @@
   },
   "10000117-11708": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_MannequinBoy",
    "name": "Manekin",
    "talents": [
     [
@@ -2288,6 +2415,7 @@
   },
   "10000118-11801": {
    "element": null,
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2306,6 +2434,7 @@
   },
   "10000118-11802": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2324,6 +2453,7 @@
   },
   "10000118-11803": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2342,6 +2472,7 @@
   },
   "10000118-11804": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2360,6 +2491,7 @@
   },
   "10000118-11805": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2378,6 +2510,7 @@
   },
   "10000118-11806": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2396,6 +2529,7 @@
   },
   "10000118-11807": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2414,6 +2548,7 @@
   },
   "10000118-11808": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_MannequinGirl",
    "name": "Manekina",
    "talents": [
     [
@@ -2432,6 +2567,7 @@
   },
   "10000119": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Lauma",
    "name": "Lauma",
    "talents": [
     [
@@ -2450,6 +2586,7 @@
   },
   "10000120": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Flins",
    "name": "Flins",
    "talents": [
     [
@@ -2468,6 +2605,7 @@
   },
   "10000121": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Aino",
    "name": "Aino",
    "talents": [
     [
@@ -2486,6 +2624,7 @@
   },
   "10000122": {
    "element": "dendro",
+   "icon": "UI_AvatarIcon_Nefer",
    "name": "Nefer",
    "talents": [
     [
@@ -2504,6 +2643,7 @@
   },
   "10000123": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Durin",
    "name": "Durin",
    "talents": [
     [
@@ -2522,6 +2662,7 @@
   },
   "10000124": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Jahoda",
    "name": "Jahoda",
    "talents": [
     [
@@ -2540,6 +2681,7 @@
   },
   "10000125": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Columbina",
    "name": "Columbina",
    "talents": [
     [
@@ -2558,6 +2700,7 @@
   },
   "10000126": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Zibai",
    "name": "Zibai",
    "talents": [
     [
@@ -2576,6 +2719,7 @@
   },
   "10000127": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Illuga",
    "name": "Illuga",
    "talents": [
     [
@@ -2594,6 +2738,7 @@
   },
   "10000128": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Varka",
    "name": "Varka",
    "talents": [
     [
@@ -2612,6 +2757,7 @@
   },
   "10000129": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Lohen",
    "name": "Lohen",
    "talents": [
     [
@@ -2630,6 +2776,7 @@
   },
   "10000130": {
    "element": "geo",
+   "icon": "UI_AvatarIcon_Linnea",
    "name": "Linnea",
    "talents": [
     [
@@ -2648,6 +2795,7 @@
   },
   "10000131": {
    "element": "pyro",
+   "icon": "UI_AvatarIcon_Nicole",
    "name": "Nicole",
    "talents": [
     [
@@ -2666,6 +2814,7 @@
   },
   "10000132": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Prune",
    "name": "Prune",
    "talents": [
     [
@@ -2684,6 +2833,7 @@
   },
   "10000133": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_MarionetteNew",
    "name": "Sandrone",
    "talents": [
     [
@@ -2702,6 +2852,7 @@
   },
   "10000136": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Mitya",
    "name": "Mitya",
    "talents": [
     [
@@ -2720,6 +2871,7 @@
   },
   "10000137": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Valeriy",
    "name": "Valeriy",
    "talents": [
     [
@@ -2738,6 +2890,7 @@
   },
   "10000140": {
    "element": "hydro",
+   "icon": "UI_AvatarIcon_Vodyanitsa",
    "name": "Vodyanitsa",
    "talents": [
     [
@@ -2756,6 +2909,7 @@
   },
   "10000143": {
    "element": "anemo",
+   "icon": "UI_AvatarIcon_Vesna",
    "name": "Vesna",
    "talents": [
     [
@@ -2774,6 +2928,7 @@
   },
   "10000148": {
    "element": "electro",
+   "icon": "UI_AvatarIcon_Alyosha",
    "name": "Alyosha",
    "talents": [
     [
@@ -2792,6 +2947,7 @@
   },
   "10000150": {
    "element": "cryo",
+   "icon": "UI_AvatarIcon_Odette",
    "name": "Odette",
    "talents": [
     [

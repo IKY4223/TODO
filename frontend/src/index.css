@@ -200,9 +200,21 @@ td:last-child {
   cursor: pointer;
 }
 
-.card li {
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item div {
   display: grid;
   gap: 0.125rem;
+}
+
+.item img {
+  flex: none;
+  border-radius: 0.5rem;
+  background: var(--color-background);
 }
 
 [data-element='pyro'] {

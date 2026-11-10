@@ -22,14 +22,26 @@ const formatValue = ({ key, value }: Stat): string =>
 
 const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
 
+const CHARACTER_ICON_SIZE = 56
+const ITEM_ICON_SIZE = 40
+
+/** Decorative: the name is always printed next to the picture. */
+function Icon(props: { readonly src: string | null; readonly size: number }): JSX.Element | null {
+  const { src, size } = props
+  return src ? <img src={src} alt="" width={size} height={size} loading="lazy" /> : null
+}
+
 function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Element {
   return (
-    <li>
-      <span>
-        {SLOTS[artifact.slot]} · {artifact.set_name} +{artifact.level}
-      </span>
-      <strong>{formatStat(artifact.main)}</strong>
-      <span className="hint">{artifact.subs.map(formatStat).join(' · ')}</span>
+    <li className="item">
+      <Icon src={artifact.icon} size={ITEM_ICON_SIZE} />
+      <div>
+        <span>
+          {SLOTS[artifact.slot]} · {artifact.set_name} +{artifact.level}
+        </span>
+        <strong>{formatStat(artifact.main)}</strong>
+        <span className="hint">{artifact.subs.map(formatStat).join(' · ')}</span>
+      </div>
     </li>
   )
 }
@@ -43,8 +55,13 @@ function CharacterCard({ character }: { readonly character: Character }): JSX.El
   ]
   return (
     <article className="card" data-element={element}>
-      <h3>{character.name}</h3>
-      <p className="hint">{summary.join(' · ')}</p>
+      <header className="item">
+        <Icon src={character.icon} size={CHARACTER_ICON_SIZE} />
+        <div>
+          <h3>{character.name}</h3>
+          <span className="hint">{summary.join(' · ')}</span>
+        </div>
+      </header>
       {talents.length ? <p>Talents {talents.join(' / ')}</p> : null}
       <dl>
         {character.stats.map((stat) => (
@@ -54,8 +71,11 @@ function CharacterCard({ character }: { readonly character: Character }): JSX.El
           </div>
         ))}
       </dl>
-      <p>
-        {weapon.name} · Lv. {weapon.level} · R{weapon.refinement}
+      <p className="item">
+        <Icon src={weapon.icon} size={ITEM_ICON_SIZE} />
+        <span>
+          {weapon.name} · Lv. {weapon.level} · R{weapon.refinement}
+        </span>
       </p>
       <details>
         <summary>Artifacts ({artifacts.length})</summary>

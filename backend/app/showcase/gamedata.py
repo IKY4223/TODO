@@ -13,6 +13,7 @@ from app.showcase.models import Element
 class CharacterData(BaseModel):
     name: str
     element: Element | None
+    icon: str
     talents: list[tuple[int, int]]  # (talent id, id constellations boost it by), in display order
 
 

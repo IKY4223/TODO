@@ -71,6 +71,8 @@ export interface components {
             main: components["schemas"]["Stat"];
             /** Subs */
             subs: components["schemas"]["Stat"][];
+            /** Icon */
+            icon: string | null;
         };
         /** Character */
         Character: {
@@ -88,6 +90,8 @@ export interface components {
             weapon: components["schemas"]["Weapon"];
             /** Artifacts */
             artifacts: components["schemas"]["Artifact"][];
+            /** Icon */
+            icon: string | null;
         };
         /**
          * Element
@@ -173,6 +177,8 @@ export interface components {
             level: number;
             /** Refinement */
             refinement: number;
+            /** Icon */
+            icon: string | null;
         };
     };
     responses: never;

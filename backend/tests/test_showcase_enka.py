@@ -9,10 +9,11 @@ import pytest
 
 from app.showcase import enka
 from app.showcase.enka import EnkaError, UpstreamDataError, parse
-from app.showcase.models import Artifact, Element, Showcase, Slot, Stat, StatKey, Weapon
+from app.showcase.models import Artifact, Element, Showcase, Slot, Stat, StatKey
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "enka_showcase.json").read_bytes()
 UID = "700000001"
+ICONS = "https://enka.network/ui/"
 
 
 def altered(change: Any) -> bytes:
@@ -71,16 +72,30 @@ def test_final_stats(showcase: Showcase) -> None:
     )
 
 
-def test_only_the_highest_damage_bonus_is_listed(showcase: Showcase) -> None:
-    ganyu = showcase.characters[1]
-    bonuses = [stat for stat in ganyu.stats if stat.key.endswith("_dmg") and stat.key != "crit_dmg"]
-    assert bonuses == [near(StatKey.CRYO_DMG, 0.466)]
+def damage_bonuses(stats: tuple[Stat, ...]) -> list[Stat]:
+    return [stat for stat in stats if stat.key.endswith("_dmg") and stat.key != StatKey.CRIT_DMG]
+
+
+def test_damage_bonuses_the_character_lacks_are_left_out(showcase: Showcase) -> None:
+    assert damage_bonuses(showcase.characters[1].stats) == [near(StatKey.CRYO_DMG, 0.466)]
+
+
+def test_every_damage_bonus_the_character_has_is_listed() -> None:
+    def add_physical(raw: Any) -> None:
+        raw["avatarInfoList"][1]["fightPropMap"]["30"] = 0.25
+
+    ganyu = parse(UID, altered(add_physical))[0].characters[1]
+    assert damage_bonuses(ganyu.stats) == [
+        near(StatKey.PHYSICAL_DMG, 0.25),
+        near(StatKey.CRYO_DMG, 0.466),
+    ]
 
 
 def test_weapon_refinement_is_one_based(showcase: Showcase) -> None:
     amber, ganyu = showcase.characters
-    assert amber.weapon == Weapon(name="Skyward Harp", rarity=5, level=90, refinement=2)
-    assert ganyu.weapon == Weapon(name="Amos' Bow", rarity=5, level=90, refinement=3)
+    assert (amber.weapon.name, amber.weapon.refinement) == ("Skyward Harp", 2)
+    assert (ganyu.weapon.name, ganyu.weapon.refinement) == ("Amos' Bow", 3)
+    assert (amber.weapon.rarity, amber.weapon.level) == (5, 90)
 
 
 def test_artifact_stats_are_fractions_for_percent_stats(showcase: Showcase) -> None:
@@ -97,7 +112,22 @@ def test_artifact_stats_are_fractions_for_percent_stats(showcase: Showcase) -> N
             near(StatKey.CRIT_DMG, 0.187),
             Stat(StatKey.ELEMENTAL_MASTERY, 19),
         ),
+        icon=ICONS + "UI_RelicIcon_15008_4.png",
     )
+
+
+def test_icons_point_at_the_enka_image_host(showcase: Showcase) -> None:
+    amber = showcase.characters[0]
+    assert amber.icon == ICONS + "UI_AvatarIcon_Ambor.png"
+    assert amber.weapon.icon == ICONS + "UI_EquipIcon_Bow_Dvalin.png"
+
+
+@pytest.mark.parametrize("name", ["../../elsewhere", "two words", "icon.png?size=9", "", None])
+def test_icon_with_an_unexpected_name_is_left_out(name: str | None) -> None:
+    def rename(raw: Any) -> None:
+        raw["avatarInfoList"][0]["equipList"][-1]["flat"]["icon"] = name
+
+    assert parse(UID, altered(rename))[0].characters[0].weapon.icon is None
 
 
 def test_artifacts_keep_slot_and_set(showcase: Showcase) -> None:
@@ -123,6 +153,7 @@ def test_character_newer_than_the_game_data_is_still_listed() -> None:
 
     newcomer = parse(UID, altered(rename))[0].characters[0]
     assert (newcomer.name, newcomer.element, newcomer.talents) == ("Unknown character", None, ())
+    assert newcomer.icon is None
     assert newcomer.level == 90
     assert newcomer.weapon.name == "Skyward Harp"
 

@@ -59,6 +59,7 @@ const SHOWCASE_URL = '/api/showcase'
 
 const isNumber = (value: unknown): value is number => typeof value === 'number'
 const isString = (value: unknown): value is string => typeof value === 'string'
+const isIcon = (value: unknown): value is string | null => value === null || isString(value)
 const isKeyOf = <TTable extends object>(table: TTable, value: unknown): value is keyof TTable =>
   isString(value) && Object.hasOwn(table, value)
 
@@ -70,7 +71,8 @@ const isWeapon = (value: unknown): value is Weapon =>
   isString(value.name) &&
   isNumber(value.rarity) &&
   isNumber(value.level) &&
-  isNumber(value.refinement)
+  isNumber(value.refinement) &&
+  isIcon(value.icon)
 
 const isArtifact = (value: unknown): value is Artifact =>
   isRecord(value) &&
@@ -79,7 +81,8 @@ const isArtifact = (value: unknown): value is Artifact =>
   isNumber(value.rarity) &&
   isNumber(value.level) &&
   isStat(value.main) &&
-  isArrayOf(value.subs, isStat)
+  isArrayOf(value.subs, isStat) &&
+  isIcon(value.icon)
 
 const isCharacter = (value: unknown): value is Character =>
   isRecord(value) &&
@@ -90,7 +93,8 @@ const isCharacter = (value: unknown): value is Character =>
   isArrayOf(value.talents, isNumber) &&
   isArrayOf(value.stats, isStat) &&
   isWeapon(value.weapon) &&
-  isArrayOf(value.artifacts, isArtifact)
+  isArrayOf(value.artifacts, isArtifact) &&
+  isIcon(value.icon)
 
 const isShowcase = (value: unknown): value is Showcase =>
   isRecord(value) &&

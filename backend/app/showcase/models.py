@@ -56,6 +56,7 @@ class Weapon:
     rarity: int
     level: int
     refinement: int  # 1 to 5
+    icon: str | None  # image URL
 
 
 @dataclass(frozen=True)
@@ -66,6 +67,7 @@ class Artifact:
     level: int  # 0 to 20
     main: Stat
     subs: tuple[Stat, ...]
+    icon: str | None
 
 
 @dataclass(frozen=True)
@@ -78,6 +80,7 @@ class Character:
     stats: tuple[Stat, ...]  # final values as shown in game
     weapon: Weapon
     artifacts: tuple[Artifact, ...]
+    icon: str | None
 
 
 @dataclass(frozen=True)
