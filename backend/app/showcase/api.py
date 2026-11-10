@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Callable
 from typing import Annotated
 
@@ -9,6 +10,8 @@ from app.showcase.cache import TtlCache
 from app.showcase.models import Showcase
 
 Fetch = Callable[[str], bytes]
+
+logger = logging.getLogger(__name__)
 
 UID_PATTERN = r"^\d{9,10}$"
 UNAVAILABLE = (502, "Enka.Network is not responding. Try again later.")
@@ -47,9 +50,12 @@ def showcase(
     try:
         result, ttl = enka.parse(uid, fetch(uid))
     except enka.EnkaError as error:
+        logger.warning("Enka request for %s failed: %s", uid, error.status)
         status, detail = FAILURES.get(error.status, UNAVAILABLE)
         raise HTTPException(status, detail) from error
     except enka.UpstreamDataError as error:
+        # With the cause: an unreadable response usually means Enka changed its format.
+        logger.warning("Enka data for %s is unreadable", uid, exc_info=error)
         raise HTTPException(502, "Enka.Network sent data this app cannot read.") from error
     cache.put(uid, result, ttl)  # Enka asks clients not to refetch before the ttl ends
     return result

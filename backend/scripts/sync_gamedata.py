@@ -24,7 +24,7 @@ ELEMENTS = {
 
 
 def load(name: str) -> Any:
-    with urlopen(STORE + name, timeout=30) as response:
+    with urlopen(STORE + name, timeout=30) as response:  # noqa: S310 - STORE is constant https
         return json.load(response)
 
 

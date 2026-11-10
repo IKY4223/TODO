@@ -1,4 +1,5 @@
 import { type JSX, useSyncExternalStore } from 'react'
+import { ErrorBoundary } from './ErrorBoundary'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { WishForecast } from './wishes/WishForecast'
 
@@ -39,7 +40,7 @@ function App(): JSX.Element {
       {tools.map((tool) => (
         // Hidden, not unmounted: a loaded showcase or forecast survives switching tools.
         <div key={tool} hidden={tool !== current}>
-          {TOOLS[tool].element}
+          <ErrorBoundary>{TOOLS[tool].element}</ErrorBoundary>
         </div>
       ))}
       <footer>Fan project. Not affiliated with HoYoverse.</footer>

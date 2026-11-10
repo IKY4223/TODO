@@ -10,19 +10,41 @@ dependencies = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# The suite fails when less than this share of app/ (lines and branches) runs under test.
+addopts = "--cov=app --cov-branch --cov-report=term-missing:skip-covered --cov-fail-under=97"
 pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+select = [
+    "E", "F", "I", "UP", "B",
+    "S",    # security
+    "SIM", "C4", "RET", "PIE",  # simpler code
+    "PT",   # pytest style
+    "PTH",  # pathlib over os.path
+    "N",    # naming
+    "ARG",  # unused arguments
+    "T20",  # stray print
+    "PL",   # pylint
+    "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert, compare against literal expected values and stub functions with fixed signatures.
+"tests/*" = ["S101", "PLR2004", "ARG001"]
+# These modules exist to print.
+"app/openapi.py" = ["T201"]
+"app/limits.py" = ["T201"]
+"scripts/*" = ["T201"]
 
 [dependency-groups]
 dev = [
     "httpx2>=2.16.0",
     "mypy>=2.4.1",
     "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "ruff>=0.17.4",
 ]
 

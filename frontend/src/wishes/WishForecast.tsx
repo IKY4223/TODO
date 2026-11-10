@@ -1,11 +1,7 @@
 import type { JSX, SubmitEvent } from 'react'
+import { MAX_COPIES, MAX_PITY, MAX_PULLS } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { type Forecast, type ForecastQuery, fetchForecast } from './forecast'
-
-// The API enforces the same limits (backend/app/wishes/api.py); these only guide the input.
-const MAX_PITY = 89
-const MAX_PULLS = 2000
-const MAX_COPIES = 7
 
 const CERTAIN = 1
 // An uncertain chance must never read as 100%.

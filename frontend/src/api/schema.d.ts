@@ -93,6 +93,8 @@ export interface components {
         };
         /** Character */
         Character: {
+            /** Id */
+            id: number;
             /** Name */
             name: string;
             element: components["schemas"]["Element"] | null;

@@ -43,7 +43,7 @@ def test_cache_lifetime_comes_from_enka() -> None:
 
 def test_character_identity(showcase: Showcase) -> None:
     amber, ganyu = showcase.characters
-    assert (amber.name, amber.element) == ("Amber", Element.PYRO)
+    assert (amber.id, amber.name, amber.element) == (10000021, "Amber", Element.PYRO)
     assert (amber.level, amber.constellation) == (90, 6)
     assert (ganyu.name, ganyu.element) == ("Ganyu", Element.CRYO)
     assert (ganyu.level, ganyu.constellation) == (90, 0)
@@ -154,6 +154,7 @@ def test_character_newer_than_the_game_data_is_still_listed() -> None:
     newcomer = parse(UID, altered(rename))[0].characters[0]
     assert (newcomer.name, newcomer.element, newcomer.talents) == ("Unknown character", None, ())
     assert newcomer.icon is None
+    assert newcomer.id == 19999999
     assert newcomer.level == 90
     assert newcomer.weapon.name == "Skyward Harp"
 
@@ -190,8 +191,11 @@ class Reply:
     def __exit__(self, *args: object) -> None:
         return None
 
-    def read(self) -> bytes:
-        return b'{"ok": true}'
+    def __init__(self, body: bytes = b'{"ok": true}') -> None:
+        self.body = body
+
+    def read(self, amount: int) -> bytes:
+        return self.body[:amount]
 
 
 def test_fetch_identifies_itself_to_enka(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -226,3 +230,22 @@ def test_fetch_reports_every_failure_as_an_enka_error(
     with pytest.raises(EnkaError) as raised:
         enka.fetch(UID)
     assert raised.value.status == status
+
+
+def test_fetch_refuses_a_response_too_large_to_be_a_showcase(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def urlopen(request: Request, timeout: float) -> Reply:
+        return Reply(b"x" * (enka.MAX_RESPONSE_BYTES + 1))
+
+    monkeypatch.setattr(enka, "urlopen", urlopen)
+    with pytest.raises(UpstreamDataError):
+        enka.fetch(UID)
+
+
+def test_fetch_accepts_a_response_at_the_size_limit(monkeypatch: pytest.MonkeyPatch) -> None:
+    def urlopen(request: Request, timeout: float) -> Reply:
+        return Reply(b"x" * enka.MAX_RESPONSE_BYTES)
+
+    monkeypatch.setattr(enka, "urlopen", urlopen)
+    assert len(enka.fetch(UID)) == enka.MAX_RESPONSE_BYTES

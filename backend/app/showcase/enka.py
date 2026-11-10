@@ -14,6 +14,7 @@ ENKA_URL = "https://enka.network/api/uid/{uid}"
 ICON_URL = "https://enka.network/ui/{name}.png"
 USER_AGENT = "hoyo-toolkit"  # Enka asks every client to identify itself
 TIMEOUT_SECONDS = 10
+MAX_RESPONSE_BYTES = 2_000_000  # a full showcase is about 100 kB
 DEFAULT_TTL_SECONDS = 60
 
 UNKNOWN_CHARACTER = "Unknown character"
@@ -167,15 +168,18 @@ class _Response(_Enka):
 
 def fetch(uid: str) -> bytes:
     """Download the raw showcase. `uid` must already be validated: it becomes part of the URL."""
-    request = Request(ENKA_URL.format(uid=uid), headers={"User-Agent": USER_AGENT})
+    # S310 guards against file: and custom schemes; ENKA_URL is a constant https address.
+    request = Request(ENKA_URL.format(uid=uid), headers={"User-Agent": USER_AGENT})  # noqa: S310
     try:
-        with urlopen(request, timeout=TIMEOUT_SECONDS) as response:
-            body: bytes = response.read()
-            return body
+        with urlopen(request, timeout=TIMEOUT_SECONDS) as response:  # noqa: S310
+            body: bytes = response.read(MAX_RESPONSE_BYTES + 1)
     except HTTPError as error:
         raise EnkaError(error.code) from error
     except OSError as error:  # no connection, DNS failure, timeout
         raise EnkaError(None) from error
+    if len(body) > MAX_RESPONSE_BYTES:
+        raise UpstreamDataError(f"Enka response for {uid} is larger than a showcase can be")
+    return body
 
 
 def _icon(name: str | None) -> str | None:
@@ -226,6 +230,7 @@ def _character(avatar: _Avatar) -> Character:
     if not weapons:
         raise ValueError(f"character {avatar.avatar_id} has no weapon")
     return Character(
+        id=avatar.avatar_id,
         name=data.name if data else UNKNOWN_CHARACTER,
         element=data.element if data else None,
         level=int(avatar.prop_map[LEVEL_PROP].val),

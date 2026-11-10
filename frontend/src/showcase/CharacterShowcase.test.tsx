@@ -11,6 +11,7 @@ const SHOWCASE: Showcase = {
   adventure_rank: 57,
   characters: [
     {
+      id: 10000021,
       name: 'Amber',
       element: 'pyro',
       level: 90,
@@ -69,7 +70,7 @@ const statValue = (label: string): string | null | undefined =>
 test('asks the API for the entered UID', async () => {
   const fetchMock = load(async () => Response.json(SHOWCASE))
   await screen.findByText('Amber')
-  expect(fetchMock).toHaveBeenCalledWith('/api/showcase/618285856')
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/showcase/618285856'])
 })
 
 test('shows who the showcase belongs to', async () => {

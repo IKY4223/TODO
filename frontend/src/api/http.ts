@@ -40,8 +40,26 @@ async function readJson<TBody>(url: string, response: Response, isBody: Guard<TB
   return body
 }
 
+const REQUEST_TIMEOUT_MS = 15_000
+const TIMEOUT_ERROR = 'TimeoutError'
+
+/** fetch that gives up after a while, so a stalled mobile connection cannot hang a form. */
+async function send(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
+  } catch (error) {
+    const timedOut = error instanceof DOMException && error.name === TIMEOUT_ERROR
+    throw new ApiError(
+      timedOut
+        ? 'The server took too long to answer. Try again.'
+        : 'Could not reach the server. Check your connection.',
+      { cause: error },
+    )
+  }
+}
+
 export async function getJson<TBody>(url: string, isBody: Guard<TBody>): Promise<TBody> {
-  return readJson(url, await fetch(url), isBody)
+  return readJson(url, await send(url), isBody)
 }
 
 export async function postJson<TBody>(
@@ -49,7 +67,7 @@ export async function postJson<TBody>(
   payload: unknown,
   isBody: Guard<TBody>,
 ): Promise<TBody> {
-  const response = await fetch(url, {
+  const response = await send(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

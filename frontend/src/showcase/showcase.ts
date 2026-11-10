@@ -90,6 +90,7 @@ const isArtifact = (value: unknown): value is Artifact =>
 
 const isCharacter = (value: unknown): value is Character =>
   isRecord(value) &&
+  isNumber(value.id) &&
   isString(value.name) &&
   (value.element === null || isKeyOf(ELEMENTS, value.element)) &&
   isNumber(value.level) &&

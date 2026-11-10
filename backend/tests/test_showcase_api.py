@@ -95,3 +95,18 @@ def test_unreadable_enka_data_is_a_bad_gateway(enka: Callable[[Respond], list[st
     response = client.get(URL)
     assert response.status_code == 502
     assert isinstance(response.json()["detail"], str)
+
+
+@pytest.mark.parametrize(
+    "respond",
+    [fail_with(500), lambda: b"<html>maintenance</html>"],
+    ids=["enka-down", "unreadable-data"],
+)
+def test_upstream_failure_is_logged(
+    enka: Callable[[Respond], list[str]], caplog: pytest.LogCaptureFixture, respond: Respond
+) -> None:
+    enka(respond)
+    client.get(URL)
+    assert [record.levelname for record in caplog.records if record.name == "app.showcase.api"] == [
+        "WARNING"
+    ]

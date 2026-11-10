@@ -1,4 +1,5 @@
 import type { JSX, SubmitEvent } from 'react'
+import { UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { DamageCalculator } from '../damage/DamageCalculator'
 import {
@@ -12,9 +13,6 @@ import {
   SLOTS,
   STATS,
 } from './showcase'
-
-// The API accepts the same format (backend/app/showcase/api.py); this only guides the input.
-const UID_PATTERN = '\\d{9,10}'
 
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
@@ -92,9 +90,8 @@ function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Elem
       </p>
       {showcase.characters.length ? (
         <ul className="cards">
-          {showcase.characters.map((character, position) => (
-            // A showcase can hold two characters this app has no name for yet.
-            <li key={`${position}-${character.name}`}>
+          {showcase.characters.map((character) => (
+            <li key={character.id}>
               <CharacterCard character={character} />
             </li>
           ))}

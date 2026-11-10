@@ -72,6 +72,7 @@ class Artifact:
 
 @dataclass(frozen=True)
 class Character:
+    id: int  # the game's own id, stable across renames and languages
     name: str
     element: Element | None  # unknown for the elementless Traveler and for too-new characters
     level: int

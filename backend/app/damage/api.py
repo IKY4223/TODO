@@ -25,6 +25,8 @@ MAX_ENEMY_LEVEL = 200
 MAX_STAT = 1_000_000
 MAX_STATS = 30
 MAX_MULTIPLIER = 100  # 10 000%
+MIN_RESISTANCE = -1
+MAX_RESISTANCE = 10
 
 limiter = RateLimiter(limit=60, window=60)
 
@@ -47,7 +49,9 @@ class DamageRequest(BaseModel):
     bonus: DamageBonus | None = Field(description="The damage bonus that applies to the hit")
     reaction: Reaction
     enemy_level: int = Field(ge=1, le=MAX_ENEMY_LEVEL)
-    enemy_resistance: float = Field(ge=-1, le=10, allow_inf_nan=False, description="0.1 is 10%")
+    enemy_resistance: float = Field(
+        ge=MIN_RESISTANCE, le=MAX_RESISTANCE, allow_inf_nan=False, description="0.1 is 10%"
+    )
 
 
 @router.post("")

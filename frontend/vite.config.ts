@@ -7,5 +7,15 @@ export default defineConfig({
   server: {
     proxy: { '/api': 'http://localhost:8000' },
   },
-  test: { environment: 'jsdom' },
+  test: {
+    environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
+    coverage: {
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/api/schema.d.ts', 'src/main.tsx'],
+      reporter: ['text'],
+      // The suite fails when less than this share of the code runs under test.
+      thresholds: { statements: 95, branches: 90, functions: 95, lines: 95 },
+    },
+  },
 })

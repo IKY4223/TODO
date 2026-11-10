@@ -1,5 +1,6 @@
 import type { JSX, SubmitEvent } from 'react'
 import { isKeyOf } from '../api/http'
+import { MAX_ENEMY_LEVEL, MAX_MULTIPLIER, MAX_RESISTANCE, MIN_RESISTANCE } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { type Character, formatStat } from '../showcase/showcase'
 import { type Damage, type DamageRequest, fetchDamage } from './damage'
@@ -34,12 +35,6 @@ const RESULTS = [
   { label: 'Crit', key: 'crit' },
   { label: 'Non-crit', key: 'non_crit' },
 ] as const satisfies readonly { label: string; key: keyof Damage }[]
-
-// The API enforces the same limits (backend/app/damage/api.py); these only guide the input.
-const MAX_MULTIPLIER_PERCENT = 10_000
-const MAX_ENEMY_LEVEL = 200
-const MIN_RESISTANCE_PERCENT = -100
-const MAX_RESISTANCE_PERCENT = 1000
 
 const DEFAULT_MULTIPLIER_PERCENT = 100
 const DEFAULT_ENEMY_LEVEL = 90
@@ -90,7 +85,7 @@ export function DamageCalculator({ character }: { readonly character: Character 
             type="number"
             inputMode="decimal"
             min={0.1}
-            max={MAX_MULTIPLIER_PERCENT}
+            max={MAX_MULTIPLIER * PERCENT}
             step="any"
             defaultValue={DEFAULT_MULTIPLIER_PERCENT}
             required
@@ -145,8 +140,8 @@ export function DamageCalculator({ character }: { readonly character: Character 
             name="enemy_resistance"
             type="number"
             inputMode="decimal"
-            min={MIN_RESISTANCE_PERCENT}
-            max={MAX_RESISTANCE_PERCENT}
+            min={MIN_RESISTANCE * PERCENT}
+            max={MAX_RESISTANCE * PERCENT}
             step="any"
             defaultValue={DEFAULT_RESISTANCE_PERCENT}
             required

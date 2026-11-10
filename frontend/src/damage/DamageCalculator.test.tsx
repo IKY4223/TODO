@@ -4,6 +4,7 @@ import type { Character } from '../showcase/showcase'
 import { DamageCalculator } from './DamageCalculator'
 
 const AMBER: Character = {
+  id: 10000021,
   name: 'Amber',
   element: 'pyro',
   level: 90,
@@ -40,6 +41,9 @@ const change = (label: string, value: string): boolean =>
 const calculate = (): boolean =>
   fireEvent.click(screen.getByRole('button', { name: 'Calculate damage' }))
 
+const value = (label: string): string | null | undefined =>
+  screen.getByText(label, { selector: 'dt' }).nextElementSibling?.textContent
+
 /** The JSON body of the only request made. */
 function sentBody(fetchMock: ReturnType<typeof vi.fn>): unknown {
   expect(fetchMock).toHaveBeenCalledOnce()
@@ -73,8 +77,6 @@ test('sends the character and the hit, with percents as fractions', async () => 
 test('shows average, crit and non-crit damage', async () => {
   open(AMBER, async () => Response.json(DAMAGE))
   calculate()
-  const value = (label: string): string | null | undefined =>
-    screen.getByText(label, { selector: 'dt' }).nextElementSibling?.textContent
   await screen.findByText('13,501')
   expect([value('Average'), value('Crit'), value('Non-crit')]).toEqual(['13,501', '18,001', '9,000'])
 })

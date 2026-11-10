@@ -21,7 +21,7 @@ All three cover Genshin Impact for now. Character, weapon and artifact images ar
 Enka.Network.
 
 Planned: talent multipliers from game data, a best-artifact search, wish history import with
-luck statistics, then Honkai: Star Rail and Zenless Zone Zero.
+luck statistics, then Honkai: Star Rail. Zenless Zone Zero is undecided.
 
 ## Stack
 
@@ -44,8 +44,9 @@ npm install
 npm run dev
 ```
 
-After changing an API route or model, `./check.sh` (or `npm run gen:api` in `frontend/`)
-regenerates the frontend types. CI fails if the committed types do not match the backend.
+After changing an API route, model or input limit, `./check.sh` (or `npm run gen:api` in
+`frontend/`) regenerates the frontend's types and limits from the backend. CI fails if the
+committed files do not match.
 
 ## Game data
 
@@ -58,6 +59,7 @@ uv run python scripts/sync_gamedata.py
 ```
 
 A character released since the last rebuild still shows up, as "Unknown character".
+A weekly workflow fails when the file is behind the game.
 
 ## Checks
 
@@ -65,14 +67,28 @@ A character released since the last rebuild still shows up, as "Unknown characte
 ./check.sh
 ```
 
-Runs everything CI runs: ruff, mypy and pytest for the backend; type generation, oxlint, Vitest
-and a production build for the frontend.
+Runs everything CI runs:
+
+- backend: ruff, mypy in strict mode, pytest with a coverage floor
+- frontend: type generation, oxlint with accessibility rules, Vitest with a coverage floor,
+  a production build
+- the built app in a real browser (Playwright): every tool end to end at phone size and at
+  360px wide, touch target sizes, and an automated accessibility scan
+
+The browser tests need Chromium once: `npx playwright install chromium` in `frontend/`. They run
+against the real backend with Enka.Network replaced by a recorded response.
 
 ## Request limits
 
 Each client gets 10 showcase requests and 60 forecast or damage requests a minute; past that the API answers
 429 with a `Retry-After` header. Clients are told apart by address, so behind a reverse proxy set
 `FORWARDED_ALLOW_IPS` to the proxy's address, or every visitor will share one allowance.
+
+## Security
+
+Every response carries a Content-Security-Policy that allows scripts, styles and requests only
+from the app itself, and images also from Enka.Network. Enka's answers are size-limited and
+validated before use; a request that fails upstream is logged.
 
 ## Docker
 

@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 openapi.json
+coverage
+test-results
+playwright-report
