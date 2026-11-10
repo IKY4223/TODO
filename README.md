@@ -15,8 +15,8 @@ Zenless Zone Zero).
 
 Both cover Genshin Impact for now.
 
-Planned: damage calculation and a best-artifact search on top of the imported builds, then
-Honkai: Star Rail and Zenless Zone Zero.
+Planned: damage calculation and a best-artifact search on top of the imported builds, wish
+history import with luck statistics, then Honkai: Star Rail and Zenless Zone Zero.
 
 ## Stack
 
@@ -62,6 +62,12 @@ A character released since the last rebuild still shows up, as "Unknown characte
 
 Runs everything CI runs: ruff, mypy and pytest for the backend; type generation, oxlint, Vitest
 and a production build for the frontend.
+
+## Request limits
+
+Each client gets 10 showcase requests and 60 forecast requests a minute; past that the API answers
+429 with a `Retry-After` header. Clients are told apart by address, so behind a reverse proxy set
+`FORWARDED_ALLOW_IPS` to the proxy's address, or every visitor will share one allowance.
 
 ## Docker
 

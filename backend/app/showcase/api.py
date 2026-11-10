@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Path
 
+from app.ratelimit import RateLimiter, limited
 from app.showcase import enka
 from app.showcase.cache import TtlCache
 from app.showcase.models import Showcase
@@ -19,10 +20,12 @@ FAILURES: dict[int | None, tuple[int, str]] = {
     429: (503, "Too many requests to Enka.Network. Try again in a minute."),
 }
 
-router = APIRouter(prefix="/api/showcase", tags=["showcase"])
+# Every uncached request spends this app's Enka quota, so one client gets few of them.
+limiter = RateLimiter(limit=10, window=60)
 
-# shortcut: no per-client rate limit, so one visitor can spend the whole Enka quota;
-# add one before the app is deployed publicly.
+router = APIRouter(
+    prefix="/api/showcase", tags=["showcase"], dependencies=[Depends(limited(limiter))]
+)
 
 # shortcut: the cache lives in one process, so each worker keeps its own;
 # move it to Redis when the app runs more than one worker.
