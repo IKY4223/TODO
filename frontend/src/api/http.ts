@@ -1,4 +1,20 @@
-export class ApiError extends Error {}
+interface ApiErrorOptions extends ErrorOptions {
+  /** The HTTP status, when the server answered at all. */
+  readonly status?: number
+  /** How long the server asked the client to wait before trying again. */
+  readonly retryAfterSeconds?: number
+}
+
+export class ApiError extends Error {
+  readonly status: number | undefined
+  readonly retryAfterSeconds: number | undefined
+
+  constructor(message: string, { status, retryAfterSeconds, cause }: ApiErrorOptions = {}) {
+    super(message, { cause })
+    this.status = status
+    this.retryAfterSeconds = retryAfterSeconds
+  }
+}
 
 export const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
@@ -33,7 +49,11 @@ type Guard<TBody> = (body: unknown) => body is TBody
 /** Prove the body's shape before it enters the app. */
 async function readJson<TBody>(url: string, response: Response, isBody: Guard<TBody>): Promise<TBody> {
   if (!response.ok) {
-    throw new ApiError((await errorDetail(response)) ?? `${url} responded with ${response.status}`)
+    const retryAfter = Number.parseInt(response.headers.get('Retry-After') ?? '', 10)
+    throw new ApiError((await errorDetail(response)) ?? `${url} responded with ${response.status}`, {
+      status: response.status,
+      retryAfterSeconds: Number.isNaN(retryAfter) ? undefined : retryAfter,
+    })
   }
   const body: unknown = await response.json()
   if (!isBody(body)) throw new ApiError(`${url} returned an unexpected body`)

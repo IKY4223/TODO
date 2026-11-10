@@ -87,6 +87,7 @@ label {
 /* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
 input:not([type='checkbox']),
 select,
+textarea,
 button {
   box-sizing: border-box;
   width: 100%;
@@ -100,11 +101,29 @@ button {
   font-size: 1rem;
 }
 
+textarea {
+  padding: 0.5rem 0.75rem;
+  resize: vertical;
+}
+
+output {
+  display: block;
+  min-height: 1.5em; /* keeps the page from jumping as progress text comes and goes */
+}
+
 button {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: var(--color-on-accent);
   font-weight: 600;
+}
+
+button.secondary {
+  margin-top: 1rem;
+  border-color: var(--color-border);
+  background: transparent;
+  color: var(--color-foreground);
+  font-weight: normal;
 }
 
 button:disabled {
@@ -199,7 +218,7 @@ td:last-child {
 }
 
 /* Padding, not flex: flex would drop the marker that shows the list opens. */
-.card summary {
+summary {
   box-sizing: border-box;
   min-height: 2.75rem; /* the text's own height depends on the device's font */
   padding: 0.75rem 0;

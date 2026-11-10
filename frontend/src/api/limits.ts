@@ -2,6 +2,8 @@
 export const MAX_PITY = 89
 export const MAX_COPIES = 7
 export const MAX_PULLS = 2000
+export const MAX_LINK_LENGTH = 5000
+export const HISTORY_PAGE_SIZE = 20
 export const UID_PATTERN = "^\\d{9,10}$"
 export const MAX_MULTIPLIER = 100
 export const MAX_ENEMY_LEVEL = 200

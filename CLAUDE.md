@@ -20,7 +20,37 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - The UI is mobile-first: it must work at 360px wide with 16px inputs and 44px touch targets.
 - `backend/app/showcase/gamedata.json` is generated: run `uv run python scripts/sync_gamedata.py`
   in `backend/` after each game version, never edit it by hand.
-- Tests never call Enka.Network. They use `backend/tests/fixtures/enka_showcase.json`.
+- Tests never call Enka.Network or HoYoverse. They use `backend/tests/fixtures/enka_showcase.json`
+  and `backend/tests/gacha_fixture.py`.
+- A wish history link is a secret: never log it, store it or put it in a URL the app requests.
 - Work on a branch and open a pull request into `main`; the owner merges it.
 - Game rates the publisher does not document are community estimates. Say so in a comment, and
   mark every mechanic left out with a `shortcut:` comment.
+
+## Direction
+
+paimon.moe already covers Genshin Impact well. Put new effort into Honkai: Star Rail first, then
+finish Genshin, then think about Zenless Zone Zero. Do not copy what paimon.moe does; build what
+it lacks, such as importing history from a phone.
+
+## Before going public
+
+The app is private until these are done. Do not deploy it publicly or share the link without them,
+and remind the owner when a change moves toward a public launch. None of this is legal advice:
+have a lawyer read the texts before launch.
+
+- Licence: choose one for the code (the owner decides) and list the licences of dependencies.
+- Disclaimer: "Fan project, not affiliated with HoYoverse" stays visible. Read HoYoverse's current
+  fan content policy; no ads, payments or donations until it is confirmed allowed. Game images
+  come from Enka.Network and belong to HoYoverse.
+- Privacy policy, written for what the app really does: UIDs, IP addresses (rate limits and server
+  logs), the pasted wish history link (used once, never kept), pulls kept in the browser's local
+  storage, and the third parties involved (Enka.Network, HoYoverse, the host). Name who is
+  responsible and how to reach them, how long logs are kept, and how a person deletes their data.
+- Cookies and storage: the app sets no cookies today and its local storage only serves the feature
+  the user asked for. Any analytics or ads need a consent banner first.
+- Terms of use: no warranty, and a warning that the game's terms may not allow third-party history
+  tools; the user accepts that risk.
+- Enka.Network: read its current API rules (identification, caching, limits, credit) and follow them.
+- Operations: HTTPS only, `FORWARDED_ALLOW_IPS` set to the proxy, rate limits and cache moved out
+  of process if there is more than one worker, a contact address for abuse reports.
