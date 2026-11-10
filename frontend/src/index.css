@@ -194,10 +194,15 @@ td:last-child {
   margin: 0;
 }
 
+.card form {
+  margin-bottom: 0.75rem;
+}
+
 /* Padding, not flex: flex would drop the marker that shows the list opens. */
 .card summary {
   padding: 0.75rem 0;
   cursor: pointer;
+  user-select: none; /* a quick open-and-close must not select the label */
 }
 
 .item {

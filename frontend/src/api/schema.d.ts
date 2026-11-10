@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/damage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Calculate Damage */
+        post: operations["calculate_damage_api_damage_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/showcase/{uid}": {
         parameters: {
             query?: never;
@@ -93,6 +110,52 @@ export interface components {
             /** Icon */
             icon: string | null;
         };
+        /** Damage */
+        Damage: {
+            /** Non Crit */
+            non_crit: number;
+            /** Crit */
+            crit: number;
+            /** Average */
+            average: number;
+        };
+        /** DamageRequest */
+        DamageRequest: {
+            /**
+             * Level
+             * @description Character level
+             */
+            level: number;
+            /**
+             * Stats
+             * @description The character's final stats
+             */
+            stats: components["schemas"]["StatValue"][];
+            /**
+             * Scaling
+             * @description The stat the talent multiplies
+             * @enum {string}
+             */
+            scaling: "atk" | "hp" | "def" | "elemental_mastery";
+            /**
+             * Multiplier
+             * @description Talent multiplier: 3.92 is 392%
+             */
+            multiplier: number;
+            /**
+             * Bonus
+             * @description The damage bonus that applies to the hit
+             */
+            bonus: ("physical_dmg" | "pyro_dmg" | "hydro_dmg" | "electro_dmg" | "cryo_dmg" | "anemo_dmg" | "geo_dmg" | "dendro_dmg") | null;
+            reaction: components["schemas"]["Reaction"];
+            /** Enemy Level */
+            enemy_level: number;
+            /**
+             * Enemy Resistance
+             * @description 0.1 is 10%
+             */
+            enemy_resistance: number;
+        };
         /**
          * Element
          * @enum {string}
@@ -127,6 +190,11 @@ export interface components {
             /** Pulls */
             pulls: number;
         };
+        /**
+         * Reaction
+         * @enum {string}
+         */
+        Reaction: "none" | "weak" | "strong";
         /** Showcase */
         Showcase: {
             /** Uid */
@@ -154,6 +222,12 @@ export interface components {
          * @enum {string}
          */
         StatKey: "hp" | "hp_percent" | "atk" | "atk_percent" | "def" | "def_percent" | "elemental_mastery" | "energy_recharge" | "crit_rate" | "crit_dmg" | "healing_bonus" | "physical_dmg" | "pyro_dmg" | "hydro_dmg" | "electro_dmg" | "cryo_dmg" | "anemo_dmg" | "geo_dmg" | "dendro_dmg";
+        /** StatValue */
+        StatValue: {
+            key: components["schemas"]["StatKey"];
+            /** Value */
+            value: number;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -189,6 +263,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    calculate_damage_api_damage_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DamageRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Damage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     showcase_api_showcase__uid__get: {
         parameters: {
             query?: never;

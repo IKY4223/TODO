@@ -9,14 +9,19 @@ Zenless Zone Zero).
 
 - **Character builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
+- **Damage calculator** — for any imported character: enter a talent multiplier, pick the
+  scaling stat, damage bonus, reaction and enemy, and get average, crit and non-crit damage.
+  Multipliers are typed in by hand; shred, flat additions and transformative reactions are not
+  modelled.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
 
-Both cover Genshin Impact for now.
+All three cover Genshin Impact for now. Character, weapon and artifact images are loaded from
+Enka.Network.
 
-Planned: damage calculation and a best-artifact search on top of the imported builds, wish
-history import with luck statistics, then Honkai: Star Rail and Zenless Zone Zero.
+Planned: talent multipliers from game data, a best-artifact search, wish history import with
+luck statistics, then Honkai: Star Rail and Zenless Zone Zero.
 
 ## Stack
 
@@ -65,7 +70,7 @@ and a production build for the frontend.
 
 ## Request limits
 
-Each client gets 10 showcase requests and 60 forecast requests a minute; past that the API answers
+Each client gets 10 showcase requests and 60 forecast or damage requests a minute; past that the API answers
 429 with a `Retry-After` header. Clients are told apart by address, so behind a reverse proxy set
 `FORWARDED_ALLOW_IPS` to the proxy's address, or every visitor will share one allowance.
 

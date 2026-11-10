@@ -1,4 +1,4 @@
-import { getJson, isArrayOf, isRecord } from '../api/http'
+import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
 
 type Schemas = components['schemas']
@@ -57,11 +57,15 @@ export const ELEMENTS = {
 
 const SHOWCASE_URL = '/api/showcase'
 
-const isNumber = (value: unknown): value is number => typeof value === 'number'
-const isString = (value: unknown): value is string => typeof value === 'string'
+const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 })
+const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
+
+export const formatValue = ({ key, value }: Stat): string =>
+  (STATS[key].percent ? percent : whole).format(value)
+
+export const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
+
 const isIcon = (value: unknown): value is string | null => value === null || isString(value)
-const isKeyOf = <TTable extends object>(table: TTable, value: unknown): value is keyof TTable =>
-  isString(value) && Object.hasOwn(table, value)
 
 const isStat = (value: unknown): value is Stat =>
   isRecord(value) && isKeyOf(STATS, value.key) && isNumber(value.value)

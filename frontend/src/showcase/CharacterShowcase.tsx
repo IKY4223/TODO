@@ -1,26 +1,20 @@
 import type { JSX, SubmitEvent } from 'react'
 import { useRequest } from '../api/useRequest'
+import { DamageCalculator } from '../damage/DamageCalculator'
 import {
   type Artifact,
   type Character,
   ELEMENTS,
   fetchShowcase,
+  formatStat,
+  formatValue,
   type Showcase,
   SLOTS,
-  type Stat,
   STATS,
 } from './showcase'
 
 // The API accepts the same format (backend/app/showcase/api.py); this only guides the input.
 const UID_PATTERN = '\\d{9,10}'
-
-const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 })
-const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
-
-const formatValue = ({ key, value }: Stat): string =>
-  (STATS[key].percent ? percent : whole).format(value)
-
-const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
 
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
@@ -85,6 +79,7 @@ function CharacterCard({ character }: { readonly character: Character }): JSX.El
           ))}
         </ul>
       </details>
+      <DamageCalculator character={character} />
     </article>
   )
 }
