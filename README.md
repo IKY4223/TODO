@@ -25,8 +25,9 @@ Zenless Zone Zero).
 All of them cover Genshin Impact for now. Character, weapon and artifact images are loaded from
 Enka.Network.
 
-Planned: talent multipliers from game data, a best-artifact search, luck statistics from the
-imported history, then Honkai: Star Rail. Zenless Zone Zero is undecided.
+Planned: Honkai: Star Rail first (builds, warp history, warp forecast), then for Genshin talent
+multipliers from game data, a best-artifact search and luck statistics from the imported
+history. Zenless Zone Zero is undecided.
 
 ## Stack
 
