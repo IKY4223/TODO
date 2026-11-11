@@ -244,6 +244,12 @@ summary {
   align-items: flex-start;
 }
 
+/* The player's own text: break a long word rather than widen the page. */
+.signature {
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
 /* One substat per line: name, then value (and rolls) aligned on the right. */
 .card .substats {
   gap: 0.125rem;

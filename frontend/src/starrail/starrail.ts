@@ -8,6 +8,8 @@ export type Relic = Schemas['Relic']
 type LightCone = Schemas['LightCone']
 type Stat = Schemas['StarRailStat']
 type SubStat = Schemas['SubStat']
+type Skill = Schemas['Skill']
+type AccountRecord = Schemas['AccountRecord']
 
 interface StatInfo {
   readonly label: string
@@ -71,6 +73,16 @@ export const PATHS = {
   elation: 'Elation',
 } as const satisfies Record<Schemas['Path'], string>
 
+export const SKILLS = {
+  basic: 'Basic ATK',
+  skill: 'Skill',
+  ultimate: 'Ultimate',
+  talent: 'Talent',
+  elation: 'Elation',
+  memosprite_skill: 'Memosprite Skill',
+  memosprite_talent: 'Memosprite Talent',
+} as const satisfies Record<Schemas['SkillKind'], string>
+
 const SHOWCASE_URL = '/api/starrail/showcase'
 
 const FORMATS = {
@@ -115,6 +127,16 @@ const isRelic = (value: unknown): value is Relic =>
   isArrayOf(value.subs, isSubStat) &&
   isIcon(value.icon)
 
+const isSkill = (value: unknown): value is Skill =>
+  isRecord(value) && isKeyOf(SKILLS, value.kind) && isNumber(value.level) && isNumber(value.bonus)
+
+const isAccountRecord = (value: unknown): value is AccountRecord =>
+  isRecord(value) &&
+  isNumber(value.achievements) &&
+  isNumber(value.characters) &&
+  isNumber(value.light_cones) &&
+  isNumber(value.relics)
+
 const isCharacter = (value: unknown): value is StarRailCharacter =>
   isRecord(value) &&
   isNumber(value.id) &&
@@ -126,13 +148,18 @@ const isCharacter = (value: unknown): value is StarRailCharacter =>
   isNumber(value.eidolon) &&
   isNullable(isLightCone)(value.light_cone) &&
   isArrayOf(value.relics, isRelic) &&
+  isArrayOf(value.skills, isSkill) &&
   isIcon(value.icon)
 
 const isShowcase = (value: unknown): value is StarRailShowcase =>
   isRecord(value) &&
   isString(value.uid) &&
   isString(value.nickname) &&
+  isString(value.signature) &&
+  isIcon(value.avatar) &&
   isNumber(value.trailblaze_level) &&
+  isNumber(value.equilibrium_level) &&
+  isNullable(isAccountRecord)(value.record) &&
   isArrayOf(value.characters, isCharacter)
 
 export async function fetchStarRailShowcase(uid: string): Promise<StarRailShowcase> {

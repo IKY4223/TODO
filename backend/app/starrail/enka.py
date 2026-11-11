@@ -7,9 +7,12 @@ from pydantic import Field, ValidationError
 from app.showcase.enka import DEFAULT_TTL_SECONDS, EnkaModel, UpstreamDataError
 from app.starrail.gamedata import GAMEDATA
 from app.starrail.models import (
+    AccountRecord,
     LightCone,
     Path,
     Relic,
+    Skill,
+    SkillKind,
     StarRailCharacter,
     StarRailElement,
     StarRailShowcase,
@@ -59,6 +62,17 @@ SLOTS = {
     "NECK": StarRailSlot.SPHERE,
     "OBJECT": StarRailSlot.ROPE,
 }
+# A skill tree point's id ends in the same three digits for every character: 1409003 and
+# 11004003 are both an Ultimate. Points not listed are traces and the technique.
+SKILLS = {  # in the game's order
+    1: SkillKind.BASIC,
+    2: SkillKind.SKILL,
+    3: SkillKind.ULTIMATE,
+    4: SkillKind.TALENT,
+    420: SkillKind.ELATION,
+    301: SkillKind.MEMOSPRITE_SKILL,
+    302: SkillKind.MEMOSPRITE_TALENT,
+}
 PROPERTIES = {
     "HPDelta": StarRailStatKey.HP,
     "HPAddedRatio": StarRailStatKey.HP_PERCENT,
@@ -103,17 +117,34 @@ class _Equipment(EnkaModel):
     rank: int = 1
 
 
+class _SkillTreePoint(EnkaModel):
+    point_id: int
+    level: int  # what the player gave it; eidolons add on top in the game
+
+
 class _Avatar(EnkaModel):
     avatar_id: int
     level: int
     rank: int = 0  # eidolon; Enka leaves it out at 0
     equipment: _Equipment | None = None
     relic_list: list[_Relic] = Field(default_factory=list)
+    skill_tree_list: list[_SkillTreePoint] = Field(default_factory=list)
+
+
+class _Record(EnkaModel):
+    achievement_count: int = 0
+    avatar_count: int = 0
+    equipment_count: int = 0
+    relic_count: int = 0
 
 
 class _Detail(EnkaModel):
     nickname: str = ""
+    signature: str = ""
+    head_icon: int | None = None
     level: int
+    world_level: int = 0
+    record_info: _Record | None = None  # missing when the player hides it
     # Missing when the showcase is hidden.
     avatar_detail_list: list[_Avatar] = Field(default_factory=list)
 
@@ -164,6 +195,18 @@ def _light_cone(equipment: _Equipment | None) -> LightCone | None:
     )
 
 
+def _skills(avatar: _Avatar, eidolons: list[dict[int, int]]) -> tuple[Skill, ...]:
+    """Skills in the game's order. Without game data for the character, eidolons add nothing."""
+    levels = {point.point_id % 1000: point.level for point in avatar.skill_tree_list}
+    unlocked = eidolons[: avatar.rank]
+    skills = []
+    for point, kind in SKILLS.items():
+        if point in levels:
+            bonus = sum(eidolon.get(point, 0) for eidolon in unlocked)
+            skills.append(Skill(kind, levels[point] + bonus, bonus))
+    return tuple(skills)
+
+
 def _character(avatar: _Avatar) -> StarRailCharacter:
     data = GAMEDATA.characters.get(str(avatar.avatar_id))
     relics = (_relic(relic) for relic in avatar.relic_list)
@@ -177,7 +220,19 @@ def _character(avatar: _Avatar) -> StarRailCharacter:
         eidolon=avatar.rank,
         light_cone=_light_cone(avatar.equipment),
         relics=tuple(relic for relic in relics if relic),
+        skills=_skills(avatar, data.eidolons if data else []),
         icon=_icon(data.icon) if data else None,
+    )
+
+
+def _record(record: _Record | None) -> AccountRecord | None:
+    if record is None:
+        return None
+    return AccountRecord(
+        achievements=record.achievement_count,
+        characters=record.avatar_count,
+        light_cones=record.equipment_count,
+        relics=record.relic_count,
     )
 
 
@@ -189,7 +244,15 @@ def parse(uid: str, body: bytes) -> tuple[StarRailShowcase, int]:
         characters = tuple(_character(avatar) for avatar in detail.avatar_detail_list)
     except (KeyError, ValidationError) as error:
         raise UpstreamDataError(f"unreadable Enka Star Rail response for {uid}") from error
+    avatar = GAMEDATA.profile_icons.get(str(detail.head_icon))
     showcase = StarRailShowcase(
-        uid=uid, nickname=detail.nickname, trailblaze_level=detail.level, characters=characters
+        uid=uid,
+        nickname=detail.nickname,
+        signature=detail.signature,
+        avatar=_icon(avatar),
+        trailblaze_level=detail.level,
+        equilibrium_level=detail.world_level,
+        record=_record(detail.record_info),
+        characters=characters,
     )
     return showcase, response.ttl

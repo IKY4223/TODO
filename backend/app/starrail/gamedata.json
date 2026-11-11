@@ -1,6 +1,20 @@
 {
  "characters": {
   "1001": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
    "name": "March 7th",
@@ -8,6 +22,20 @@
    "rarity": 4
   },
   "1002": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
    "name": "Dan Heng",
@@ -15,6 +43,20 @@
    "rarity": 4
   },
   "1003": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
    "name": "Himeko",
@@ -22,6 +64,20 @@
    "rarity": 5
   },
   "1004": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1004.png",
    "name": "Welt",
@@ -29,6 +85,20 @@
    "rarity": 5
   },
   "1005": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1005.png",
    "name": "Kafka",
@@ -36,6 +106,20 @@
    "rarity": 5
   },
   "1006": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1006.png",
    "name": "Silver Wolf",
@@ -43,6 +127,20 @@
    "rarity": 5
   },
   "1008": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1008.png",
    "name": "Arlan",
@@ -50,6 +148,20 @@
    "rarity": 4
   },
   "1009": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1009.png",
    "name": "Asta",
@@ -57,6 +169,20 @@
    "rarity": 4
   },
   "1013": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1013.png",
    "name": "Herta",
@@ -64,6 +190,20 @@
    "rarity": 4
   },
   "1014": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1014.png",
    "name": "Saber",
@@ -71,6 +211,20 @@
    "rarity": 5
   },
   "1015": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1015.png",
    "name": "Archer",
@@ -78,6 +232,20 @@
    "rarity": 5
   },
   "1101": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1101.png",
    "name": "Bronya",
@@ -85,6 +253,20 @@
    "rarity": 5
   },
   "1102": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1102.png",
    "name": "Seele",
@@ -92,6 +274,20 @@
    "rarity": 5
   },
   "1103": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1103.png",
    "name": "Serval",
@@ -99,6 +295,20 @@
    "rarity": 4
   },
   "1104": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1104.png",
    "name": "Gepard",
@@ -106,6 +316,20 @@
    "rarity": 5
   },
   "1105": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1105.png",
    "name": "Natasha",
@@ -113,6 +337,20 @@
    "rarity": 4
   },
   "1106": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1106.png",
    "name": "Pela",
@@ -120,6 +358,20 @@
    "rarity": 4
   },
   "1107": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1107.png",
    "name": "Clara",
@@ -127,6 +379,20 @@
    "rarity": 5
   },
   "1108": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1108.png",
    "name": "Sampo",
@@ -134,6 +400,20 @@
    "rarity": 4
   },
   "1109": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1109.png",
    "name": "Hook",
@@ -141,6 +421,20 @@
    "rarity": 4
   },
   "1110": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1110.png",
    "name": "Lynx",
@@ -148,6 +442,20 @@
    "rarity": 4
   },
   "1111": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1111.png",
    "name": "Luka",
@@ -155,6 +463,20 @@
    "rarity": 4
   },
   "1112": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1112.png",
    "name": "Topaz & Numby",
@@ -162,6 +484,20 @@
    "rarity": 5
   },
   "1201": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1201.png",
    "name": "Qingque",
@@ -169,6 +505,20 @@
    "rarity": 4
   },
   "1202": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1202.png",
    "name": "Tingyun",
@@ -176,6 +526,20 @@
    "rarity": 4
   },
   "1203": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1203.png",
    "name": "Luocha",
@@ -183,6 +547,20 @@
    "rarity": 5
   },
   "1204": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1204.png",
    "name": "Jing Yuan",
@@ -190,6 +568,20 @@
    "rarity": 5
   },
   "1205": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1205.png",
    "name": "Blade",
@@ -197,6 +589,20 @@
    "rarity": 5
   },
   "1206": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1206.png",
    "name": "Sushang",
@@ -204,6 +610,20 @@
    "rarity": 4
   },
   "1207": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1207.png",
    "name": "Yukong",
@@ -211,6 +631,20 @@
    "rarity": 4
   },
   "1208": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1208.png",
    "name": "Fu Xuan",
@@ -218,6 +652,20 @@
    "rarity": 5
   },
   "1209": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1209.png",
    "name": "Yanqing",
@@ -225,6 +673,20 @@
    "rarity": 5
   },
   "1210": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1210.png",
    "name": "Guinaifen",
@@ -232,6 +694,20 @@
    "rarity": 4
   },
   "1211": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1211.png",
    "name": "Bailu",
@@ -239,6 +715,20 @@
    "rarity": 5
   },
   "1212": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1212.png",
    "name": "Jingliu",
@@ -246,6 +736,20 @@
    "rarity": 5
   },
   "1213": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1213.png",
    "name": "Dan Heng • Imbibitor Lunae",
@@ -253,6 +757,20 @@
    "rarity": 5
   },
   "1214": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1214.png",
    "name": "Xueyi",
@@ -260,6 +778,20 @@
    "rarity": 4
   },
   "1215": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1215.png",
    "name": "Hanya",
@@ -267,6 +799,20 @@
    "rarity": 4
   },
   "1217": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1217.png",
    "name": "Huohuo",
@@ -274,6 +820,20 @@
    "rarity": 5
   },
   "1218": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1218.png",
    "name": "Jiaoqiu",
@@ -281,6 +841,20 @@
    "rarity": 5
   },
   "1220": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1220.png",
    "name": "Feixiao",
@@ -288,6 +862,20 @@
    "rarity": 5
   },
   "1221": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1221.png",
    "name": "Yunli",
@@ -295,6 +883,20 @@
    "rarity": 5
   },
   "1222": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1222.png",
    "name": "Lingsha",
@@ -302,6 +904,20 @@
    "rarity": 5
   },
   "1223": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1223.png",
    "name": "Moze",
@@ -309,6 +925,20 @@
    "rarity": 4
   },
   "1224": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1224.png",
    "name": "March 7th",
@@ -316,6 +946,20 @@
    "rarity": 4
   },
   "1225": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1225.png",
    "name": "Fugue",
@@ -323,6 +967,20 @@
    "rarity": 5
   },
   "1301": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1301.png",
    "name": "Gallagher",
@@ -330,6 +988,20 @@
    "rarity": 4
   },
   "1302": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1302.png",
    "name": "Argenti",
@@ -337,6 +1009,20 @@
    "rarity": 5
   },
   "1303": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1303.png",
    "name": "Ruan Mei",
@@ -344,6 +1030,20 @@
    "rarity": 5
   },
   "1304": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1304.png",
    "name": "Aventurine",
@@ -351,6 +1051,20 @@
    "rarity": 5
   },
   "1305": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1305.png",
    "name": "Dr. Ratio",
@@ -358,6 +1072,20 @@
    "rarity": 5
   },
   "1306": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1306.png",
    "name": "Sparkle",
@@ -365,6 +1093,20 @@
    "rarity": 5
   },
   "1307": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1307.png",
    "name": "Black Swan",
@@ -372,6 +1114,20 @@
    "rarity": 5
   },
   "1308": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1308.png",
    "name": "Acheron",
@@ -379,6 +1135,20 @@
    "rarity": 5
   },
   "1309": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "3": 2
+    },
+    {},
+    {
+     "1": 1,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1309.png",
    "name": "Robin",
@@ -386,6 +1156,20 @@
    "rarity": 5
   },
   "1310": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1310.png",
    "name": "Firefly",
@@ -393,6 +1177,20 @@
    "rarity": 5
   },
   "1312": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1312.png",
    "name": "Misha",
@@ -400,6 +1198,20 @@
    "rarity": 4
   },
   "1313": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1313.png",
    "name": "Sunday",
@@ -407,6 +1219,20 @@
    "rarity": 5
   },
   "1314": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1314.png",
    "name": "Jade",
@@ -414,6 +1240,20 @@
    "rarity": 5
   },
   "1315": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1315.png",
    "name": "Boothill",
@@ -421,6 +1261,20 @@
    "rarity": 5
   },
   "1317": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1317.png",
    "name": "Rappa",
@@ -428,6 +1282,20 @@
    "rarity": 5
   },
   "1321": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1321.png",
    "name": "The Dahlia",
@@ -435,6 +1303,20 @@
    "rarity": 5
   },
   "1401": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1401.png",
    "name": "The Herta",
@@ -442,6 +1324,22 @@
    "rarity": 5
   },
   "1402": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "302": 1
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1402.png",
    "name": "Aglaea",
@@ -449,6 +1347,20 @@
    "rarity": 5
   },
   "1403": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1403.png",
    "name": "Tribbie",
@@ -456,6 +1368,20 @@
    "rarity": 5
   },
   "1404": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1404.png",
    "name": "Mydei",
@@ -463,6 +1389,20 @@
    "rarity": 5
   },
   "1405": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1405.png",
    "name": "Anaxa",
@@ -470,6 +1410,20 @@
    "rarity": 5
   },
   "1406": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1406.png",
    "name": "Cipher",
@@ -477,6 +1431,22 @@
    "rarity": 5
   },
   "1407": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "302": 1
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1407.png",
    "name": "Castorice",
@@ -484,6 +1454,20 @@
    "rarity": 5
   },
   "1408": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1408.png",
    "name": "Phainon",
@@ -491,6 +1475,22 @@
    "rarity": 5
   },
   "1409": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "301": 1
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "302": 1
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1409.png",
    "name": "Hyacine",
@@ -498,6 +1498,20 @@
    "rarity": 5
   },
   "1410": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1410.png",
    "name": "Hysilens",
@@ -505,6 +1519,20 @@
    "rarity": 5
   },
   "1412": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1412.png",
    "name": "Cerydra",
@@ -512,6 +1540,22 @@
    "rarity": 5
   },
   "1413": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "302": 1
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1413.png",
    "name": "Evernight",
@@ -519,6 +1563,20 @@
    "rarity": 5
   },
   "1414": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1414.png",
    "name": "Dan Heng • Permansor Terrae",
@@ -526,6 +1584,22 @@
    "rarity": 5
   },
   "1415": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "301": 1
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "302": 1
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1415.png",
    "name": "Cyrene",
@@ -533,6 +1607,22 @@
    "rarity": 5
   },
   "1501": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "420": 1
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1501.png",
    "name": "Sparxie",
@@ -540,6 +1630,22 @@
    "rarity": 5
   },
   "1502": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "420": 1
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1502.png",
    "name": "Yao Guang",
@@ -547,6 +1653,22 @@
    "rarity": 5
   },
   "1503": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1503.png",
    "name": "Pearl",
@@ -554,6 +1676,20 @@
    "rarity": 5
   },
   "1504": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1504.png",
    "name": "Ashveil",
@@ -561,6 +1697,22 @@
    "rarity": 5
   },
   "1505": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1505.png",
    "name": "Evanescia",
@@ -568,6 +1720,22 @@
    "rarity": 5
   },
   "1506": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2,
+     "420": 1
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1506.png",
    "name": "Silver Wolf LV.999",
@@ -575,6 +1743,20 @@
    "rarity": 5
   },
   "1507": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1507.png",
    "name": "Mortenax Blade",
@@ -582,6 +1764,20 @@
    "rarity": 5
   },
   "1508": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1508.png",
    "name": "Rin Tohsaka",
@@ -589,6 +1785,20 @@
    "rarity": 5
   },
   "1509": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "2": 2
+    },
+    {},
+    {
+     "3": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1509.png",
    "name": "Gilgamesh",
@@ -596,6 +1806,20 @@
    "rarity": 5
   },
   "1510": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1510.png",
    "name": "Himeko • Nova",
@@ -603,6 +1827,22 @@
    "rarity": 5
   },
   "1512": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "302": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1512.png",
    "name": "Robin • Summeretto",
@@ -610,6 +1850,22 @@
    "rarity": 5
   },
   "1513": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1513.png",
    "name": "Aventurine • Waveflair",
@@ -617,6 +1873,20 @@
    "rarity": 5
   },
   "8001": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
    "name": "Trailblazer",
@@ -624,6 +1894,20 @@
    "rarity": 5
   },
   "8002": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
    "name": "Trailblazer",
@@ -631,6 +1915,20 @@
    "rarity": 5
   },
   "8003": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8003.png",
    "name": "Trailblazer",
@@ -638,6 +1936,20 @@
    "rarity": 5
   },
   "8004": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8004.png",
    "name": "Trailblazer",
@@ -645,6 +1957,20 @@
    "rarity": 5
   },
   "8005": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8005.png",
    "name": "Trailblazer",
@@ -652,6 +1978,20 @@
    "rarity": 5
   },
   "8006": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2
+    },
+    {}
+   ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8006.png",
    "name": "Trailblazer",
@@ -659,6 +1999,22 @@
    "rarity": 5
   },
   "8007": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "302": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8007.png",
    "name": "Trailblazer",
@@ -666,6 +2022,22 @@
    "rarity": 5
   },
   "8008": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "302": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "301": 1
+    },
+    {}
+   ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8008.png",
    "name": "Trailblazer",
@@ -673,6 +2045,22 @@
    "rarity": 5
   },
   "8009": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8009.png",
    "name": "Trailblazer",
@@ -680,6 +2068,22 @@
    "rarity": 5
   },
   "8010": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {}
+   ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8010.png",
    "name": "Trailblazer",
@@ -2183,6 +3587,225 @@
     0.03024
    ]
   }
+ },
+ "profile_icons": {
+  "200001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/UI_Message_Contacts_Anonymous.png",
+  "200101": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200101.png",
+  "200102": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200102.png",
+  "200103": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200103.png",
+  "200104": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200104.png",
+  "200105": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200105.png",
+  "200106": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200106.png",
+  "200107": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200107.png",
+  "200108": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200108.png",
+  "200109": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200109.png",
+  "200110": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200110.png",
+  "200111": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200111.png",
+  "200112": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200112.png",
+  "200113": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200113.png",
+  "200114": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200114.png",
+  "200115": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200115.png",
+  "200116": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200116.png",
+  "200117": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200117.png",
+  "200118": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200118.png",
+  "200119": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200119.png",
+  "200120": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200120.png",
+  "200121": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200121.png",
+  "200122": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200122.png",
+  "200123": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200123.png",
+  "200124": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200124.png",
+  "200125": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200125.png",
+  "200126": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200126.png",
+  "200127": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200127.png",
+  "200128": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200128.png",
+  "200129": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200129.png",
+  "200130": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200130.png",
+  "200131": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200131.png",
+  "200132": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200132.png",
+  "200133": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200133.png",
+  "200134": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200134.png",
+  "200135": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200135.png",
+  "200136": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200136.png",
+  "200137": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200137.png",
+  "200138": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200138.png",
+  "200139": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200139.png",
+  "200140": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200140.png",
+  "200141": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200141.png",
+  "200142": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200142.png",
+  "200143": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200143.png",
+  "200144": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200144.png",
+  "200145": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200145.png",
+  "200146": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200146.png",
+  "200147": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200147.png",
+  "200148": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200148.png",
+  "200149": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200149.png",
+  "200150": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200150.png",
+  "200151": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200151.png",
+  "200152": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200152.png",
+  "200153": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200153.png",
+  "200154": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200154.png",
+  "200155": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200155.png",
+  "200156": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200156.png",
+  "200157": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200157.png",
+  "200158": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200158.png",
+  "200159": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200159.png",
+  "200160": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200160.png",
+  "200161": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200161.png",
+  "200162": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200162.png",
+  "200163": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200163.png",
+  "200164": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200164.png",
+  "201001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
+  "201002": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
+  "201003": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
+  "201004": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1004.png",
+  "201005": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1005.png",
+  "201006": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1006.png",
+  "201008": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1008.png",
+  "201009": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1009.png",
+  "201013": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1013.png",
+  "201014": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1014.png",
+  "201015": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1015.png",
+  "201101": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1101.png",
+  "201102": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1102.png",
+  "201103": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1103.png",
+  "201104": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1104.png",
+  "201105": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1105.png",
+  "201106": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1106.png",
+  "201107": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1107.png",
+  "201108": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1108.png",
+  "201109": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1109.png",
+  "201110": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1110.png",
+  "201111": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1111.png",
+  "201112": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1112.png",
+  "201201": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1201.png",
+  "201202": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1202.png",
+  "201203": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1203.png",
+  "201204": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1204.png",
+  "201205": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1205.png",
+  "201206": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1206.png",
+  "201207": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1207.png",
+  "201208": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1208.png",
+  "201209": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1209.png",
+  "201210": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1210.png",
+  "201211": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1211.png",
+  "201212": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1212.png",
+  "201213": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1213.png",
+  "201214": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1214.png",
+  "201215": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1215.png",
+  "201217": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1217.png",
+  "201218": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1218.png",
+  "201220": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1220.png",
+  "201221": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1221.png",
+  "201222": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1222.png",
+  "201223": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1223.png",
+  "201224": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1224.png",
+  "201225": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1225.png",
+  "201301": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1301.png",
+  "201302": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1302.png",
+  "201303": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1303.png",
+  "201304": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1304.png",
+  "201305": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1305.png",
+  "201306": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1306.png",
+  "201307": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1307.png",
+  "201308": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1308.png",
+  "201309": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1309.png",
+  "201310": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1310.png",
+  "201312": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1312.png",
+  "201313": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1313.png",
+  "201314": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1314.png",
+  "201315": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1315.png",
+  "201317": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1317.png",
+  "201321": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1321.png",
+  "201401": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1401.png",
+  "201402": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1402.png",
+  "201403": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1403.png",
+  "201404": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1404.png",
+  "201405": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1405.png",
+  "201406": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1406.png",
+  "201407": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1407.png",
+  "201408": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1408.png",
+  "201409": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1409.png",
+  "201410": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1410.png",
+  "201412": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1412.png",
+  "201413": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1413.png",
+  "201414": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1414.png",
+  "201415": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1415.png",
+  "201501": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1501.png",
+  "201502": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1502.png",
+  "201503": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1503.png",
+  "201504": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1504.png",
+  "201505": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1505.png",
+  "201506": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1506.png",
+  "201507": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1507.png",
+  "201508": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1508.png",
+  "201509": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1509.png",
+  "201510": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1510.png",
+  "201512": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1512.png",
+  "201513": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1513.png",
+  "202001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202001.png",
+  "202002": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202002.png",
+  "202003": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202003.png",
+  "202004": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202004.png",
+  "202005": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202005.png",
+  "202006": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202006.png",
+  "202007": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202007.png",
+  "202008": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202008.png",
+  "202009": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202009.png",
+  "202010": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202010.png",
+  "202011": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202011.png",
+  "202012": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202012.png",
+  "202013": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202013.png",
+  "202014": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202014.png",
+  "202015": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202015.png",
+  "202016": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202016.png",
+  "202017": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202017.png",
+  "202018": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202018.png",
+  "202019": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202019.png",
+  "202020": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202020.png",
+  "202021": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202021.png",
+  "202022": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202022.png",
+  "202023": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202023.png",
+  "202024": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202024.png",
+  "202025": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202025.png",
+  "202028": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202028.png",
+  "202029": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1100101.png",
+  "202030": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202030.png",
+  "202031": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202031.png",
+  "202033": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202033.png",
+  "202034": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1131001.png",
+  "202035": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202035.png",
+  "202036": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202036.png",
+  "202037": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202037.png",
+  "202038": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202038.png",
+  "202039": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202039.png",
+  "202040": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202040.png",
+  "202041": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202041.png",
+  "202042": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202042.png",
+  "202043": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1130301.png",
+  "202044": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202044.png",
+  "202045": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202045.png",
+  "202046": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202046.png",
+  "202048": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202048.png",
+  "202049": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202049.png",
+  "202050": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202050.png",
+  "202051": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202051.png",
+  "202053": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202053.png",
+  "202054": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202054.png",
+  "202055": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202055.png",
+  "202060": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1140701.png",
+  "202061": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1150101.png",
+  "202062": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1150501.png",
+  "202063": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1140901.png",
+  "208001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
+  "208002": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
+  "208003": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8003.png",
+  "208004": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8004.png",
+  "208005": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8005.png",
+  "208006": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8006.png",
+  "208007": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8007.png",
+  "208008": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8008.png",
+  "208009": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8009.png",
+  "208010": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8010.png"
  },
  "relics": {
   "31011": {

@@ -6,14 +6,17 @@ import pytest
 
 from app.showcase.enka import UpstreamDataError
 from app.starrail.enka import parse
-from app.starrail.models import Path as Route
 from app.starrail.models import (
+    AccountRecord,
+    Skill,
+    SkillKind,
     StarRailElement,
     StarRailShowcase,
     StarRailSlot,
     StarRailStatKey,
     SubStat,
 )
+from app.starrail.models import Path as Route
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "enka_starrail.json").read_bytes()
 UID = "700000001"
@@ -39,6 +42,76 @@ def showcase() -> StarRailShowcase:
 def test_player(showcase: StarRailShowcase) -> None:
     assert (showcase.uid, showcase.nickname, showcase.trailblaze_level) == (UID, "Trailblazer", 70)
     assert parse(UID, FIXTURE)[1] == 60
+
+
+def test_profile(showcase: StarRailShowcase) -> None:
+    assert showcase.avatar == ICONS + "AvatarRoundIcon/Avatar/8008.png"
+    assert (showcase.signature, showcase.equilibrium_level) == ("Looking for co-op", 6)
+    assert showcase.record == AccountRecord(
+        achievements=500, characters=40, light_cones=70, relics=2400
+    )
+
+
+def test_profile_the_player_keeps_private() -> None:
+    def hide(raw: Any) -> None:
+        for key in ("headIcon", "signature", "recordInfo", "worldLevel"):
+            raw["detailInfo"].pop(key)
+
+    showcase = parse(UID, altered(hide))[0]
+    assert (showcase.avatar, showcase.signature, showcase.equilibrium_level, showcase.record) == (
+        None,
+        "",
+        0,
+        None,
+    )
+
+
+def test_avatar_newer_than_the_game_data_has_no_image() -> None:
+    showcase = parse(UID, altered(lambda raw: raw["detailInfo"].update(headIcon=299999)))[0]
+    assert showcase.avatar is None
+
+
+def test_skill_levels_include_what_eidolons_add(showcase: StarRailShowcase) -> None:
+    hyacine, march = showcase.characters
+    # Hyacine is E0: her levels are the ones she was given, memosprite skills included.
+    assert hyacine.skills == (
+        Skill(SkillKind.BASIC, 5, 0),
+        Skill(SkillKind.SKILL, 10, 0),
+        Skill(SkillKind.ULTIMATE, 10, 0),
+        Skill(SkillKind.TALENT, 9, 0),
+        Skill(SkillKind.MEMOSPRITE_SKILL, 6, 0),
+        Skill(SkillKind.MEMOSPRITE_TALENT, 6, 0),
+    )
+    # March 7th is E6: E3 adds 1 to Basic ATK and 2 to Skill, E5 adds 2 to Ultimate and Talent.
+    assert march.skills == (
+        Skill(SkillKind.BASIC, 7, 1),
+        Skill(SkillKind.SKILL, 11, 2),
+        Skill(SkillKind.ULTIMATE, 10, 2),
+        Skill(SkillKind.TALENT, 11, 2),
+    )
+
+
+def test_eidolons_not_unlocked_add_nothing() -> None:
+    showcase = parse(
+        UID, altered(lambda raw: raw["detailInfo"]["avatarDetailList"][1].update(rank=4))
+    )[0]
+    assert [skill.bonus for skill in showcase.characters[1].skills] == [1, 2, 0, 0]
+
+
+def test_unknown_character_shows_the_levels_it_was_given() -> None:
+    def rename(raw: Any) -> None:
+        avatar = raw["detailInfo"]["avatarDetailList"][1]
+        avatar["avatarId"] = 1999
+        for point in avatar["skillTreeList"]:
+            point["pointId"] = 1999000 + point["pointId"] % 1000
+
+    newcomer = parse(UID, altered(rename))[0].characters[1]
+    assert [(skill.level, skill.bonus) for skill in newcomer.skills] == [
+        (6, 0),
+        (9, 0),
+        (8, 0),
+        (9, 0),
+    ]
 
 
 def test_character_identity(showcase: StarRailShowcase) -> None:

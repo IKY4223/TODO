@@ -14,6 +14,8 @@ class CharacterData(BaseModel):
     element: str
     path: str
     icon: str
+    # One entry per eidolon: skill tree point (its id's last three digits) -> levels added.
+    eidolons: list[dict[int, int]]
 
 
 class LightConeData(BaseModel):
@@ -33,6 +35,7 @@ class RelicData(BaseModel):
 
 class GameData(BaseModel):
     characters: dict[str, CharacterData]
+    profile_icons: dict[str, str]
     light_cones: dict[str, LightConeData]
     relics: dict[str, RelicData]
     sets: dict[str, str]

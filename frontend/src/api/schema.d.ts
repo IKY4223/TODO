@@ -110,6 +110,17 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccountRecord */
+        AccountRecord: {
+            /** Achievements */
+            achievements: number;
+            /** Characters */
+            characters: number;
+            /** Light Cones */
+            light_cones: number;
+            /** Relics */
+            relics: number;
+        };
         /** Artifact */
         Artifact: {
             slot: components["schemas"]["Slot"];
@@ -315,6 +326,19 @@ export interface components {
             /** Characters */
             characters: components["schemas"]["Character"][];
         };
+        /** Skill */
+        Skill: {
+            kind: components["schemas"]["SkillKind"];
+            /** Level */
+            level: number;
+            /** Bonus */
+            bonus: number;
+        };
+        /**
+         * SkillKind
+         * @enum {string}
+         */
+        SkillKind: "basic" | "skill" | "ultimate" | "talent" | "elation" | "memosprite_skill" | "memosprite_talent";
         /**
          * Slot
          * @enum {string}
@@ -337,6 +361,8 @@ export interface components {
             light_cone: components["schemas"]["LightCone"] | null;
             /** Relics */
             relics: components["schemas"]["Relic"][];
+            /** Skills */
+            skills: components["schemas"]["Skill"][];
             /** Icon */
             icon: string | null;
         };
@@ -351,8 +377,15 @@ export interface components {
             uid: string;
             /** Nickname */
             nickname: string;
+            /** Signature */
+            signature: string;
+            /** Avatar */
+            avatar: string | null;
             /** Trailblaze Level */
             trailblaze_level: number;
+            /** Equilibrium Level */
+            equilibrium_level: number;
+            record: components["schemas"]["AccountRecord"] | null;
             /** Characters */
             characters: components["schemas"]["StarRailCharacter"][];
         };

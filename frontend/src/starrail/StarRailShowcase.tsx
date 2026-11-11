@@ -9,6 +9,7 @@ import {
   formatValue,
   PATHS,
   type Relic,
+  SKILLS,
   SLOTS,
   type StarRailCharacter,
   type StarRailShowcase as Showcase,
@@ -17,6 +18,8 @@ import {
 
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
+
+const count = new Intl.NumberFormat('en')
 
 function RelicItem({ relic }: { readonly relic: Relic }): JSX.Element {
   return (
@@ -57,6 +60,19 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
           <span className="hint">{summary.join(' · ')}</span>
         </div>
       </header>
+      {character.skills.length ? (
+        <dl>
+          {character.skills.map(({ kind, level, bonus }) => (
+            <div key={kind}>
+              <dt>{SKILLS[kind]}</dt>
+              <dd>
+                {level}
+                {bonus ? <span className="hint"> (+{bonus})</span> : null}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
       {cone ? (
         <p className="item">
           <Icon src={cone.icon} size={ITEM_ICON_SIZE} />
@@ -78,20 +94,56 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
   )
 }
 
+function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
+  const { record } = showcase
+  return (
+    <article className="card">
+      <header className="item">
+        <Icon src={showcase.avatar} size={CHARACTER_ICON_SIZE} />
+        <div>
+          <h3>{showcase.nickname}</h3>
+          <span className="hint">
+            Trailblaze Lv. {showcase.trailblaze_level} · Equilibrium {showcase.equilibrium_level}
+          </span>
+        </div>
+      </header>
+      {showcase.signature ? <p className="signature">{showcase.signature}</p> : null}
+      {record ? (
+        <dl>
+          {(
+            [
+              ['Achievements', record.achievements],
+              ['Characters', record.characters],
+              ['Light Cones', record.light_cones],
+              ['Relics', record.relics],
+            ] as const
+          ).map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{count.format(value)}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+    </article>
+  )
+}
+
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   return (
     <>
-      <p>
-        {showcase.nickname} · Trailblaze Level {showcase.trailblaze_level}
-      </p>
+      <Profile showcase={showcase} />
       {showcase.characters.length ? (
-        <ul className="cards">
-          {showcase.characters.map((character) => (
-            <li key={character.id}>
-              <CharacterCard character={character} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <p className="hint">(+N): skill levels that eidolons add.</p>
+          <ul className="cards">
+            {showcase.characters.map((character) => (
+              <li key={character.id}>
+                <CharacterCard character={character} />
+              </li>
+            ))}
+          </ul>
+        </>
       ) : (
         <p className="hint">
           No characters to show. In the game, open your profile, add characters to the Character

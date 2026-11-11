@@ -182,20 +182,35 @@ test('imports wish history from the text Android shows and keeps it on the devic
   expect(problems).toEqual([])
 })
 
-test('imports a Star Rail showcase with relic rolls', async ({ page }) => {
+test('imports a Star Rail profile and showcase with skills and relic rolls', async ({ page }) => {
   await page.getByRole('link', { name: 'Star Rail' }).click()
   // Until the switch renders, the Genshin tool is still the one on screen.
   await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
   await loadShowcase(page)
   // Served from backend/tests/fixtures/enka_starrail.json.
-  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText(['Hyacine', 'March 7th'])
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Hyacine',
+    'March 7th',
+  ])
+  const profile = card(page, 'Trailblazer')
+  await expect(profile.getByText('Trailblaze Lv. 70 · Equilibrium 6')).toBeVisible()
+  await expect(profile.getByText('Looking for co-op')).toBeVisible()
+  await expect(profile.locator('dl > div')).toContainText(['Achievements500', 'Relics2,400'])
   const hyacine = card(page, 'Hyacine')
   await expect(hyacine.getByText('Lv. 80 · E0 · Wind · Remembrance')).toBeVisible()
   await expect(hyacine.getByText("The Story's Next Page · Lv. 70 · S1")).toBeVisible()
   await hyacine.getByText('Relics (6)').click()
   await expect(hyacine.getByText('Head · Warrior Goddess of Sun and Thunder +15')).toBeVisible()
   await expect(hyacine.getByText(/SPD 12\.1 ×5/)).toBeVisible()
-  await expect(card(page, 'March 7th').getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
+  const march = card(page, 'March 7th')
+  await expect(march.getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
+  await expect(march.locator('dl > div')).toHaveText([
+    'Basic ATK7 (+1)',
+    'Skill11 (+2)',
+    'Ultimate10 (+2)',
+    'Talent11 (+2)',
+  ])
 
   await page.evaluate(() => {
     for (const details of document.querySelectorAll('details')) details.open = true

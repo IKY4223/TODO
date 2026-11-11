@@ -59,6 +59,23 @@ class StarRailStatKey(StrEnum):
     IMAGINARY_DMG = "imaginary_dmg"
 
 
+class SkillKind(StrEnum):  # in the game's order
+    BASIC = "basic"
+    SKILL = "skill"
+    ULTIMATE = "ultimate"
+    TALENT = "talent"
+    ELATION = "elation"
+    MEMOSPRITE_SKILL = "memosprite_skill"
+    MEMOSPRITE_TALENT = "memosprite_talent"
+
+
+@dataclass(frozen=True)
+class Skill:
+    kind: SkillKind
+    level: int  # as the game shows it, with what eidolons add
+    bonus: int  # the part of the level that eidolons add
+
+
 @dataclass(frozen=True)
 class StarRailStat:
     key: StarRailStatKey
@@ -101,12 +118,25 @@ class StarRailCharacter:
     eidolon: int  # 0 to 6
     light_cone: LightCone | None
     relics: tuple[Relic, ...]
+    skills: tuple[Skill, ...]
     icon: str | None
+
+
+@dataclass(frozen=True)
+class AccountRecord:
+    achievements: int
+    characters: int
+    light_cones: int
+    relics: int
 
 
 @dataclass(frozen=True)
 class StarRailShowcase:
     uid: str
     nickname: str
+    signature: str
+    avatar: str | None
     trailblaze_level: int
+    equilibrium_level: int
+    record: AccountRecord | None  # None when the player hides it
     characters: tuple[StarRailCharacter, ...]

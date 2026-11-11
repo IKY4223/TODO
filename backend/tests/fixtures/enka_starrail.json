@@ -4,6 +4,18 @@
   "nickname": "Trailblazer",
   "level": 70,
   "worldLevel": 6,
+  "headIcon": 208008,
+  "signature": "Looking for co-op",
+  "recordInfo": {
+   "achievementCount": 500,
+   "bookCount": 150,
+   "avatarCount": 40,
+   "equipmentCount": 70,
+   "musicCount": 90,
+   "relicCount": 2400,
+   "challengeInfo": {},
+   "maxRogueChallengeScore": 9
+  },
   "isDisplayAvatar": true,
   "avatarDetailList": [
    {
