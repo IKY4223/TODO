@@ -1,6 +1,7 @@
 import type { JSX, SubmitEvent } from 'react'
 import { UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { Icon } from '../ui/Icon'
 import { DamageCalculator } from '../damage/DamageCalculator'
 import {
   type Artifact,
@@ -17,12 +18,6 @@ import {
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
-/** Decorative: the name is always printed next to the picture. */
-function Icon(props: { readonly src: string | null; readonly size: number }): JSX.Element | null {
-  const { src, size } = props
-  return src ? <img src={src} alt="" width={size} height={size} loading="lazy" /> : null
-}
-
 function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Element {
   return (
     <li className="item">
@@ -32,7 +27,13 @@ function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Elemen
           {SLOTS[artifact.slot]} · {artifact.set_name} +{artifact.level}
         </span>
         <strong>{formatStat(artifact.main)}</strong>
-        <span className="hint">{artifact.subs.map(formatStat).join(' · ')}</span>
+        <ul className="substats" aria-label={`${SLOTS[artifact.slot]} substats`}>
+          {artifact.subs.map((sub) => (
+            <li key={sub.key}>
+              <span>{STATS[sub.key].label}</span> <span>{formatValue(sub)}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </li>
   )

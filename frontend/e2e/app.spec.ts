@@ -13,8 +13,11 @@ const IMPORT_TIMEOUT_MS = 30_000
 const MIN_TOUCH_TARGET_PX = 44
 const MIN_INPUT_FONT_PX = 16
 const MIN_CONTROLS_ON_SCREEN = 10
+// Game and tool links, the UID form, a toggle per character.
+const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
+const MIN_RELIC_CONTROLS = 18 // 8 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
@@ -32,12 +35,15 @@ test.beforeEach(async ({ page }) => {
   await page.route('https://enka.network/**', async (route) =>
     route.fulfill({ contentType: 'image/png', body: PIXEL }),
   )
-  await page.goto('/')
+  await page.goto('/#genshin/builds')
 })
 
+/** The tool on screen: the others stay mounted, hidden, so page-wide lookups would find them too. */
+const shown = (page: Page): Locator => page.locator('main > div:not([hidden])')
+
 async function loadShowcase(page: Page, uid = UID): Promise<void> {
-  await page.getByLabel('UID').fill(uid)
-  await page.getByRole('button', { name: 'Load characters' }).click()
+  await shown(page).getByLabel('UID').fill(uid)
+  await shown(page).getByRole('button', { name: 'Load characters' }).click()
 }
 
 const card = (page: Page, name: string): Locator =>
@@ -175,4 +181,113 @@ test('imports wish history from the text Android shows and keeps it on the devic
   await page.reload()
   await expect(card(page, 'Character Event').getByText('15 pulls since the last 5★')).toBeVisible()
   expect(problems).toEqual([])
+})
+
+test('imports a Star Rail profile and showcase with skills and relic rolls', async ({ page }) => {
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  // Until the switch renders, the Genshin tool is still the one on screen.
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  // Served from backend/tests/fixtures/enka_starrail.json.
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Hyacine',
+    'March 7th',
+  ])
+  const profile = card(page, 'Trailblazer')
+  await expect(profile.getByText('Trailblaze Lv. 70 · Equilibrium 6')).toBeVisible()
+  await expect(profile.getByText('Looking for co-op')).toBeVisible()
+  await expect(profile.locator('dl > div')).toContainText(['Achievements500', 'Relics2,400'])
+  const hyacine = card(page, 'Hyacine')
+  await expect(hyacine.getByText('Lv. 80 · E0 · Wind · Remembrance')).toBeVisible()
+  await expect(hyacine.getByText("The Story's Next Page · Lv. 70 · S1")).toBeVisible()
+  await hyacine.getByText('Relics (6)').click()
+  await expect(hyacine.getByText('Head · Warrior Goddess of Sun and Thunder +15')).toBeVisible()
+  await expect(hyacine.getByText(/SPD 12\.1 ×5/)).toBeVisible()
+  const march = card(page, 'March 7th')
+  await expect(march.getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
+  await expect(march.locator('dl > div')).toHaveText([
+    'Basic ATK7 (+1)',
+    'Skill11 (+2)',
+    'Ultimate10 (+2)',
+    'Talent11 (+2)',
+  ])
+
+  await page.evaluate(() => {
+    for (const details of document.querySelectorAll('details')) details.open = true
+  })
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('tells what the upgrades a relic has left can bring', async ({ page }) => {
+  // Load the showcase first: the advisor compares with the relics its characters wear.
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine').getByText(/Relics \(6\) · score \d+\.\d/)).toBeVisible()
+  await page.getByRole('link', { name: 'Relics' }).click()
+  const tool = shown(page)
+  await tool.getByLabel('Main stat').selectOption('hp')
+  await tool.getByLabel('Level').selectOption('12')
+  await tool.getByLabel('Substat 1').selectOption('atk')
+  await tool.getByLabel('Substat 2').selectOption('def')
+  await tool.getByLabel('Substat 3').selectOption('spd')
+  await tool.getByLabel('Value 3').fill('2.6')
+  await tool.getByLabel('Substat 4').selectOption('crit_rate')
+  await tool.getByLabel('Value 4').fill('3.2')
+  await tool.getByLabel('Goal stat').selectOption('spd')
+  await tool.getByLabel('Goal value').fill('4.6')
+  await tool.getByLabel('Compare with').selectOption('Hyacine · Head')
+  await tool.getByRole('button', { name: 'Calculate' }).click()
+  // SPD and CRIT Rate are wanted by default: one upgrade, two of four substats.
+  await expect(tool.getByText('1 upgrade left')).toBeVisible()
+  await expect(tool.getByRole('row')).toHaveText(['Wanted upgradesChance', 'At least 150%'])
+  await expect(tool.locator('.answers div')).toHaveText([
+    'Score now2.0',
+    // Hyacine's head has SPD 12.1: far ahead of a relic with one upgrade left.
+    'Chance to beat the equipped relic0%',
+    // SPD is picked one time in four and any roll then reaches 4.6.
+    'Chance to reach SPD 4.625%',
+  ])
+
+  expectPhoneFriendly(await measureLayout(page), MIN_RELIC_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('explains why a relic cannot exist', async ({ page }) => {
+  await page.goto('/#starrail/relics')
+  const tool = shown(page)
+  await tool.getByLabel('Main stat').selectOption('hp')
+  await tool.getByLabel('Substat 1').selectOption('atk')
+  await tool.getByLabel('Substat 2').selectOption('atk')
+  await tool.getByLabel('Substat 3').selectOption('spd')
+  await tool.getByRole('button', { name: 'Calculate' }).click()
+  await expect(tool.getByRole('alert')).toHaveText('A relic cannot have the same substat twice.')
+})
+
+test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
+  await page.goto('/')
+  await page.getByLabel('Language').selectOption('ru')
+  await expect(page.getByRole('link', { name: 'Билды' })).toHaveAttribute('aria-current', 'page')
+  await shown(page).getByLabel('UID').fill(UID)
+  await shown(page).getByRole('button', { name: 'Загрузить персонажей' }).click()
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Гиацина',
+    'Март 7',
+  ])
+  await expect(card(page, 'Гиацина').getByText('Ур. 80 · E0 · Ветряной · Память')).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Язык')).toHaveValue('ru')
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('Star Rail is where the app opens', async ({ page }) => {
+  await page.goto('/')
+  await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()
 })

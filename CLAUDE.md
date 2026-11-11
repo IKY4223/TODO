@@ -15,15 +15,18 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - A user-facing feature is not done until `frontend/e2e/app.spec.ts` drives it in the browser.
   If Playwright's browser is missing, run with `PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium`.
 - Never lower a coverage floor or switch off a lint rule to get a change through.
-- The owner works from a phone. Never leave a step that needs a computer, and after a UI change
-  start the app and report its port so it can be previewed from the session.
+- The owner works from a phone and cannot open the preview. Never leave a step that needs a
+  computer. After a UI change, start the app, report its port, and send phone-sized screenshots.
 - The UI is mobile-first: it must work at 360px wide with 16px inputs and 44px touch targets.
-- `backend/app/showcase/gamedata.json` is generated: run `uv run python scripts/sync_gamedata.py`
-  in `backend/` after each game version, never edit it by hand.
-- Tests never call Enka.Network or HoYoverse. They use `backend/tests/fixtures/enka_showcase.json`
-  and `backend/tests/gacha_fixture.py`.
+- `backend/app/showcase/gamedata.json` and `backend/app/starrail/gamedata.json` are generated: run
+  `scripts/sync_gamedata.py` and `scripts/sync_starrail_data.py` in `backend/` after each game
+  version, never edit them by hand.
+- Tests never call Enka.Network or HoYoverse. They use the fixtures in `backend/tests/fixtures/`
+  and `backend/tests/gacha_fixture.py`. Fixtures from real accounts are anonymized.
 - A wish history link is a secret: never log it, store it or put it in a URL the app requests.
 - Work on a branch and open a pull request into `main`; the owner merges it.
+- Before starting a stage, write the plan for the owner: what will be built, in what order, and
+  what is left out. Plan several features per stage, not one.
 - Game rates the publisher does not document are community estimates. Say so in a comment, and
   mark every mechanic left out with a `shortcut:` comment.
 

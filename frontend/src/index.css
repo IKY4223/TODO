@@ -39,6 +39,7 @@ h3 {
 }
 
 nav {
+  margin-bottom: 0.5rem;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
@@ -82,6 +83,49 @@ label {
   width: 1.5rem;
   height: 1.5rem;
   accent-color: var(--color-accent);
+}
+
+/* The title with the language choice beside it. */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.top select {
+  width: auto;
+}
+
+/* A stat and its value side by side. */
+.pair {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.answers div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.answers dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
 }
 
 /* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
@@ -224,6 +268,7 @@ summary {
   padding: 0.75rem 0;
   cursor: pointer;
   user-select: none; /* a quick open-and-close must not select the label */
+  -webkit-tap-highlight-color: transparent; /* :focus-visible still marks it for keyboards */
 }
 
 .item {
@@ -235,6 +280,43 @@ summary {
 .item div {
   display: grid;
   gap: 0.125rem;
+}
+
+/* A relic or artifact entry is tall: its picture belongs next to its name, at the top. */
+.card li.item {
+  align-items: flex-start;
+}
+
+/* The player's own text: break a long word rather than widen the page. */
+.signature {
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
+/* One substat per line: name, then value (and rolls) aligned on the right. */
+.card .substats {
+  gap: 0.125rem;
+  margin-top: 0.25rem;
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.substats li {
+  display: grid;
+  grid-template-columns: 1fr auto 2.5ch;
+  gap: 0.5rem;
+}
+
+.substats .wanted {
+  color: var(--color-foreground);
+}
+
+.card fieldset {
+  margin: 0.5rem 0 1rem;
+}
+
+.substats span:not(:first-child) {
+  text-align: right;
 }
 
 .item img {
@@ -269,6 +351,35 @@ summary {
 
 [data-element='dendro'] {
   --element: #84cc16;
+}
+
+/* Star Rail elements; wind and ice reuse Genshin's anemo and cryo tones. */
+[data-element='physical'] {
+  --element: #d1d5db;
+}
+
+[data-element='fire'] {
+  --element: #f97316;
+}
+
+[data-element='ice'] {
+  --element: #a5f3fc;
+}
+
+[data-element='lightning'] {
+  --element: #c084fc;
+}
+
+[data-element='wind'] {
+  --element: #5eead4;
+}
+
+[data-element='quantum'] {
+  --element: #818cf8;
+}
+
+[data-element='imaginary'] {
+  --element: #facc15;
 }
 
 [role='alert'] {

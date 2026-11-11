@@ -7,7 +7,17 @@ Zenless Zone Zero).
 
 ## Features
 
-- **Character builds** — enter a UID and see every character in the player's showcase: final
+The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
+
+- **Star Rail builds** — enter a UID and see every character in the player's showcase: level,
+  eidolon, element, path, skill levels, light cone and relics, under the player's profile card.
+  Each substat shows how many times it rolled.
+- **Star Rail relic advisor** — describe a 5★ relic and pick the substats you want: the app
+  gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
+  (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
+  Builds get a score from the substats you mark as wanted. The upgrade rules are community
+  estimates; a simulation in the tests checks the exact math.
+- **Genshin builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
 - **Damage calculator** — for any imported character: enter a talent multiplier, pick the
   scaling stat, damage bonus, reaction and enemy, and get average, crit and non-crit damage.
@@ -22,8 +32,7 @@ Zenless Zone Zero).
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
 
-All of them cover Genshin Impact for now. Character, weapon and artifact images are loaded from
-Enka.Network.
+Character, weapon, light cone, artifact and relic images are loaded from Enka.Network.
 
 Planned: Honkai: Star Rail first (builds, warp history, warp forecast), then for Genshin talent
 multipliers from game data, a best-artifact search and luck statistics from the imported
@@ -56,12 +65,13 @@ committed files do not match.
 
 ## Game data
 
-`backend/app/showcase/gamedata.json` maps the ids Enka.Network returns to names. Rebuild it after
-each game version:
+`backend/app/showcase/gamedata.json` (Genshin) and `backend/app/starrail/gamedata.json` (Star Rail)
+map the ids Enka.Network returns to names and stats. Rebuild them after each game version:
 
 ```sh
 cd backend
 uv run python scripts/sync_gamedata.py
+uv run python scripts/sync_starrail_data.py
 ```
 
 A character released since the last rebuild still shows up, as "Unknown character".

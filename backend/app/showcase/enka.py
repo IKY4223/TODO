@@ -90,27 +90,27 @@ class UpstreamDataError(Exception):
     """Enka.Network answered with data this app cannot read."""
 
 
-class _Enka(BaseModel):
+class EnkaModel(BaseModel):
     """Only the fields this app reads. Enka's JSON is camelCase."""
 
     model_config = ConfigDict(alias_generator=to_camel)
 
 
-class _Prop(_Enka):
+class _Prop(EnkaModel):
     val: str = "0"  # Enka leaves the value out when it is zero
 
 
-class _MainStat(_Enka):
+class _MainStat(EnkaModel):
     main_prop_id: str
     stat_value: float
 
 
-class _SubStat(_Enka):
+class _SubStat(EnkaModel):
     append_prop_id: str
     stat_value: float
 
 
-class _ArtifactFlat(_Enka):
+class _ArtifactFlat(EnkaModel):
     icon: str | None = None
     rank_level: int
     equip_type: str
@@ -119,32 +119,32 @@ class _ArtifactFlat(_Enka):
     reliquary_substats: list[_SubStat] = []
 
 
-class _Reliquary(_Enka):
+class _Reliquary(EnkaModel):
     level: int
 
 
-class _Artifact(_Enka):
+class _Artifact(EnkaModel):
     reliquary: _Reliquary
     flat: _ArtifactFlat
 
 
-class _WeaponFlat(_Enka):
+class _WeaponFlat(EnkaModel):
     icon: str | None = None
     rank_level: int
 
 
-class _WeaponInfo(_Enka):
+class _WeaponInfo(EnkaModel):
     level: int
     affix_map: dict[str, int] = {}
 
 
-class _Weapon(_Enka):
+class _Weapon(EnkaModel):
     item_id: int
     weapon: _WeaponInfo
     flat: _WeaponFlat
 
 
-class _Avatar(_Enka):
+class _Avatar(EnkaModel):
     avatar_id: int
     skill_depot_id: int
     prop_map: dict[str, _Prop]
@@ -155,21 +155,24 @@ class _Avatar(_Enka):
     equip_list: list[_Artifact | _Weapon]
 
 
-class _Player(_Enka):
+class _Player(EnkaModel):
     nickname: str = ""
     level: int
 
 
-class _Response(_Enka):
+class _Response(EnkaModel):
     player_info: _Player
     avatar_info_list: list[_Avatar] | None = None  # missing when the showcase is hidden
     ttl: int = DEFAULT_TTL_SECONDS
 
 
-def fetch(uid: str) -> bytes:
-    """Download the raw showcase. `uid` must already be validated: it becomes part of the URL."""
-    # S310 guards against file: and custom schemes; ENKA_URL is a constant https address.
-    request = Request(ENKA_URL.format(uid=uid), headers={"User-Agent": USER_AGENT})  # noqa: S310
+def fetch(uid: str, url: str = ENKA_URL) -> bytes:
+    """Download the raw showcase. `uid` must already be validated: it becomes part of the URL.
+
+    `url` is a constant https address template, one per game.
+    """
+    # S310 guards against file: and custom schemes; every caller passes a constant https URL.
+    request = Request(url.format(uid=uid), headers={"User-Agent": USER_AGENT})  # noqa: S310
     try:
         with urlopen(request, timeout=TIMEOUT_SECONDS) as response:  # noqa: S310
             body: bytes = response.read(MAX_RESPONSE_BYTES + 1)

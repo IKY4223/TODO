@@ -38,6 +38,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/starrail/showcase/{uid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Showcase */
+        get: operations["showcase_api_starrail_showcase__uid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/starrail/relics/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Relic Forecast */
+        post: operations["relic_forecast_api_starrail_relics_forecast_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -93,6 +127,17 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccountRecord */
+        AccountRecord: {
+            /** Achievements */
+            achievements: number;
+            /** Characters */
+            characters: number;
+            /** Light Cones */
+            light_cones: number;
+            /** Relics */
+            relics: number;
+        };
         /** Artifact */
         Artifact: {
             slot: components["schemas"]["Slot"];
@@ -220,6 +265,19 @@ export interface components {
              */
             end_id: string;
         };
+        /** LightCone */
+        LightCone: {
+            /** Name */
+            name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            /** Superimposition */
+            superimposition: number;
+            /** Icon */
+            icon: string | null;
+        };
         /** Milestone */
         Milestone: {
             /** Chance */
@@ -234,6 +292,11 @@ export interface components {
             /** Pulls */
             pulls: components["schemas"]["Pull"][];
         };
+        /**
+         * Path
+         * @enum {string}
+         */
+        Path: "destruction" | "hunt" | "erudition" | "harmony" | "nihility" | "preservation" | "abundance" | "remembrance" | "elation";
         /** Pull */
         Pull: {
             /** Id */
@@ -254,6 +317,73 @@ export interface components {
          * @enum {string}
          */
         Reaction: "none" | "weak" | "strong";
+        /** Relic */
+        Relic: {
+            slot: components["schemas"]["StarRailSlot"];
+            /** Set Name */
+            set_name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            main: components["schemas"]["StarRailStat"];
+            /** Subs */
+            subs: components["schemas"]["SubStat"][];
+            /** Icon */
+            icon: string | null;
+        };
+        /** RelicForecast */
+        RelicForecast: {
+            /** Upgrades */
+            upgrades: number;
+            /** Chances */
+            chances: number[];
+            /** Expected */
+            expected: number;
+            /** Score */
+            score: number | null;
+            /** Beats */
+            beats: number | null;
+            /** Reaches */
+            reaches: number | null;
+        };
+        /** RelicGoal */
+        RelicGoal: {
+            key: components["schemas"]["StarRailStatKey"];
+            /**
+             * Value
+             * @description As the game shows it
+             */
+            value: number;
+        };
+        /** RelicQuery */
+        RelicQuery: {
+            main: components["schemas"]["StarRailStatKey"];
+            /** Subs */
+            subs: components["schemas"]["RelicSub"][];
+            /** Level */
+            level: number;
+            /**
+             * Wanted
+             * @description The substats worth having
+             */
+            wanted: components["schemas"]["StarRailStatKey"][];
+            /**
+             * Beat
+             * @description The score of the relic to do better than
+             */
+            beat?: number | null;
+            goal?: components["schemas"]["RelicGoal"] | null;
+        };
+        /** RelicSub */
+        RelicSub: {
+            key: components["schemas"]["StarRailStatKey"];
+            /**
+             * Value
+             * @description As the game shows it: 5.8 for 5.8%
+             */
+            value?: number | null;
+        };
         /** Showcase */
         Showcase: {
             /** Uid */
@@ -265,11 +395,85 @@ export interface components {
             /** Characters */
             characters: components["schemas"]["Character"][];
         };
+        /** Skill */
+        Skill: {
+            kind: components["schemas"]["SkillKind"];
+            /** Level */
+            level: number;
+            /** Bonus */
+            bonus: number;
+        };
+        /**
+         * SkillKind
+         * @enum {string}
+         */
+        SkillKind: "basic" | "skill" | "ultimate" | "talent" | "elation" | "memosprite_skill" | "memosprite_talent";
         /**
          * Slot
          * @enum {string}
          */
         Slot: "flower" | "plume" | "sands" | "goblet" | "circlet";
+        /** StarRailCharacter */
+        StarRailCharacter: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            element: components["schemas"]["StarRailElement"] | null;
+            path: components["schemas"]["Path"] | null;
+            /** Rarity */
+            rarity: number | null;
+            /** Level */
+            level: number;
+            /** Eidolon */
+            eidolon: number;
+            light_cone: components["schemas"]["LightCone"] | null;
+            /** Relics */
+            relics: components["schemas"]["Relic"][];
+            /** Skills */
+            skills: components["schemas"]["Skill"][];
+            /** Icon */
+            icon: string | null;
+        };
+        /**
+         * StarRailElement
+         * @enum {string}
+         */
+        StarRailElement: "physical" | "fire" | "ice" | "lightning" | "wind" | "quantum" | "imaginary";
+        /** StarRailShowcase */
+        StarRailShowcase: {
+            /** Uid */
+            uid: string;
+            /** Nickname */
+            nickname: string;
+            /** Signature */
+            signature: string;
+            /** Avatar */
+            avatar: string | null;
+            /** Trailblaze Level */
+            trailblaze_level: number;
+            /** Equilibrium Level */
+            equilibrium_level: number;
+            record: components["schemas"]["AccountRecord"] | null;
+            /** Characters */
+            characters: components["schemas"]["StarRailCharacter"][];
+        };
+        /**
+         * StarRailSlot
+         * @enum {string}
+         */
+        StarRailSlot: "head" | "hands" | "body" | "feet" | "sphere" | "rope";
+        /** StarRailStat */
+        StarRailStat: {
+            key: components["schemas"]["StarRailStatKey"];
+            /** Value */
+            value: number;
+        };
+        /**
+         * StarRailStatKey
+         * @enum {string}
+         */
+        StarRailStatKey: "hp" | "hp_percent" | "atk" | "atk_percent" | "def" | "def_percent" | "spd" | "crit_rate" | "crit_dmg" | "effect_hit_rate" | "effect_res" | "break_effect" | "energy_regen" | "outgoing_healing" | "physical_dmg" | "fire_dmg" | "ice_dmg" | "lightning_dmg" | "wind_dmg" | "quantum_dmg" | "imaginary_dmg";
         /** Stat */
         Stat: {
             key: components["schemas"]["StatKey"];
@@ -286,6 +490,16 @@ export interface components {
             key: components["schemas"]["StatKey"];
             /** Value */
             value: number;
+        };
+        /** SubStat */
+        SubStat: {
+            key: components["schemas"]["StarRailStatKey"];
+            /** Value */
+            value: number;
+            /** Rolls */
+            rolls: number;
+            /** Score */
+            score: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -374,6 +588,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Showcase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    showcase_api_starrail_showcase__uid__get: {
+        parameters: {
+            query?: {
+                /** @description The language of game names */
+                lang?: "en" | "ru";
+            };
+            header?: never;
+            path: {
+                /** @description In-game UID */
+                uid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StarRailShowcase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    relic_forecast_api_starrail_relics_forecast_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RelicQuery"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelicForecast"];
                 };
             };
             /** @description Validation Error */

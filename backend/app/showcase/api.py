@@ -24,6 +24,7 @@ FAILURES: dict[int | None, tuple[int, str]] = {
 }
 
 # Every uncached request spends this app's Enka quota, so one client gets few of them.
+# Shared by every game's showcase: the quota is one.
 limiter = RateLimiter(limit=10, window=60)
 
 router = APIRouter(
@@ -39,16 +40,18 @@ def get_fetch() -> Fetch:
     return enka.fetch
 
 
-@router.get("/{uid}")
-def showcase(
-    uid: Annotated[str, Path(pattern=UID_PATTERN, description="In-game UID")],
-    fetch: Annotated[Fetch, Depends(get_fetch)],
-) -> Showcase:
-    cached = cache.get(uid)
+def serve[TShowcase](
+    uid: str,
+    download: Callable[[], bytes],
+    parse: Callable[[str, bytes], tuple[TShowcase, int]],
+    store: TtlCache[TShowcase],
+) -> TShowcase:
+    """A game's showcase from the cache, or else from Enka, with failures made readable."""
+    cached = store.get(uid)
     if cached is not None:
         return cached
     try:
-        result, ttl = enka.parse(uid, fetch(uid))
+        result, ttl = parse(uid, download())
     except enka.EnkaError as error:
         logger.warning("Enka request for %s failed: %s", uid, error.status)
         status, detail = FAILURES.get(error.status, UNAVAILABLE)
@@ -57,5 +60,13 @@ def showcase(
         # With the cause: an unreadable response usually means Enka changed its format.
         logger.warning("Enka data for %s is unreadable", uid, exc_info=error)
         raise HTTPException(502, "Enka.Network sent data this app cannot read.") from error
-    cache.put(uid, result, ttl)  # Enka asks clients not to refetch before the ttl ends
+    store.put(uid, result, ttl)  # Enka asks clients not to refetch before the ttl ends
     return result
+
+
+@router.get("/{uid}")
+def showcase(
+    uid: Annotated[str, Path(pattern=UID_PATTERN, description="In-game UID")],
+    fetch: Annotated[Fetch, Depends(get_fetch)],
+) -> Showcase:
+    return serve(uid, lambda: fetch(uid), enka.parse, cache)
