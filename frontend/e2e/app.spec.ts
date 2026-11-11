@@ -17,7 +17,7 @@ const MIN_CONTROLS_ON_SCREEN = 10
 const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
-const MIN_RELIC_CONTROLS = 11 // 6 selects, the button and the navigation links
+const MIN_RELIC_CONTROLS = 18 // 8 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
@@ -222,19 +222,35 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
 })
 
 test('tells what the upgrades a relic has left can bring', async ({ page }) => {
-  await page.goto('/#starrail/relics')
+  // Load the showcase first: the advisor compares with the relics its characters wear.
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine').getByText(/Relics \(6\) · score \d+\.\d/)).toBeVisible()
+  await page.getByRole('link', { name: 'Relics' }).click()
   const tool = shown(page)
   await tool.getByLabel('Main stat').selectOption('hp')
   await tool.getByLabel('Level').selectOption('12')
   await tool.getByLabel('Substat 1').selectOption('atk')
   await tool.getByLabel('Substat 2').selectOption('def')
   await tool.getByLabel('Substat 3').selectOption('spd')
+  await tool.getByLabel('Value 3').fill('2.6')
   await tool.getByLabel('Substat 4').selectOption('crit_rate')
+  await tool.getByLabel('Value 4').fill('3.2')
+  await tool.getByLabel('Goal stat').selectOption('spd')
+  await tool.getByLabel('Goal value').fill('4.6')
+  await tool.getByLabel('Compare with').selectOption('Hyacine · Head')
   await tool.getByRole('button', { name: 'Calculate' }).click()
   // SPD and CRIT Rate are wanted by default: one upgrade, two of four substats.
   await expect(tool.getByText('1 upgrade left')).toBeVisible()
   await expect(tool.getByRole('row')).toHaveText(['Wanted upgradesChance', 'At least 150%'])
-
+  await expect(tool.locator('.answers div')).toHaveText([
+    'Score now2.0',
+    // Hyacine's head has SPD 12.1: far ahead of a relic with one upgrade left.
+    'Chance to beat the equipped relic0%',
+    // SPD is picked one time in four and any roll then reaches 4.6.
+    'Chance to reach SPD 4.625%',
+  ])
 
   expectPhoneFriendly(await measureLayout(page), MIN_RELIC_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])

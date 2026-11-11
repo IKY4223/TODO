@@ -4,7 +4,7 @@ from math import comb
 import pytest
 
 from app.starrail.models import StarRailStatKey as Stat
-from app.starrail.relics import SUBSTAT_WEIGHTS, RelicError, forecast
+from app.starrail.relics import ROLLS, SUBSTAT_WEIGHTS, RelicError, forecast
 
 FOUR = (Stat.ATK, Stat.DEF, Stat.SPD, Stat.CRIT_RATE)
 
@@ -102,3 +102,86 @@ def test_exact_chances_agree_with_a_simulation() -> None:
 def test_impossible_relics_are_refused(main: Stat, subs: tuple[Stat, ...], level: int) -> None:
     with pytest.raises(RelicError):
         forecast(main=main, subs=subs, level=level, wanted={Stat.SPD})
+
+
+def test_rolls_come_from_the_game_tables() -> None:
+    assert ROLLS[Stat.SPD] == pytest.approx((2.0, 2.3, 2.6))
+    assert ROLLS[Stat.CRIT_RATE] == pytest.approx((0.02592, 0.02916, 0.0324))
+    assert set(ROLLS) == set(SUBSTAT_WEIGHTS)
+
+
+def test_score_counts_wanted_substats_in_high_rolls() -> None:
+    values = {Stat.SPD: 5.2, Stat.CRIT_RATE: 0.0324, Stat.ATK: 19.0}
+    result = forecast(Stat.HP, FOUR, 15, {Stat.SPD, Stat.CRIT_RATE}, values=values)
+    assert result.score == pytest.approx(3.0)  # two high SPD rolls and one high CRIT Rate roll
+    assert (result.beats, result.reaches) == (None, None)
+
+
+def test_score_needs_the_wanted_values() -> None:
+    assert forecast(Stat.HP, FOUR, 15, {Stat.SPD}).score is None
+    with pytest.raises(RelicError, match="value of every substat"):
+        forecast(Stat.HP, FOUR, 15, {Stat.SPD}, beat=2.0)
+
+
+def test_chance_to_beat_the_equipped_relic() -> None:
+    values = {Stat.SPD: 2.6}  # a score of 1.0 now, one upgrade left
+    # Only a high SPD roll (1/4 x 1/3) lifts the score to 2.0; the others stop below.
+    assert forecast(Stat.HP, FOUR, 12, {Stat.SPD}, values=values, beat=1.95).beats == pytest.approx(
+        1 / 12
+    )
+    assert forecast(Stat.HP, FOUR, 12, {Stat.SPD}, values=values, beat=1.5).beats == pytest.approx(
+        1 / 4
+    )
+    assert forecast(Stat.HP, FOUR, 12, {Stat.SPD}, values=values, beat=0.5).beats == pytest.approx(
+        1
+    )
+    # A tie is not a win.
+    assert forecast(Stat.HP, FOUR, 15, {Stat.SPD}, values=values, beat=1.0).beats == pytest.approx(
+        0
+    )
+
+
+def test_chance_to_reach_a_stat_goal() -> None:
+    values = {Stat.SPD: 2.0}
+    # One upgrade: SPD is picked 1/4 of the time and then adds 2.0, 2.3 or 2.6.
+    assert forecast(
+        Stat.HP, FOUR, 12, set(), values=values, goal=(Stat.SPD, 4.0)
+    ).reaches == pytest.approx(1 / 4)
+    assert forecast(
+        Stat.HP, FOUR, 12, set(), values=values, goal=(Stat.SPD, 4.3)
+    ).reaches == pytest.approx(1 / 6)
+    assert forecast(
+        Stat.HP, FOUR, 12, set(), values=values, goal=(Stat.SPD, 4.7)
+    ).reaches == pytest.approx(0)
+    assert forecast(
+        Stat.HP, FOUR, 12, set(), values=values, goal=(Stat.SPD, 2.0)
+    ).reaches == pytest.approx(1)
+
+
+def test_goal_for_a_stat_that_may_still_arrive() -> None:
+    result = forecast(Stat.HP, (Stat.ATK, Stat.DEF, Stat.CRIT_RATE), 0, set(), goal=(Stat.SPD, 2.0))
+    assert result.reaches == pytest.approx(4 / 64)  # SPD's weight among the stats left
+
+
+def test_goal_agrees_with_a_simulation() -> None:
+    subs = [Stat.ATK, Stat.DEF, Stat.SPD, Stat.CRIT_RATE]
+    result = forecast(Stat.HP, subs, 0, set(), values={Stat.SPD: 2.3}, goal=(Stat.SPD, 7.0))
+    rng = random.Random(11)  # noqa: S311 - a repeatable simulation, not a secret
+    runs = 200_000
+    reached = 0
+    for _ in range(runs):
+        speed = 2.3 + sum(
+            rng.choice(ROLLS[Stat.SPD]) for _ in range(5) if rng.choice(subs) == Stat.SPD
+        )
+        reached += speed >= 7.0 - 1e-9
+    assert reached / runs == pytest.approx(result.reaches, abs=0.005)
+
+
+@pytest.mark.parametrize(
+    ("goal", "values"),
+    [((Stat.HP, 100.0), {}), ((Stat.ENERGY_REGEN, 0.1), {}), ((Stat.SPD, 5.0), {})],
+    ids=["main-stat", "never-a-substat", "no-current-value"],
+)
+def test_impossible_goals_are_refused(goal: tuple[Stat, float], values: dict[Stat, float]) -> None:
+    with pytest.raises(RelicError):
+        forecast(Stat.HP, FOUR, 0, set(), values=values, goal=goal)

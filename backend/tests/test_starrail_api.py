@@ -48,6 +48,7 @@ def test_returns_the_showcase(enka: Callable[[Respond], list[str]]) -> None:
         "key": "spd",
         "value": pytest.approx(12.1),
         "rolls": 5,
+        "score": pytest.approx(12.1 / 2.6),
     }
 
 

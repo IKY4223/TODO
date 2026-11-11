@@ -37,10 +37,10 @@ const SHOWCASE: Showcase = {
           level: 15,
           main: { key: 'hp', value: 705.6 },
           subs: [
-            { key: 'atk', value: 40.220669, rolls: 2 },
-            { key: 'spd', value: 12.1, rolls: 5 },
-            { key: 'effect_hit_rate', value: 0.03456, rolls: 1 },
-            { key: 'break_effect', value: 0.05832, rolls: 1 },
+            { key: 'atk', value: 40.220669, rolls: 2, score: 2 },
+            { key: 'spd', value: 12.1, rolls: 5, score: 4.6 },
+            { key: 'effect_hit_rate', value: 0.03456, rolls: 1, score: 0.8 },
+            { key: 'break_effect', value: 0.05832, rolls: 1, score: 0.9 },
           ],
           icon: `${ICONS}ItemIcon/RelicIcons/IconRelic_125_1.png`,
         },
@@ -60,6 +60,7 @@ const SHOWCASE: Showcase = {
 
 afterEach(() => {
   cleanup()
+  localStorage.clear()
   vi.unstubAllGlobals()
 })
 
@@ -143,6 +144,21 @@ test('shows each relic with its stats and the rolls each substat took', async ()
     'Effect Hit Rate 3.5% ×1',
     'Break Effect 5.8% ×1',
   ])
+})
+
+test('scores relics by the substats the player wants and remembers the choice', async () => {
+  load(async () => Response.json(SHOWCASE))
+  // SPD, CRIT Rate and CRIT DMG are wanted until the player says otherwise.
+  expect(await screen.findByText('Relics (1) · score 4.6')).toBeDefined()
+  expect(screen.getByText('Score 4.6')).toBeDefined()
+  fireEvent.click(screen.getByLabelText('ATK'))
+  expect(screen.getByText('Score 6.6')).toBeDefined()
+  expect(JSON.parse(localStorage.getItem('starrail.wanted.v1') ?? '')).toEqual({
+    1409: ['spd', 'crit_rate', 'crit_dmg', 'atk'],
+  })
+  cleanup()
+  load(async () => Response.json(SHOWCASE))
+  expect(await screen.findByText('Score 6.6')).toBeDefined()
 })
 
 test('shows the avatar and the character, light cone and relic icons', async () => {

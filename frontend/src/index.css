@@ -85,6 +85,27 @@ label {
   accent-color: var(--color-accent);
 }
 
+/* A stat and its value side by side. */
+.pair {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.answers div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.answers dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
 fieldset {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -272,6 +293,14 @@ summary {
   display: grid;
   grid-template-columns: 1fr auto 2.5ch;
   gap: 0.5rem;
+}
+
+.substats .wanted {
+  color: var(--color-foreground);
+}
+
+.card fieldset {
+  margin: 0.5rem 0 1rem;
 }
 
 .substats span:not(:first-child) {

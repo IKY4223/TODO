@@ -340,12 +340,27 @@ export interface components {
             chances: number[];
             /** Expected */
             expected: number;
+            /** Score */
+            score: number | null;
+            /** Beats */
+            beats: number | null;
+            /** Reaches */
+            reaches: number | null;
+        };
+        /** RelicGoal */
+        RelicGoal: {
+            key: components["schemas"]["StarRailStatKey"];
+            /**
+             * Value
+             * @description As the game shows it
+             */
+            value: number;
         };
         /** RelicQuery */
         RelicQuery: {
             main: components["schemas"]["StarRailStatKey"];
             /** Subs */
-            subs: components["schemas"]["StarRailStatKey"][];
+            subs: components["schemas"]["RelicSub"][];
             /** Level */
             level: number;
             /**
@@ -353,6 +368,21 @@ export interface components {
              * @description The substats worth having
              */
             wanted: components["schemas"]["StarRailStatKey"][];
+            /**
+             * Beat
+             * @description The score of the relic to do better than
+             */
+            beat?: number | null;
+            goal?: components["schemas"]["RelicGoal"] | null;
+        };
+        /** RelicSub */
+        RelicSub: {
+            key: components["schemas"]["StarRailStatKey"];
+            /**
+             * Value
+             * @description As the game shows it: 5.8 for 5.8%
+             */
+            value?: number | null;
         };
         /** Showcase */
         Showcase: {
@@ -468,6 +498,8 @@ export interface components {
             value: number;
             /** Rolls */
             rolls: number;
+            /** Score */
+            score: number;
         };
         /** ValidationError */
         ValidationError: {

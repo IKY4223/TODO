@@ -179,7 +179,8 @@ def _relic(relic: _Relic) -> Relic | None:
 
 def _sub(prop: str, per_roll: float, per_step: float, sub: _SubAffix) -> SubStat:
     # Each roll adds the base value plus 0, 1 or 2 steps; `step` totals them.
-    return SubStat(PROPERTIES[prop], per_roll * sub.cnt + per_step * sub.step, sub.cnt)
+    value = per_roll * sub.cnt + per_step * sub.step
+    return SubStat(PROPERTIES[prop], value, sub.cnt, value / (per_roll + 2 * per_step))
 
 
 def _light_cone(equipment: _Equipment | None) -> LightCone | None:

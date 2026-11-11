@@ -85,6 +85,7 @@ class StarRailStat:
 @dataclass(frozen=True)
 class SubStat(StarRailStat):
     rolls: int  # 1 when the relic dropped with it, plus one for each upgrade it received
+    score: float  # the value in highest single rolls: 2.0 is two perfect rolls' worth
 
 
 @dataclass(frozen=True)

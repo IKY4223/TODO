@@ -1,5 +1,5 @@
-import type { JSX, SubmitEvent } from 'react'
-import { UID_PATTERN } from '../api/limits'
+import { type JSX, type SubmitEvent, useState } from 'react'
+import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { Icon } from '../ui/Icon'
 import {
@@ -13,15 +13,23 @@ import {
   SLOTS,
   type StarRailCharacter,
   type StarRailShowcase as Showcase,
+  statName,
   STATS,
 } from './starrail'
+import { loadWanted, publishShowcase, relicScore, saveWanted, type SubstatKey } from './store'
 
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
 const count = new Intl.NumberFormat('en')
+const score = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
-function RelicItem({ relic }: { readonly relic: Relic }): JSX.Element {
+function RelicItem(props: {
+  readonly relic: Relic
+  readonly wanted: readonly SubstatKey[]
+}): JSX.Element {
+  const { relic, wanted } = props
+  const isWanted = (key: string): boolean => wanted.some((stat) => stat === key)
   return (
     <li className="item">
       <Icon src={relic.icon} size={ITEM_ICON_SIZE} />
@@ -30,9 +38,10 @@ function RelicItem({ relic }: { readonly relic: Relic }): JSX.Element {
           {SLOTS[relic.slot]} · {relic.set_name} +{relic.level}
         </span>
         <strong>{formatStat(relic.main)}</strong>
+        <span className="hint">Score {score.format(relicScore(relic, wanted))}</span>
         <ul className="substats" aria-label={`${SLOTS[relic.slot]} substats`}>
           {relic.subs.map((sub) => (
-            <li key={sub.key}>
+            <li key={sub.key} className={isWanted(sub.key) ? 'wanted' : undefined}>
               <span>{STATS[sub.key].label}</span> <span>{formatValue(sub)}</span>{' '}
               <span>×{sub.rolls}</span>
             </li>
@@ -45,6 +54,14 @@ function RelicItem({ relic }: { readonly relic: Relic }): JSX.Element {
 
 function CharacterCard({ character }: { readonly character: StarRailCharacter }): JSX.Element {
   const { element, path, light_cone: cone, relics } = character
+  const [wanted, setWanted] = useState(() => loadWanted(character.id))
+  const total = relics.reduce((sum, relic) => sum + relicScore(relic, wanted), 0)
+
+  const toggle = (key: SubstatKey): void => {
+    const next = wanted.includes(key) ? wanted.filter((stat) => stat !== key) : [...wanted, key]
+    setWanted(next)
+    saveWanted(character.id, next)
+  }
   const summary = [
     `Lv. ${character.level}`,
     `E${character.eidolon}`,
@@ -82,11 +99,25 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         </p>
       ) : null}
       <details>
-        <summary>Relics ({relics.length})</summary>
-        <p className="hint">×N: how many times the substat rolled, the first roll included.</p>
+        <summary>
+          Relics ({relics.length}) · score {score.format(total)}
+        </summary>
+        <p className="hint">
+          ×N: how many times the substat rolled, the first roll included. Score: the wanted
+          substats in perfect rolls, so 2.0 is worth two highest rolls.
+        </p>
+        <fieldset>
+          <legend>Substats that matter</legend>
+          {RELIC_SUBSTATS.map((key) => (
+            <label key={key} className="check">
+              <input type="checkbox" checked={wanted.includes(key)} onChange={() => toggle(key)} />
+              {statName(key)}
+            </label>
+          ))}
+        </fieldset>
         <ul>
           {relics.map((relic) => (
-            <RelicItem key={relic.slot} relic={relic} />
+            <RelicItem key={relic.slot} relic={relic} wanted={wanted} />
           ))}
         </ul>
       </details>
@@ -160,7 +191,11 @@ export function StarRailShowcase(): JSX.Element {
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     const uid = String(new FormData(event.currentTarget).get('uid'))
-    void run(async () => fetchStarRailShowcase(uid))
+    void run(async () => {
+      const showcase = await fetchStarRailShowcase(uid)
+      publishShowcase(showcase)
+      return showcase
+    })
   }
 
   return (

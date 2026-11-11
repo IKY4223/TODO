@@ -164,10 +164,10 @@ def test_substats_carry_their_roll_counts(showcase: StarRailShowcase) -> None:
     head = showcase.characters[0].relics[0]
     assert head.main.key == StarRailStatKey.HP
     assert head.subs == (
-        SubStat(StarRailStatKey.ATK, near(40.220669), 2),
-        SubStat(StarRailStatKey.SPD, near(12.1), 5),
-        SubStat(StarRailStatKey.EFFECT_HIT_RATE, near(0.03456), 1),
-        SubStat(StarRailStatKey.BREAK_EFFECT, near(0.05832), 1),
+        SubStat(StarRailStatKey.ATK, near(40.220669), 2, near(40.220669 / 21.168773)),
+        SubStat(StarRailStatKey.SPD, near(12.1), 5, near(12.1 / 2.6)),
+        SubStat(StarRailStatKey.EFFECT_HIT_RATE, near(0.03456), 1, near(0.8)),
+        SubStat(StarRailStatKey.BREAK_EFFECT, near(0.05832), 1, near(0.9)),
     )
 
 

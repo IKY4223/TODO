@@ -1,9 +1,10 @@
-import type { JSX, SubmitEvent } from 'react'
+import { type JSX, type SubmitEvent, useState } from 'react'
 import { ApiError, isKeyOf } from '../api/http'
 import { MAX_RELIC_LEVEL, RELIC_SUBSTATS, RELIC_UPGRADE_EVERY } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { fetchRelicForecast, type RelicForecast, type RelicQuery } from './relics'
-import { STATS } from './starrail'
+import { type Relic, SLOTS, statName, STATS } from './starrail'
+import { relicScore, useShowcase } from './store'
 
 type StatKey = keyof typeof STATS
 
@@ -19,26 +20,47 @@ const LEVELS = Array.from(
 
 const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
 const average = new Intl.NumberFormat('en', { maximumFractionDigits: 2 })
-
-/** "HP" names two stats; the percent one says so. */
-const statName = (key: StatKey): string =>
-  key.endsWith('_percent') ? `${STATS[key].label} %` : STATS[key].label
+const score = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const NO_CHOICE = ''
+const MAX_STAT_VALUE = 10_000
 
 const statKeys = Object.keys(STATS).filter((key) => isKeyOf(STATS, key))
 
-function readQuery(form: HTMLFormElement): RelicQuery {
+/** An empty number field is "not given", not zero. */
+const numberOrNull = (text: FormDataEntryValue | null): number | null =>
+  text === null || text === NO_CHOICE ? null : Number(text)
+
+function readQuery(form: HTMLFormElement, beat: number | null): RelicQuery {
   const data = new FormData(form)
   const stats = (name: string): StatKey[] =>
     data.getAll(name).filter((value) => isKeyOf(STATS, value))
+  const values = data.getAll('value')
+  const [goalKey] = stats('goal')
+  const goalValue = numberOrNull(data.get('goalValue'))
   return {
     main: stats('main')[0] ?? 'hp',
     level: Number(data.get('level')),
-    subs: stats('sub'),
+    // Every slot posts a stat and a value, chosen or not: pair them before dropping the empty.
+    subs: data.getAll('sub').flatMap((key, slot) =>
+      isKeyOf(STATS, key) ? [{ key, value: numberOrNull(values[slot] ?? null) }] : [],
+    ),
     wanted: stats('wanted'),
+    beat,
+    goal: goalKey && goalValue !== null ? { key: goalKey, value: goalValue } : null,
   }
 }
 
-function ForecastResult({ forecast }: { readonly forecast: RelicForecast }): JSX.Element {
+interface Rival {
+  /** Who wears the relic to beat, for the result line. */
+  readonly label: string
+  readonly relic: Relic
+}
+
+function ForecastResult(props: {
+  readonly forecast: RelicForecast
+  readonly goal: string | undefined
+}): JSX.Element {
+  const { forecast, goal } = props
   const { upgrades, chances } = forecast
   // chances[n] is "exactly n"; the player asks "at least n".
   const atLeast = chances.map((_, hits) =>
@@ -52,6 +74,26 @@ function ForecastResult({ forecast }: { readonly forecast: RelicForecast }): JSX
         </strong>
         <span>{average.format(forecast.expected)} on average go to the substats you want</span>
       </p>
+      <dl className="answers">
+        {forecast.score === null ? null : (
+          <div>
+            <dt>Score now</dt>
+            <dd>{score.format(forecast.score)}</dd>
+          </div>
+        )}
+        {forecast.beats === null ? null : (
+          <div>
+            <dt>Chance to beat the equipped relic</dt>
+            <dd>{percent.format(forecast.beats)}</dd>
+          </div>
+        )}
+        {forecast.reaches === null ? null : (
+          <div>
+            <dt>Chance to reach {goal}</dt>
+            <dd>{percent.format(forecast.reaches)}</dd>
+          </div>
+        )}
+      </dl>
       {upgrades ? (
         <table>
           <thead>
@@ -77,12 +119,23 @@ function ForecastResult({ forecast }: { readonly forecast: RelicForecast }): JSX
 
 export function RelicAdvisor(): JSX.Element {
   const [state, run] = useRequest<RelicForecast>()
+  const [goal, setGoal] = useState<string>()
+  const showcase = useShowcase()
+  const rivals: Rival[] = (showcase?.characters ?? []).flatMap((character) =>
+    character.relics.map((relic) => ({ label: `${character.name} · ${SLOTS[relic.slot]}`, relic })),
+  )
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    const query = readQuery(event.currentTarget)
+    const data = new FormData(event.currentTarget)
+    const wanted = data.getAll('wanted').map(String)
+    const rival = rivals.find(({ label }) => label === data.get('rival'))
+    const query = readQuery(event.currentTarget, rival ? relicScore(rival.relic, wanted) : null)
+    setGoal(query.goal ? `${statName(query.goal.key)} ${query.goal.value}` : undefined)
     void run(async () => {
-      if (!query.wanted.length) throw new ApiError('Pick at least one substat you want.')
+      if (!query.wanted.length && !query.goal) {
+        throw new ApiError('Pick at least one substat you want, or set a goal.')
+      }
       return fetchRelicForecast(query)
     })
   }
@@ -96,8 +149,8 @@ export function RelicAdvisor(): JSX.Element {
       <form onSubmit={submit}>
         <label>
           Main stat
-          <select name="main" required defaultValue="">
-            <option value="" disabled>
+          <select name="main" required defaultValue={NO_CHOICE}>
+            <option value={NO_CHOICE} disabled>
               Choose
             </option>
             {statKeys.map((key) => (
@@ -118,20 +171,30 @@ export function RelicAdvisor(): JSX.Element {
           </select>
         </label>
         {SUBSTAT_SLOTS.map((slot) => (
-          <label key={slot}>
-            Substat {slot}
-            <select name="sub" required={slot !== OPTIONAL_SLOT} defaultValue="">
-              <option value="" disabled={slot !== OPTIONAL_SLOT}>
-                {slot === OPTIONAL_SLOT ? 'None (3 substats)' : 'Choose'}
-              </option>
-              {RELIC_SUBSTATS.map((key) => (
-                <option key={key} value={key}>
-                  {statName(key)}
+          <div key={slot} className="pair">
+            <label>
+              Substat {slot}
+              <select name="sub" required={slot !== OPTIONAL_SLOT} defaultValue={NO_CHOICE}>
+                <option value={NO_CHOICE} disabled={slot !== OPTIONAL_SLOT}>
+                  {slot === OPTIONAL_SLOT ? 'None (3 substats)' : 'Choose'}
                 </option>
-              ))}
-            </select>
-          </label>
+                {RELIC_SUBSTATS.map((key) => (
+                  <option key={key} value={key}>
+                    {statName(key)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Value {slot}
+              <input name="value" type="number" inputMode="decimal" min={0} max={MAX_STAT_VALUE} step="any" />
+            </label>
+          </div>
         ))}
+        <p className="hint">
+          Values as the game shows them: 5.8 for 5.8%. They are only needed to compare relics or
+          to set a goal. The game rounds values down, so the answer is slightly cautious.
+        </p>
         <fieldset>
           <legend>Substats you want</legend>
           {RELIC_SUBSTATS.map((key) => (
@@ -146,6 +209,38 @@ export function RelicAdvisor(): JSX.Element {
             </label>
           ))}
         </fieldset>
+        <div className="pair">
+          <label>
+            Goal stat
+            <select name="goal" defaultValue={NO_CHOICE}>
+              <option value={NO_CHOICE}>No goal</option>
+              {RELIC_SUBSTATS.map((key) => (
+                <option key={key} value={key}>
+                  {statName(key)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Goal value
+            <input name="goalValue" type="number" inputMode="decimal" min={0} max={MAX_STAT_VALUE} step="any" />
+          </label>
+        </div>
+        {rivals.length ? (
+          <label>
+            Compare with
+            <select name="rival" defaultValue={NO_CHOICE}>
+              <option value={NO_CHOICE}>Nothing</option>
+              {rivals.map(({ label }) => (
+                <option key={label} value={label}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <p className="hint">Load your characters in Builds to compare with a relic they wear.</p>
+        )}
         <button type="submit" disabled={state.status === 'loading'}>
           Calculate
         </button>
@@ -153,7 +248,7 @@ export function RelicAdvisor(): JSX.Element {
       {'message' in state && <p role="alert">{state.message}</p>}
       <div aria-live="polite">
         {state.status === 'loading' && <p className="hint">Calculating…</p>}
-        {'data' in state && <ForecastResult forecast={state.data} />}
+        {'data' in state && <ForecastResult forecast={state.data} goal={goal} />}
       </div>
     </section>
   )

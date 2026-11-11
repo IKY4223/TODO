@@ -42,6 +42,10 @@ export const STATS = {
   imaginary_dmg: { label: 'Imaginary DMG', format: 'percent' },
 } as const satisfies Record<Schemas['StarRailStatKey'], StatInfo>
 
+/** "HP" names two stats; the percent one says so. */
+export const statName = (key: keyof typeof STATS): string =>
+  key.endsWith('_percent') ? `${STATS[key].label} %` : STATS[key].label
+
 export const SLOTS = {
   head: 'Head',
   hands: 'Hands',
@@ -107,7 +111,11 @@ const isStat = (value: unknown): value is Stat =>
   isRecord(value) && isKeyOf(STATS, value.key) && isNumber(value.value)
 
 const isSubStat = (value: unknown): value is SubStat =>
-  isRecord(value) && isKeyOf(STATS, value.key) && isNumber(value.value) && isNumber(value.rolls)
+  isRecord(value) &&
+  isKeyOf(STATS, value.key) &&
+  isNumber(value.value) &&
+  isNumber(value.rolls) &&
+  isNumber(value.score)
 
 const isLightCone = (value: unknown): value is LightCone =>
   isRecord(value) &&
