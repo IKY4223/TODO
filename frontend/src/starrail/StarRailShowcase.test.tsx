@@ -27,7 +27,7 @@ const SHOWCASE: Showcase = {
         rarity: 4,
         level: 70,
         superimposition: 1,
-        icon: `${ICONS}LightConeMaxFigures/21054.png`,
+        icon: `${ICONS}ItemIcon/LightConeIcons/21054.png`,
       },
       relics: [
         {
@@ -152,7 +152,7 @@ test('shows the avatar and the character, light cone and relic icons', async () 
   expect(sources).toEqual([
     `${ICONS}AvatarRoundIcon/Avatar/8008.png`,
     `${ICONS}AvatarRoundIcon/Avatar/1409.png`,
-    `${ICONS}LightConeMaxFigures/21054.png`,
+    `${ICONS}ItemIcon/LightConeIcons/21054.png`,
     `${ICONS}ItemIcon/RelicIcons/IconRelic_125_1.png`,
   ])
 })

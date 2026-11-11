@@ -45,7 +45,9 @@ def main() -> None:
             key: {
                 "name": names[cone["EquipmentName"]["Hash"]],
                 "rarity": cone["Rarity"],
-                "icon": cone["ImagePath"],
+                # The store only names the 2 MB full-size art; the game's square icon is
+                # 30 KB and sits at a path built from the id.
+                "icon": f"/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/{key}.png",
             }
             for key, cone in load("weapons.json").items()
         },

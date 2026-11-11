@@ -137,7 +137,7 @@ def test_light_cone(showcase: StarRailShowcase) -> None:
         1,
         4,
     )
-    assert cone.icon == ICONS + "LightConeMaxFigures/21054.png"
+    assert cone.icon == ICONS + "ItemIcon/LightConeIcons/21054.png"
 
 
 def test_relics_keep_their_slot_and_set(showcase: StarRailShowcase) -> None:
