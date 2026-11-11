@@ -603,7 +603,10 @@ export interface operations {
     };
     showcase_api_starrail_showcase__uid__get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description The language of game names */
+                lang?: "en" | "ru";
+            };
             header?: never;
             path: {
                 /** @description In-game UID */

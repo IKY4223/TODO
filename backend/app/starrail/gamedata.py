@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 
 class CharacterData(BaseModel):
-    name: str
+    name: dict[str, str]  # language -> name
     rarity: int
     element: str
     path: str
@@ -19,7 +19,7 @@ class CharacterData(BaseModel):
 
 
 class LightConeData(BaseModel):
-    name: str
+    name: dict[str, str]
     rarity: int
     icon: str
 
@@ -38,7 +38,7 @@ class GameData(BaseModel):
     profile_icons: dict[str, str]
     light_cones: dict[str, LightConeData]
     relics: dict[str, RelicData]
-    sets: dict[str, str]
+    sets: dict[str, dict[str, str]]
     # group -> affix id -> (property, base value, value added per level)
     main_affixes: dict[str, dict[str, tuple[str, float, float]]]
     # group -> affix id -> (property, value per roll, value added per roll step)

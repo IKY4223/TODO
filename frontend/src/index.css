@@ -85,6 +85,18 @@ label {
   accent-color: var(--color-accent);
 }
 
+/* The title with the language choice beside it. */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.top select {
+  width: auto;
+}
+
 /* A stat and its value side by side. */
 .pair {
   display: grid;

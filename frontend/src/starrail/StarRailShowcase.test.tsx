@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 import type { StarRailShowcase as Showcase } from './starrail'
+import { setLanguage } from '../i18n'
 import { StarRailShowcase } from './StarRailShowcase'
 
 const ICONS = 'https://enka.network/ui/hsr/SpriteOutput/'
@@ -60,6 +61,7 @@ const SHOWCASE: Showcase = {
 
 afterEach(() => {
   cleanup()
+  setLanguage('en')
   localStorage.clear()
   vi.unstubAllGlobals()
 })
@@ -87,7 +89,7 @@ const rows = (list: string): (string | null)[] =>
 test('asks the API for the entered UID', async () => {
   const fetchMock = load(async () => Response.json(SHOWCASE))
   await screen.findByText('Hyacine')
-  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/starrail/showcase/700000001'])
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/starrail/showcase/700000001?lang=en'])
 })
 
 test('shows who the showcase belongs to', async () => {
@@ -144,6 +146,19 @@ test('shows each relic with its stats and the rolls each substat took', async ()
     'Effect Hit Rate 3.5% ×1',
     'Break Effect 5.8% ×1',
   ])
+})
+
+test('shows the showcase in Russian', async () => {
+  setLanguage('ru')
+  const fetchMock = vi.fn(async () => Response.json(SHOWCASE))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<StarRailShowcase />)
+  fireEvent.change(screen.getByLabelText('UID'), { target: { value: '700000001' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Загрузить персонажей' }))
+  expect(await screen.findByText('Ур. 80 · E0 · Ветряной · Память')).toBeDefined()
+  expect(fetchMock).toHaveBeenCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
+  expect(rows('Голова: доп. статы')[1]).toBe('Скорость 12.1 ×5')
+  expect(screen.getByText('Реликвии (1) · оценка 4.6')).toBeDefined()
 })
 
 test('scores relics by the substats the player wants and remembers the choice', async () => {

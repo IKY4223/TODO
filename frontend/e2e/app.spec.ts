@@ -268,6 +268,25 @@ test('explains why a relic cannot exist', async ({ page }) => {
   await expect(tool.getByRole('alert')).toHaveText('A relic cannot have the same substat twice.')
 })
 
+test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
+  await page.goto('/')
+  await page.getByLabel('Language').selectOption('ru')
+  await expect(page.getByRole('link', { name: 'Билды' })).toHaveAttribute('aria-current', 'page')
+  await shown(page).getByLabel('UID').fill(UID)
+  await shown(page).getByRole('button', { name: 'Загрузить персонажей' }).click()
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Гиацина',
+    'Март 7',
+  ])
+  await expect(card(page, 'Гиацина').getByText('Ур. 80 · E0 · Ветряной · Память')).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Язык')).toHaveValue('ru')
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
 test('Star Rail is where the app opens', async ({ page }) => {
   await page.goto('/')
   await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()

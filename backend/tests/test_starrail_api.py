@@ -103,3 +103,13 @@ def test_fetch_asks_enka_for_the_star_rail_showcase(monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr(enka_client, "urlopen", urlopen)
     api.get_fetch()("700000001")
     assert seen == ["https://enka.network/api/hsr/uid/700000001"]
+
+
+def test_names_in_the_language_asked_for_from_one_enka_request(
+    enka: Callable[[Respond], list[str]],
+) -> None:
+    calls = enka(lambda: FIXTURE)
+    assert client.get(URL).json()["characters"][0]["name"] == "Hyacine"
+    assert client.get(URL, params={"lang": "ru"}).json()["characters"][0]["name"] == "Гиацина"
+    assert len(calls) == 1
+    assert client.get(URL, params={"lang": "xx"}).status_code == 422

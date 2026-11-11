@@ -17,7 +17,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
-   "name": "March 7th",
+   "name": {
+    "en": "March 7th",
+    "ru": "Март 7"
+   },
    "path": "Knight",
    "rarity": 4
   },
@@ -38,7 +41,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
-   "name": "Dan Heng",
+   "name": {
+    "en": "Dan Heng",
+    "ru": "Дань Хэн"
+   },
    "path": "Rogue",
    "rarity": 4
   },
@@ -59,7 +65,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
-   "name": "Himeko",
+   "name": {
+    "en": "Himeko",
+    "ru": "Химеко"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -80,7 +89,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1004.png",
-   "name": "Welt",
+   "name": {
+    "en": "Welt",
+    "ru": "Вельт"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -101,7 +113,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1005.png",
-   "name": "Kafka",
+   "name": {
+    "en": "Kafka",
+    "ru": "Кафка"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -122,7 +137,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1006.png",
-   "name": "Silver Wolf",
+   "name": {
+    "en": "Silver Wolf",
+    "ru": "Серебряный Волк"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -143,7 +161,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1008.png",
-   "name": "Arlan",
+   "name": {
+    "en": "Arlan",
+    "ru": "Арлан"
+   },
    "path": "Warrior",
    "rarity": 4
   },
@@ -164,7 +185,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1009.png",
-   "name": "Asta",
+   "name": {
+    "en": "Asta",
+    "ru": "Аста"
+   },
    "path": "Shaman",
    "rarity": 4
   },
@@ -185,7 +209,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1013.png",
-   "name": "Herta",
+   "name": {
+    "en": "Herta",
+    "ru": "Герта"
+   },
    "path": "Mage",
    "rarity": 4
   },
@@ -206,7 +233,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1014.png",
-   "name": "Saber",
+   "name": {
+    "en": "Saber",
+    "ru": "Сэйбер"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -227,7 +257,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1015.png",
-   "name": "Archer",
+   "name": {
+    "en": "Archer",
+    "ru": "Арчер"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -248,7 +281,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1101.png",
-   "name": "Bronya",
+   "name": {
+    "en": "Bronya",
+    "ru": "Броня"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -269,7 +305,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1102.png",
-   "name": "Seele",
+   "name": {
+    "en": "Seele",
+    "ru": "Зеле"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -290,7 +329,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1103.png",
-   "name": "Serval",
+   "name": {
+    "en": "Serval",
+    "ru": "Сервал"
+   },
    "path": "Mage",
    "rarity": 4
   },
@@ -311,7 +353,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1104.png",
-   "name": "Gepard",
+   "name": {
+    "en": "Gepard",
+    "ru": "Гепард"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -332,7 +377,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1105.png",
-   "name": "Natasha",
+   "name": {
+    "en": "Natasha",
+    "ru": "Наташа"
+   },
    "path": "Priest",
    "rarity": 4
   },
@@ -353,7 +401,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1106.png",
-   "name": "Pela",
+   "name": {
+    "en": "Pela",
+    "ru": "Пела"
+   },
    "path": "Warlock",
    "rarity": 4
   },
@@ -374,7 +425,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1107.png",
-   "name": "Clara",
+   "name": {
+    "en": "Clara",
+    "ru": "Клара"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -395,7 +449,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1108.png",
-   "name": "Sampo",
+   "name": {
+    "en": "Sampo",
+    "ru": "Сампо"
+   },
    "path": "Warlock",
    "rarity": 4
   },
@@ -416,7 +473,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1109.png",
-   "name": "Hook",
+   "name": {
+    "en": "Hook",
+    "ru": "Хук"
+   },
    "path": "Warrior",
    "rarity": 4
   },
@@ -437,7 +497,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1110.png",
-   "name": "Lynx",
+   "name": {
+    "en": "Lynx",
+    "ru": "Рысь"
+   },
    "path": "Priest",
    "rarity": 4
   },
@@ -458,7 +521,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1111.png",
-   "name": "Luka",
+   "name": {
+    "en": "Luka",
+    "ru": "Лука"
+   },
    "path": "Warlock",
    "rarity": 4
   },
@@ -479,7 +545,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1112.png",
-   "name": "Topaz & Numby",
+   "name": {
+    "en": "Topaz & Numby",
+    "ru": "Топаз и Счетовод"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -500,7 +569,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1201.png",
-   "name": "Qingque",
+   "name": {
+    "en": "Qingque",
+    "ru": "Цинцюэ"
+   },
    "path": "Mage",
    "rarity": 4
   },
@@ -521,7 +593,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1202.png",
-   "name": "Tingyun",
+   "name": {
+    "en": "Tingyun",
+    "ru": "Тинъюнь"
+   },
    "path": "Shaman",
    "rarity": 4
   },
@@ -542,7 +617,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1203.png",
-   "name": "Luocha",
+   "name": {
+    "en": "Luocha",
+    "ru": "Лоча"
+   },
    "path": "Priest",
    "rarity": 5
   },
@@ -563,7 +641,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1204.png",
-   "name": "Jing Yuan",
+   "name": {
+    "en": "Jing Yuan",
+    "ru": "Цзин Юань"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -584,7 +665,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1205.png",
-   "name": "Blade",
+   "name": {
+    "en": "Blade",
+    "ru": "Блэйд"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -605,7 +689,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1206.png",
-   "name": "Sushang",
+   "name": {
+    "en": "Sushang",
+    "ru": "Сушан"
+   },
    "path": "Rogue",
    "rarity": 4
   },
@@ -626,7 +713,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1207.png",
-   "name": "Yukong",
+   "name": {
+    "en": "Yukong",
+    "ru": "Юйкун"
+   },
    "path": "Shaman",
    "rarity": 4
   },
@@ -647,7 +737,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1208.png",
-   "name": "Fu Xuan",
+   "name": {
+    "en": "Fu Xuan",
+    "ru": "Фу Сюань"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -668,7 +761,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1209.png",
-   "name": "Yanqing",
+   "name": {
+    "en": "Yanqing",
+    "ru": "Яньцин"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -689,7 +785,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1210.png",
-   "name": "Guinaifen",
+   "name": {
+    "en": "Guinaifen",
+    "ru": "Гуйнайфэнь"
+   },
    "path": "Warlock",
    "rarity": 4
   },
@@ -710,7 +809,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1211.png",
-   "name": "Bailu",
+   "name": {
+    "en": "Bailu",
+    "ru": "Байлу"
+   },
    "path": "Priest",
    "rarity": 5
   },
@@ -731,7 +833,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1212.png",
-   "name": "Jingliu",
+   "name": {
+    "en": "Jingliu",
+    "ru": "Цзинлю"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -752,7 +857,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1213.png",
-   "name": "Dan Heng • Imbibitor Lunae",
+   "name": {
+    "en": "Dan Heng • Imbibitor Lunae",
+    "ru": "Дань Хэн: Пожиратель Луны"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -773,7 +881,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1214.png",
-   "name": "Xueyi",
+   "name": {
+    "en": "Xueyi",
+    "ru": "Сюэи"
+   },
    "path": "Warrior",
    "rarity": 4
   },
@@ -794,7 +905,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1215.png",
-   "name": "Hanya",
+   "name": {
+    "en": "Hanya",
+    "ru": "Ханья"
+   },
    "path": "Shaman",
    "rarity": 4
   },
@@ -815,7 +929,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1217.png",
-   "name": "Huohuo",
+   "name": {
+    "en": "Huohuo",
+    "ru": "Хохо"
+   },
    "path": "Priest",
    "rarity": 5
   },
@@ -836,7 +953,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1218.png",
-   "name": "Jiaoqiu",
+   "name": {
+    "en": "Jiaoqiu",
+    "ru": "Цзяоцю"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -857,7 +977,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1220.png",
-   "name": "Feixiao",
+   "name": {
+    "en": "Feixiao",
+    "ru": "Фэйсяо"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -878,7 +1001,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1221.png",
-   "name": "Yunli",
+   "name": {
+    "en": "Yunli",
+    "ru": "Юньли"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -899,7 +1025,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1222.png",
-   "name": "Lingsha",
+   "name": {
+    "en": "Lingsha",
+    "ru": "Линша"
+   },
    "path": "Priest",
    "rarity": 5
   },
@@ -920,7 +1049,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1223.png",
-   "name": "Moze",
+   "name": {
+    "en": "Moze",
+    "ru": "Моцзэ"
+   },
    "path": "Rogue",
    "rarity": 4
   },
@@ -941,7 +1073,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1224.png",
-   "name": "March 7th",
+   "name": {
+    "en": "March 7th",
+    "ru": "Март 7"
+   },
    "path": "Rogue",
    "rarity": 4
   },
@@ -962,7 +1097,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1225.png",
-   "name": "Fugue",
+   "name": {
+    "en": "Fugue",
+    "ru": "Фуга"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -983,7 +1121,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1301.png",
-   "name": "Gallagher",
+   "name": {
+    "en": "Gallagher",
+    "ru": "Галлахер"
+   },
    "path": "Priest",
    "rarity": 4
   },
@@ -1004,7 +1145,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1302.png",
-   "name": "Argenti",
+   "name": {
+    "en": "Argenti",
+    "ru": "Аргенти"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1025,7 +1169,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1303.png",
-   "name": "Ruan Mei",
+   "name": {
+    "en": "Ruan Mei",
+    "ru": "Жуань Мэй"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1046,7 +1193,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1304.png",
-   "name": "Aventurine",
+   "name": {
+    "en": "Aventurine",
+    "ru": "Авантюрин"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -1067,7 +1217,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1305.png",
-   "name": "Dr. Ratio",
+   "name": {
+    "en": "Dr. Ratio",
+    "ru": "Доктор Рацио"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -1088,7 +1241,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1306.png",
-   "name": "Sparkle",
+   "name": {
+    "en": "Sparkle",
+    "ru": "Искорка"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1109,7 +1265,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1307.png",
-   "name": "Black Swan",
+   "name": {
+    "en": "Black Swan",
+    "ru": "Чёрный Лебедь"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1130,7 +1289,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1308.png",
-   "name": "Acheron",
+   "name": {
+    "en": "Acheron",
+    "ru": "Ахерон"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1151,7 +1313,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1309.png",
-   "name": "Robin",
+   "name": {
+    "en": "Robin",
+    "ru": "Зарянка"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1172,7 +1337,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1310.png",
-   "name": "Firefly",
+   "name": {
+    "en": "Firefly",
+    "ru": "Светлячок"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1193,7 +1361,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1312.png",
-   "name": "Misha",
+   "name": {
+    "en": "Misha",
+    "ru": "Миша"
+   },
    "path": "Warrior",
    "rarity": 4
   },
@@ -1214,7 +1385,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1313.png",
-   "name": "Sunday",
+   "name": {
+    "en": "Sunday",
+    "ru": "Воскресенье"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1235,7 +1409,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1314.png",
-   "name": "Jade",
+   "name": {
+    "en": "Jade",
+    "ru": "Яшма"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1256,7 +1433,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1315.png",
-   "name": "Boothill",
+   "name": {
+    "en": "Boothill",
+    "ru": "Бутхилл"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -1277,7 +1457,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1317.png",
-   "name": "Rappa",
+   "name": {
+    "en": "Rappa",
+    "ru": "Раппа"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1298,7 +1481,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1321.png",
-   "name": "The Dahlia",
+   "name": {
+    "en": "The Dahlia",
+    "ru": "Георгина"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1319,7 +1505,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1401.png",
-   "name": "The Herta",
+   "name": {
+    "en": "The Herta",
+    "ru": "Великая Герта"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1342,7 +1531,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1402.png",
-   "name": "Aglaea",
+   "name": {
+    "en": "Aglaea",
+    "ru": "Аглая"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1363,7 +1555,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1403.png",
-   "name": "Tribbie",
+   "name": {
+    "en": "Tribbie",
+    "ru": "Трибби"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1384,7 +1579,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1404.png",
-   "name": "Mydei",
+   "name": {
+    "en": "Mydei",
+    "ru": "Мидей"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1405,7 +1603,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1405.png",
-   "name": "Anaxa",
+   "name": {
+    "en": "Anaxa",
+    "ru": "Анакса"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1426,7 +1627,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1406.png",
-   "name": "Cipher",
+   "name": {
+    "en": "Cipher",
+    "ru": "Цифер"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1449,7 +1653,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1407.png",
-   "name": "Castorice",
+   "name": {
+    "en": "Castorice",
+    "ru": "Кастория"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1470,7 +1677,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1408.png",
-   "name": "Phainon",
+   "name": {
+    "en": "Phainon",
+    "ru": "Фаенон"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1493,7 +1703,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1409.png",
-   "name": "Hyacine",
+   "name": {
+    "en": "Hyacine",
+    "ru": "Гиацина"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1514,7 +1727,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1410.png",
-   "name": "Hysilens",
+   "name": {
+    "en": "Hysilens",
+    "ru": "Гисиленса"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1535,7 +1751,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1412.png",
-   "name": "Cerydra",
+   "name": {
+    "en": "Cerydra",
+    "ru": "Керидра"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1558,7 +1777,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1413.png",
-   "name": "Evernight",
+   "name": {
+    "en": "Evernight",
+    "ru": "Темень"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1579,7 +1801,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1414.png",
-   "name": "Dan Heng • Permansor Terrae",
+   "name": {
+    "en": "Dan Heng • Permansor Terrae",
+    "ru": "Дань Хэн: Освободитель Пустошей"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -1602,7 +1827,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1415.png",
-   "name": "Cyrene",
+   "name": {
+    "en": "Cyrene",
+    "ru": "Кирена"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1625,7 +1853,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1501.png",
-   "name": "Sparxie",
+   "name": {
+    "en": "Sparxie",
+    "ru": "Искра"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1648,7 +1879,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1502.png",
-   "name": "Yao Guang",
+   "name": {
+    "en": "Yao Guang",
+    "ru": "Яо Гуан"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1671,7 +1905,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1503.png",
-   "name": "Pearl",
+   "name": {
+    "en": "Pearl",
+    "ru": "Жемчуг"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1692,7 +1929,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1504.png",
-   "name": "Ashveil",
+   "name": {
+    "en": "Ashveil",
+    "ru": "Эшвейл"
+   },
    "path": "Rogue",
    "rarity": 5
   },
@@ -1715,7 +1955,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1505.png",
-   "name": "Evanescia",
+   "name": {
+    "en": "Evanescia",
+    "ru": "Эванесса"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1738,7 +1981,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1506.png",
-   "name": "Silver Wolf LV.999",
+   "name": {
+    "en": "Silver Wolf LV.999",
+    "ru": "Серебряный Волк ур. 999"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1759,7 +2005,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1507.png",
-   "name": "Mortenax Blade",
+   "name": {
+    "en": "Mortenax Blade",
+    "ru": "Мортенакс Блэйд"
+   },
    "path": "Warlock",
    "rarity": 5
   },
@@ -1780,7 +2029,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1508.png",
-   "name": "Rin Tohsaka",
+   "name": {
+    "en": "Rin Tohsaka",
+    "ru": "Рин Тосака"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1801,7 +2053,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1509.png",
-   "name": "Gilgamesh",
+   "name": {
+    "en": "Gilgamesh",
+    "ru": "Гильгамеш"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1822,7 +2077,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1510.png",
-   "name": "Himeko • Nova",
+   "name": {
+    "en": "Himeko • Nova",
+    "ru": "Химеко: Нова"
+   },
    "path": "Mage",
    "rarity": 5
   },
@@ -1845,7 +2103,10 @@
    ],
    "element": "Wind",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1512.png",
-   "name": "Robin • Summeretto",
+   "name": {
+    "en": "Robin • Summeretto",
+    "ru": "Зарянка: Яснопея"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -1868,7 +2129,10 @@
    ],
    "element": "Quantum",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1513.png",
-   "name": "Aventurine • Waveflair",
+   "name": {
+    "en": "Aventurine • Waveflair",
+    "ru": "Авантюрин: Прибой"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -1889,7 +2153,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1910,7 +2177,10 @@
    ],
    "element": "Physical",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Warrior",
    "rarity": 5
   },
@@ -1931,7 +2201,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8003.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -1952,7 +2225,10 @@
    ],
    "element": "Fire",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8004.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Knight",
    "rarity": 5
   },
@@ -1973,7 +2249,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8005.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -1994,7 +2273,10 @@
    ],
    "element": "Imaginary",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8006.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Shaman",
    "rarity": 5
   },
@@ -2017,7 +2299,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8007.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -2040,7 +2325,10 @@
    ],
    "element": "Ice",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8008.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Memory",
    "rarity": 5
   },
@@ -2063,7 +2351,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8009.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Elation",
    "rarity": 5
   },
@@ -2086,7 +2377,10 @@
    ],
    "element": "Thunder",
    "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8010.png",
-   "name": "Trailblazer",
+   "name": {
+    "en": "Trailblazer",
+    "ru": "Первопроходец"
+   },
    "path": "Elation",
    "rarity": 5
   }
@@ -2094,852 +2388,1362 @@
  "light_cones": {
   "20000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20000.png",
-   "name": "Arrows",
+   "name": {
+    "en": "Arrows",
+    "ru": "Стрелы"
+   },
    "rarity": 3
   },
   "20001": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20001.png",
-   "name": "Cornucopia",
+   "name": {
+    "en": "Cornucopia",
+    "ru": "Рог изобилия"
+   },
    "rarity": 3
   },
   "20002": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20002.png",
-   "name": "Collapsing Sky",
+   "name": {
+    "en": "Collapsing Sky",
+    "ru": "Падение небес"
+   },
    "rarity": 3
   },
   "20003": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20003.png",
-   "name": "Amber",
+   "name": {
+    "en": "Amber",
+    "ru": "Янтарь"
+   },
    "rarity": 3
   },
   "20004": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20004.png",
-   "name": "Void",
+   "name": {
+    "en": "Void",
+    "ru": "Пустота"
+   },
    "rarity": 3
   },
   "20005": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20005.png",
-   "name": "Chorus",
+   "name": {
+    "en": "Chorus",
+    "ru": "Хор"
+   },
    "rarity": 3
   },
   "20006": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20006.png",
-   "name": "Data Bank",
+   "name": {
+    "en": "Data Bank",
+    "ru": "База данных"
+   },
    "rarity": 3
   },
   "20007": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20007.png",
-   "name": "Darting Arrow",
+   "name": {
+    "en": "Darting Arrow",
+    "ru": "Выпущенная стрела"
+   },
    "rarity": 3
   },
   "20008": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20008.png",
-   "name": "Fine Fruit",
+   "name": {
+    "en": "Fine Fruit",
+    "ru": "Спелый плод"
+   },
    "rarity": 3
   },
   "20009": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20009.png",
-   "name": "Shattered Home",
+   "name": {
+    "en": "Shattered Home",
+    "ru": "Расколовшийся дом"
+   },
    "rarity": 3
   },
   "20010": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20010.png",
-   "name": "Defense",
+   "name": {
+    "en": "Defense",
+    "ru": "Оборона"
+   },
    "rarity": 3
   },
   "20011": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20011.png",
-   "name": "Loop",
+   "name": {
+    "en": "Loop",
+    "ru": "Петля"
+   },
    "rarity": 3
   },
   "20012": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20012.png",
-   "name": "Meshing Cogs",
+   "name": {
+    "en": "Meshing Cogs",
+    "ru": "Сцепленные шестерни"
+   },
    "rarity": 3
   },
   "20013": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20013.png",
-   "name": "Passkey",
+   "name": {
+    "en": "Passkey",
+    "ru": "Ключ от всех дверей"
+   },
    "rarity": 3
   },
   "20014": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20014.png",
-   "name": "Adversarial",
+   "name": {
+    "en": "Adversarial",
+    "ru": "Противостояние"
+   },
    "rarity": 3
   },
   "20015": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20015.png",
-   "name": "Multiplication",
+   "name": {
+    "en": "Multiplication",
+    "ru": "Размножение"
+   },
    "rarity": 3
   },
   "20016": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20016.png",
-   "name": "Mutual Demise",
+   "name": {
+    "en": "Mutual Demise",
+    "ru": "Совместная гибель"
+   },
    "rarity": 3
   },
   "20017": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20017.png",
-   "name": "Pioneering",
+   "name": {
+    "en": "Pioneering",
+    "ru": "Новые горизонты"
+   },
    "rarity": 3
   },
   "20018": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20018.png",
-   "name": "Hidden Shadow",
+   "name": {
+    "en": "Hidden Shadow",
+    "ru": "Скрытая тень"
+   },
    "rarity": 3
   },
   "20019": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20019.png",
-   "name": "Mediation",
+   "name": {
+    "en": "Mediation",
+    "ru": "Созвучие"
+   },
    "rarity": 3
   },
   "20020": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20020.png",
-   "name": "Sagacity",
+   "name": {
+    "en": "Sagacity",
+    "ru": "Проницательность"
+   },
    "rarity": 3
   },
   "20021": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20021.png",
-   "name": "Shadowburn",
+   "name": {
+    "en": "Shadowburn",
+    "ru": "Выжженные тени"
+   },
    "rarity": 3
   },
   "20022": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20022.png",
-   "name": "Reminiscence",
+   "name": {
+    "en": "Reminiscence",
+    "ru": "Образ прошлого"
+   },
    "rarity": 3
   },
   "20023": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20023.png",
-   "name": "Sneering",
+   "name": {
+    "en": "Sneering",
+    "ru": "Насмешка"
+   },
    "rarity": 3
   },
   "20024": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/20024.png",
-   "name": "Lingering Tear",
+   "name": {
+    "en": "Lingering Tear",
+    "ru": "Безудержные слёзы"
+   },
    "rarity": 3
   },
   "21000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21000.png",
-   "name": "Post-Op Conversation",
+   "name": {
+    "en": "Post-Op Conversation",
+    "ru": "Беседа после операции"
+   },
    "rarity": 4
   },
   "21001": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21001.png",
-   "name": "Good Night and Sleep Well",
+   "name": {
+    "en": "Good Night and Sleep Well",
+    "ru": "Спокойной ночи и мирного сна"
+   },
    "rarity": 4
   },
   "21002": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21002.png",
-   "name": "Day One of My New Life",
+   "name": {
+    "en": "Day One of My New Life",
+    "ru": "Первый день моей новой жизни"
+   },
    "rarity": 4
   },
   "21003": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21003.png",
-   "name": "Only Silence Remains",
+   "name": {
+    "en": "Only Silence Remains",
+    "ru": "Остаётся лишь тишина"
+   },
    "rarity": 4
   },
   "21004": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21004.png",
-   "name": "Memories of the Past",
+   "name": {
+    "en": "Memories of the Past",
+    "ru": "Воспоминания о прошлом"
+   },
    "rarity": 4
   },
   "21005": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21005.png",
-   "name": "The Moles Welcome You",
+   "name": {
+    "en": "The Moles Welcome You",
+    "ru": "Кроты приветствуют тебя"
+   },
    "rarity": 4
   },
   "21006": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21006.png",
-   "name": "The Birth of the Self",
+   "name": {
+    "en": "The Birth of the Self",
+    "ru": "Зарождение себя"
+   },
    "rarity": 4
   },
   "21007": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21007.png",
-   "name": "Shared Feeling",
+   "name": {
+    "en": "Shared Feeling",
+    "ru": "Общие чувства"
+   },
    "rarity": 4
   },
   "21008": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21008.png",
-   "name": "Eyes of the Prey",
+   "name": {
+    "en": "Eyes of the Prey",
+    "ru": "Взгляд жертвы"
+   },
    "rarity": 4
   },
   "21009": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21009.png",
-   "name": "Landau's Choice",
+   "name": {
+    "en": "Landau's Choice",
+    "ru": "Выбор Ландау"
+   },
    "rarity": 4
   },
   "21010": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21010.png",
-   "name": "Swordplay",
+   "name": {
+    "en": "Swordplay",
+    "ru": "Фехтование"
+   },
    "rarity": 4
   },
   "21011": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21011.png",
-   "name": "Planetary Rendezvous",
+   "name": {
+    "en": "Planetary Rendezvous",
+    "ru": "Свидание со звёздами"
+   },
    "rarity": 4
   },
   "21012": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21012.png",
-   "name": "A Secret Vow",
+   "name": {
+    "en": "A Secret Vow",
+    "ru": "Тайная клятва"
+   },
    "rarity": 4
   },
   "21013": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21013.png",
-   "name": "Make the World Clamor",
+   "name": {
+    "en": "Make the World Clamor",
+    "ru": "Пусть мир не стихает"
+   },
    "rarity": 4
   },
   "21014": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21014.png",
-   "name": "Perfect Timing",
+   "name": {
+    "en": "Perfect Timing",
+    "ru": "Идеальное время"
+   },
    "rarity": 4
   },
   "21015": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21015.png",
-   "name": "Resolution Shines As Pearls of Sweat",
+   "name": {
+    "en": "Resolution Shines As Pearls of Sweat",
+    "ru": "Решимость блестит подобно жемчужинам пота"
+   },
    "rarity": 4
   },
   "21016": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21016.png",
-   "name": "Trend of the Universal Market",
+   "name": {
+    "en": "Trend of the Universal Market",
+    "ru": "Тренд галактического рынка"
+   },
    "rarity": 4
   },
   "21017": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21017.png",
-   "name": "Subscribe for More!",
+   "name": {
+    "en": "Subscribe for More!",
+    "ru": "Больше подписок!"
+   },
    "rarity": 4
   },
   "21018": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21018.png",
-   "name": "Dance! Dance! Dance!",
+   "name": {
+    "en": "Dance! Dance! Dance!",
+    "ru": "Танцуй! Танцуй! Танцуй!"
+   },
    "rarity": 4
   },
   "21019": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21019.png",
-   "name": "Under the Blue Sky",
+   "name": {
+    "en": "Under the Blue Sky",
+    "ru": "Под голубым небом"
+   },
    "rarity": 4
   },
   "21020": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21020.png",
-   "name": "Geniuses' Repose",
+   "name": {
+    "en": "Geniuses' Repose",
+    "ru": "Отдых гениев"
+   },
    "rarity": 4
   },
   "21021": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21021.png",
-   "name": "Quid Pro Quo",
+   "name": {
+    "en": "Quid Pro Quo",
+    "ru": "Равноценный обмен"
+   },
    "rarity": 4
   },
   "21022": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21022.png",
-   "name": "Fermata",
+   "name": {
+    "en": "Fermata",
+    "ru": "Фермата"
+   },
    "rarity": 4
   },
   "21023": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21023.png",
-   "name": "We Are Wildfire",
+   "name": {
+    "en": "We Are Wildfire",
+    "ru": "Мы - Дикий Огонь"
+   },
    "rarity": 4
   },
   "21024": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21024.png",
-   "name": "River Flows in Spring",
+   "name": {
+    "en": "River Flows in Spring",
+    "ru": "Весенние потоки рек"
+   },
    "rarity": 4
   },
   "21025": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21025.png",
-   "name": "Past and Future",
+   "name": {
+    "en": "Past and Future",
+    "ru": "Прошлое и будущее"
+   },
    "rarity": 4
   },
   "21026": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21026.png",
-   "name": "Woof! Walk Time!",
+   "name": {
+    "en": "Woof! Walk Time!",
+    "ru": "Гав! Время прогулок!"
+   },
    "rarity": 4
   },
   "21027": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21027.png",
-   "name": "The Seriousness of Breakfast",
+   "name": {
+    "en": "The Seriousness of Breakfast",
+    "ru": "Важность завтрака"
+   },
    "rarity": 4
   },
   "21028": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21028.png",
-   "name": "Warmth Shortens Cold Nights",
+   "name": {
+    "en": "Warmth Shortens Cold Nights",
+    "ru": "Холодные ночи короче, когда ты рядом"
+   },
    "rarity": 4
   },
   "21029": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21029.png",
-   "name": "We Will Meet Again",
+   "name": {
+    "en": "We Will Meet Again",
+    "ru": "Мы ещё встретимся"
+   },
    "rarity": 4
   },
   "21030": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21030.png",
-   "name": "This Is Me!",
+   "name": {
+    "en": "This Is Me!",
+    "ru": "Это я!"
+   },
    "rarity": 4
   },
   "21031": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21031.png",
-   "name": "Return to Darkness",
+   "name": {
+    "en": "Return to Darkness",
+    "ru": "Назад во тьму"
+   },
    "rarity": 4
   },
   "21032": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21032.png",
-   "name": "Carve the Moon, Weave the Clouds",
+   "name": {
+    "en": "Carve the Moon, Weave the Clouds",
+    "ru": "Вырезать луну и кроить облака"
+   },
    "rarity": 4
   },
   "21033": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21033.png",
-   "name": "Nowhere to Run",
+   "name": {
+    "en": "Nowhere to Run",
+    "ru": "Бежать некуда"
+   },
    "rarity": 4
   },
   "21034": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21034.png",
-   "name": "Today Is Another Peaceful Day",
+   "name": {
+    "en": "Today Is Another Peaceful Day",
+    "ru": "Сегодня тоже мирный день"
+   },
    "rarity": 4
   },
   "21035": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21035.png",
-   "name": "What Is Real?",
+   "name": {
+    "en": "What Is Real?",
+    "ru": "Что есть реальность?"
+   },
    "rarity": 4
   },
   "21036": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21036.png",
-   "name": "Dreamville Adventure",
+   "name": {
+    "en": "Dreamville Adventure",
+    "ru": "Приключения Грёзавиля"
+   },
    "rarity": 4
   },
   "21037": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21037.png",
-   "name": "Final Victor",
+   "name": {
+    "en": "Final Victor",
+    "ru": "Единственный победитель"
+   },
    "rarity": 4
   },
   "21038": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21038.png",
-   "name": "Flames Afar",
+   "name": {
+    "en": "Flames Afar",
+    "ru": "Вдали от огня"
+   },
    "rarity": 4
   },
   "21039": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21039.png",
-   "name": "Destiny's Threads Forewoven",
+   "name": {
+    "en": "Destiny's Threads Forewoven",
+    "ru": "Плетение нитей судьбы"
+   },
    "rarity": 4
   },
   "21040": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21040.png",
-   "name": "The Day The Cosmos Fell",
+   "name": {
+    "en": "The Day The Cosmos Fell",
+    "ru": "День падения вселенной"
+   },
    "rarity": 4
   },
   "21041": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21041.png",
-   "name": "It's Showtime",
+   "name": {
+    "en": "It's Showtime",
+    "ru": "Шоу начинается"
+   },
    "rarity": 4
   },
   "21042": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21042.png",
-   "name": "Indelible Promise",
+   "name": {
+    "en": "Indelible Promise",
+    "ru": "Хранящееся в сердце обещание"
+   },
    "rarity": 4
   },
   "21043": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21043.png",
-   "name": "Concert for Two",
+   "name": {
+    "en": "Concert for Two",
+    "ru": "Концерт для двоих"
+   },
    "rarity": 4
   },
   "21044": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21044.png",
-   "name": "Boundless Choreo",
+   "name": {
+    "en": "Boundless Choreo",
+    "ru": "Безграничный танец"
+   },
    "rarity": 4
   },
   "21045": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21045.png",
-   "name": "After the Charmony Fall",
+   "name": {
+    "en": "After the Charmony Fall",
+    "ru": "После затишья Гармонии"
+   },
    "rarity": 4
   },
   "21046": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21046.png",
-   "name": "Poised to Bloom",
+   "name": {
+    "en": "Poised to Bloom",
+    "ru": "Расцвет юности"
+   },
    "rarity": 4
   },
   "21047": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21047.png",
-   "name": "Shadowed by Night",
+   "name": {
+    "en": "Shadowed by Night",
+    "ru": "Скрытый в ночной тени"
+   },
    "rarity": 4
   },
   "21048": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21048.png",
-   "name": "Dream's Montage",
+   "name": {
+    "en": "Dream's Montage",
+    "ru": "Монтаж грёз"
+   },
    "rarity": 4
   },
   "21050": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21050.png",
-   "name": "Victory In a Blink",
+   "name": {
+    "en": "Victory In a Blink",
+    "ru": "Скорая победа"
+   },
    "rarity": 4
   },
   "21051": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21051.png",
-   "name": "Geniuses' Greetings",
+   "name": {
+    "en": "Geniuses' Greetings",
+    "ru": "Привет от гениев"
+   },
    "rarity": 4
   },
   "21052": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21052.png",
-   "name": "Sweat Now, Cry Less",
+   "name": {
+    "en": "Sweat Now, Cry Less",
+    "ru": "Больше пота, меньше слёз"
+   },
    "rarity": 4
   },
   "21053": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21053.png",
-   "name": "Journey, Forever Peaceful",
+   "name": {
+    "en": "Journey, Forever Peaceful",
+    "ru": "Пусть твой путь всегда будет мирным"
+   },
    "rarity": 4
   },
   "21054": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21054.png",
-   "name": "The Story's Next Page",
+   "name": {
+    "en": "The Story's Next Page",
+    "ru": "Следующая страница истории"
+   },
    "rarity": 4
   },
   "21055": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21055.png",
-   "name": "Unto Tomorrow's Morrow",
+   "name": {
+    "en": "Unto Tomorrow's Morrow",
+    "ru": "Пока не наступит послезавтра"
+   },
    "rarity": 4
   },
   "21056": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21056.png",
-   "name": "In Pursuit of the Wind",
+   "name": {
+    "en": "In Pursuit of the Wind",
+    "ru": "Гоняясь за ветром"
+   },
    "rarity": 4
   },
   "21057": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21057.png",
-   "name": "The Flower Remembers",
+   "name": {
+    "en": "The Flower Remembers",
+    "ru": "Цветы не забывают"
+   },
    "rarity": 4
   },
   "21058": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21058.png",
-   "name": "A Trail of Bygone Blood",
+   "name": {
+    "en": "A Trail of Bygone Blood",
+    "ru": "Кровь прошлого"
+   },
    "rarity": 4
   },
   "21060": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21060.png",
-   "name": "A Dream Scented in Wheat",
+   "name": {
+    "en": "A Dream Scented in Wheat",
+    "ru": "Пшеничные мечты"
+   },
    "rarity": 4
   },
   "21061": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21061.png",
-   "name": "Holiday Thermae Escapade",
+   "name": {
+    "en": "Holiday Thermae Escapade",
+    "ru": "Приключения в купальне"
+   },
    "rarity": 4
   },
   "21062": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21062.png",
-   "name": "See You at the End",
+   "name": {
+    "en": "See You at the End",
+    "ru": "Встреча в конце пути"
+   },
    "rarity": 4
   },
   "21064": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21064.png",
-   "name": "Mushy Shroomy's Adventures",
+   "name": {
+    "en": "Mushy Shroomy's Adventures",
+    "ru": "Приключения грибочков"
+   },
    "rarity": 4
   },
   "21065": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21065.png",
-   "name": "Today's Good Luck",
+   "name": {
+    "en": "Today's Good Luck",
+    "ru": "Благоприятный день"
+   },
    "rarity": 4
   },
   "21066": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/21066.png",
-   "name": "A Little Getaway",
+   "name": {
+    "en": "A Little Getaway",
+    "ru": "Короткий отпуск"
+   },
    "rarity": 4
   },
   "22000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22000.png",
-   "name": "Before the Tutorial Mission Starts",
+   "name": {
+    "en": "Before the Tutorial Mission Starts",
+    "ru": "Перед началом тренировочной миссии"
+   },
    "rarity": 4
   },
   "22001": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22001.png",
-   "name": "Hey, Over Here",
+   "name": {
+    "en": "Hey, Over Here",
+    "ru": "Эй, я здесь"
+   },
    "rarity": 4
   },
   "22002": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22002.png",
-   "name": "For Tomorrow's Journey",
+   "name": {
+    "en": "For Tomorrow's Journey",
+    "ru": "За завтрашнее путешествие"
+   },
    "rarity": 4
   },
   "22003": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22003.png",
-   "name": "Ninja Record: Sound Hunt",
+   "name": {
+    "en": "Ninja Record: Sound Hunt",
+    "ru": "Запись ниндзя: Музыкальная охота"
+   },
    "rarity": 4
   },
   "22004": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22004.png",
-   "name": "The Great Cosmic Enterprise",
+   "name": {
+    "en": "The Great Cosmic Enterprise",
+    "ru": "Бизнес космических масштабов"
+   },
    "rarity": 4
   },
   "22005": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22005.png",
-   "name": "The Forever Victual",
+   "name": {
+    "en": "The Forever Victual",
+    "ru": "Вечный ресторан лабиринта"
+   },
    "rarity": 4
   },
   "22006": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22006.png",
-   "name": "Fly Into a Pink Tomorrow",
+   "name": {
+    "en": "Fly Into a Pink Tomorrow",
+    "ru": "Полёт к розовому завтра"
+   },
    "rarity": 4
   },
   "22007": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22007.png",
-   "name": "Tomorrow, Together",
+   "name": {
+    "en": "Tomorrow, Together",
+    "ru": "Будущее вместе"
+   },
    "rarity": 4
   },
   "22008": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22008.png",
-   "name": "Race to the Horizon",
+   "name": {
+    "en": "Race to the Horizon",
+    "ru": "Гонка к горизонту"
+   },
    "rarity": 4
   },
   "23000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23000.png",
-   "name": "Night on the Milky Way",
+   "name": {
+    "en": "Night on the Milky Way",
+    "ru": "Ночь на Млечном Пути"
+   },
    "rarity": 5
   },
   "23001": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23001.png",
-   "name": "In the Night",
+   "name": {
+    "en": "In the Night",
+    "ru": "В ночи"
+   },
    "rarity": 5
   },
   "23002": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23002.png",
-   "name": "Something Irreplaceable",
+   "name": {
+    "en": "Something Irreplaceable",
+    "ru": "Что-то незаменимое"
+   },
    "rarity": 5
   },
   "23003": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23003.png",
-   "name": "But the Battle Isn't Over",
+   "name": {
+    "en": "But the Battle Isn't Over",
+    "ru": "Битва не окончена"
+   },
    "rarity": 5
   },
   "23004": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23004.png",
-   "name": "In the Name of the World",
+   "name": {
+    "en": "In the Name of the World",
+    "ru": "Во имя мира"
+   },
    "rarity": 5
   },
   "23005": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23005.png",
-   "name": "Moment of Victory",
+   "name": {
+    "en": "Moment of Victory",
+    "ru": "Момент победы"
+   },
    "rarity": 5
   },
   "23006": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23006.png",
-   "name": "Patience Is All You Need",
+   "name": {
+    "en": "Patience Is All You Need",
+    "ru": "Просто надо подождать"
+   },
    "rarity": 5
   },
   "23007": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23007.png",
-   "name": "Incessant Rain",
+   "name": {
+    "en": "Incessant Rain",
+    "ru": "Непрекращающийся дождь"
+   },
    "rarity": 5
   },
   "23008": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23008.png",
-   "name": "Echoes of the Coffin",
+   "name": {
+    "en": "Echoes of the Coffin",
+    "ru": "Эхо из гроба"
+   },
    "rarity": 5
   },
   "23009": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23009.png",
-   "name": "The Unreachable Side",
+   "name": {
+    "en": "The Unreachable Side",
+    "ru": "Недоступная сторона"
+   },
    "rarity": 5
   },
   "23010": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23010.png",
-   "name": "Before Dawn",
+   "name": {
+    "en": "Before Dawn",
+    "ru": "До рассвета"
+   },
    "rarity": 5
   },
   "23011": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23011.png",
-   "name": "She Already Shut Her Eyes",
+   "name": {
+    "en": "She Already Shut Her Eyes",
+    "ru": "Она закрыла глаза"
+   },
    "rarity": 5
   },
   "23012": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23012.png",
-   "name": "Sleep Like the Dead",
+   "name": {
+    "en": "Sleep Like the Dead",
+    "ru": "Мертвецкий сон"
+   },
    "rarity": 5
   },
   "23013": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23013.png",
-   "name": "Time Waits for No One",
+   "name": {
+    "en": "Time Waits for No One",
+    "ru": "Время никого не ждёт"
+   },
    "rarity": 5
   },
   "23014": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23014.png",
-   "name": "I Shall Be My Own Sword",
+   "name": {
+    "en": "I Shall Be My Own Sword",
+    "ru": "Отныне я сама буду мечом"
+   },
    "rarity": 5
   },
   "23015": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23015.png",
-   "name": "Brighter Than the Sun",
+   "name": {
+    "en": "Brighter Than the Sun",
+    "ru": "Ярче солнца"
+   },
    "rarity": 5
   },
   "23016": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23016.png",
-   "name": "Worrisome, Blissful",
+   "name": {
+    "en": "Worrisome, Blissful",
+    "ru": "Тревога и блаженство"
+   },
    "rarity": 5
   },
   "23017": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23017.png",
-   "name": "Night of Fright",
+   "name": {
+    "en": "Night of Fright",
+    "ru": "Ночь страха"
+   },
    "rarity": 5
   },
   "23018": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23018.png",
-   "name": "An Instant Before A Gaze",
+   "name": {
+    "en": "An Instant Before A Gaze",
+    "ru": "Остановись, мгновенье"
+   },
    "rarity": 5
   },
   "23019": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23019.png",
-   "name": "Past Self in Mirror",
+   "name": {
+    "en": "Past Self in Mirror",
+    "ru": "Отражение прошлой меня"
+   },
    "rarity": 5
   },
   "23020": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23020.png",
-   "name": "Baptism of Pure Thought",
+   "name": {
+    "en": "Baptism of Pure Thought",
+    "ru": "Крещение чистой мысли"
+   },
    "rarity": 5
   },
   "23021": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23021.png",
-   "name": "Earthly Escapade",
+   "name": {
+    "en": "Earthly Escapade",
+    "ru": "Мирские шалости"
+   },
    "rarity": 5
   },
   "23022": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23022.png",
-   "name": "Reforged Remembrance",
+   "name": {
+    "en": "Reforged Remembrance",
+    "ru": "Изменённые воспоминания"
+   },
    "rarity": 5
   },
   "23023": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23023.png",
-   "name": "Inherently Unjust Destiny",
+   "name": {
+    "en": "Inherently Unjust Destiny",
+    "ru": "Несправедливая судьба"
+   },
    "rarity": 5
   },
   "23024": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23024.png",
-   "name": "Along the Passing Shore",
+   "name": {
+    "en": "Along the Passing Shore",
+    "ru": "Вдоль уходящего берега"
+   },
    "rarity": 5
   },
   "23025": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23025.png",
-   "name": "Whereabouts Should Dreams Rest",
+   "name": {
+    "en": "Whereabouts Should Dreams Rest",
+    "ru": "Куда возвращаются сны"
+   },
    "rarity": 5
   },
   "23026": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23026.png",
-   "name": "Flowing Nightglow",
+   "name": {
+    "en": "Flowing Nightglow",
+    "ru": "Мимолётные ночные огни"
+   },
    "rarity": 5
   },
   "23027": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23027.png",
-   "name": "Sailing Towards a Second Life",
+   "name": {
+    "en": "Sailing Towards a Second Life",
+    "ru": "Отплытие ко второй жизни"
+   },
    "rarity": 5
   },
   "23028": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23028.png",
-   "name": "Yet Hope Is Priceless",
+   "name": {
+    "en": "Yet Hope Is Priceless",
+    "ru": "Но надежда бесценна"
+   },
    "rarity": 5
   },
   "23029": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23029.png",
-   "name": "Those Many Springs",
+   "name": {
+    "en": "Those Many Springs",
+    "ru": "Бесчисленные весенние дни"
+   },
    "rarity": 5
   },
   "23030": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23030.png",
-   "name": "Dance at Sunset",
+   "name": {
+    "en": "Dance at Sunset",
+    "ru": "Танец на закате"
+   },
    "rarity": 5
   },
   "23031": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23031.png",
-   "name": "I Venture Forth to Hunt",
+   "name": {
+    "en": "I Venture Forth to Hunt",
+    "ru": "Я отправляюсь на охоту"
+   },
    "rarity": 5
   },
   "23032": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23032.png",
-   "name": "Scent Alone Stays True",
+   "name": {
+    "en": "Scent Alone Stays True",
+    "ru": "Останется лишь аромат"
+   },
    "rarity": 5
   },
   "23033": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23033.png",
-   "name": "Ninjutsu Inscription: Dazzling Evilbreaker",
+   "name": {
+    "en": "Ninjutsu Inscription: Dazzling Evilbreaker",
+    "ru": "Свиток ниндзя: Очищение хаосом"
+   },
    "rarity": 5
   },
   "23034": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23034.png",
-   "name": "A Grounded Ascent",
+   "name": {
+    "en": "A Grounded Ascent",
+    "ru": "Приземлённый полёт"
+   },
    "rarity": 5
   },
   "23035": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23035.png",
-   "name": "Long Road Leads Home",
+   "name": {
+    "en": "Long Road Leads Home",
+    "ru": "Дом в конце долгого пути"
+   },
    "rarity": 5
   },
   "23036": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23036.png",
-   "name": "Time Woven Into Gold",
+   "name": {
+    "en": "Time Woven Into Gold",
+    "ru": "Вплетённое в золото время"
+   },
    "rarity": 5
   },
   "23037": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23037.png",
-   "name": "Into the Unreachable Veil",
+   "name": {
+    "en": "Into the Unreachable Veil",
+    "ru": "Навстречу неоспоримому"
+   },
    "rarity": 5
   },
   "23038": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23038.png",
-   "name": "If Time Were a Flower",
+   "name": {
+    "en": "If Time Were a Flower",
+    "ru": "Если бы время было цветком"
+   },
    "rarity": 5
   },
   "23039": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23039.png",
-   "name": "Flame of Blood, Blaze My Path",
+   "name": {
+    "en": "Flame of Blood, Blaze My Path",
+    "ru": "Огонь крови, воспламени мой путь"
+   },
    "rarity": 5
   },
   "23040": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23040.png",
-   "name": "Make Farewells More Beautiful",
+   "name": {
+    "en": "Make Farewells More Beautiful",
+    "ru": "Пусть прощание будет прекрасным"
+   },
    "rarity": 5
   },
   "23041": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23041.png",
-   "name": "Life Should Be Cast to Flames",
+   "name": {
+    "en": "Life Should Be Cast to Flames",
+    "ru": "Брошенная в пламя жизнь"
+   },
    "rarity": 5
   },
   "23042": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23042.png",
-   "name": "Long May Rainbows Adorn the Sky",
+   "name": {
+    "en": "Long May Rainbows Adorn the Sky",
+    "ru": "Пусть радуга сияет вечно"
+   },
    "rarity": 5
   },
   "23043": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23043.png",
-   "name": "Lies Dance on the Breeze",
+   "name": {
+    "en": "Lies Dance on the Breeze",
+    "ru": "Летящая по ветру ложь"
+   },
    "rarity": 5
   },
   "23044": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23044.png",
-   "name": "Thus Burns the Dawn",
+   "name": {
+    "en": "Thus Burns the Dawn",
+    "ru": "Так сгорает рассвет"
+   },
    "rarity": 5
   },
   "23045": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23045.png",
-   "name": "A Thankless Coronation",
+   "name": {
+    "en": "A Thankless Coronation",
+    "ru": "Коронация без воздаяния"
+   },
    "rarity": 5
   },
   "23046": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23046.png",
-   "name": "The Hell Where Ideals Burn",
+   "name": {
+    "en": "The Hell Where Ideals Burn",
+    "ru": "Ад горящих идеалов"
+   },
    "rarity": 5
   },
   "23047": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23047.png",
-   "name": "Why Does the Ocean Sing",
+   "name": {
+    "en": "Why Does the Ocean Sing",
+    "ru": "Почему поёт океан"
+   },
    "rarity": 5
   },
   "23048": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23048.png",
-   "name": "Epoch Etched in Golden Blood",
+   "name": {
+    "en": "Epoch Etched in Golden Blood",
+    "ru": "Эпоха золотой крови"
+   },
    "rarity": 5
   },
   "23049": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23049.png",
-   "name": "To Evernight's Stars",
+   "name": {
+    "en": "To Evernight's Stars",
+    "ru": "Звёздному свету во тьме"
+   },
    "rarity": 5
   },
   "23050": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23050.png",
-   "name": "Never Forget Her Flame",
+   "name": {
+    "en": "Never Forget Her Flame",
+    "ru": "Не забывай её пламя"
+   },
    "rarity": 5
   },
   "23051": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23051.png",
-   "name": "Though Worlds Apart",
+   "name": {
+    "en": "Though Worlds Apart",
+    "ru": "Пусть простор бескраен"
+   },
    "rarity": 5
   },
   "23052": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23052.png",
-   "name": "This Love, Forever",
+   "name": {
+    "en": "This Love, Forever",
+    "ru": "Как этот миг вечна любовь"
+   },
    "rarity": 5
   },
   "23053": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23053.png",
-   "name": "Dazzled by a Flowery World",
+   "name": {
+    "en": "Dazzled by a Flowery World",
+    "ru": "Зачарованные царством огоньков"
+   },
    "rarity": 5
   },
   "23054": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23054.png",
-   "name": "When She Decided to See",
+   "name": {
+    "en": "When She Decided to See",
+    "ru": "Когда она решилась увидеть"
+   },
    "rarity": 5
   },
   "23055": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23055.png",
-   "name": "Colors for Tomorrow",
+   "name": {
+    "en": "Colors for Tomorrow",
+    "ru": "Цвета для завтрашнего дня"
+   },
    "rarity": 5
   },
   "23056": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23056.png",
-   "name": "The Finale of a Lie",
+   "name": {
+    "en": "The Finale of a Lie",
+    "ru": "Эпилог лжи"
+   },
    "rarity": 5
   },
   "23057": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23057.png",
-   "name": "Welcome to the Cosmic City",
+   "name": {
+    "en": "Welcome to the Cosmic City",
+    "ru": "Добро пожаловать в космический город"
+   },
    "rarity": 5
   },
   "23058": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23058.png",
-   "name": "Until the Flowers Bloom Again",
+   "name": {
+    "en": "Until the Flowers Bloom Again",
+    "ru": "Пока не распустятся цветы"
+   },
    "rarity": 5
   },
   "23059": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23059.png",
-   "name": "Reforged in Hellfire",
+   "name": {
+    "en": "Reforged in Hellfire",
+    "ru": "Перерождённый в пламени"
+   },
    "rarity": 5
   },
   "23060": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23060.png",
-   "name": "A Star That Lights the Night",
+   "name": {
+    "en": "A Star That Lights the Night",
+    "ru": "Когда звезда озаряет ночное небо"
+   },
    "rarity": 5
   },
   "23061": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23061.png",
-   "name": "Flickering Stars",
+   "name": {
+    "en": "Flickering Stars",
+    "ru": "Мерцающие звёзды"
+   },
    "rarity": 5
   },
   "23062": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23062.png",
-   "name": "I Am As You Behold",
+   "name": {
+    "en": "I Am As You Behold",
+    "ru": "Я - всё, что пред взором"
+   },
    "rarity": 5
   },
   "23063": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23063.png",
-   "name": "Rise and Sing",
+   "name": {
+    "en": "Rise and Sing",
+    "ru": "Встань и пой"
+   },
    "rarity": 5
   },
   "23064": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23064.png",
-   "name": "Summer Rides the Surf",
+   "name": {
+    "en": "Summer Rides the Surf",
+    "ru": "Лето в волнах"
+   },
    "rarity": 5
   },
   "24000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24000.png",
-   "name": "On the Fall of an Aeon",
+   "name": {
+    "en": "On the Fall of an Aeon",
+    "ru": "О падении Эона"
+   },
    "rarity": 5
   },
   "24001": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24001.png",
-   "name": "Cruising in the Stellar Sea",
+   "name": {
+    "en": "Cruising in the Stellar Sea",
+    "ru": "Круиз по галактике"
+   },
    "rarity": 5
   },
   "24002": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24002.png",
-   "name": "Texture of Memories",
+   "name": {
+    "en": "Texture of Memories",
+    "ru": "Материя памяти"
+   },
    "rarity": 5
   },
   "24003": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24003.png",
-   "name": "Solitary Healing",
+   "name": {
+    "en": "Solitary Healing",
+    "ru": "Одинокое исцеление"
+   },
    "rarity": 5
   },
   "24004": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24004.png",
-   "name": "Eternal Calculus",
+   "name": {
+    "en": "Eternal Calculus",
+    "ru": "Беспрерывные вычисления"
+   },
    "rarity": 5
   },
   "24005": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24005.png",
-   "name": "Memory's Curtain Never Falls",
+   "name": {
+    "en": "Memory's Curtain Never Falls",
+    "ru": "Не падёт занавес памяти"
+   },
    "rarity": 5
   },
   "24006": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24006.png",
-   "name": "Elation Brimming With Blessings",
+   "name": {
+    "en": "Elation Brimming With Blessings",
+    "ru": "Переполненная благословением Радость"
+   },
    "rarity": 5
   }
  },
@@ -10002,68 +10806,254 @@
   }
  },
  "sets": {
-  "101": "Passerby of Wandering Cloud",
-  "102": "Musketeer of Wild Wheat",
-  "103": "Knight of Purity Palace",
-  "104": "Hunter of Glacial Forest",
-  "105": "Champion of Streetwise Boxing",
-  "106": "Guard of Wuthering Snow",
-  "107": "Firesmith of Lava-Forging",
-  "108": "Genius of Brilliant Stars",
-  "109": "Band of Sizzling Thunder",
-  "110": "Eagle of Twilight Line",
-  "111": "Thief of Shooting Meteor",
-  "112": "Wastelander of Banditry Desert",
-  "113": "Longevous Disciple",
-  "114": "Messenger Traversing Hackerspace",
-  "115": "The Ashblazing Grand Duke",
-  "116": "Prisoner in Deep Confinement",
-  "117": "Pioneer Diver of Dead Waters",
-  "118": "Watchmaker, Master of Dream Machinations",
-  "119": "Iron Cavalry Against the Scourge",
-  "120": "The Wind-Soaring Valorous",
-  "121": "Sacerdos' Relived Ordeal",
-  "122": "Scholar Lost in Erudition",
-  "123": "Hero of Triumphant Song",
-  "124": "Poet of Mourning Collapse",
-  "125": "Warrior Goddess of Sun and Thunder",
-  "126": "Wavestrider Captain",
-  "127": "World-Remaking Deliverer",
-  "128": "Self-Enshrouded Recluse",
-  "129": "Ever-Glorious Magical Girl",
-  "130": "Diviner of Distant Reach",
-  "131": "As Navigator Isee Sees It",
-  "132": "Divine-Querying Master Smith",
-  "133": "Dreamlit Actor",
-  "134": "The Edacious Heretic",
-  "301": "Space Sealing Station",
-  "302": "Fleet of the Ageless",
-  "303": "Pan-Cosmic Commercial Enterprise",
-  "304": "Belobog of the Architects",
-  "305": "Celestial Differentiator",
-  "306": "Inert Salsotto",
-  "307": "Talia: Kingdom of Banditry",
-  "308": "Sprightly Vonwacq",
-  "309": "Rutilant Arena",
-  "310": "Broken Keel",
-  "311": "Firmament Frontline: Glamoth",
-  "312": "Penacony, Land of the Dreams",
-  "313": "Sigonia, the Unclaimed Desolation",
-  "314": "Izumo Gensei and Takama Divine Realm",
-  "315": "Duran, Dynasty of Running Wolves",
-  "316": "Forge of the Kalpagni Lantern",
-  "317": "Lushaka, the Sunken Seas",
-  "318": "The Wondrous BananAmusement Park",
-  "319": "Bone Collection's Serene Demesne",
-  "320": "Giant Tree of Rapt Brooding",
-  "321": "Arcadia of Woven Dreams",
-  "322": "Revelry by the Sea",
-  "323": "Amphoreus, The Eternal Land",
-  "324": "Tengoku@Livestream",
-  "325": "Punklorde Stage Zero",
-  "326": "City of Converging Stars",
-  "327": "Fallen Star Anchorage",
-  "328": "Cosmic Life Sciences Institute"
+  "101": {
+   "en": "Passerby of Wandering Cloud",
+   "ru": "Скиталец блуждающего облака"
+  },
+  "102": {
+   "en": "Musketeer of Wild Wheat",
+   "ru": "Стрелок дикой пшеницы"
+  },
+  "103": {
+   "en": "Knight of Purity Palace",
+   "ru": "Рыцарь дворца чистоты"
+  },
+  "104": {
+   "en": "Hunter of Glacial Forest",
+   "ru": "Охотник ледникового леса"
+  },
+  "105": {
+   "en": "Champion of Streetwise Boxing",
+   "ru": "Чемпион уличного бокса"
+  },
+  "106": {
+   "en": "Guard of Wuthering Snow",
+   "ru": "Страж снежной метели"
+  },
+  "107": {
+   "en": "Firesmith of Lava-Forging",
+   "ru": "Кузнец огня и лавы"
+  },
+  "108": {
+   "en": "Genius of Brilliant Stars",
+   "ru": "Гений бриллиантовых звёзд"
+  },
+  "109": {
+   "en": "Band of Sizzling Thunder",
+   "ru": "Бэнд испепеляющего грома"
+  },
+  "110": {
+   "en": "Eagle of Twilight Line",
+   "ru": "Орёл сумеречного рубежа"
+  },
+  "111": {
+   "en": "Thief of Shooting Meteor",
+   "ru": "Вор падающего метеора"
+  },
+  "112": {
+   "en": "Wastelander of Banditry Desert",
+   "ru": "Головорез бандитской пустыни"
+  },
+  "113": {
+   "en": "Longevous Disciple",
+   "ru": "Долгоживущий ученик"
+  },
+  "114": {
+   "en": "Messenger Traversing Hackerspace",
+   "ru": "Вестник, блуждающий в хакерском пространстве"
+  },
+  "115": {
+   "en": "The Ashblazing Grand Duke",
+   "ru": "Сжигающий дотла герцог"
+  },
+  "116": {
+   "en": "Prisoner in Deep Confinement",
+   "ru": "Пленник мрачной темницы"
+  },
+  "117": {
+   "en": "Pioneer Diver of Dead Waters",
+   "ru": "Первооткрыватель мёртвых вод"
+  },
+  "118": {
+   "en": "Watchmaker, Master of Dream Machinations",
+   "ru": "Часовщик сонных махинаций"
+  },
+  "119": {
+   "en": "Iron Cavalry Against the Scourge",
+   "ru": "Железная кавалерия против нашествия"
+  },
+  "120": {
+   "en": "The Wind-Soaring Valorous",
+   "ru": "Храбрость ветра"
+  },
+  "121": {
+   "en": "Sacerdos' Relived Ordeal",
+   "ru": "Тернистый путь священника"
+  },
+  "122": {
+   "en": "Scholar Lost in Erudition",
+   "ru": "Затерянный в знаниях учёный"
+  },
+  "123": {
+   "en": "Hero of Triumphant Song",
+   "ru": "Воспетый эпосом герой"
+  },
+  "124": {
+   "en": "Poet of Mourning Collapse",
+   "ru": "Поющий элегии рапсод"
+  },
+  "125": {
+   "en": "Warrior Goddess of Sun and Thunder",
+   "ru": "Воительница солнца и грозы"
+  },
+  "126": {
+   "en": "Wavestrider Captain",
+   "ru": "Преследующий волны капитан"
+  },
+  "127": {
+   "en": "World-Remaking Deliverer",
+   "ru": "Воссоздающий мир спаситель"
+  },
+  "128": {
+   "en": "Self-Enshrouded Recluse",
+   "ru": "Таящий сияние отшельник"
+  },
+  "129": {
+   "en": "Ever-Glorious Magical Girl",
+   "ru": "Блистательная чародейка"
+  },
+  "130": {
+   "en": "Diviner of Distant Reach",
+   "ru": "Недосягаемый прорицатель"
+  },
+  "131": {
+   "en": "As Navigator Isee Sees It",
+   "ru": "Взор навигатора Взираи"
+  },
+  "132": {
+   "en": "Divine-Querying Master Smith",
+   "ru": "Обращённый к небесам кузнец"
+  },
+  "133": {
+   "en": "Dreamlit Actor",
+   "ru": "Актёр звёздной точки"
+  },
+  "134": {
+   "en": "The Edacious Heretic",
+   "ru": "Пожирательница запретных плодов"
+  },
+  "301": {
+   "en": "Space Sealing Station",
+   "ru": "Запечатывающая космос станция"
+  },
+  "302": {
+   "en": "Fleet of the Ageless",
+   "ru": "Флот нестареющих"
+  },
+  "303": {
+   "en": "Pan-Cosmic Commercial Enterprise",
+   "ru": "Пангалактическое коммерческое предприятие"
+  },
+  "304": {
+   "en": "Belobog of the Architects",
+   "ru": "Белобог Архитекторов"
+  },
+  "305": {
+   "en": "Celestial Differentiator",
+   "ru": "Небесный дифференциатор"
+  },
+  "306": {
+   "en": "Inert Salsotto",
+   "ru": "Замершее Салсотто"
+  },
+  "307": {
+   "en": "Talia: Kingdom of Banditry",
+   "ru": "Талия - край бандитов"
+  },
+  "308": {
+   "en": "Sprightly Vonwacq",
+   "ru": "Живой Вонвак"
+  },
+  "309": {
+   "en": "Rutilant Arena",
+   "ru": "Звездистая арена"
+  },
+  "310": {
+   "en": "Broken Keel",
+   "ru": "Сломанный киль"
+  },
+  "311": {
+   "en": "Firmament Frontline: Glamoth",
+   "ru": "Небесный фронт Глатирамер"
+  },
+  "312": {
+   "en": "Penacony, Land of the Dreams",
+   "ru": "Земля грёз Пенакония"
+  },
+  "313": {
+   "en": "Sigonia, the Unclaimed Desolation",
+   "ru": "Бесплодная Сигония"
+  },
+  "314": {
+   "en": "Izumo Gensei and Takama Divine Realm",
+   "ru": "Мир Идзумо и Царство Такама"
+  },
+  "315": {
+   "en": "Duran, Dynasty of Running Wolves",
+   "ru": "Дуранская династия волков"
+  },
+  "316": {
+   "en": "Forge of the Kalpagni Lantern",
+   "ru": "Лотосовый фонарь дворца"
+  },
+  "317": {
+   "en": "Lushaka, the Sunken Seas",
+   "ru": "Русалка, затопленные берега"
+  },
+  "318": {
+   "en": "The Wondrous BananAmusement Park",
+   "ru": "Чудесный банановый рай"
+  },
+  "319": {
+   "en": "Bone Collection's Serene Demesne",
+   "ru": "Безмолвная страна костей"
+  },
+  "320": {
+   "en": "Giant Tree of Rapt Brooding",
+   "ru": "Древо глубоких раздумий"
+  },
+  "321": {
+   "en": "Arcadia of Woven Dreams",
+   "ru": "Волшебная страна фей"
+  },
+  "322": {
+   "en": "Revelry by the Sea",
+   "ru": "Хмельная бухта"
+  },
+  "323": {
+   "en": "Amphoreus, The Eternal Land",
+   "ru": "Вечная земля Амфореус"
+  },
+  "324": {
+   "en": "Tengoku@Livestream",
+   "ru": "Тэнгоку @Стрим"
+  },
+  "325": {
+   "en": "Punklorde Stage Zero",
+   "ru": "Уровень Зеро Панклорда"
+  },
+  "326": {
+   "en": "City of Converging Stars",
+   "ru": "Город тысячи звёзд"
+  },
+  "327": {
+   "en": "Fallen Star Anchorage",
+   "ru": "Порт падающих звёзд"
+  },
+  "328": {
+   "en": "Cosmic Life Sciences Institute",
+   "ru": "Институт биологических исследований"
+  }
  },
  "sub_affixes": {
   "2": {

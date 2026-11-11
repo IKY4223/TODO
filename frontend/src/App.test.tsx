@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test } from 'vitest'
 import App from './App'
 
@@ -62,3 +62,15 @@ test.each(['#toString', '#genshin/toString', '#starrail/history', '#genshin'])(
     expect(current('Tools')).toBe('Builds')
   },
 )
+
+test('switches to Russian and remembers it', () => {
+  render(<App />)
+  fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
+  expect(screen.getByRole('navigation', { name: 'Игры' })).toBeDefined()
+  expect(screen.getByRole('link', { name: 'Реликвии' })).toBeDefined()
+  expect(within(shown()).getByRole('heading', { name: 'Билды персонажей' })).toBeDefined()
+  expect(document.documentElement.lang).toBe('ru')
+  expect(localStorage.getItem('language')).toBe('ru')
+  fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
+  expect(screen.getByRole('navigation', { name: 'Games' })).toBeDefined()
+})

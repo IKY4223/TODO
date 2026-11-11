@@ -1,6 +1,7 @@
 import { type JSX, type SubmitEvent, useState } from 'react'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { useLanguage, useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
 import {
   ELEMENTS,
@@ -29,20 +30,21 @@ function RelicItem(props: {
   readonly wanted: readonly SubstatKey[]
 }): JSX.Element {
   const { relic, wanted } = props
+  const t = useT()
   const isWanted = (key: string): boolean => wanted.some((stat) => stat === key)
   return (
     <li className="item">
       <Icon src={relic.icon} size={ITEM_ICON_SIZE} />
       <div>
         <span>
-          {SLOTS[relic.slot]} · {relic.set_name} +{relic.level}
+          {t(SLOTS[relic.slot])} · {relic.set_name} +{relic.level}
         </span>
-        <strong>{formatStat(relic.main)}</strong>
-        <span className="hint">Score {score.format(relicScore(relic, wanted))}</span>
-        <ul className="substats" aria-label={`${SLOTS[relic.slot]} substats`}>
+        <strong>{formatStat(relic.main, t)}</strong>
+        <span className="hint">{t('Score {score}', { score: score.format(relicScore(relic, wanted)) })}</span>
+        <ul className="substats" aria-label={t('{slot} substats', { slot: t(SLOTS[relic.slot]) })}>
           {relic.subs.map((sub) => (
             <li key={sub.key} className={isWanted(sub.key) ? 'wanted' : undefined}>
-              <span>{STATS[sub.key].label}</span> <span>{formatValue(sub)}</span>{' '}
+              <span>{t(STATS[sub.key].label)}</span> <span>{formatValue(sub)}</span>{' '}
               <span>×{sub.rolls}</span>
             </li>
           ))}
@@ -54,6 +56,7 @@ function RelicItem(props: {
 
 function CharacterCard({ character }: { readonly character: StarRailCharacter }): JSX.Element {
   const { element, path, light_cone: cone, relics } = character
+  const t = useT()
   const [wanted, setWanted] = useState(() => loadWanted(character.id))
   const total = relics.reduce((sum, relic) => sum + relicScore(relic, wanted), 0)
 
@@ -63,10 +66,10 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
     saveWanted(character.id, next)
   }
   const summary = [
-    `Lv. ${character.level}`,
+    t('Lv. {level}', { level: character.level }),
     `E${character.eidolon}`,
-    ...(element ? [ELEMENTS[element]] : []),
-    ...(path ? [PATHS[path]] : []),
+    ...(element ? [t(ELEMENTS[element])] : []),
+    ...(path ? [t(PATHS[path])] : []),
   ]
   return (
     <article className="card" data-element={element}>
@@ -81,7 +84,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         <dl>
           {character.skills.map(({ kind, level, bonus }) => (
             <div key={kind}>
-              <dt>{SKILLS[kind]}</dt>
+              <dt>{t(SKILLS[kind])}</dt>
               <dd>
                 {level}
                 {bonus ? <span className="hint"> (+{bonus})</span> : null}
@@ -94,24 +97,28 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         <p className="item">
           <Icon src={cone.icon} size={ITEM_ICON_SIZE} />
           <span>
-            {cone.name} · Lv. {cone.level} · S{cone.superimposition}
+            {cone.name} · {t('Lv. {level}', { level: cone.level })} · S{cone.superimposition}
           </span>
         </p>
       ) : null}
       <details>
         <summary>
-          Relics ({relics.length}) · score {score.format(total)}
+          {t('Relics ({count}) · score {score}', {
+            count: relics.length,
+            score: score.format(total),
+          })}
         </summary>
         <p className="hint">
-          ×N: how many times the substat rolled, the first roll included. Score: the wanted
-          substats in perfect rolls, so 2.0 is worth two highest rolls.
+          {t(
+            '×N: how many times the substat rolled, the first roll included. Score: the wanted substats in perfect rolls, so 2.0 is worth two highest rolls.',
+          )}
         </p>
         <fieldset>
-          <legend>Substats that matter</legend>
+          <legend>{t('Substats that matter')}</legend>
           {RELIC_SUBSTATS.map((key) => (
             <label key={key} className="check">
               <input type="checkbox" checked={wanted.includes(key)} onChange={() => toggle(key)} />
-              {statName(key)}
+              {statName(key, t)}
             </label>
           ))}
         </fieldset>
@@ -127,6 +134,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
 
 function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   const { record } = showcase
+  const t = useT()
   return (
     <article className="card">
       <header className="item">
@@ -134,7 +142,10 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
         <div>
           <h3>{showcase.nickname}</h3>
           <span className="hint">
-            Trailblaze Lv. {showcase.trailblaze_level} · Equilibrium {showcase.equilibrium_level}
+            {t('Trailblaze Lv. {level} · Equilibrium {equilibrium}', {
+              level: showcase.trailblaze_level,
+              equilibrium: showcase.equilibrium_level,
+            })}
           </span>
         </div>
       </header>
@@ -150,7 +161,7 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
             ] as const
           ).map(([label, value]) => (
             <div key={label}>
-              <dt>{label}</dt>
+              <dt>{t(label)}</dt>
               <dd>{count.format(value)}</dd>
             </div>
           ))}
@@ -161,12 +172,13 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
 }
 
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
+  const t = useT()
   return (
     <>
       <Profile showcase={showcase} />
       {showcase.characters.length ? (
         <>
-          <p className="hint">(+N): skill levels that eidolons add.</p>
+          <p className="hint">{t('(+N): skill levels that eidolons add.')}</p>
           <ul className="cards">
             {showcase.characters.map((character) => (
               <li key={character.id}>
@@ -177,8 +189,9 @@ function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Elem
         </>
       ) : (
         <p className="hint">
-          No characters to show. In the game, open your profile, add characters to the Character
-          Showcase and let other players see their details.
+          {t(
+            'No characters to show. In the game, open your profile, add characters to the Character Showcase and let other players see their details.',
+          )}
         </p>
       )}
     </>
@@ -187,12 +200,15 @@ function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Elem
 
 export function StarRailShowcase(): JSX.Element {
   const [state, run] = useRequest<Showcase>()
+  const t = useT()
+  const localized = useLocalized()
+  const language = useLanguage()
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     const uid = String(new FormData(event.currentTarget).get('uid'))
     void run(async () => {
-      const showcase = await fetchStarRailShowcase(uid)
+      const showcase = await fetchStarRailShowcase(uid, language)
       publishShowcase(showcase)
       return showcase
     })
@@ -200,8 +216,8 @@ export function StarRailShowcase(): JSX.Element {
 
   return (
     <section aria-labelledby="starrail-showcase-title">
-      <h2 id="starrail-showcase-title">Character builds</h2>
-      <p className="hint">Honkai: Star Rail · characters from your profile&apos;s showcase</p>
+      <h2 id="starrail-showcase-title">{t('Character builds')}</h2>
+      <p className="hint">{t("Honkai: Star Rail · characters from your profile's showcase")}</p>
       <form onSubmit={submit}>
         <label>
           UID
@@ -209,18 +225,18 @@ export function StarRailShowcase(): JSX.Element {
             name="uid"
             inputMode="numeric"
             pattern={UID_PATTERN}
-            title="9 or 10 digits"
+            title={t('9 or 10 digits')}
             autoComplete="off"
             required
           />
         </label>
         <button type="submit" disabled={state.status === 'loading'}>
-          Load characters
+          {t('Load characters')}
         </button>
       </form>
-      {'message' in state && <p role="alert">{state.message}</p>}
+      {'message' in state && <p role="alert">{localized(state.message)}</p>}
       <div aria-live="polite">
-        {state.status === 'loading' && <p className="hint">Loading…</p>}
+        {state.status === 'loading' && <p className="hint">{t('Loading…')}</p>}
         {'data' in state && <ShowcaseResult showcase={state.data} />}
       </div>
     </section>

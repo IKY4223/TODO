@@ -232,3 +232,12 @@ def test_character_newer_than_the_game_data_is_still_listed() -> None:
 def test_unreadable_response_is_reported_not_guessed(body: bytes) -> None:
     with pytest.raises(UpstreamDataError):
         parse(UID, body)
+
+
+def test_game_names_in_russian() -> None:
+    hyacine = parse(UID, FIXTURE, "ru")[0].characters[0]
+    assert hyacine.name == "Гиацина"
+    assert hyacine.light_cone is not None
+    assert hyacine.light_cone.name != "The Story's Next Page"
+    assert hyacine.relics[0].set_name != "Warrior Goddess of Sun and Thunder"
+    assert hyacine.relics[0].subs == parse(UID, FIXTURE)[0].characters[0].relics[0].subs

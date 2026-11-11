@@ -7,7 +7,9 @@ from pydantic import Field, ValidationError
 from app.showcase.enka import DEFAULT_TTL_SECONDS, EnkaModel, UpstreamDataError
 from app.starrail.gamedata import GAMEDATA
 from app.starrail.models import (
+    LANGUAGES,
     AccountRecord,
+    Language,
     LightCone,
     Path,
     Relic,
@@ -159,7 +161,7 @@ def _icon(path: str | None) -> str | None:
     return IMAGE_HOST + path if path and ICON_PATH.fullmatch(path) else None
 
 
-def _relic(relic: _Relic) -> Relic | None:
+def _relic(relic: _Relic, language: Language) -> Relic | None:
     """None for a relic newer than this app's game data."""
     data = GAMEDATA.relics.get(str(relic.tid))
     if data is None:
@@ -168,7 +170,7 @@ def _relic(relic: _Relic) -> Relic | None:
     subs = GAMEDATA.sub_affixes[str(data.sub_group)]
     return Relic(
         slot=SLOTS[data.slot],
-        set_name=GAMEDATA.sets.get(str(data.set), UNKNOWN_SET),
+        set_name=GAMEDATA.sets.get(str(data.set), {}).get(language, UNKNOWN_SET),
         rarity=data.rarity,
         level=relic.level,
         main=StarRailStat(PROPERTIES[prop], base + per_level * relic.level),
@@ -183,12 +185,12 @@ def _sub(prop: str, per_roll: float, per_step: float, sub: _SubAffix) -> SubStat
     return SubStat(PROPERTIES[prop], value, sub.cnt, value / (per_roll + 2 * per_step))
 
 
-def _light_cone(equipment: _Equipment | None) -> LightCone | None:
+def _light_cone(equipment: _Equipment | None, language: Language) -> LightCone | None:
     if equipment is None:
         return None
     data = GAMEDATA.light_cones.get(str(equipment.tid))
     return LightCone(
-        name=data.name if data else UNKNOWN_LIGHT_CONE,
+        name=data.name[language] if data else UNKNOWN_LIGHT_CONE,
         rarity=data.rarity if data else 0,
         level=equipment.level,
         superimposition=equipment.rank,
@@ -208,18 +210,18 @@ def _skills(avatar: _Avatar, eidolons: list[dict[int, int]]) -> tuple[Skill, ...
     return tuple(skills)
 
 
-def _character(avatar: _Avatar) -> StarRailCharacter:
+def _character(avatar: _Avatar, language: Language) -> StarRailCharacter:
     data = GAMEDATA.characters.get(str(avatar.avatar_id))
-    relics = (_relic(relic) for relic in avatar.relic_list)
+    relics = (_relic(relic, language) for relic in avatar.relic_list)
     return StarRailCharacter(
         id=avatar.avatar_id,
-        name=data.name if data else UNKNOWN_CHARACTER,
+        name=data.name[language] if data else UNKNOWN_CHARACTER,
         element=ELEMENTS[data.element] if data else None,
         path=PATHS[data.path] if data else None,
         rarity=data.rarity if data else None,
         level=avatar.level,
         eidolon=avatar.rank,
-        light_cone=_light_cone(avatar.equipment),
+        light_cone=_light_cone(avatar.equipment, language),
         relics=tuple(relic for relic in relics if relic),
         skills=_skills(avatar, data.eidolons if data else []),
         icon=_icon(data.icon) if data else None,
@@ -237,23 +239,38 @@ def _record(record: _Record | None) -> AccountRecord | None:
     )
 
 
-def parse(uid: str, body: bytes) -> tuple[StarRailShowcase, int]:
-    """Convert an Enka response into a showcase and the seconds it may be cached for."""
+def parse_all(uid: str, body: bytes) -> tuple[dict[Language, StarRailShowcase], int]:
+    """Convert an Enka response into a showcase per language, and the seconds to cache them for.
+
+    Every language at once: one Enka request then serves a player who switches language.
+    """
     try:
         response = _Response.model_validate_json(body)
         detail = response.detail_info
-        characters = tuple(_character(avatar) for avatar in detail.avatar_detail_list)
+        characters = {
+            language: tuple(_character(avatar, language) for avatar in detail.avatar_detail_list)
+            for language in LANGUAGES
+        }
     except (KeyError, ValidationError) as error:
         raise UpstreamDataError(f"unreadable Enka Star Rail response for {uid}") from error
     avatar = GAMEDATA.profile_icons.get(str(detail.head_icon))
-    showcase = StarRailShowcase(
-        uid=uid,
-        nickname=detail.nickname,
-        signature=detail.signature,
-        avatar=_icon(avatar),
-        trailblaze_level=detail.level,
-        equilibrium_level=detail.world_level,
-        record=_record(detail.record_info),
-        characters=characters,
-    )
-    return showcase, response.ttl
+    showcases = {
+        language: StarRailShowcase(
+            uid=uid,
+            nickname=detail.nickname,
+            signature=detail.signature,
+            avatar=_icon(avatar),
+            trailblaze_level=detail.level,
+            equilibrium_level=detail.world_level,
+            record=_record(detail.record_info),
+            characters=characters[language],
+        )
+        for language in LANGUAGES
+    }
+    return showcases, response.ttl
+
+
+def parse(uid: str, body: bytes, language: Language = "en") -> tuple[StarRailShowcase, int]:
+    """One language's showcase and the seconds it may be cached for."""
+    showcases, ttl = parse_all(uid, body)
+    return showcases[language], ttl

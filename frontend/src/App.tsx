@@ -1,5 +1,6 @@
 import { type JSX, type ReactNode, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './ErrorBoundary'
+import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
@@ -7,7 +8,7 @@ import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
 
 interface ToolEntry {
-  readonly label: string
+  readonly label: Message
   readonly element: ReactNode
 }
 
@@ -67,11 +68,29 @@ const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 
 function App(): JSX.Element {
   const here = locate(useSyncExternalStore(subscribeToAddress, readAddress))
+  const t = useT()
+  const language = useLanguage()
 
   return (
     <main>
-      <h1>HoYo Toolkit</h1>
-      <nav aria-label="Games">
+      <header className="top">
+        <h1>HoYo Toolkit</h1>
+        <select
+          aria-label={t('Language')}
+          value={language}
+          onChange={(event) => {
+            const choice = languages.find((known) => known === event.target.value)
+            if (choice) setLanguage(choice)
+          }}
+        >
+          {languages.map((choice) => (
+            <option key={choice} value={choice}>
+              {languageLabel(choice)}
+            </option>
+          ))}
+        </select>
+      </header>
+      <nav aria-label={t('Games')}>
         {games.map((game) => (
           <a
             key={game}
@@ -82,14 +101,14 @@ function App(): JSX.Element {
           </a>
         ))}
       </nav>
-      <nav aria-label="Tools">
+      <nav aria-label={t('Tools')}>
         {toolsOf(here.game).map((tool) => (
           <a
             key={tool}
             href={href(here.game, tool)}
             aria-current={tool === here.tool ? 'page' : undefined}
           >
-            {toolEntry(here.game, tool)?.label}
+            {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
           </a>
         ))}
       </nav>
@@ -101,7 +120,7 @@ function App(): JSX.Element {
           </div>
         )),
       )}
-      <footer>Fan project. Not affiliated with HoYoverse.</footer>
+      <footer>{t('Fan project. Not affiliated with HoYoverse.')}</footer>
     </main>
   )
 }

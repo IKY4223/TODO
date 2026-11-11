@@ -1,5 +1,6 @@
 import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
+import type { Language, Message, Translate } from '../i18n'
 
 type Schemas = components['schemas']
 export type StarRailShowcase = Schemas['StarRailShowcase']
@@ -12,7 +13,7 @@ type Skill = Schemas['Skill']
 type AccountRecord = Schemas['AccountRecord']
 
 interface StatInfo {
-  readonly label: string
+  readonly label: Message
   /** How the game prints it: whole numbers, one decimal (SPD), or a percent of a fraction. */
   readonly format: 'whole' | 'decimal' | 'percent'
 }
@@ -43,8 +44,8 @@ export const STATS = {
 } as const satisfies Record<Schemas['StarRailStatKey'], StatInfo>
 
 /** "HP" names two stats; the percent one says so. */
-export const statName = (key: keyof typeof STATS): string =>
-  key.endsWith('_percent') ? `${STATS[key].label} %` : STATS[key].label
+export const statName = (key: keyof typeof STATS, t: Translate): string =>
+  key.endsWith('_percent') ? `${t(STATS[key].label)} %` : t(STATS[key].label)
 
 export const SLOTS = {
   head: 'Head',
@@ -53,7 +54,7 @@ export const SLOTS = {
   feet: 'Feet',
   sphere: 'Planar Sphere',
   rope: 'Link Rope',
-} as const satisfies Record<Schemas['StarRailSlot'], string>
+} as const satisfies Record<Schemas['StarRailSlot'], Message>
 
 export const ELEMENTS = {
   physical: 'Physical',
@@ -63,7 +64,7 @@ export const ELEMENTS = {
   wind: 'Wind',
   quantum: 'Quantum',
   imaginary: 'Imaginary',
-} as const satisfies Record<Schemas['StarRailElement'], string>
+} as const satisfies Record<Schemas['StarRailElement'], Message>
 
 export const PATHS = {
   destruction: 'Destruction',
@@ -75,7 +76,7 @@ export const PATHS = {
   abundance: 'Abundance',
   remembrance: 'Remembrance',
   elation: 'Elation',
-} as const satisfies Record<Schemas['Path'], string>
+} as const satisfies Record<Schemas['Path'], Message>
 
 export const SKILLS = {
   basic: 'Basic ATK',
@@ -85,7 +86,7 @@ export const SKILLS = {
   elation: 'Elation',
   memosprite_skill: 'Memosprite Skill',
   memosprite_talent: 'Memosprite Talent',
-} as const satisfies Record<Schemas['SkillKind'], string>
+} as const satisfies Record<Schemas['SkillKind'], Message>
 
 const SHOWCASE_URL = '/api/starrail/showcase'
 
@@ -98,7 +99,8 @@ const FORMATS = {
 export const formatValue = ({ key, value }: Stat): string =>
   FORMATS[STATS[key].format].format(value)
 
-export const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
+export const formatStat = (stat: Stat, t: Translate): string =>
+  `${t(STATS[stat.key].label)} ${formatValue(stat)}`
 
 const isNullable =
   <TValue>(isValue: (value: unknown) => value is TValue) =>
@@ -170,6 +172,9 @@ const isShowcase = (value: unknown): value is StarRailShowcase =>
   isNullable(isAccountRecord)(value.record) &&
   isArrayOf(value.characters, isCharacter)
 
-export async function fetchStarRailShowcase(uid: string): Promise<StarRailShowcase> {
-  return getJson(`${SHOWCASE_URL}/${encodeURIComponent(uid)}`, isShowcase)
+export async function fetchStarRailShowcase(
+  uid: string,
+  language: Language,
+): Promise<StarRailShowcase> {
+  return getJson(`${SHOWCASE_URL}/${encodeURIComponent(uid)}?lang=${language}`, isShowcase)
 }

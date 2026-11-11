@@ -2,6 +2,10 @@
 
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Literal, get_args
+
+Language = Literal["en", "ru"]
+LANGUAGES: tuple[Language, ...] = get_args(Language)
 
 
 class StarRailElement(StrEnum):
