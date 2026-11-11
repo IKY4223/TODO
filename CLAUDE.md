@@ -25,6 +25,8 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
   and `backend/tests/gacha_fixture.py`. Fixtures from real accounts are anonymized.
 - A wish history link is a secret: never log it, store it or put it in a URL the app requests.
 - Work on a branch and open a pull request into `main`; the owner merges it.
+- Before starting a stage, write the plan for the owner: what will be built, in what order, and
+  what is left out. Plan several features per stage, not one.
 - Game rates the publisher does not document are community estimates. Say so in a comment, and
   mark every mechanic left out with a `shortcut:` comment.
 
