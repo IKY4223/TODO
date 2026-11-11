@@ -12,6 +12,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
 - **Star Rail builds** — enter a UID and see every character in the player's showcase: level,
   eidolon, element, path, skill levels, light cone and relics, under the player's profile card.
   Each substat shows how many times it rolled.
+- **Star Rail character pages** — each character's skills, described with the numbers of the
+  level the player has, and eidolons, in English or Russian. Texts come from
+  [StarRailRes](https://github.com/Mar-7th/StarRailRes).
 - **Star Rail relic advisor** — describe a 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in

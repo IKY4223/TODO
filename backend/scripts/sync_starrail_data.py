@@ -10,11 +10,26 @@ from urllib.request import urlopen
 
 STORE = "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/hsr/"
 LANGUAGES = ("en", "ru")
+# Skill and eidolon texts: Enka's store has none, this community dump of the game data does.
+RES = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/"
+TEXTS_TARGET = Path(__file__).parent.parent / "app" / "starrail" / "texts.json"
+# The dump's skill types -> the kind whose level the showcase carries. A type missing here
+# (technique, innate trace) has no level to show.
+SKILL_KINDS = {
+    "Normal": "basic",
+    "BPSkill": "skill",
+    "Ultra": "ultimate",
+    "Talent": "talent",
+    "ElationDamage": "elation",
+    "MemospriteSkill": "memosprite_skill",
+    "MemospriteTalent": "memosprite_talent",
+}
+TRACE_MAX_LEVEL = 2
 TARGET = Path(__file__).parent.parent / "app" / "starrail" / "gamedata.json"
 
 
-def load(name: str) -> Any:
-    with urlopen(STORE + name, timeout=30) as response:  # noqa: S310 - STORE is constant https
+def load(name: str, source: str = STORE) -> Any:
+    with urlopen(source + name, timeout=60) as response:  # noqa: S310 - STORE is constant https
         return json.load(response)
 
 
@@ -89,5 +104,41 @@ def main() -> None:
     print({kind: len(entries) for kind, entries in gamedata.items()})
 
 
+def texts(language: str) -> dict[str, Any]:
+    """Each character's skills and eidolons, described in one language."""
+    skills = load(f"{language}/character_skills.json", RES)
+    ranks = load(f"{language}/character_ranks.json", RES)
+    return {
+        key: {
+            "skills": [
+                {
+                    # "Innate Trace" shares the Talent type but has no level in the showcase.
+                    "kind": SKILL_KINDS.get(skill["type"])
+                    if skill["max_level"] > TRACE_MAX_LEVEL
+                    else None,
+                    "label": skill["type_text"],
+                    "name": skill["name"],
+                    "description": skill["desc"],
+                    "params": skill["params"],
+                }
+                for skill in (skills[skill_id] for skill_id in character["skills"])
+                if skill["type_text"]  # the unnamed type is the technique's plain attack
+            ],
+            "eidolons": [
+                {"name": ranks[rank]["name"], "description": ranks[rank]["desc"]}
+                for rank in character["ranks"]
+            ],
+        }
+        for key, character in load(f"{language}/characters.json", RES).items()
+    }
+
+
+def main_texts() -> None:
+    result = {language: texts(language) for language in LANGUAGES}
+    TEXTS_TARGET.write_text(json.dumps(result, ensure_ascii=False, indent=1, sort_keys=True) + "\n")
+    print({language: len(characters) for language, characters in result.items()})
+
+
 if __name__ == "__main__":
     main()
+    main_texts()

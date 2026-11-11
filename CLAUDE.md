@@ -18,9 +18,9 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - The owner works from a phone and cannot open the preview. Never leave a step that needs a
   computer. After a UI change, start the app, report its port, and send phone-sized screenshots.
 - The UI is mobile-first: it must work at 360px wide with 16px inputs and 44px touch targets.
-- `backend/app/showcase/gamedata.json` and `backend/app/starrail/gamedata.json` are generated: run
-  `scripts/sync_gamedata.py` and `scripts/sync_starrail_data.py` in `backend/` after each game
-  version, never edit them by hand.
+- `backend/app/showcase/gamedata.json`, `backend/app/starrail/gamedata.json` and
+  `backend/app/starrail/texts.json` are generated: run `scripts/sync_gamedata.py` and
+  `scripts/sync_starrail_data.py` in `backend/` after each game version, never edit them by hand.
 - Tests never call Enka.Network or HoYoverse. They use the fixtures in `backend/tests/fixtures/`
   and `backend/tests/gacha_fixture.py`. Fixtures from real accounts are anonymized.
 - A wish history link is a secret: never log it, store it or put it in a URL the app requests.

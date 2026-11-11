@@ -1,4 +1,5 @@
-import { type JSX, type ReactNode, useSyncExternalStore } from 'react'
+import type { JSX, ReactNode } from 'react'
+import { useAddress } from './address'
 import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
@@ -40,7 +41,6 @@ const GAMES = {
 type Game = keyof typeof GAMES
 
 const DEFAULT_GAME: Game = 'starrail'
-const HASH_CHANGE = 'hashchange'
 const SEPARATOR = '/'
 
 const isGame = (value: string): value is Game => Object.hasOwn(GAMES, value)
@@ -48,13 +48,6 @@ const games = Object.keys(GAMES).filter(isGame)
 const toolsOf = (game: Game): string[] => Object.keys(GAMES[game].tools)
 const toolEntry = (game: Game, tool: string): ToolEntry | undefined =>
   (GAMES[game].tools as Readonly<Record<string, ToolEntry>>)[tool] // widened only to look up by name
-
-function subscribeToAddress(notify: () => void): () => void {
-  window.addEventListener(HASH_CHANGE, notify)
-  return (): void => window.removeEventListener(HASH_CHANGE, notify)
-}
-
-const readAddress = (): string => window.location.hash.slice(1)
 
 /** The game and tool an address names, or the nearest place that exists. */
 function locate(address: string): { readonly game: Game; readonly tool: string } {
@@ -67,7 +60,7 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 
 function App(): JSX.Element {
-  const here = locate(useSyncExternalStore(subscribeToAddress, readAddress))
+  const here = locate(useAddress())
   const t = useT()
   const language = useLanguage()
 

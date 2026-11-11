@@ -72,6 +72,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/starrail/characters/{character_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Character Texts
+         * @description A character's skills and eidolons, described.
+         */
+        get: operations["character_texts_api_starrail_characters__character_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -174,6 +194,13 @@ export interface components {
             /** Icon */
             icon: string | null;
         };
+        /** CharacterTexts */
+        CharacterTexts: {
+            /** Skills */
+            skills: components["schemas"]["SkillText"][];
+            /** Eidolons */
+            eidolons: components["schemas"]["EidolonText"][];
+        };
         /** Damage */
         Damage: {
             /** Non Crit */
@@ -219,6 +246,13 @@ export interface components {
              * @description 0.1 is 10%
              */
             enemy_resistance: number;
+        };
+        /** EidolonText */
+        EidolonText: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
         };
         /**
          * Element
@@ -408,6 +442,18 @@ export interface components {
          * @enum {string}
          */
         SkillKind: "basic" | "skill" | "ultimate" | "talent" | "elation" | "memosprite_skill" | "memosprite_talent";
+        /** SkillText */
+        SkillText: {
+            kind: components["schemas"]["SkillKind"] | null;
+            /** Label */
+            label: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Params */
+            params: number[][];
+        };
         /**
          * Slot
          * @enum {string}
@@ -656,6 +702,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RelicForecast"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    character_texts_api_starrail_characters__character_id__get: {
+        parameters: {
+            query?: {
+                /** @description The language of the texts */
+                lang?: "en" | "ru";
+            };
+            header?: never;
+            path: {
+                character_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterTexts"];
                 };
             };
             /** @description Validation Error */

@@ -63,6 +63,7 @@ afterEach(() => {
   cleanup()
   setLanguage('en')
   localStorage.clear()
+  window.location.hash = ''
   vi.unstubAllGlobals()
 })
 
@@ -159,6 +160,56 @@ test('shows the showcase in Russian', async () => {
   expect(fetchMock).toHaveBeenCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
   expect(rows('Голова: доп. статы')[1]).toBe('Скорость 12.1 ×5')
   expect(screen.getByText('Реликвии (1) · оценка 4.6')).toBeDefined()
+})
+
+test('opens a character page with skills at the player\'s levels and eidolons', async () => {
+  const texts = {
+    skills: [
+      {
+        kind: 'skill',
+        label: 'Skill',
+        name: 'Love Over the Rainbow',
+        description: 'Restores HP equal to #1[i]% of Max HP plus #2[i].',
+        params: Array.from({ length: 15 }, (_, level) => [0.01 * (level + 1), 10 * (level + 1)]),
+      },
+      { kind: null, label: 'Technique', name: 'Day So Right', description: 'Heals.', params: [] },
+    ],
+    eidolons: [
+      { name: 'Cradle the Candle of Night', description: 'Max HP +50%.' },
+      { name: 'Come Sit in My Courtyard', description: 'SPD +30%.' },
+    ],
+  }
+  const fetchMock = load(async () => Response.json(SHOWCASE))
+  const link = await screen.findByRole('link', { name: 'Skills and eidolons' })
+  expect(link.getAttribute('href')).toBe('#starrail/builds/1409')
+  fetchMock.mockImplementation(async () => Response.json(texts))
+  window.location.hash = '#starrail/builds/1409'
+  window.dispatchEvent(new HashChangeEvent('hashchange'))
+
+  // The Skill is level 12 in the showcase: the twelfth set of numbers.
+  expect(await screen.findByText('Restores HP equal to 12% of Max HP plus 120.')).toBeDefined()
+  expect(fetchMock).toHaveBeenLastCalledWith('/api/starrail/characters/1409?lang=en', expect.anything())
+  expect(screen.getByText('Skill · Lv. 12')).toBeDefined()
+  expect(screen.getByText('Technique')).toBeDefined()
+  expect(screen.getByRole('heading', { name: 'E1 · Cradle the Candle of Night' })).toBeDefined()
+  expect(screen.getAllByText('Not unlocked')).toHaveLength(2) // Hyacine is E0
+  expect(screen.queryByText('Trailblazer')).toBeNull()
+  expect(screen.getByRole('link', { name: '← All characters' }).getAttribute('href')).toBe(
+    '#starrail/builds',
+  )
+})
+
+test('a character page says when its texts cannot be loaded', async () => {
+  const fetchMock = load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Hyacine')
+  fetchMock.mockImplementation(async () =>
+    Response.json({ detail: 'This app has no texts for this character yet.' }, { status: 404 }),
+  )
+  window.location.hash = '#starrail/builds/1409'
+  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  expect((await screen.findByRole('alert')).textContent).toBe(
+    'This app has no texts for this character yet.',
+  )
 })
 
 test('scores relics by the substats the player wants and remembers the choice', async () => {

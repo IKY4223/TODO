@@ -1,8 +1,10 @@
 import { type JSX, type SubmitEvent, useState } from 'react'
+import { useAddress } from '../address'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
+import { CharacterPage } from './CharacterPage'
 import {
   ELEMENTS,
   fetchStarRailShowcase,
@@ -19,6 +21,8 @@ import {
 } from './starrail'
 import { loadWanted, publishShowcase, relicScore, saveWanted, type SubstatKey } from './store'
 
+// A character's own page lives one step below the list: #starrail/builds/1409.
+const LIST = '#starrail/builds'
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
@@ -101,6 +105,9 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
           </span>
         </p>
       ) : null}
+      <a className="more" href={`${LIST}/${character.id}`}>
+        {t('Skills and eidolons')}
+      </a>
       <details>
         <summary>
           {t('Relics ({count}) · score {score}', {
@@ -173,6 +180,9 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
 
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   const t = useT()
+  const [, , chosen] = useAddress().split('/')
+  const selected = showcase.characters.find(({ id }) => String(id) === chosen)
+  if (selected) return <CharacterPage character={selected} back={LIST} />
   return (
     <>
       <Profile showcase={showcase} />

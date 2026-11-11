@@ -118,8 +118,16 @@ const RU = {
   Skill: 'Навык',
   Ultimate: 'Сверхспособность',
   Talent: 'Талант',
-  'Memosprite Skill': 'Навык мемоспрайта',
-  'Memosprite Talent': 'Талант мемоспрайта',
+  'Memosprite Skill': 'Навык духа памяти',
+  'Memosprite Talent': 'Талант духа памяти',
+  // Character page
+  'Skills and eidolons': 'Навыки и эйдолоны',
+  '← All characters': '← Все персонажи',
+  Skills: 'Навыки',
+  Eidolons: 'Эйдолоны',
+  Unlocked: 'Открыт',
+  'Not unlocked': 'Не открыт',
+  'This app has no texts for this character yet.': 'Для этого персонажа пока нет описаний.',
 } as const
 
 export type Message = keyof typeof RU
