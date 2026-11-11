@@ -1,0 +1,195 @@
+"""Enka.Network's Honkai: Star Rail showcase, converted to this app's model."""
+
+import re
+
+from pydantic import Field, ValidationError
+
+from app.showcase.enka import DEFAULT_TTL_SECONDS, EnkaModel, UpstreamDataError
+from app.starrail.gamedata import GAMEDATA
+from app.starrail.models import (
+    LightCone,
+    Path,
+    Relic,
+    StarRailCharacter,
+    StarRailElement,
+    StarRailShowcase,
+    StarRailSlot,
+    StarRailStat,
+    StarRailStatKey,
+    SubStat,
+)
+
+ENKA_URL = "https://enka.network/api/hsr/uid/{uid}"
+IMAGE_HOST = "https://enka.network"
+
+UNKNOWN_CHARACTER = "Unknown character"
+UNKNOWN_LIGHT_CONE = "Unknown light cone"
+UNKNOWN_SET = "Unknown set"
+
+# A path under Enka's Star Rail images, like "/ui/hsr/SpriteOutput/AvatarRoundIcon/1409.png";
+# rejects "/ui/hsr/../x.png" and "/ui/hsr/a.png?b".
+# https://regex101.com/?flavor=python&regex=%5E%2Fui%2Fhsr%2F%5B%5Cw%2F%5D%2B%5C.png%24&flags=am&testString=%2Fui%2Fhsr%2FSpriteOutput%2FAvatarRoundIcon%2F1409.png%0A%2Fui%2Fhsr%2F..%2Fx.png%0A%2Fui%2Fhsr%2Fa.png%3Fb
+ICON_PATH = re.compile(r"/ui/hsr/[\w/]+\.png", re.ASCII)
+
+ELEMENTS = {
+    "Physical": StarRailElement.PHYSICAL,
+    "Fire": StarRailElement.FIRE,
+    "Ice": StarRailElement.ICE,
+    "Thunder": StarRailElement.LIGHTNING,
+    "Wind": StarRailElement.WIND,
+    "Quantum": StarRailElement.QUANTUM,
+    "Imaginary": StarRailElement.IMAGINARY,
+}
+PATHS = {  # the game's internal names
+    "Warrior": Path.DESTRUCTION,
+    "Rogue": Path.HUNT,
+    "Mage": Path.ERUDITION,
+    "Shaman": Path.HARMONY,
+    "Warlock": Path.NIHILITY,
+    "Knight": Path.PRESERVATION,
+    "Priest": Path.ABUNDANCE,
+    "Memory": Path.REMEMBRANCE,
+    "Elation": Path.ELATION,
+}
+SLOTS = {
+    "HEAD": StarRailSlot.HEAD,
+    "HAND": StarRailSlot.HANDS,
+    "BODY": StarRailSlot.BODY,
+    "FOOT": StarRailSlot.FEET,
+    "NECK": StarRailSlot.SPHERE,
+    "OBJECT": StarRailSlot.ROPE,
+}
+PROPERTIES = {
+    "HPDelta": StarRailStatKey.HP,
+    "HPAddedRatio": StarRailStatKey.HP_PERCENT,
+    "AttackDelta": StarRailStatKey.ATK,
+    "AttackAddedRatio": StarRailStatKey.ATK_PERCENT,
+    "DefenceDelta": StarRailStatKey.DEF,
+    "DefenceAddedRatio": StarRailStatKey.DEF_PERCENT,
+    "SpeedDelta": StarRailStatKey.SPD,
+    "CriticalChanceBase": StarRailStatKey.CRIT_RATE,
+    "CriticalDamageBase": StarRailStatKey.CRIT_DMG,
+    "StatusProbabilityBase": StarRailStatKey.EFFECT_HIT_RATE,
+    "StatusResistanceBase": StarRailStatKey.EFFECT_RES,
+    "BreakDamageAddedRatioBase": StarRailStatKey.BREAK_EFFECT,
+    "SPRatioBase": StarRailStatKey.ENERGY_REGEN,
+    "HealRatioBase": StarRailStatKey.OUTGOING_HEALING,
+    "PhysicalAddedRatio": StarRailStatKey.PHYSICAL_DMG,
+    "FireAddedRatio": StarRailStatKey.FIRE_DMG,
+    "IceAddedRatio": StarRailStatKey.ICE_DMG,
+    "ThunderAddedRatio": StarRailStatKey.LIGHTNING_DMG,
+    "WindAddedRatio": StarRailStatKey.WIND_DMG,
+    "QuantumAddedRatio": StarRailStatKey.QUANTUM_DMG,
+    "ImaginaryAddedRatio": StarRailStatKey.IMAGINARY_DMG,
+}
+
+
+class _SubAffix(EnkaModel):
+    affix_id: int
+    cnt: int
+    step: int = 0  # Enka leaves it out when it is zero
+
+
+class _Relic(EnkaModel):
+    tid: int
+    level: int = 0
+    main_affix_id: int
+    sub_affix_list: list[_SubAffix] = Field(default_factory=list)
+
+
+class _Equipment(EnkaModel):
+    tid: int
+    level: int = 1
+    rank: int = 1
+
+
+class _Avatar(EnkaModel):
+    avatar_id: int
+    level: int
+    rank: int = 0  # eidolon; Enka leaves it out at 0
+    equipment: _Equipment | None = None
+    relic_list: list[_Relic] = Field(default_factory=list)
+
+
+class _Detail(EnkaModel):
+    nickname: str = ""
+    level: int
+    # Missing when the showcase is hidden.
+    avatar_detail_list: list[_Avatar] = Field(default_factory=list)
+
+
+class _Response(EnkaModel):
+    detail_info: _Detail
+    ttl: int = DEFAULT_TTL_SECONDS
+
+
+def _icon(path: str | None) -> str | None:
+    """The image URL, unless the path could make the URL point anywhere but one Enka image."""
+    return IMAGE_HOST + path if path and ICON_PATH.fullmatch(path) else None
+
+
+def _relic(relic: _Relic) -> Relic | None:
+    """None for a relic newer than this app's game data."""
+    data = GAMEDATA.relics.get(str(relic.tid))
+    if data is None:
+        return None
+    prop, base, per_level = GAMEDATA.main_affixes[str(data.main_group)][str(relic.main_affix_id)]
+    subs = GAMEDATA.sub_affixes[str(data.sub_group)]
+    return Relic(
+        slot=SLOTS[data.slot],
+        set_name=GAMEDATA.sets.get(str(data.set), UNKNOWN_SET),
+        rarity=data.rarity,
+        level=relic.level,
+        main=StarRailStat(PROPERTIES[prop], base + per_level * relic.level),
+        subs=tuple(_sub(*subs[str(sub.affix_id)], sub) for sub in relic.sub_affix_list),
+        icon=_icon(data.icon),
+    )
+
+
+def _sub(prop: str, per_roll: float, per_step: float, sub: _SubAffix) -> SubStat:
+    # Each roll adds the base value plus 0, 1 or 2 steps; `step` totals them.
+    return SubStat(PROPERTIES[prop], per_roll * sub.cnt + per_step * sub.step, sub.cnt)
+
+
+def _light_cone(equipment: _Equipment | None) -> LightCone | None:
+    if equipment is None:
+        return None
+    data = GAMEDATA.light_cones.get(str(equipment.tid))
+    return LightCone(
+        name=data.name if data else UNKNOWN_LIGHT_CONE,
+        rarity=data.rarity if data else 0,
+        level=equipment.level,
+        superimposition=equipment.rank,
+        icon=_icon(data.icon) if data else None,
+    )
+
+
+def _character(avatar: _Avatar) -> StarRailCharacter:
+    data = GAMEDATA.characters.get(str(avatar.avatar_id))
+    relics = (_relic(relic) for relic in avatar.relic_list)
+    return StarRailCharacter(
+        id=avatar.avatar_id,
+        name=data.name if data else UNKNOWN_CHARACTER,
+        element=ELEMENTS[data.element] if data else None,
+        path=PATHS[data.path] if data else None,
+        rarity=data.rarity if data else None,
+        level=avatar.level,
+        eidolon=avatar.rank,
+        light_cone=_light_cone(avatar.equipment),
+        relics=tuple(relic for relic in relics if relic),
+        icon=_icon(data.icon) if data else None,
+    )
+
+
+def parse(uid: str, body: bytes) -> tuple[StarRailShowcase, int]:
+    """Convert an Enka response into a showcase and the seconds it may be cached for."""
+    try:
+        response = _Response.model_validate_json(body)
+        detail = response.detail_info
+        characters = tuple(_character(avatar) for avatar in detail.avatar_detail_list)
+    except (KeyError, ValidationError) as error:
+        raise UpstreamDataError(f"unreadable Enka Star Rail response for {uid}") from error
+    showcase = StarRailShowcase(
+        uid=uid, nickname=detail.nickname, trailblaze_level=detail.level, characters=characters
+    )
+    return showcase, response.ttl

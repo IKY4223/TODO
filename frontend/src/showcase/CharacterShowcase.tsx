@@ -1,6 +1,7 @@
 import type { JSX, SubmitEvent } from 'react'
 import { UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { Icon } from '../ui/Icon'
 import { DamageCalculator } from '../damage/DamageCalculator'
 import {
   type Artifact,
@@ -16,12 +17,6 @@ import {
 
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
-
-/** Decorative: the name is always printed next to the picture. */
-function Icon(props: { readonly src: string | null; readonly size: number }): JSX.Element | null {
-  const { src, size } = props
-  return src ? <img src={src} alt="" width={size} height={size} loading="lazy" /> : null
-}
 
 function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Element {
   return (

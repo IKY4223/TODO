@@ -13,6 +13,8 @@ const IMPORT_TIMEOUT_MS = 30_000
 const MIN_TOUCH_TARGET_PX = 44
 const MIN_INPUT_FONT_PX = 16
 const MIN_CONTROLS_ON_SCREEN = 10
+// Game and tool links, the UID form, a toggle per character.
+const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
 // A 1x1 transparent PNG: no test may depend on the real image host.
@@ -32,12 +34,15 @@ test.beforeEach(async ({ page }) => {
   await page.route('https://enka.network/**', async (route) =>
     route.fulfill({ contentType: 'image/png', body: PIXEL }),
   )
-  await page.goto('/')
+  await page.goto('/#genshin/builds')
 })
 
+/** The tool on screen: the others stay mounted, hidden, so page-wide lookups would find them too. */
+const shown = (page: Page): Locator => page.locator('main > div:not([hidden])')
+
 async function loadShowcase(page: Page, uid = UID): Promise<void> {
-  await page.getByLabel('UID').fill(uid)
-  await page.getByRole('button', { name: 'Load characters' }).click()
+  await shown(page).getByLabel('UID').fill(uid)
+  await shown(page).getByRole('button', { name: 'Load characters' }).click()
 }
 
 const card = (page: Page, name: string): Locator =>
@@ -175,4 +180,32 @@ test('imports wish history from the text Android shows and keeps it on the devic
   await page.reload()
   await expect(card(page, 'Character Event').getByText('15 pulls since the last 5★')).toBeVisible()
   expect(problems).toEqual([])
+})
+
+test('imports a Star Rail showcase with relic rolls', async ({ page }) => {
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  // Until the switch renders, the Genshin tool is still the one on screen.
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  // Served from backend/tests/fixtures/enka_starrail.json.
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText(['Hyacine', 'March 7th'])
+  const hyacine = card(page, 'Hyacine')
+  await expect(hyacine.getByText('Lv. 80 · E0 · Wind · Remembrance')).toBeVisible()
+  await expect(hyacine.getByText("The Story's Next Page · Lv. 70 · S1")).toBeVisible()
+  await hyacine.getByText('Relics (6)').click()
+  await expect(hyacine.getByText('Head · Warrior Goddess of Sun and Thunder +15')).toBeVisible()
+  await expect(hyacine.getByText(/SPD 12\.1 ×5/)).toBeVisible()
+  await expect(card(page, 'March 7th').getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
+
+  await page.evaluate(() => {
+    for (const details of document.querySelectorAll('details')) details.open = true
+  })
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('Star Rail is where the app opens', async ({ page }) => {
+  await page.goto('/')
+  await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()
 })

@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test } from 'vitest'
 import App from './App'
 
@@ -7,32 +7,57 @@ afterEach(() => {
   window.location.hash = ''
 })
 
-const heading = (name: string): HTMLElement | null => screen.queryByRole('heading', { name })
+const current = (navigation: string): string | null | undefined =>
+  within(screen.getByRole('navigation', { name: navigation }))
+    .getAllByRole('link')
+    .find((link) => link.getAttribute('aria-current') === 'page')?.textContent
 
-test('opens on character builds', () => {
+const shown = (): HTMLElement => screen.getByRole('region')
+
+test('opens on Star Rail builds', () => {
   render(<App />)
-  expect(heading('Character builds')).not.toBeNull()
-  expect(heading('Wish forecast')).toBeNull()
-  expect(screen.getByRole('link', { name: 'Builds' }).getAttribute('aria-current')).toBe('page')
+  expect(current('Games')).toBe('Star Rail')
+  expect(current('Tools')).toBe('Builds')
+  expect(within(shown()).getByText(/Honkai: Star Rail/)).toBeDefined()
 })
 
-test('switches tool when the address changes', async () => {
+test.each([
+  { address: '#genshin/builds', game: 'Genshin', tool: 'Builds', heading: 'Character builds' },
+  { address: '#genshin/wishes', game: 'Genshin', tool: 'Wishes', heading: 'Wish forecast' },
+  { address: '#genshin/history', game: 'Genshin', tool: 'History', heading: 'Wish history' },
+  { address: '#starrail/builds', game: 'Star Rail', tool: 'Builds', heading: 'Character builds' },
+])('$address shows $game $tool', async ({ address, game, tool, heading }) => {
   render(<App />)
-  window.location.hash = '#wishes'
-  expect(await screen.findByRole('heading', { name: 'Wish forecast' })).toBeDefined()
-  expect(heading('Character builds')).toBeNull()
-  expect(screen.getByRole('link', { name: 'Wishes' }).getAttribute('aria-current')).toBe('page')
+  window.location.hash = address
+  expect(await screen.findByRole('heading', { name: heading })).toBeDefined()
+  expect(current('Games')).toBe(game)
+  expect(current('Tools')).toBe(tool)
 })
 
-test('falls back to builds for an unknown address', () => {
-  window.location.hash = '#toString'
+const tools = (): (string | null)[] =>
+  within(screen.getByRole('navigation', { name: 'Tools' }))
+    .getAllByRole('link')
+    .map((link) => link.textContent)
+
+test('each game lists only its own tools', async () => {
   render(<App />)
-  expect(heading('Character builds')).not.toBeNull()
+  expect(tools()).toEqual(['Builds'])
+  window.location.hash = '#genshin/builds'
+  await screen.findByRole('link', { name: 'Wishes' })
+  expect(tools()).toEqual(['Builds', 'Wishes', 'History'])
 })
 
-test('wish history has its own address', async () => {
+test('a game link opens that game on its first tool', () => {
   render(<App />)
-  window.location.hash = '#history'
-  expect(await screen.findByRole('heading', { name: 'Wish history' })).toBeDefined()
-  expect(screen.getByRole('link', { name: 'History' }).getAttribute('aria-current')).toBe('page')
+  const genshin = within(screen.getByRole('navigation', { name: 'Games' })).getByRole('link', { name: 'Genshin' })
+  expect(genshin.getAttribute('href')).toBe('#genshin/builds')
 })
+
+test.each(['#toString', '#genshin/toString', '#starrail/history', '#genshin'])(
+  'an unknown address %s falls back to a tool that exists',
+  (address) => {
+    window.location.hash = address
+    render(<App />)
+    expect(current('Tools')).toBe('Builds')
+  },
+)

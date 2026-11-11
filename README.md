@@ -7,7 +7,12 @@ Zenless Zone Zero).
 
 ## Features
 
-- **Character builds** — enter a UID and see every character in the player's showcase: final
+The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
+
+- **Star Rail builds** — enter a UID and see every character in the player's showcase: level,
+  eidolon, element, path, light cone and relics. Each substat shows how many times it rolled,
+  the groundwork for judging relics.
+- **Genshin builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
 - **Damage calculator** — for any imported character: enter a talent multiplier, pick the
   scaling stat, damage bonus, reaction and enemy, and get average, crit and non-crit damage.
@@ -22,8 +27,7 @@ Zenless Zone Zero).
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
 
-All of them cover Genshin Impact for now. Character, weapon and artifact images are loaded from
-Enka.Network.
+Character, weapon, light cone, artifact and relic images are loaded from Enka.Network.
 
 Planned: Honkai: Star Rail first (builds, warp history, warp forecast), then for Genshin talent
 multipliers from game data, a best-artifact search and luck statistics from the imported
@@ -56,12 +60,13 @@ committed files do not match.
 
 ## Game data
 
-`backend/app/showcase/gamedata.json` maps the ids Enka.Network returns to names. Rebuild it after
-each game version:
+`backend/app/showcase/gamedata.json` (Genshin) and `backend/app/starrail/gamedata.json` (Star Rail)
+map the ids Enka.Network returns to names and stats. Rebuild them after each game version:
 
 ```sh
 cd backend
 uv run python scripts/sync_gamedata.py
+uv run python scripts/sync_starrail_data.py
 ```
 
 A character released since the last rebuild still shows up, as "Unknown character".

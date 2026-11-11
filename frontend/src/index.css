@@ -39,6 +39,7 @@ h3 {
 }
 
 nav {
+  margin-bottom: 0.5rem;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
@@ -269,6 +270,35 @@ summary {
 
 [data-element='dendro'] {
   --element: #84cc16;
+}
+
+/* Star Rail elements; wind and ice reuse Genshin's anemo and cryo tones. */
+[data-element='physical'] {
+  --element: #d1d5db;
+}
+
+[data-element='fire'] {
+  --element: #f97316;
+}
+
+[data-element='ice'] {
+  --element: #a5f3fc;
+}
+
+[data-element='lightning'] {
+  --element: #c084fc;
+}
+
+[data-element='wind'] {
+  --element: #5eead4;
+}
+
+[data-element='quantum'] {
+  --element: #818cf8;
+}
+
+[data-element='imaginary'] {
+  --element: #facc15;
 }
 
 [role='alert'] {

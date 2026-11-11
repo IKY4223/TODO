@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/starrail/showcase/{uid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Showcase */
+        get: operations["showcase_api_starrail_showcase__uid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -220,6 +237,19 @@ export interface components {
              */
             end_id: string;
         };
+        /** LightCone */
+        LightCone: {
+            /** Name */
+            name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            /** Superimposition */
+            superimposition: number;
+            /** Icon */
+            icon: string | null;
+        };
         /** Milestone */
         Milestone: {
             /** Chance */
@@ -234,6 +264,11 @@ export interface components {
             /** Pulls */
             pulls: components["schemas"]["Pull"][];
         };
+        /**
+         * Path
+         * @enum {string}
+         */
+        Path: "destruction" | "hunt" | "erudition" | "harmony" | "nihility" | "preservation" | "abundance" | "remembrance" | "elation";
         /** Pull */
         Pull: {
             /** Id */
@@ -254,6 +289,21 @@ export interface components {
          * @enum {string}
          */
         Reaction: "none" | "weak" | "strong";
+        /** Relic */
+        Relic: {
+            slot: components["schemas"]["StarRailSlot"];
+            /** Set Name */
+            set_name: string;
+            /** Rarity */
+            rarity: number;
+            /** Level */
+            level: number;
+            main: components["schemas"]["StarRailStat"];
+            /** Subs */
+            subs: components["schemas"]["SubStat"][];
+            /** Icon */
+            icon: string | null;
+        };
         /** Showcase */
         Showcase: {
             /** Uid */
@@ -270,6 +320,58 @@ export interface components {
          * @enum {string}
          */
         Slot: "flower" | "plume" | "sands" | "goblet" | "circlet";
+        /** StarRailCharacter */
+        StarRailCharacter: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            element: components["schemas"]["StarRailElement"] | null;
+            path: components["schemas"]["Path"] | null;
+            /** Rarity */
+            rarity: number | null;
+            /** Level */
+            level: number;
+            /** Eidolon */
+            eidolon: number;
+            light_cone: components["schemas"]["LightCone"] | null;
+            /** Relics */
+            relics: components["schemas"]["Relic"][];
+            /** Icon */
+            icon: string | null;
+        };
+        /**
+         * StarRailElement
+         * @enum {string}
+         */
+        StarRailElement: "physical" | "fire" | "ice" | "lightning" | "wind" | "quantum" | "imaginary";
+        /** StarRailShowcase */
+        StarRailShowcase: {
+            /** Uid */
+            uid: string;
+            /** Nickname */
+            nickname: string;
+            /** Trailblaze Level */
+            trailblaze_level: number;
+            /** Characters */
+            characters: components["schemas"]["StarRailCharacter"][];
+        };
+        /**
+         * StarRailSlot
+         * @enum {string}
+         */
+        StarRailSlot: "head" | "hands" | "body" | "feet" | "sphere" | "rope";
+        /** StarRailStat */
+        StarRailStat: {
+            key: components["schemas"]["StarRailStatKey"];
+            /** Value */
+            value: number;
+        };
+        /**
+         * StarRailStatKey
+         * @enum {string}
+         */
+        StarRailStatKey: "hp" | "hp_percent" | "atk" | "atk_percent" | "def" | "def_percent" | "spd" | "crit_rate" | "crit_dmg" | "effect_hit_rate" | "effect_res" | "break_effect" | "energy_regen" | "outgoing_healing" | "physical_dmg" | "fire_dmg" | "ice_dmg" | "lightning_dmg" | "wind_dmg" | "quantum_dmg" | "imaginary_dmg";
         /** Stat */
         Stat: {
             key: components["schemas"]["StatKey"];
@@ -286,6 +388,14 @@ export interface components {
             key: components["schemas"]["StatKey"];
             /** Value */
             value: number;
+        };
+        /** SubStat */
+        SubStat: {
+            key: components["schemas"]["StarRailStatKey"];
+            /** Value */
+            value: number;
+            /** Rolls */
+            rolls: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -374,6 +484,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Showcase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    showcase_api_starrail_showcase__uid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description In-game UID */
+                uid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StarRailShowcase"];
                 };
             };
             /** @description Validation Error */
