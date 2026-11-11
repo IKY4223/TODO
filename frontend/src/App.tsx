@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode, useSyncExternalStore } from 'react'
 import { ErrorBoundary } from './ErrorBoundary'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
+import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
@@ -21,7 +22,10 @@ interface GameEntry {
 const GAMES = {
   starrail: {
     label: 'Star Rail',
-    tools: { builds: { label: 'Builds', element: <StarRailShowcase /> } },
+    tools: {
+      builds: { label: 'Builds', element: <StarRailShowcase /> },
+      relics: { label: 'Relics', element: <RelicAdvisor /> },
+    },
   },
   genshin: {
     label: 'Genshin',

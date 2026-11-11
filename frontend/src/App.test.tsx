@@ -26,6 +26,7 @@ test.each([
   { address: '#genshin/wishes', game: 'Genshin', tool: 'Wishes', heading: 'Wish forecast' },
   { address: '#genshin/history', game: 'Genshin', tool: 'History', heading: 'Wish history' },
   { address: '#starrail/builds', game: 'Star Rail', tool: 'Builds', heading: 'Character builds' },
+  { address: '#starrail/relics', game: 'Star Rail', tool: 'Relics', heading: 'Relic advisor' },
 ])('$address shows $game $tool', async ({ address, game, tool, heading }) => {
   render(<App />)
   window.location.hash = address
@@ -41,7 +42,7 @@ const tools = (): (string | null)[] =>
 
 test('each game lists only its own tools', async () => {
   render(<App />)
-  expect(tools()).toEqual(['Builds'])
+  expect(tools()).toEqual(['Builds', 'Relics'])
   window.location.hash = '#genshin/builds'
   await screen.findByRole('link', { name: 'Wishes' })
   expect(tools()).toEqual(['Builds', 'Wishes', 'History'])

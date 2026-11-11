@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/starrail/relics/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Relic Forecast */
+        post: operations["relic_forecast_api_starrail_relics_forecast_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -315,6 +332,28 @@ export interface components {
             /** Icon */
             icon: string | null;
         };
+        /** RelicForecast */
+        RelicForecast: {
+            /** Upgrades */
+            upgrades: number;
+            /** Chances */
+            chances: number[];
+            /** Expected */
+            expected: number;
+        };
+        /** RelicQuery */
+        RelicQuery: {
+            main: components["schemas"]["StarRailStatKey"];
+            /** Subs */
+            subs: components["schemas"]["StarRailStatKey"][];
+            /** Level */
+            level: number;
+            /**
+             * Wanted
+             * @description The substats worth having
+             */
+            wanted: components["schemas"]["StarRailStatKey"][];
+        };
         /** Showcase */
         Showcase: {
             /** Uid */
@@ -549,6 +588,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StarRailShowcase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    relic_forecast_api_starrail_relics_forecast_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RelicQuery"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelicForecast"];
                 };
             };
             /** @description Validation Error */

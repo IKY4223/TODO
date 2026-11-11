@@ -85,6 +85,16 @@ label {
   accent-color: var(--color-accent);
 }
 
+fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
 /* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
 input:not([type='checkbox']),
 select,

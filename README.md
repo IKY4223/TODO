@@ -10,8 +10,11 @@ Zenless Zone Zero).
 The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
 
 - **Star Rail builds** — enter a UID and see every character in the player's showcase: level,
-  eidolon, element, path, light cone and relics. Each substat shows how many times it rolled,
-  the groundwork for judging relics.
+  eidolon, element, path, skill levels, light cone and relics, under the player's profile card.
+  Each substat shows how many times it rolled.
+- **Star Rail relic advisor** — describe a 5★ relic and pick the substats you want: the app
+  gives the exact chance that its remaining upgrades land on them. The upgrade rules are
+  community estimates; a simulation in the tests checks the exact math.
 - **Genshin builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
 - **Damage calculator** — for any imported character: enter a talent multiplier, pick the

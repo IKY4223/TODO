@@ -17,6 +17,7 @@ const MIN_CONTROLS_ON_SCREEN = 10
 const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
+const MIN_RELIC_CONTROLS = 11 // 6 selects, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
@@ -218,6 +219,37 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   expect(problems).toEqual([])
+})
+
+test('tells what the upgrades a relic has left can bring', async ({ page }) => {
+  await page.goto('/#starrail/relics')
+  const tool = shown(page)
+  await tool.getByLabel('Main stat').selectOption('hp')
+  await tool.getByLabel('Level').selectOption('12')
+  await tool.getByLabel('Substat 1').selectOption('atk')
+  await tool.getByLabel('Substat 2').selectOption('def')
+  await tool.getByLabel('Substat 3').selectOption('spd')
+  await tool.getByLabel('Substat 4').selectOption('crit_rate')
+  await tool.getByRole('button', { name: 'Calculate' }).click()
+  // SPD and CRIT Rate are wanted by default: one upgrade, two of four substats.
+  await expect(tool.getByText('1 upgrade left')).toBeVisible()
+  await expect(tool.getByRole('row')).toHaveText(['Wanted upgradesChance', 'At least 150%'])
+
+
+  expectPhoneFriendly(await measureLayout(page), MIN_RELIC_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('explains why a relic cannot exist', async ({ page }) => {
+  await page.goto('/#starrail/relics')
+  const tool = shown(page)
+  await tool.getByLabel('Main stat').selectOption('hp')
+  await tool.getByLabel('Substat 1').selectOption('atk')
+  await tool.getByLabel('Substat 2').selectOption('atk')
+  await tool.getByLabel('Substat 3').selectOption('spd')
+  await tool.getByRole('button', { name: 'Calculate' }).click()
+  await expect(tool.getByRole('alert')).toHaveText('A relic cannot have the same substat twice.')
 })
 
 test('Star Rail is where the app opens', async ({ page }) => {

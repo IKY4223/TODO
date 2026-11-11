@@ -9,3 +9,6 @@ export const MAX_MULTIPLIER = 100
 export const MAX_ENEMY_LEVEL = 200
 export const MIN_RESISTANCE = -1
 export const MAX_RESISTANCE = 10
+export const MAX_RELIC_LEVEL = 15
+export const RELIC_UPGRADE_EVERY = 3
+export const RELIC_SUBSTATS = ["hp", "atk", "def", "hp_percent", "atk_percent", "def_percent", "spd", "crit_rate", "crit_dmg", "effect_hit_rate", "effect_res", "break_effect"] as const
