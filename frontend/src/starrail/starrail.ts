@@ -79,8 +79,10 @@ const FORMATS = {
   percent: new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 }),
 } as const satisfies Record<StatInfo['format'], Intl.NumberFormat>
 
-export const formatStat = ({ key, value }: Stat): string =>
-  `${STATS[key].label} ${FORMATS[STATS[key].format].format(value)}`
+export const formatValue = ({ key, value }: Stat): string =>
+  FORMATS[STATS[key].format].format(value)
+
+export const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
 
 const isNullable =
   <TValue>(isValue: (value: unknown) => value is TValue) =>

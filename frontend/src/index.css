@@ -225,6 +225,7 @@ summary {
   padding: 0.75rem 0;
   cursor: pointer;
   user-select: none; /* a quick open-and-close must not select the label */
+  -webkit-tap-highlight-color: transparent; /* :focus-visible still marks it for keyboards */
 }
 
 .item {
@@ -236,6 +237,29 @@ summary {
 .item div {
   display: grid;
   gap: 0.125rem;
+}
+
+/* A relic or artifact entry is tall: its picture belongs next to its name, at the top. */
+.card li.item {
+  align-items: flex-start;
+}
+
+/* One substat per line: name, then value (and rolls) aligned on the right. */
+.card .substats {
+  gap: 0.125rem;
+  margin-top: 0.25rem;
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.substats li {
+  display: grid;
+  grid-template-columns: 1fr auto 2.5ch;
+  gap: 0.5rem;
+}
+
+.substats span:not(:first-child) {
+  text-align: right;
 }
 
 .item img {

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 import { CharacterShowcase } from './CharacterShowcase'
 import type { Showcase } from './showcase'
@@ -64,6 +64,11 @@ function load(respond: () => Promise<Response>): ReturnType<typeof vi.fn> {
   return fetchMock
 }
 
+const rows = (list: string): (string | null)[] =>
+  within(screen.getByRole('list', { name: list }))
+    .getAllByRole('listitem')
+    .map((item) => item.textContent)
+
 const statValue = (label: string): string | null | undefined =>
   screen.getByText(label, { selector: 'dt' }).nextElementSibling?.textContent
 
@@ -99,7 +104,7 @@ test('shows the weapon and each artifact with its stats', async () => {
   expect(await screen.findByText('Skyward Harp · Lv. 90 · R2')).toBeDefined()
   expect(screen.getByText('Flower · Bloodstained Chivalry +20')).toBeDefined()
   expect(screen.getByText('HP 4,780')).toBeDefined()
-  expect(screen.getByText('DEF 37 · ATK 11.1% · CRIT DMG 18.7% · EM 19')).toBeDefined()
+  expect(rows('Flower substats')).toEqual(['DEF 37', 'ATK 11.1%', 'CRIT DMG 18.7%', 'EM 19'])
 })
 
 const iconSources = (): (string | null)[] =>

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 import type { StarRailShowcase as Showcase } from './starrail'
 import { StarRailShowcase } from './StarRailShowcase'
@@ -60,6 +60,11 @@ function load(respond: () => Promise<Response>): ReturnType<typeof vi.fn> {
   return fetchMock
 }
 
+const rows = (list: string): (string | null)[] =>
+  within(screen.getByRole('list', { name: list }))
+    .getAllByRole('listitem')
+    .map((item) => item.textContent)
+
 test('asks the API for the entered UID', async () => {
   const fetchMock = load(async () => Response.json(SHOWCASE))
   await screen.findByText('Hyacine')
@@ -85,7 +90,13 @@ test('shows each relic with its stats and the rolls each substat took', async ()
   load(async () => Response.json(SHOWCASE))
   expect(await screen.findByText('Head · Warrior Goddess of Sun and Thunder +15')).toBeDefined()
   expect(screen.getByText('HP 706')).toBeDefined()
-  expect(screen.getByText('ATK 40 ×2 · SPD 12.1 ×5 · Effect Hit Rate 3.5% ×1 · Break Effect 5.8% ×1')).toBeDefined()
+  // One substat per line, top to bottom, the way the game lists them.
+  expect(rows('Head substats')).toEqual([
+    'ATK 40 ×2',
+    'SPD 12.1 ×5',
+    'Effect Hit Rate 3.5% ×1',
+    'Break Effect 5.8% ×1',
+  ])
 })
 
 test('shows the character, light cone and relic icons', async () => {

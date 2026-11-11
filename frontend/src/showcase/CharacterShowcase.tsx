@@ -27,7 +27,13 @@ function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Elemen
           {SLOTS[artifact.slot]} · {artifact.set_name} +{artifact.level}
         </span>
         <strong>{formatStat(artifact.main)}</strong>
-        <span className="hint">{artifact.subs.map(formatStat).join(' · ')}</span>
+        <ul className="substats" aria-label={`${SLOTS[artifact.slot]} substats`}>
+          {artifact.subs.map((sub) => (
+            <li key={sub.key}>
+              <span>{STATS[sub.key].label}</span> <span>{formatValue(sub)}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </li>
   )

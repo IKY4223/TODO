@@ -6,11 +6,13 @@ import {
   ELEMENTS,
   fetchStarRailShowcase,
   formatStat,
+  formatValue,
   PATHS,
   type Relic,
   SLOTS,
   type StarRailCharacter,
   type StarRailShowcase as Showcase,
+  STATS,
 } from './starrail'
 
 const CHARACTER_ICON_SIZE = 56
@@ -25,9 +27,14 @@ function RelicItem({ relic }: { readonly relic: Relic }): JSX.Element {
           {SLOTS[relic.slot]} · {relic.set_name} +{relic.level}
         </span>
         <strong>{formatStat(relic.main)}</strong>
-        <span className="hint">
-          {relic.subs.map((sub) => `${formatStat(sub)} ×${sub.rolls}`).join(' · ')}
-        </span>
+        <ul className="substats" aria-label={`${SLOTS[relic.slot]} substats`}>
+          {relic.subs.map((sub) => (
+            <li key={sub.key}>
+              <span>{STATS[sub.key].label}</span> <span>{formatValue(sub)}</span>{' '}
+              <span>×{sub.rolls}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </li>
   )
