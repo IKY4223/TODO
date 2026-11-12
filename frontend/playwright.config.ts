@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig, devices } from '@playwright/test'
 
 const PORT = 8010
@@ -12,7 +13,11 @@ export default defineConfig({
     baseURL: ORIGIN,
     trace: 'off',
     // For a machine whose installed browser does not match this Playwright version.
-    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH },
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH,
+      // One wide font on every machine; see e2e/fonts.conf.
+      env: { ...process.env, FONTCONFIG_FILE: fileURLToPath(new URL('e2e/fonts.conf', import.meta.url)) },
+    },
   },
   projects: [
     { name: 'phone', use: { ...devices['Pixel 7'] } },

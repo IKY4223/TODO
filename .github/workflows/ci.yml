@@ -33,3 +33,15 @@ jobs:
           docker run -d -p 8000:8000 hoyo-toolkit
           curl -fsS --retry 10 --retry-delay 1 --retry-all-errors http://localhost:8000/api/health
           curl -fsS http://localhost:8000/ | grep -q '<div id="root">'
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: No known vulnerability in the Python dependencies
+        working-directory: backend
+        run: uv export --frozen --no-hashes > "$RUNNER_TEMP/requirements.txt" && uvx pip-audit --strict -r "$RUNNER_TEMP/requirements.txt"
+      - name: No known vulnerability in the npm dependencies
+        working-directory: frontend
+        run: npm audit --audit-level=moderate

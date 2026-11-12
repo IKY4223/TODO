@@ -44,13 +44,16 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-1. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
+1. Star Rail: conditional bonuses (light cone passives, relic sets and traces that need a
+   trigger, teammates' buffs) as switches in final stats and team speed; action advance and
+   speed buffs in the turn order; summons and memosprites as their own turns.
+2. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
    game and tool buttons.
-2. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+3. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-3. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+4. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-4. Zenless Zone Zero: undecided.
+5. Zenless Zone Zero: undecided.
 
 Before any public launch, the checklist in `CLAUDE.md` comes first.
 
@@ -105,7 +108,12 @@ Runs everything CI runs:
 - frontend: type generation, oxlint with accessibility rules, Vitest with a coverage floor,
   a production build
 - the built app in a real browser (Playwright): every tool end to end at phone size and at
-  360px wide, touch target sizes, and an automated accessibility scan
+  360px wide, touch target sizes, and an automated accessibility scan. The browser renders with
+  DejaVu Sans on every machine (`frontend/e2e/fonts.conf`), a wide font, so text that fits in
+  the tests fits on phones
+
+CI also checks every dependency against the known vulnerability databases (`pip-audit`,
+`npm audit`) and runs GitHub's CodeQL code scanning on every push and weekly.
 
 The browser tests need Chromium once: `npx playwright install chromium` in `frontend/`. They run
 against the real backend with Enka.Network replaced by a recorded response.
