@@ -25,7 +25,10 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   and leave when their actions run out (Netherwing, Fuyuan), Lightning-Lord speeds up with its
   hits, and Firefly's Complete Combustion ends on its countdown's turn. Sets that raise all
   allies' stats (Fleet of the Ageless, Broken Keel) count on the wearer by its own stats and on
-  the others by a switch.
+  the others by a switch. Effects take the character's own skill levels and Eidolons; Jingliu's
+  Syzygy brings Spectral Transmigration, Pearl's advance counts the team's Elation characters,
+  and an enemy with the SPD you type in takes turns, slowed and delayed by Welt, Boothill and
+  Dan Heng. A buff gained again refreshes unless the game lets it stack.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
@@ -57,11 +60,11 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 Planned, in order:
 
 1. Star Rail effects, the rest of the table:
-   - characters whose effect depends on a state or on the team (Jingliu's Spectral
-     Transmigration, Mydei's Vendetta, Pearl's count of Elation teammates) and effects that
-     Eidolons add;
-   - effects at the player's own skill levels instead of level 10;
-   - enemy turns and slows (Welt, Boothill, Dan Heng), with the enemy's SPD typed in;
+   - Robin's Concerto (its countdown, her paused turns, Eidolon 2), Aglaea's SPD stacks,
+     Robin • Summeretto's Summer Songbirds, Sushang's Eidolon 6, Castorice's Ardent Will,
+     Hanya's Eidolon 1, and the extra turns of Firefly's Eidolon 2 and Pearl's team of four;
+   - the later skill kits of Jingliu and Welt, told apart from the first ones;
+   - debuffs by their base chance instead of always landing;
    - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
      which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
 2. Telegram: a bot and a Telegram Mini App, since a free host for the site is not settled yet.

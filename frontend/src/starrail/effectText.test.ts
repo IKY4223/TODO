@@ -97,4 +97,21 @@ test('describes turn effects', () => {
   expect(turnEffectText(turn('firefly-skill'), 0.25, t)).toBe(
     'Every turn · Self: action advance +25% · outside its state',
   )
+  expect(turnEffectText(turn('welt-ultimate'), 0.4, t)).toBe(
+    'On Ultimate · Enemies: action delay +40%',
+  )
+  expect(turnEffectText(turn('welt-skill'), 0.1, t)).toBe(
+    'Every turn · Enemies: SPD −10% · lasts 2 turn(s)',
+  )
+  expect(turnEffectText(turn('jingliu-technique'), 1, t)).toBe('At battle start · Self: 1 stack(s)')
+  expect(turnEffectText(turn('jingliu-talent'), 1, t)).toBe(
+    'On entering its state · Self: action advance +100%',
+  )
+  expect(turnEffectText(turn('mydei-vendetta'), 1, t)).toBe(
+    'Every turn · Self: action advance +100% · once',
+  )
+  expect(turnEffectText(turn('march-e1'), 0.1, t)).toBe('Always · Self: SPD +10% · from Eidolon 1')
+  expect(turnEffectText(turn('pearl-ultimate'), 0.15, t)).toBe(
+    'On Ultimate · Chosen ally: action advance +15% · by Elation characters on the team',
+  )
 })

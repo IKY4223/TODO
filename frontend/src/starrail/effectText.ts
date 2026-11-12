@@ -57,6 +57,7 @@ const TRIGGERS = {
   ultimate: 'On Ultimate',
   always: 'Always',
   summon: "On the memosprite's turn",
+  state: 'On entering its state',
 } as const satisfies Record<Trigger, Parameters<Translate>[0]>
 
 const TARGETS = {
@@ -65,11 +66,12 @@ const TARGETS = {
   teammates: 'Teammates',
   chosen: 'Chosen ally',
   summons: 'Own summon',
+  enemies: 'Enemies',
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
 /** "On Ultimate · All allies: SPD +12% · lasts 1 turn(s)" */
 export function turnEffectText(effect: TurnEffect, value: number, t: Translate): string {
-  const amount = ['spd', 'summon'].includes(effect.kind)
+  const amount = ['spd', 'summon', 'stack'].includes(effect.kind)
     ? plain.format(value)
     : percent.format(value)
   const what = {
@@ -77,12 +79,18 @@ export function turnEffectText(effect: TurnEffect, value: number, t: Translate):
     spd: t('SPD +{value}', { value: amount }),
     spd_percent: t('SPD +{value}', { value: amount }),
     summon: t('comes in with {value} action(s)', { value: amount }),
+    delay: t('action delay +{value}', { value: amount }),
+    slow: t('SPD −{value}', { value: amount }),
+    stack: t('{value} stack(s)', { value: amount }),
   }[effect.kind]
   const notes = [
     effect.turns ? t('lasts {turns} turn(s)', { turns: effect.turns }) : '',
     effect.untilSummonLeaves ? t('until its countdown acts') : '',
     effect.withoutSummon ? t('outside its state') : '',
     effect.minSpd ? t('SPD at least {spd}', { spd: effect.minSpd }) : '',
+    effect.once ? t('once') : '',
+    effect.eidolon ? t('from Eidolon {eidolon}', { eidolon: effect.eidolon }) : '',
+    effect.byElation ? t('by Elation characters on the team') : '',
   ]
     .filter(Boolean)
     .map((note) => ` · ${note}`)

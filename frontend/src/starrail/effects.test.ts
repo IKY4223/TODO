@@ -1,5 +1,13 @@
 import { expect, test } from 'vitest'
-import { STAT_EFFECTS, statEffectsOf, tierValue, valueFor, withEffects } from './effects'
+import {
+  STAT_EFFECTS,
+  TURN_EFFECTS,
+  statEffectsOf,
+  tierValue,
+  turnValue,
+  valueFor,
+  withEffects,
+} from './effects'
 import type { StarRailCharacter } from './starrail'
 
 const relic = (set_id: number): StarRailCharacter['relics'][number] => ({
@@ -108,4 +116,37 @@ test('adds the chosen effects to the final stats', () => {
   // +6% and +12% of the 110 base SPD.
   expect(value('spd')).toBeCloseTo(183.5 + 110 * 0.18)
   expect(value('atk')).toBe(1000)
+})
+
+const turn = (id: string): (typeof TURN_EFFECTS)[number] => {
+  const found = TURN_EFFECTS.find((effect) => effect.id === id)
+  if (!found) throw new Error(`no effect ${id}`)
+  return found
+}
+
+const as = (id: number, extra: Partial<StarRailCharacter> = {}): StarRailCharacter => ({
+  ...HYACINE,
+  id,
+  ...extra,
+})
+
+test("a skill's effect takes the character's own level, level 10 when the showcase lacks it", () => {
+  const talent = turn('ruan-mei-talent')
+  const skills = [{ kind: 'talent', level: 12, bonus: 2 }] as const
+  expect(turnValue(talent, as(1303, { skills: [...skills] }), [])).toBe(0.104)
+  expect(turnValue(talent, as(1303), [])).toBe(0.1)
+})
+
+test('Eidolons switch effects on, or change them for another', () => {
+  expect(turnValue(turn('march-e1'), as(1224), [])).toBeUndefined()
+  expect(turnValue(turn('march-e1'), as(1224, { eidolon: 1 }), [])).toBe(0.1)
+  expect(turnValue(turn('seele-skill'), as(1102, { eidolon: 2 }), [])).toBeUndefined()
+  expect(turnValue(turn('seele-skill-e2'), as(1102, { eidolon: 2 }), [])).toBe(0.25)
+})
+
+test("Pearl's advance grows with the Elation characters on the team", () => {
+  const pearl = as(1503, { path: 'elation' })
+  const other = as(2, { path: 'elation' })
+  expect(turnValue(turn('pearl-ultimate'), pearl, [pearl])).toBe(0.1)
+  expect(turnValue(turn('pearl-ultimate'), pearl, [pearl, other, HYACINE])).toBe(0.15)
 })

@@ -123,3 +123,23 @@ test("Firefly's Complete Combustion ends on its countdown's turn", () => {
     '242.9 · Countdown of Firefly',
   ])
 })
+
+test('an enemy with the SPD typed in takes turns, and Welt slows it', () => {
+  show([character(1004, 'Welt', 100)])
+  expect(timeline().join()).not.toContain('Enemy')
+  fireEvent.change(screen.getByLabelText('Enemy SPD'), { target: { value: '100' } })
+  // Welt acts first on the tie and slows the enemy by 10%: its next turn comes at 90 SPD.
+  const enemy = timeline().filter((line) => line.includes('Enemy'))
+  expect(enemy.slice(0, 2)).toEqual(['100.0 · Enemy', '211.1 · Enemy'])
+})
+
+test("Jingliu's Spectral Transmigration advances her action at two Syzygy", () => {
+  show([character(1212, 'Jingliu', 100)])
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '0' } })
+  expect(timeline().slice(0, 4)).toEqual([
+    'Cycle 0100.0 · Jingliu',
+    'Cycle 1200.0 · Jingliu',
+    '200.0 · Jingliu',
+    'Cycle 2300.0 · Jingliu',
+  ])
+})

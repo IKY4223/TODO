@@ -89,11 +89,9 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #8 are merged. The branch holds stage 9, part 1: summons that arrive later,
-  leave and cap their SPD, Firefly's countdown, team-wide sets, and the wide-screen sidebar.
-- Next: stage 9, part 2 (README plan, item 1): state and team effects (Jingliu, Mydei, Pearl),
-  Eidolons, own skill levels, enemy turns and slows. Energy-timed Ultimates wait for a source of
-  skill energy gains. Then the Telegram bot (item 2).
+- State: PRs #1 to #8 are merged. PR #9 holds stage 9: summons, Firefly's countdown,
+  team-wide sets, the sidebar, own skill levels, Eidolons, Syzygy, Pearl, enemies and slows.
+- Next: the Telegram bot (README plan, item 2), or what is left of the effects table (item 1).
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo` (the repository was renamed to
   `IKY4223/TODO---Hoyo-Toolkit`; the new name is refused). Repository settings cannot be changed

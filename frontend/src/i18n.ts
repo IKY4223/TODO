@@ -112,8 +112,8 @@ const RU = {
   'Without effects: one more turn in cycle 0 at {speed} SPD (+{missing})':
     'Без эффектов: ещё один ход в цикле 0 при скорости {speed} (+{missing})',
   Team: 'Команда',
-  'Effect values: skills at level 10, light cones at their superimposition. Skills are taken as used every turn.':
-    'Числа эффектов: навыки на 10 уровне, конусы по их наложению. Считается, что навык применяется каждый ход.',
+  "Effect values: skills at the character's levels, light cones at their superimposition. Skills are taken as used every turn.":
+    'Числа эффектов: навыки на уровнях персонажа, конусы по их наложению. Считается, что навык применяется каждый ход.',
   'Ultimate every N turns': 'Сверхспособность раз в N ходов',
   Never: 'Никогда',
   'Chosen ally': 'Выбранный союзник',
@@ -131,6 +131,17 @@ const RU = {
   'Own summon': 'Свой призыв',
   'comes in with {value} action(s)': 'появляется, действий: {value}',
   'until its countdown acts': 'до хода отсчёта',
+  'On entering its state': 'При входе в особое состояние',
+  Enemies: 'Враги',
+  Enemy: 'Враг',
+  'Enemy SPD': 'Скорость врага',
+  'No enemy': 'Без врага',
+  'action delay +{value}': 'задержка хода +{value}',
+  'SPD −{value}': 'скорость −{value}',
+  '{value} stack(s)': 'стаков: {value}',
+  once: 'один раз',
+  'from Eidolon {eidolon}': 'с эйдолона {eidolon}',
+  'by Elation characters on the team': 'по числу персонажей Радости в команде',
   'outside its state': 'вне особого состояния',
   'At battle start': 'В начале боя',
   'Every turn': 'Каждый ход',

@@ -7,7 +7,16 @@ const NEVER = 0
 
 export interface UnitEffect extends Pick<
   TurnEffect,
-  'kind' | 'trigger' | 'target' | 'turns' | 'withSummons' | 'untilSummonLeaves' | 'withoutSummon'
+  | 'id'
+  | 'kind'
+  | 'trigger'
+  | 'target'
+  | 'turns'
+  | 'withSummons'
+  | 'untilSummonLeaves'
+  | 'withoutSummon'
+  | 'once'
+  | 'stacks'
 > {
   readonly value: number
 }
@@ -20,6 +29,10 @@ export interface Unit {
   readonly ultimateEvery: number // the Ultimate after every this many turns; 0: never
   readonly chosen?: string // the ally a "chosen" effect goes to
   readonly effects: readonly UnitEffect[]
+  readonly enemy?: boolean
+  // Stacks such as Jingliu's Syzygy: one per turn and per Ultimate outside the state; at `enter`
+  // the state begins with `bonus` more, and each turn in it spends one until none are left.
+  readonly stacks?: { readonly enter: number; readonly bonus: number }
   // For summons:
   readonly later?: boolean // away until a "summon" effect brings it in
   readonly arrival?: number // the action advance it gets each time it is brought in
@@ -37,6 +50,7 @@ export interface Action {
 }
 
 interface Buff {
+  readonly id: string // a buff gained again replaces the oldest of its kind past its stacks
   readonly percent: number
   readonly flat: number
   left: number | undefined // the bearer's turns still to come; undefined: for good
@@ -51,12 +65,16 @@ interface State {
   here: boolean
   actions: number | undefined // actions left before a summon leaves; undefined: no limit
   buffs: Buff[]
+  readonly fired: Set<UnitEffect> // effects that happen once and did
+  stacks: number
+  inState: boolean
 }
 
 function speedOf({ unit, buffs }: State): number {
   const spd =
     unit.spd + buffs.reduce((sum, buff) => sum + buff.percent * unit.baseSpd + buff.flat, 0)
-  return Math.min(spd, unit.maxSpd ?? spd)
+  // A unit slowed to nothing still crawls: it keeps the order finite.
+  return Math.max(1, Math.min(spd, unit.maxSpd ?? spd))
 }
 
 const summonsOf = (states: readonly State[], owners: ReadonlySet<string>): State[] =>
@@ -68,9 +86,10 @@ function targets(
   target: Target,
   withSummons = false,
 ): State[] {
-  const characters = states.filter(({ unit }) => !unit.owner)
+  const characters = states.filter(({ unit }) => !unit.owner && !unit.enemy)
   const sourceCharacter = source.unit.owner ?? source.unit.key
   if (target === 'summons') return summonsOf(states, new Set([sourceCharacter]))
+  if (target === 'enemies') return states.filter(({ unit }) => unit.enemy)
   const picked = {
     self: [source],
     allies: characters,
@@ -99,20 +118,42 @@ function summon(target: State, actions: number): void {
 const away = (states: readonly State[], source: State): boolean =>
   targets(states, source, 'summons').every(({ here }) => !here)
 
+function gain(states: readonly State[], state: State, stacks: number): void {
+  const config = state.unit.stacks
+  if (!config) return
+  state.stacks = Math.min(config.enter + 1 + config.bonus, state.stacks + stacks)
+  if (state.inState || state.stacks < config.enter) return
+  state.inState = true
+  state.stacks += config.bonus
+  fire(states, state, 'state')
+}
+
+function addBuff(target: State, effect: UnitEffect, until: State | undefined): void {
+  const percent =
+    effect.kind === 'spd_percent' ? effect.value : effect.kind === 'slow' ? -effect.value : 0
+  const flat = effect.kind === 'spd' ? effect.value : 0
+  const same = target.buffs.filter(({ id }) => id === effect.id)
+  const extra = same.length - (effect.stacks ?? 1) + 1
+  if (extra > 0) target.buffs = target.buffs.filter((old) => !same.slice(0, extra).includes(old))
+  target.buffs.push({ id: effect.id, percent, flat, left: effect.turns, until })
+}
+
 function apply(states: readonly State[], source: State, effect: UnitEffect): void {
   if (effect.withoutSummon && !away(states, source)) return
+  if (effect.once) {
+    if (source.fired.has(effect)) return
+    source.fired.add(effect)
+  }
   for (const target of targets(states, source, effect.target, effect.withSummons)) {
-    if (effect.kind === 'summon') {
-      summon(target, effect.value)
-    } else if (!target.here) {
-      continue
-    } else if (effect.kind === 'advance') {
+    if (effect.kind === 'summon') summon(target, effect.value)
+    else if (!target.here) continue
+    else if (effect.kind === 'stack') gain(states, target, effect.value)
+    else if (effect.kind === 'advance')
       target.gauge = Math.max(0, target.gauge - effect.value * GAUGE)
-    } else {
-      const percent = effect.kind === 'spd_percent' ? effect.value : 0
-      const flat = effect.kind === 'spd' ? effect.value : 0
+    else if (effect.kind === 'delay') target.gauge += effect.value * GAUGE
+    else {
       const until = effect.untilSummonLeaves ? targets(states, source, 'summons')[0] : undefined
-      target.buffs.push({ percent, flat, left: effect.turns, until })
+      addBuff(target, effect, until)
     }
   }
 }
@@ -137,6 +178,9 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
     here: !unit.later,
     actions: undefined,
     buffs: [],
+    fired: new Set(),
+    stacks: 0,
+    inState: false,
   }))
   for (const state of states) fire(states, state, 'always')
   for (const state of states) fire(states, state, 'start')
@@ -171,7 +215,16 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       if (next.actions <= 0) leave(states, next)
     }
     if (next.unit.timer) continue // a countdown only marks the end of its owner's state
+    if (next.inState) {
+      next.stacks -= 1
+      if (next.stacks <= 0) next.inState = false
+    } else {
+      gain(states, next, 1)
+    }
     fire(states, next, next.unit.owner ? 'summon' : 'turn')
-    if (ultimate) fire(states, next, 'ultimate')
+    if (ultimate) {
+      fire(states, next, 'ultimate')
+      gain(states, next, 1)
+    }
   }
 }
