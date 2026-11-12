@@ -419,3 +419,20 @@ test('an address without a valid UID loads nothing', () => {
   render(<StarRailShowcase />)
   expect(fetchMock).not.toHaveBeenCalled()
 })
+
+test('loading another UID from a shared page moves the address to that player', async () => {
+  window.location.hash = '#starrail/builds/700000001/1409'
+  const fetchMock = vi.fn(async () => Response.json(SHOWCASE))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<StarRailShowcase />)
+  await screen.findByRole('heading', { level: 2, name: 'Hyacine' })
+  fireEvent.change(screen.getByLabelText('UID'), { target: { value: '700000002' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Load characters' }))
+  expect(window.location.hash).toBe('#starrail/builds/700000002')
+  await vi.waitFor(() =>
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      '/api/starrail/showcase/700000002?lang=en',
+      expect.anything(),
+    ),
+  )
+})

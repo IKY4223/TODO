@@ -1,4 +1,9 @@
-"""What the bot answers, and one round of reading and answering messages."""
+"""What the bot answers, and one round of reading and answering messages.
+
+shortcut: the state file is written after each batch, so a bot stopped between sending its
+replies and writing the file answers that batch again after a restart; save per update if
+that ever matters.
+"""
 
 import json
 import logging
@@ -120,7 +125,9 @@ class Chats:
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             logger.warning("The bot's state file is unreadable, so it starts afresh: %s", error)
             return cls(path=path)
-        if not isinstance(offset, int) or not set(languages.values()) <= set(LANGUAGES):
+        if not isinstance(offset, int) or any(
+            value not in LANGUAGES for value in languages.values()
+        ):
             logger.warning("The bot's state file holds odd values, so it starts afresh")
             return cls(path=path)
         return cls(offset=offset, languages=languages, path=path)
@@ -132,6 +139,9 @@ class Chats:
         temporary = self.path.with_name(self.path.name + ".tmp")
         state = {"offset": self.offset, "languages": self.languages}
         try:
+            # Chat ids are personal: only the bot's own user may read the file.
+            temporary.touch(mode=0o600)
+            temporary.chmod(0o600)  # also when an older run left the file behind
             temporary.write_text(json.dumps(state), encoding="utf-8")
             temporary.replace(self.path)  # whole or not at all, even if the bot stops midway
         except OSError as error:

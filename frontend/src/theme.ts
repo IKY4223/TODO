@@ -9,18 +9,22 @@ const LIGHT = '(prefers-color-scheme: light)'
 const isTheme = (value: unknown): value is Theme => THEMES.some((theme) => theme === value)
 
 /** The saved choice; the device decides until the player picks one. */
-export function loadTheme(storage: Storage = window.localStorage): Theme {
+// The storage is reached inside each `try`: where site data is blocked, even reading
+// window.localStorage throws.
+export function loadTheme(storage?: Storage): Theme {
   try {
-    const saved = storage.getItem(STORAGE_KEY)
+    const store = storage ?? window.localStorage
+    const saved = store.getItem(STORAGE_KEY)
     return isTheme(saved) ? saved : 'system'
   } catch {
     return 'system' // storage is off
   }
 }
 
-export function saveTheme(theme: Theme, storage: Storage = window.localStorage): void {
+export function saveTheme(theme: Theme, storage?: Storage): void {
   try {
-    storage.setItem(STORAGE_KEY, theme)
+    const store = storage ?? window.localStorage
+    store.setItem(STORAGE_KEY, theme)
   } catch {
     // The choice then lasts until the page closes.
   }

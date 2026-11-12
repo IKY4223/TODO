@@ -292,6 +292,7 @@ def test_the_bot_keeps_its_place_and_the_chosen_languages_across_restarts(
     poll_once(telegram, load, RateLimiter(limit=10, window=60), chats)
     restarted = Chats.load(state)
     assert (restarted.offset, restarted.languages) == (3, {8: "ru"})
+    assert state.stat().st_mode & 0o077 == 0  # chat ids: readable by the bot's user alone
     telegram = FakeTelegram([message(3, "/start", chat=8)])
     poll_once(telegram, load, RateLimiter(limit=10, window=60), restarted)
     assert telegram.offsets == [3]
@@ -302,10 +303,15 @@ def test_an_unreadable_state_file_starts_afresh(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
     state = tmp_path / "bot.json"
-    for broken in ("not json", '{"offset": "x", "languages": {}}', '{"languages": {"8": "de"}}'):
+    for broken in (
+        "not json",
+        '{"offset": "x", "languages": {}}',
+        '{"languages": {"8": "de"}}',
+        '{"offset": 1, "languages": {"8": ["ru"]}}',
+    ):
         state.write_text(broken)
         assert Chats.load(state) == Chats(path=state), broken
-    assert caplog.text.count("starts afresh") == 3
+    assert caplog.text.count("starts afresh") == 4
 
 
 def test_without_a_state_file_the_bot_keeps_its_place_in_memory() -> None:

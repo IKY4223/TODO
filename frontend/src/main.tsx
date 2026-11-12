@@ -4,7 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import { applyTheme, loadTheme } from './theme'
 
-// Before the first render, so a light theme does not flash dark.
+// public/theme.js already picked the theme before the first paint; this also sets the phone's
+// bar colour, which needs the stylesheet.
 applyTheme(loadTheme())
 
 const root = document.getElementById('root')

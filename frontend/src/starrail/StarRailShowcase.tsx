@@ -305,7 +305,10 @@ export function StarRailShowcase(): JSX.Element {
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    load(uid)
+    // On a page whose address names a player, the address follows to the new one and the
+    // effect below loads them, so the address never names someone not on screen.
+    if (target && target !== uid) window.location.hash = listOf(uid)
+    else load(uid)
   }
 
   // A shared link, or the back button, names a player: load them unless they are already here.

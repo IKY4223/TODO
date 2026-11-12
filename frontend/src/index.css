@@ -702,6 +702,7 @@ footer {
   display: grid;
   gap: 0.5rem;
   justify-items: start;
+  margin: 1rem 0;
 }
 
 .share button.secondary {

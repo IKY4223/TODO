@@ -11,9 +11,11 @@ const WANTED_BY_DEFAULT: readonly SubstatKey[] = ['spd', 'crit_rate', 'crit_dmg'
 const isSubstatKey = (value: unknown): value is SubstatKey =>
   RELIC_SUBSTATS.some((key) => key === value)
 
-function readSaved(storage: Storage): Record<string, unknown> {
+function readSaved(storage?: Storage): Record<string, unknown> {
   try {
-    const saved: unknown = JSON.parse(storage.getItem(STORAGE_KEY) ?? 'null')
+    // Reached inside the `try`: where site data is blocked, reading window.localStorage throws.
+    const store = storage ?? window.localStorage
+    const saved: unknown = JSON.parse(store.getItem(STORAGE_KEY) ?? 'null')
     return isRecord(saved) ? saved : {}
   } catch {
     // Private browsing, blocked site data or a corrupted entry: start from the defaults.
@@ -22,10 +24,7 @@ function readSaved(storage: Storage): Record<string, unknown> {
 }
 
 /** The substats the player wants on a character, as saved on this device. */
-export function loadWanted(
-  characterId: number,
-  storage: Storage = window.localStorage,
-): readonly SubstatKey[] {
+export function loadWanted(characterId: number, storage?: Storage): readonly SubstatKey[] {
   const saved = readSaved(storage)
   const wanted = isKeyOf(saved, String(characterId)) ? saved[String(characterId)] : undefined
   return isArrayOf(wanted, isSubstatKey) ? wanted : WANTED_BY_DEFAULT
@@ -35,10 +34,11 @@ export function loadWanted(
 export function saveWanted(
   characterId: number,
   wanted: readonly SubstatKey[],
-  storage: Storage = window.localStorage,
+  storage?: Storage,
 ): void {
   try {
-    storage.setItem(STORAGE_KEY, JSON.stringify({ ...readSaved(storage), [characterId]: wanted }))
+    const store = storage ?? window.localStorage
+    store.setItem(STORAGE_KEY, JSON.stringify({ ...readSaved(storage), [characterId]: wanted }))
   } catch {
     // Nothing to do: the caller keeps the choice in memory.
   }
