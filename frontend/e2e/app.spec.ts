@@ -17,7 +17,8 @@ const MIN_CONTROLS_ON_SCREEN = 10
 const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
-const MIN_RELIC_CONTROLS = 18 // 8 selects, 5 number fields, the button and the navigation links
+const MIN_PAGE_CONTROLS = 6 // the UID field, its button and the navigation
+const MIN_RELIC_CONTROLS = 19 // 9 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
@@ -116,7 +117,7 @@ interface Layout {
 /** What a phone user would trip over: sideways scrolling, tiny controls, zooming inputs. */
 async function measureLayout(page: Page): Promise<Layout> {
   return page.evaluate((minHeight) => {
-    const selector = 'input:not([type=checkbox]), select, textarea, button, summary, nav a'
+    const selector = 'input:not([type=checkbox]), select, textarea, button, summary, nav a, a.more'
     // The other tool stays mounted but hidden, so only what is on screen counts.
     const controls = [...document.querySelectorAll(selector)].filter((control) =>
       control.checkVisibility(),
@@ -218,6 +219,34 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
   })
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('opens a character page and comes back with the back button', async ({ page }) => {
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  await card(page, 'March 7th').getByRole('link', { name: 'Skills and eidolons' }).click()
+  const tool = shown(page)
+  await expect(tool.getByRole('heading', { level: 2, name: 'March 7th' })).toBeVisible()
+  // March 7th is E6 with a level 11 Skill in the fixture.
+  await expect(tool.getByText('Skill · Lv. 11')).toBeVisible()
+  // All six eidolons and ten of her thirteen trace nodes.
+  await expect(tool.getByText('Unlocked', { exact: true })).toHaveCount(16)
+  await expect(tool.getByText('Not unlocked', { exact: true })).toHaveCount(3)
+  await expect(tool.getByText(/#\d+\[/)).toHaveCount(0) // every number is filled in
+  await expect(tool.getByRole('link', { name: '← All characters' })).toBeInViewport()
+  // Three of March 7th's stat nodes are not unlocked, so materials are still owed.
+  await expect(tool.getByRole('heading', { name: 'Traces', exact: true })).toBeVisible()
+  await expect(tool.locator('.materials div').first()).toContainText('Credit')
+  expectPhoneFriendly(await measureLayout(page), MIN_PAGE_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await page.goBack()
+  await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Hyacine',
+    'March 7th',
+  ])
   expect(problems).toEqual([])
 })
 

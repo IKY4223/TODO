@@ -1,8 +1,10 @@
-import { type JSX, type SubmitEvent, useState } from 'react'
+import { type JSX, type SubmitEvent, useEffect, useState } from 'react'
+import { useAddress } from '../address'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
+import { CharacterPage } from './CharacterPage'
 import {
   ELEMENTS,
   fetchStarRailShowcase,
@@ -19,6 +21,8 @@ import {
 } from './starrail'
 import { loadWanted, publishShowcase, relicScore, saveWanted, type SubstatKey } from './store'
 
+// A character's own page lives one step below the list: #starrail/builds/1409.
+const LIST = '#starrail/builds'
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
@@ -31,13 +35,14 @@ function RelicItem(props: {
 }): JSX.Element {
   const { relic, wanted } = props
   const t = useT()
+  const localized = useLocalized()
   const isWanted = (key: string): boolean => wanted.some((stat) => stat === key)
   return (
     <li className="item">
       <Icon src={relic.icon} size={ITEM_ICON_SIZE} />
       <div>
         <span>
-          {t(SLOTS[relic.slot])} · {relic.set_name} +{relic.level}
+          {t(SLOTS[relic.slot])} · {localized(relic.set_name)} +{relic.level}
         </span>
         <strong>{formatStat(relic.main, t)}</strong>
         <span className="hint">{t('Score {score}', { score: score.format(relicScore(relic, wanted)) })}</span>
@@ -57,6 +62,7 @@ function RelicItem(props: {
 function CharacterCard({ character }: { readonly character: StarRailCharacter }): JSX.Element {
   const { element, path, light_cone: cone, relics } = character
   const t = useT()
+  const localized = useLocalized()
   const [wanted, setWanted] = useState(() => loadWanted(character.id))
   const total = relics.reduce((sum, relic) => sum + relicScore(relic, wanted), 0)
 
@@ -76,7 +82,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
       <header className="item">
         <Icon src={character.icon} size={CHARACTER_ICON_SIZE} />
         <div>
-          <h3>{character.name}</h3>
+          <h3>{localized(character.name)}</h3>
           <span className="hint">{summary.join(' · ')}</span>
         </div>
       </header>
@@ -97,10 +103,13 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         <p className="item">
           <Icon src={cone.icon} size={ITEM_ICON_SIZE} />
           <span>
-            {cone.name} · {t('Lv. {level}', { level: cone.level })} · S{cone.superimposition}
+            {localized(cone.name)} · {t('Lv. {level}', { level: cone.level })} · S{cone.superimposition}
           </span>
         </p>
       ) : null}
+      <a className="more" href={`${LIST}/${character.id}`}>
+        {t('Skills and eidolons')}
+      </a>
       <details>
         <summary>
           {t('Relics ({count}) · score {score}', {
@@ -173,6 +182,9 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
 
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   const t = useT()
+  const [, , chosen] = useAddress().split('/')
+  const selected = showcase.characters.find(({ id }) => String(id) === chosen)
+  if (selected) return <CharacterPage character={selected} back={LIST} />
   return (
     <>
       <Profile showcase={showcase} />
@@ -204,15 +216,27 @@ export function StarRailShowcase(): JSX.Element {
   const localized = useLocalized()
   const language = useLanguage()
 
-  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
-    event.preventDefault()
-    const uid = String(new FormData(event.currentTarget).get('uid'))
+  const load = (uid: string): void => {
     void run(async () => {
       const showcase = await fetchStarRailShowcase(uid, language)
       publishShowcase(showcase)
       return showcase
     })
   }
+
+  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+    load(String(new FormData(event.currentTarget).get('uid')))
+  }
+
+  // Game names come in one language: a loaded showcase is asked for again in the new one.
+  // The server answers from its cache, without another request to Enka.
+  const loaded = 'data' in state ? state.data.uid : undefined
+  useEffect(() => {
+    if (loaded) load(loaded)
+    // Only a language change asks again; `load` is a new function on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language])
 
   return (
     <section aria-labelledby="starrail-showcase-title">

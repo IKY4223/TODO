@@ -2,6 +2,7 @@ import type { JSX, SubmitEvent } from 'react'
 import { isKeyOf } from '../api/http'
 import { MAX_ENEMY_LEVEL, MAX_MULTIPLIER, MAX_RESISTANCE, MIN_RESISTANCE } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { type Message, useLocalized, useT } from '../i18n'
 import { type Character, formatStat } from '../showcase/showcase'
 import { type Damage, type DamageRequest, fetchDamage } from './damage'
 
@@ -11,13 +12,13 @@ const SCALINGS = {
   hp: 'HP',
   def: 'DEF',
   elemental_mastery: 'Elemental Mastery',
-} as const satisfies Record<DamageRequest['scaling'], string>
+} as const satisfies Record<DamageRequest['scaling'], Message>
 
 const REACTIONS = {
   none: 'None',
   weak: 'Vaporize / Melt ×1.5',
   strong: 'Vaporize / Melt ×2',
-} as const satisfies Record<DamageRequest['reaction'], string>
+} as const satisfies Record<DamageRequest['reaction'], Message>
 
 const BONUSES = {
   physical_dmg: true,
@@ -34,7 +35,7 @@ const RESULTS = [
   { label: 'Average', key: 'average' },
   { label: 'Crit', key: 'crit' },
   { label: 'Non-crit', key: 'non_crit' },
-] as const satisfies readonly { label: string; key: keyof Damage }[]
+] as const satisfies readonly { label: Message; key: keyof Damage }[]
 
 const DEFAULT_MULTIPLIER_PERCENT = 100
 const DEFAULT_ENEMY_LEVEL = 90
@@ -66,6 +67,8 @@ function readRequest(data: FormData, character: Character): DamageRequest {
 
 export function DamageCalculator({ character }: { readonly character: Character }): JSX.Element {
   const [state, run] = useRequest<Damage>()
+  const t = useT()
+  const localized = useLocalized()
   const bonuses = character.stats.filter((stat) => isKeyOf(BONUSES, stat.key))
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
@@ -76,10 +79,10 @@ export function DamageCalculator({ character }: { readonly character: Character 
 
   return (
     <details>
-      <summary>Damage</summary>
+      <summary>{t('Damage')}</summary>
       <form onSubmit={submit}>
         <label>
-          Talent multiplier, %
+          {t('Talent multiplier, %')}
           <input
             name="multiplier"
             type="number"
@@ -92,38 +95,38 @@ export function DamageCalculator({ character }: { readonly character: Character 
           />
         </label>
         <label>
-          Scales with
+          {t('Scales with')}
           <select name="scaling">
             {Object.entries(SCALINGS).map(([scaling, label]) => (
               <option key={scaling} value={scaling}>
-                {label}
+                {t(label)}
               </option>
             ))}
           </select>
         </label>
         <label>
-          Damage bonus
+          {t('Damage bonus')}
           <select name="bonus" defaultValue={bonuses[0]?.key ?? NO_BONUS}>
-            <option value={NO_BONUS}>None</option>
+            <option value={NO_BONUS}>{t('None')}</option>
             {bonuses.map((stat) => (
               <option key={stat.key} value={stat.key}>
-                {formatStat(stat)}
+                {formatStat(stat, t)}
               </option>
             ))}
           </select>
         </label>
         <label>
-          Reaction
+          {t('Reaction')}
           <select name="reaction">
             {Object.entries(REACTIONS).map(([reaction, label]) => (
               <option key={reaction} value={reaction}>
-                {label}
+                {t(label)}
               </option>
             ))}
           </select>
         </label>
         <label>
-          Enemy level
+          {t('Enemy level')}
           <input
             name="enemy_level"
             type="number"
@@ -135,7 +138,7 @@ export function DamageCalculator({ character }: { readonly character: Character 
           />
         </label>
         <label>
-          Enemy resistance, %
+          {t('Enemy resistance, %')}
           <input
             name="enemy_resistance"
             type="number"
@@ -148,16 +151,16 @@ export function DamageCalculator({ character }: { readonly character: Character 
           />
         </label>
         <button type="submit" disabled={state.status === 'loading'}>
-          Calculate damage
+          {t('Calculate damage')}
         </button>
       </form>
-      {'message' in state && <p role="alert">{state.message}</p>}
+      {'message' in state && <p role="alert">{localized(state.message)}</p>}
       <div aria-live="polite">
         {'data' in state && (
           <dl>
             {RESULTS.map(({ label, key }) => (
               <div key={key}>
-                <dt>{label}</dt>
+                <dt>{t(label)}</dt>
                 <dd>{whole.format(state.data[key])}</dd>
               </div>
             ))}

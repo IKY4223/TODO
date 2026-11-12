@@ -72,6 +72,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/starrail/characters/{character_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Character Texts
+         * @description A character's skills, traces and eidolons, described, with what the traces cost.
+         */
+        get: operations["character_texts_api_starrail_characters__character_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wishes/forecast": {
         parameters: {
             query?: never;
@@ -174,6 +194,22 @@ export interface components {
             /** Icon */
             icon: string | null;
         };
+        /** CharacterGuide */
+        CharacterGuide: {
+            /** Skills */
+            skills: components["schemas"]["SkillText"][];
+            /** Traces */
+            traces: components["schemas"]["Trace"][];
+            /** Eidolons */
+            eidolons: components["schemas"]["EidolonText"][];
+            /**
+             * Items
+             * @description Names of the items the costs mention
+             */
+            items: {
+                [key: string]: string;
+            };
+        };
         /** Damage */
         Damage: {
             /** Non Crit */
@@ -219,6 +255,13 @@ export interface components {
              * @description 0.1 is 10%
              */
             enemy_resistance: number;
+        };
+        /** EidolonText */
+        EidolonText: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
         };
         /**
          * Element
@@ -358,6 +401,12 @@ export interface components {
         };
         /** RelicQuery */
         RelicQuery: {
+            /**
+             * Rarity
+             * @default 5
+             * @enum {integer}
+             */
+            rarity: 4 | 5;
             main: components["schemas"]["StarRailStatKey"];
             /** Subs */
             subs: components["schemas"]["RelicSub"][];
@@ -408,6 +457,18 @@ export interface components {
          * @enum {string}
          */
         SkillKind: "basic" | "skill" | "ultimate" | "talent" | "elation" | "memosprite_skill" | "memosprite_talent";
+        /** SkillText */
+        SkillText: {
+            kind: components["schemas"]["SkillKind"] | null;
+            /** Label */
+            label: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Params */
+            params: number[][];
+        };
         /**
          * Slot
          * @enum {string}
@@ -432,6 +493,8 @@ export interface components {
             relics: components["schemas"]["Relic"][];
             /** Skills */
             skills: components["schemas"]["Skill"][];
+            /** Points */
+            points: components["schemas"]["TracePoint"][];
             /** Icon */
             icon: string | null;
         };
@@ -500,6 +563,33 @@ export interface components {
             rolls: number;
             /** Score */
             score: number;
+        };
+        /** Trace */
+        Trace: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Skill */
+            skill: boolean;
+            /** Description */
+            description: string;
+            /** Params */
+            params: number[];
+            /**
+             * Costs
+             * @description For each level: item id -> amount
+             */
+            costs: {
+                [key: string]: number;
+            }[];
+        };
+        /** TracePoint */
+        TracePoint: {
+            /** Id */
+            id: number;
+            /** Level */
+            level: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -656,6 +746,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RelicForecast"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    character_texts_api_starrail_characters__character_id__get: {
+        parameters: {
+            query?: {
+                /** @description The language of the texts */
+                lang?: "en" | "ru";
+            };
+            header?: never;
+            path: {
+                character_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterGuide"];
                 };
             };
             /** @description Validation Error */

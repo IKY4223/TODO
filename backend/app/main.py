@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from app.damage.api import router as damage_router
 from app.showcase.api import router as showcase_router
-from app.starrail.api import relics_router
+from app.starrail.api import characters_router, relics_router
 from app.starrail.api import router as starrail_router
 from app.wishes.api import router as wishes_router
 
@@ -21,6 +21,7 @@ app.include_router(damage_router)
 app.include_router(showcase_router)
 app.include_router(starrail_router)
 app.include_router(relics_router)
+app.include_router(characters_router)
 app.include_router(wishes_router)
 
 # The pages FastAPI generates for the API docs load scripts from a CDN.

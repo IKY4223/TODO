@@ -10,8 +10,9 @@ import { relicScore, useShowcase } from './store'
 type StatKey = keyof typeof STATS
 
 const SUBSTAT_SLOTS = [1, 2, 3, 4] as const
-// The last substat may be missing: a 5★ relic drops with three or four.
-const OPTIONAL_SLOT = 4
+// A 4★ relic can drop with two substats, a 5★ one with three: the rest may be empty.
+const FIRST_OPTIONAL_SLOT = 3
+const RARITIES = [5, 4] as const
 const WANTED_BY_DEFAULT: ReadonlySet<StatKey> = new Set(['spd', 'crit_rate', 'crit_dmg'])
 // A relic keeps the same upgrades left until it reaches the next multiple of three.
 const LEVELS = Array.from(
@@ -39,6 +40,7 @@ function readQuery(form: HTMLFormElement, beat: number | null): RelicQuery {
   const [goalKey] = stats('goal')
   const goalValue = numberOrNull(data.get('goalValue'))
   return {
+    rarity: data.get('rarity') === '4' ? 4 : 5,
     main: stats('main')[0] ?? 'hp',
     level: Number(data.get('level')),
     // Every slot posts a stat and a value, chosen or not: pair them before dropping the empty.
@@ -152,9 +154,19 @@ export function RelicAdvisor(): JSX.Element {
     <section aria-labelledby="relic-advisor-title">
       <h2 id="relic-advisor-title">{t('Relic advisor')}</h2>
       <p className="hint">
-        {t('Honkai: Star Rail · is a 5★ relic worth leveling? Exact chances, not a simulation.')}
+        {t('Honkai: Star Rail · is a relic worth leveling? Exact chances, not a simulation.')}
       </p>
       <form onSubmit={submit}>
+        <label>
+          {t('Rarity')}
+          <select name="rarity">
+            {RARITIES.map((rarity) => (
+              <option key={rarity} value={rarity}>
+                {rarity}★
+              </option>
+            ))}
+          </select>
+        </label>
         <label>
           {t('Main stat')}
           <select name="main" required defaultValue={NO_CHOICE}>
@@ -182,9 +194,9 @@ export function RelicAdvisor(): JSX.Element {
           <div key={slot} className="pair">
             <label>
               {t('Substat {slot}', { slot })}
-              <select name="sub" required={slot !== OPTIONAL_SLOT} defaultValue={NO_CHOICE}>
-                <option value={NO_CHOICE} disabled={slot !== OPTIONAL_SLOT}>
-                  {slot === OPTIONAL_SLOT ? t('None (3 substats)') : t('Choose')}
+              <select name="sub" required={slot < FIRST_OPTIONAL_SLOT} defaultValue={NO_CHOICE}>
+                <option value={NO_CHOICE} disabled={slot < FIRST_OPTIONAL_SLOT}>
+                  {slot < FIRST_OPTIONAL_SLOT ? t('Choose') : t('None')}
                 </option>
                 {RELIC_SUBSTATS.map((key) => (
                   <option key={key} value={key}>

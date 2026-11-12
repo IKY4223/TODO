@@ -81,6 +81,12 @@ class Skill:
 
 
 @dataclass(frozen=True)
+class TracePoint:
+    id: int  # the point in the character's trace tree
+    level: int  # as invested: 1 for an unlocked ability or stat, the skill's own level for a skill
+
+
+@dataclass(frozen=True)
 class StarRailStat:
     key: StarRailStatKey
     value: float  # every stat except flat HP, ATK, DEF and SPD is a fraction: 0.0648 is 6.48%
@@ -124,6 +130,7 @@ class StarRailCharacter:
     light_cone: LightCone | None
     relics: tuple[Relic, ...]
     skills: tuple[Skill, ...]
+    points: tuple[TracePoint, ...]  # every trace point the player has unlocked
     icon: str | None
 
 

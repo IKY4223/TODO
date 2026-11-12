@@ -140,6 +140,9 @@ const isRelic = (value: unknown): value is Relic =>
 const isSkill = (value: unknown): value is Skill =>
   isRecord(value) && isKeyOf(SKILLS, value.kind) && isNumber(value.level) && isNumber(value.bonus)
 
+const isTracePoint = (value: unknown): value is Schemas['TracePoint'] =>
+  isRecord(value) && isNumber(value.id) && isNumber(value.level)
+
 const isAccountRecord = (value: unknown): value is AccountRecord =>
   isRecord(value) &&
   isNumber(value.achievements) &&
@@ -159,6 +162,7 @@ const isCharacter = (value: unknown): value is StarRailCharacter =>
   isNullable(isLightCone)(value.light_cone) &&
   isArrayOf(value.relics, isRelic) &&
   isArrayOf(value.skills, isSkill) &&
+  isArrayOf(value.points, isTracePoint) &&
   isIcon(value.icon)
 
 const isShowcase = (value: unknown): value is StarRailShowcase =>

@@ -85,6 +85,39 @@ label {
   accent-color: var(--color-accent);
 }
 
+/* A link as easy to tap as a button. */
+.more {
+  display: grid;
+  place-items: center;
+  min-height: 2.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card .texts {
+  gap: 1.25rem;
+}
+
+.texts h4 {
+  margin: 0;
+}
+
+.card dl.materials {
+  grid-template-columns: 1fr;
+}
+
+.card h3:has(+ .texts),
+.card h3:has(+ .materials) {
+  margin: 1.25rem 0 0.75rem;
+}
+
+.texts p {
+  white-space: pre-line;
+}
+
 /* The title with the language choice beside it. */
 .top {
   display: flex;

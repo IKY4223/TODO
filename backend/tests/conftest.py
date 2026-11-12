@@ -13,4 +13,4 @@ def fresh_rate_limits() -> None:
     showcase_api.limiter.clear()
     wishes_api.limiter.clear()
     wishes_api.history_limiter.clear()
-    starrail_api.relics_limiter.clear()
+    starrail_api.tools_limiter.clear()

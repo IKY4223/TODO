@@ -91,6 +91,12 @@ def test_skill_levels_include_what_eidolons_add(showcase: StarRailShowcase) -> N
     )
 
 
+def test_trace_points_are_passed_on_as_invested(showcase: StarRailShowcase) -> None:
+    points = {point.id: point.level for point in showcase.characters[1].points}
+    assert len(points) == 15  # of 18: Enka leaves out the points not unlocked
+    assert (points[1224001], points[1224002], points[1224101]) == (6, 9, 1)  # without eidolons
+
+
 def test_eidolons_not_unlocked_add_nothing() -> None:
     showcase = parse(
         UID, altered(lambda raw: raw["detailInfo"]["avatarDetailList"][1].update(rank=4))

@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from functools import partial
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, Field
@@ -10,6 +10,7 @@ from app.showcase import api as showcase_api
 from app.showcase.cache import TtlCache
 from app.showcase.enka import fetch as fetch_from_enka
 from app.starrail import enka
+from app.starrail.gamedata import TEXTS, CharacterTexts, TraceText
 from app.starrail.models import Language, StarRailShowcase, StarRailStatKey
 from app.starrail.relics import (
     MAX_LEVEL,
@@ -46,14 +47,16 @@ def showcase(
     return showcase_api.serve(uid, lambda: fetch(uid), enka.parse_all, cache)[lang]
 
 
-relics_limiter = RateLimiter(limit=60, window=60)
+# For what this app answers by itself, without asking Enka.
+tools_limiter = RateLimiter(limit=60, window=60)
 relics_router = APIRouter(
     prefix="/api/starrail/relics",
     tags=["starrail"],
-    dependencies=[Depends(limited(relics_limiter))],
+    dependencies=[Depends(limited(tools_limiter))],
 )
 
 
+MAX_CHARACTER_ID = 99_999
 MAX_STAT_VALUE = 10_000  # far above any substat; keeps nonsense out
 MAX_SCORE = 100
 PERCENT = 100
@@ -72,6 +75,7 @@ class RelicGoal(BaseModel):
 
 
 class RelicQuery(BaseModel):
+    rarity: Literal[4, 5] = 5
     main: StarRailStatKey
     subs: list[RelicSub] = Field(min_length=1, max_length=MAX_SUBSTATS)
     level: int = Field(ge=0, le=MAX_LEVEL)
@@ -100,9 +104,49 @@ def relic_forecast(query: RelicQuery) -> RelicForecast:
             [sub.key for sub in query.subs],
             query.level,
             query.wanted,
+            rarity=query.rarity,
             values=values,
             beat=query.beat,
             goal=goal,
         )
     except RelicError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
+
+
+class Trace(TraceText):
+    costs: list[dict[str, int]] = Field(description="For each level: item id -> amount")
+
+
+class CharacterGuide(CharacterTexts):
+    traces: list[Trace]  # type: ignore[assignment]  # the same traces, with their costs
+    items: dict[str, str] = Field(description="Names of the items the costs mention")
+
+
+characters_router = APIRouter(
+    prefix="/api/starrail/characters",
+    tags=["starrail"],
+    dependencies=[Depends(limited(tools_limiter))],
+)
+
+
+@characters_router.get("/{character_id}")
+def character_texts(
+    character_id: Annotated[int, Path(ge=0, le=MAX_CHARACTER_ID)],
+    lang: Annotated[Language, Query(description="The language of the texts")] = "en",
+) -> CharacterGuide:
+    """A character's skills, traces and eidolons, described, with what the traces cost."""
+    texts = TEXTS.languages[lang].get(str(character_id))
+    if texts is None:
+        raise HTTPException(status_code=404, detail="This app has no texts for this character yet.")
+    traces = [
+        Trace(**trace.model_dump(), costs=TEXTS.costs.get(str(trace.id), []))
+        for trace in texts.traces
+    ]
+    used = {item for trace in traces for level in trace.costs for item in level}
+    names = TEXTS.items[lang]
+    return CharacterGuide(
+        skills=texts.skills,
+        eidolons=texts.eidolons,
+        traces=traces,
+        items={item: names[item] for item in sorted(used)},
+    )

@@ -89,19 +89,59 @@ def test_exact_chances_agree_with_a_simulation() -> None:
 
 
 @pytest.mark.parametrize(
-    ("main", "subs", "level"),
+    ("subs", "level", "rarity"),
     [
-        (Stat.HP, (Stat.ATK, Stat.DEF), 0),
-        (Stat.HP, (Stat.ATK, Stat.ATK, Stat.DEF, Stat.SPD), 0),
-        (Stat.HP, (Stat.HP, Stat.ATK, Stat.DEF, Stat.SPD), 0),
-        (Stat.HP, (Stat.ATK, Stat.DEF, Stat.SPD, Stat.ENERGY_REGEN), 0),
-        (Stat.HP, (Stat.ATK, Stat.DEF, Stat.SPD), 3),
+        ((Stat.ATK, Stat.DEF), 0, 5),
+        ((Stat.ATK, Stat.ATK, Stat.DEF, Stat.SPD), 0, 5),
+        ((Stat.HP, Stat.ATK, Stat.DEF, Stat.SPD), 0, 5),
+        ((Stat.ATK, Stat.DEF, Stat.SPD, Stat.ENERGY_REGEN), 0, 5),
+        ((Stat.ATK, Stat.DEF, Stat.SPD), 3, 5),
+        ((Stat.ATK,), 0, 4),
+        ((Stat.ATK, Stat.DEF), 3, 4),
+        (FOUR, 13, 4),
     ],
-    ids=["too-few", "repeated", "same-as-main", "never-a-substat", "three-after-first-upgrade"],
+    ids=[
+        "too-few",
+        "repeated",
+        "same-as-main",
+        "never-a-substat",
+        "three-after-first-upgrade",
+        "too-few-for-4-star",
+        "two-after-first-upgrade",
+        "above-4-star-cap",
+    ],
 )
-def test_impossible_relics_are_refused(main: Stat, subs: tuple[Stat, ...], level: int) -> None:
+def test_impossible_relics_are_refused(subs: tuple[Stat, ...], level: int, rarity: int) -> None:
     with pytest.raises(RelicError):
-        forecast(main=main, subs=subs, level=level, wanted={Stat.SPD})
+        forecast(main=Stat.HP, subs=subs, level=level, wanted={Stat.SPD}, rarity=rarity)
+
+
+def test_four_star_relic_stops_at_12_and_fills_two_slots() -> None:
+    full = forecast(Stat.HP, FOUR, 0, {Stat.SPD}, rarity=4)
+    assert full.upgrades == 4
+    assert list(full.chances) == near(binomial(4, 1 / 4))
+    # Two substats: the first two upgrades each add one. Neither present one is wanted, so
+    # SPD must arrive before it can be raised: weight 4 of the 70 left without HP, ATK and DEF,
+    # or 4 of what remains after another stat arrived first.
+    two = forecast(Stat.HP, (Stat.ATK, Stat.DEF), 0, {Stat.SPD}, rarity=4)
+    assert two.upgrades == 4
+    others = {
+        stat: weight
+        for stat, weight in SUBSTAT_WEIGHTS.items()
+        if stat not in {Stat.HP, Stat.ATK, Stat.DEF, Stat.SPD}
+    }
+    first = 4 / 70
+    second = sum(weight / 70 * 4 / (70 - weight) for weight in others.values())
+    assert sum(two.chances) == pytest.approx(1)
+    assert 1 - two.chances[0] == pytest.approx(first + second)
+
+
+def test_four_star_rolls_are_smaller_but_scored_on_the_same_scale() -> None:
+    one = forecast(Stat.HP, FOUR, 9, set(), values={Stat.SPD: 1.6}, rarity=4, goal=(Stat.SPD, 3.2))
+    assert one.reaches == pytest.approx(1 / 4)  # any 4★ SPD roll (1.6 to 2.0) reaches 3.2
+    assert forecast(Stat.HP, FOUR, 12, {Stat.SPD}, values={Stat.SPD: 2.6}, rarity=4).score == (
+        pytest.approx(1.0)
+    )
 
 
 def test_rolls_come_from_the_game_tables() -> None:

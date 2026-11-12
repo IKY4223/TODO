@@ -1,5 +1,6 @@
 import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
+import type { Message, Translate } from '../i18n'
 
 type Schemas = components['schemas']
 export type Showcase = Schemas['Showcase']
@@ -9,7 +10,7 @@ export type Stat = Schemas['Stat']
 type Weapon = Schemas['Weapon']
 
 interface StatInfo {
-  readonly label: string
+  readonly label: Message
   /** Percent stats arrive as fractions: 0.466 is 46.6%. */
   readonly percent: boolean
 }
@@ -43,7 +44,7 @@ export const SLOTS = {
   sands: 'Sands',
   goblet: 'Goblet',
   circlet: 'Circlet',
-} as const satisfies Record<Schemas['Slot'], string>
+} as const satisfies Record<Schemas['Slot'], Message>
 
 export const ELEMENTS = {
   pyro: 'Pyro',
@@ -53,7 +54,7 @@ export const ELEMENTS = {
   anemo: 'Anemo',
   geo: 'Geo',
   dendro: 'Dendro',
-} as const satisfies Record<Schemas['Element'], string>
+} as const satisfies Record<Schemas['Element'], Message>
 
 const SHOWCASE_URL = '/api/showcase'
 
@@ -63,7 +64,8 @@ const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionD
 export const formatValue = ({ key, value }: Stat): string =>
   (STATS[key].percent ? percent : whole).format(value)
 
-export const formatStat = (stat: Stat): string => `${STATS[stat.key].label} ${formatValue(stat)}`
+export const formatStat = (stat: Stat, t: Translate): string =>
+  `${t(STATS[stat.key].label)} ${formatValue(stat)}`
 
 const isIcon = (value: unknown): value is string | null => value === null || isString(value)
 

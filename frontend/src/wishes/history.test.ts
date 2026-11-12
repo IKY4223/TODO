@@ -116,9 +116,9 @@ describe('importHistory', () => {
   test('reports its progress', async () => {
     serve()
     const progress: string[] = []
-    await importHistory(LINK, EMPTY_HISTORY, { wait: noWait, onProgress: (text) => progress.push(text) })
-    expect(progress).toContain('Character Event: 20 pulls read')
-    expect(progress.at(-1)).toBe("Beginners' Wish: 0 pulls read")
+    await importHistory(LINK, EMPTY_HISTORY, { wait: noWait, onProgress: (banner, pulls) => progress.push(`${banner}: ${pulls}`) })
+    expect(progress).toContain('Character Event: 20')
+    expect(progress.at(-1)).toBe("Beginners' Wish: 0")
   })
 })
 
