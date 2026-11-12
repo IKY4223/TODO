@@ -64,15 +64,25 @@ class EidolonText(BaseModel):
     description: str
 
 
+class TraceText(BaseModel):
+    id: int  # the point's id in the showcase's skill tree
+    name: str
+    skill: bool  # True for a point that levels a skill, False for a bonus ability or a stat
+    description: str  # with "#1[i]%" placeholders, like a skill's
+    params: list[float]
+
+
 class CharacterTexts(BaseModel):
     skills: list[SkillText]
+    traces: list[TraceText]
     eidolons: list[EidolonText]
 
 
 class Texts(BaseModel):
     languages: dict[Language, dict[str, CharacterTexts]]
+    # trace point -> for each of its levels, item id -> amount
+    costs: dict[str, list[dict[str, int]]]
+    items: dict[Language, dict[str, str]]  # item id -> name
 
 
-TEXTS = Texts.model_validate_json(
-    b'{"languages":' + (Path(__file__).parent / "texts.json").read_bytes() + b"}"
-).languages
+TEXTS = Texts.model_validate_json((Path(__file__).parent / "texts.json").read_bytes())

@@ -25,6 +25,7 @@ SKILL_KINDS = {
     "MemospriteTalent": "memosprite_talent",
 }
 TRACE_MAX_LEVEL = 2
+FLAT_PROPERTY = "SpeedDelta"  # the one stat node that is not a percent
 TARGET = Path(__file__).parent.parent / "app" / "starrail" / "gamedata.json"
 
 
@@ -107,6 +108,7 @@ def main() -> None:
 def texts(language: str) -> dict[str, Any]:
     """Each character's skills and eidolons, described in one language."""
     skills = load(f"{language}/character_skills.json", RES)
+    trees = load(f"{language}/character_skill_trees.json", RES)
     ranks = load(f"{language}/character_ranks.json", RES)
     return {
         key: {
@@ -124,6 +126,17 @@ def texts(language: str) -> dict[str, Any]:
                 for skill in (skills[skill_id] for skill_id in character["skills"])
                 if skill["type_text"]  # the unnamed type is the technique's plain attack
             ],
+            "traces": [
+                {
+                    "id": int(point),
+                    # A point that levels a skill has no name of its own: it takes the skill's.
+                    "name": tree["name"] or skills[tree["level_up_skills"][0]["id"]]["name"],
+                    "skill": bool(tree["level_up_skills"]),
+                    "description": tree["desc"] or boost(tree["levels"][0]["properties"]),
+                    "params": tree["params"][0] if tree["params"] else [],
+                }
+                for point, tree in ((point, trees[point]) for point in character["skill_trees"])
+            ],
             "eidolons": [
                 {"name": ranks[rank]["name"], "description": ranks[rank]["desc"]}
                 for rank in character["ranks"]
@@ -133,10 +146,40 @@ def texts(language: str) -> dict[str, Any]:
     }
 
 
+def boost(properties: list[dict[str, Any]]) -> str:
+    """What a stat node adds, as the game prints it: "+4%" or "+2"."""
+    return ", ".join(
+        f"+{prop['value']:g}" if prop["type"] == FLAT_PROPERTY else f"+{prop['value'] * 100:g}%"
+        for prop in properties
+    )
+
+
+def costs() -> dict[str, list[dict[str, int]]]:
+    """Trace point -> what each of its levels costs, as item id -> amount."""
+    trees = load("en/character_skill_trees.json", RES)
+    return {
+        point: [
+            {cost["id"]: cost["num"] for cost in level["materials"]} for level in tree["levels"]
+        ]
+        for point, tree in trees.items()
+    }
+
+
 def main_texts() -> None:
-    result = {language: texts(language) for language in LANGUAGES}
-    TEXTS_TARGET.write_text(json.dumps(result, ensure_ascii=False, indent=1, sort_keys=True) + "\n")
-    print({language: len(characters) for language, characters in result.items()})
+    by_point = costs()
+    used = sorted({item for levels in by_point.values() for level in levels for item in level})
+    items = {language: load(f"{language}/items.json", RES) for language in LANGUAGES}
+    result = {
+        "languages": {language: texts(language) for language in LANGUAGES},
+        "costs": by_point,
+        # Only the materials traces ask for.
+        "items": {
+            language: {key: items[language][key]["name"] for key in used} for language in LANGUAGES
+        },
+    }
+    # Compact: pretty-printing would make this file hundreds of thousands of lines long.
+    TEXTS_TARGET.write_text(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+    print({"materials": len(used), "trace points": len(by_point)})
 
 
 if __name__ == "__main__":

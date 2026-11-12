@@ -10,7 +10,7 @@ from app.showcase import api as showcase_api
 from app.showcase.cache import TtlCache
 from app.showcase.enka import fetch as fetch_from_enka
 from app.starrail import enka
-from app.starrail.gamedata import TEXTS, CharacterTexts
+from app.starrail.gamedata import TEXTS, CharacterTexts, TraceText
 from app.starrail.models import Language, StarRailShowcase, StarRailStatKey
 from app.starrail.relics import (
     MAX_LEVEL,
@@ -111,6 +111,15 @@ def relic_forecast(query: RelicQuery) -> RelicForecast:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
 
+class Trace(TraceText):
+    costs: list[dict[str, int]] = Field(description="For each level: item id -> amount")
+
+
+class CharacterGuide(CharacterTexts):
+    traces: list[Trace]  # type: ignore[assignment]  # the same traces, with their costs
+    items: dict[str, str] = Field(description="Names of the items the costs mention")
+
+
 characters_router = APIRouter(
     prefix="/api/starrail/characters",
     tags=["starrail"],
@@ -122,9 +131,20 @@ characters_router = APIRouter(
 def character_texts(
     character_id: Annotated[int, Path(ge=0, le=MAX_CHARACTER_ID)],
     lang: Annotated[Language, Query(description="The language of the texts")] = "en",
-) -> CharacterTexts:
-    """A character's skills and eidolons, described."""
-    texts = TEXTS[lang].get(str(character_id))
+) -> CharacterGuide:
+    """A character's skills, traces and eidolons, described, with what the traces cost."""
+    texts = TEXTS.languages[lang].get(str(character_id))
     if texts is None:
         raise HTTPException(status_code=404, detail="This app has no texts for this character yet.")
-    return texts
+    traces = [
+        Trace(**trace.model_dump(), costs=TEXTS.costs.get(str(trace.id), []))
+        for trace in texts.traces
+    ]
+    used = {item for trace in traces for level in trace.costs for item in level}
+    names = TEXTS.items[lang]
+    return CharacterGuide(
+        skills=texts.skills,
+        eidolons=texts.eidolons,
+        traces=traces,
+        items={item: names[item] for item in sorted(used)},
+    )

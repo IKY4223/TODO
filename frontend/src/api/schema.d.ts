@@ -81,7 +81,7 @@ export interface paths {
         };
         /**
          * Character Texts
-         * @description A character's skills and eidolons, described.
+         * @description A character's skills, traces and eidolons, described, with what the traces cost.
          */
         get: operations["character_texts_api_starrail_characters__character_id__get"];
         put?: never;
@@ -194,12 +194,21 @@ export interface components {
             /** Icon */
             icon: string | null;
         };
-        /** CharacterTexts */
-        CharacterTexts: {
+        /** CharacterGuide */
+        CharacterGuide: {
             /** Skills */
             skills: components["schemas"]["SkillText"][];
+            /** Traces */
+            traces: components["schemas"]["Trace"][];
             /** Eidolons */
             eidolons: components["schemas"]["EidolonText"][];
+            /**
+             * Items
+             * @description Names of the items the costs mention
+             */
+            items: {
+                [key: string]: string;
+            };
         };
         /** Damage */
         Damage: {
@@ -478,6 +487,8 @@ export interface components {
             relics: components["schemas"]["Relic"][];
             /** Skills */
             skills: components["schemas"]["Skill"][];
+            /** Points */
+            points: components["schemas"]["TracePoint"][];
             /** Icon */
             icon: string | null;
         };
@@ -546,6 +557,33 @@ export interface components {
             rolls: number;
             /** Score */
             score: number;
+        };
+        /** Trace */
+        Trace: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Skill */
+            skill: boolean;
+            /** Description */
+            description: string;
+            /** Params */
+            params: number[];
+            /**
+             * Costs
+             * @description For each level: item id -> amount
+             */
+            costs: {
+                [key: string]: number;
+            }[];
+        };
+        /** TracePoint */
+        TracePoint: {
+            /** Id */
+            id: number;
+            /** Level */
+            level: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -735,7 +773,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CharacterTexts"];
+                    "application/json": components["schemas"]["CharacterGuide"];
                 };
             };
             /** @description Validation Error */

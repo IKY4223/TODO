@@ -54,6 +54,10 @@ const SHOWCASE: Showcase = {
         { kind: 'memosprite_skill', level: 6, bonus: 0 },
         { kind: 'memosprite_talent', level: 7, bonus: 1 },
       ],
+      points: [
+        { id: 1409002, level: 10 },
+        { id: 1409101, level: 1 },
+      ],
       icon: `${ICONS}AvatarRoundIcon/Avatar/1409.png`,
     },
   ],
@@ -174,6 +178,12 @@ test('opens a character page with skills at the player\'s levels and eidolons', 
       },
       { kind: null, label: 'Technique', name: 'Day So Right', description: 'Heals.', params: [] },
     ],
+    traces: [
+      { id: 1409002, name: 'Love Over the Rainbow', skill: true, description: '', params: [], costs: [{}, { '2': 100 }, { '2': 200 }] },
+      { id: 1409101, name: 'Gloomy Grin', skill: false, description: 'CRIT Rate +#1[i]%.', params: [1], costs: [{ '2': 5000 }] },
+      { id: 1409203, name: 'SPD Boost', skill: false, description: '+2', params: [], costs: [{ '2': 9000, '110252': 3 }] },
+    ],
+    items: { '2': 'Credit', '110252': 'Harmonic Tune' },
     eidolons: [
       { name: 'Cradle the Candle of Night', description: 'Max HP +50%.' },
       { name: 'Come Sit in My Courtyard', description: 'SPD +30%.' },
@@ -192,7 +202,10 @@ test('opens a character page with skills at the player\'s levels and eidolons', 
   expect(screen.getByText('Skill · Lv. 12')).toBeDefined()
   expect(screen.getByText('Technique')).toBeDefined()
   expect(screen.getByRole('heading', { name: 'E1 · Cradle the Candle of Night' })).toBeDefined()
-  expect(screen.getAllByText('Not unlocked')).toHaveLength(2) // Hyacine is E0
+  // Gloomy Grin is unlocked in the showcase, SPD Boost is not; the Skill is at its top here.
+  expect(screen.getByText('CRIT Rate +100%.')).toBeDefined()
+  expect(pairs('Credit')).toEqual(['Credit9,000', 'Harmonic Tune3'])
+  expect(screen.getAllByText('Not unlocked')).toHaveLength(3) // SPD Boost; Hyacine is E0
   expect(screen.queryByText('Trailblazer')).toBeNull()
   expect(screen.getByRole('link', { name: '← All characters' }).getAttribute('href')).toBe(
     '#starrail/builds',

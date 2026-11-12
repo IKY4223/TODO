@@ -105,7 +105,12 @@ label {
   margin: 0;
 }
 
-.card h3:has(+ .texts) {
+.card dl.materials {
+  grid-template-columns: 1fr;
+}
+
+.card h3:has(+ .texts),
+.card h3:has(+ .materials) {
   margin: 1.25rem 0 0.75rem;
 }
 

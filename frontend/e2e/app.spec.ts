@@ -231,8 +231,13 @@ test('opens a character page and comes back with the back button', async ({ page
   await expect(tool.getByRole('heading', { level: 2, name: 'March 7th' })).toBeVisible()
   // March 7th is E6 with a level 11 Skill in the fixture.
   await expect(tool.getByText('Skill · Lv. 11')).toBeVisible()
-  await expect(tool.getByText('Unlocked', { exact: true })).toHaveCount(6)
+  // All six eidolons and ten of her thirteen trace nodes.
+  await expect(tool.getByText('Unlocked', { exact: true })).toHaveCount(16)
+  await expect(tool.getByText('Not unlocked', { exact: true })).toHaveCount(3)
   await expect(tool.getByText(/#\d+\[/)).toHaveCount(0) // every number is filled in
+  // Three of March 7th's stat nodes are not unlocked, so materials are still owed.
+  await expect(tool.getByRole('heading', { name: 'Traces', exact: true })).toBeVisible()
+  await expect(tool.locator('.materials div').first()).toContainText('Credit')
   expectPhoneFriendly(await measureLayout(page), MIN_PAGE_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   await page.goBack()

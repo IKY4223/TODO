@@ -22,6 +22,7 @@ from app.starrail.models import (
     StarRailStat,
     StarRailStatKey,
     SubStat,
+    TracePoint,
 )
 
 ENKA_URL = "https://enka.network/api/hsr/uid/{uid}"
@@ -224,6 +225,7 @@ def _character(avatar: _Avatar, language: Language) -> StarRailCharacter:
         light_cone=_light_cone(avatar.equipment, language),
         relics=tuple(relic for relic in relics if relic),
         skills=_skills(avatar, data.eidolons if data else []),
+        points=tuple(TracePoint(point.point_id, point.level) for point in avatar.skill_tree_list),
         icon=_icon(data.icon) if data else None,
     )
 

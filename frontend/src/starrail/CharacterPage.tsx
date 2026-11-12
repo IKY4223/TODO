@@ -2,10 +2,17 @@ import { type JSX, useEffect, useRef } from 'react'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
-import { type CharacterTexts, describe, fetchCharacterTexts, type SkillText } from './guide'
+import {
+  type CharacterTexts,
+  describe,
+  fetchCharacterTexts,
+  remainingCosts,
+  type SkillText,
+} from './guide'
 import type { StarRailCharacter } from './starrail'
 
 const ICON_SIZE = 56
+const count = new Intl.NumberFormat('en')
 
 function SkillItem(props: {
   readonly skill: SkillText
@@ -34,6 +41,8 @@ function Texts(props: {
 }): JSX.Element {
   const { texts, character } = props
   const t = useT()
+  const unlocked = new Set(character.points.map(({ id }) => id))
+  const costs = [...remainingCosts(texts.traces, character.points)]
   return (
     <>
       <h3>{t('Skills')}</h3>
@@ -42,6 +51,33 @@ function Texts(props: {
           <SkillItem key={skill.name} skill={skill} character={character} />
         ))}
       </ul>
+      <h3>{t('Traces')}</h3>
+      <ul className="texts">
+        {texts.traces
+          .filter((trace) => !trace.skill)
+          .map((trace) => (
+            <li key={trace.id}>
+              <h4>{trace.name}</h4>
+              <span className="hint">
+                {unlocked.has(trace.id) ? t('Unlocked') : t('Not unlocked')}
+              </span>
+              <p>{describe(trace.description, trace.params)}</p>
+            </li>
+          ))}
+      </ul>
+      <h3>{t('Materials to max skills and traces')}</h3>
+      {costs.length ? (
+        <dl className="materials">
+          {costs.map(([item, amount]) => (
+            <div key={item}>
+              <dt>{texts.items[item] ?? item}</dt>
+              <dd>{count.format(amount)}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="hint">{t('Everything is at its highest level.')}</p>
+      )}
       <h3>{t('Eidolons')}</h3>
       <ul className="texts">
         {texts.eidolons.map((eidolon, index) => (
