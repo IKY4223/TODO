@@ -160,12 +160,13 @@ test('shows the light cone', async () => {
 test('shows each relic with its stats and the rolls each substat took', async () => {
   load(async () => Response.json(SHOWCASE))
   expect(await screen.findByText('Head · Warrior Goddess of Sun and Thunder +15')).toBeDefined()
-  expect(screen.getByText('HP 706')).toBeDefined()
+  // The game cuts numbers off instead of rounding: 705.6 HP reads 705, 3.456% reads 3.4%.
+  expect(screen.getByText('HP 705')).toBeDefined()
   // One substat per line, top to bottom, the way the game lists them.
   expect(rows('Head substats')).toEqual([
     'ATK 40 ×2',
     'SPD 12.1 ×5',
-    'Effect Hit Rate 3.5% ×1',
+    'Effect Hit Rate 3.4% ×1',
     'Break Effect 5.8% ×1',
   ])
 })

@@ -75,8 +75,5 @@ have a lawyer read the texts before launch.
 
 Remind the owner of these until they confirm them.
 
-- Turn on GitHub Secret scanning and Push protection (repository Settings, Code security). The
-  session's GitHub access may not write repository settings, so the owner does it from the phone.
-
-- Compare Star Rail final stats with the game for one character. For Hyacine on UID 719781196 the
-  app shows HP 4926, ATK 1227, DEF 1161, SPD 183.5, CRIT Rate 18.9%.
+- None open. Confirmed so far: Secret scanning and Push protection are on; Star Rail final stats
+  match the game once numbers are cut off the way the game prints them (1160.63 DEF reads 1160).

@@ -99,3 +99,14 @@ test('a team has at most four members', () => {
   fireEvent.click(screen.getByLabelText('C1'))
   expect(screen.getByLabelText('C5')).toHaveProperty('disabled', false)
 })
+
+test("an effect counted from the source's SPD, and one that waits to be switched on", () => {
+  // Hanya gives 20% of her own SPD on Ultimate; Sushang's talent needs a broken enemy.
+  show([character(1215, 'Hanya', 150), character(1206, 'Sushang', 100)])
+  expect(screen.getByText('On Ultimate · Chosen ally: SPD +30 · lasts 2 turn(s)')).toBeDefined()
+  const talent = screen.getByLabelText(/Always · Self: SPD \+20%/)
+  expect(talent).toHaveProperty('checked', false)
+  fireEvent.click(talent)
+  // 120 SPD from the first moment: the first turn comes at 83.3 instead of 100.
+  expect(timeline()).toContain('83.3 · Sushang')
+})

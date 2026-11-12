@@ -1,19 +1,29 @@
 :root {
-  --color-background: #0f172a;
-  --color-card: #1b2336;
-  --color-border: #475569;
-  --color-foreground: #f8fafc;
-  --color-muted-foreground: #94a3b8;
-  --color-accent: #22c55e;
-  --color-on-accent: #0f172a;
+  /* Deep indigo with a violet accent. Text colours keep 4.5:1 on the background and on cards. */
+  --color-background: #0d0f1e;
+  --color-card: #171a2e;
+  --color-input: #0f1124;
+  --color-border: #333861; /* outlines of cards and dividers */
+  --color-control: #646aa3; /* outlines of things to tap or type in: 3:1 against a card */
+  --color-foreground: #eef0fa;
+  --color-muted-foreground: #a3a8c9;
+  --color-primary: #7c3aed; /* filled buttons, under white text */
+  --color-on-primary: #ffffff;
+  --color-accent: #a78bfa; /* text and marks on dark */
+  --color-accent-soft: rgb(124 58 237 / 22%);
   --color-destructive: #f87171;
+  --radius: 0.75rem;
+  --shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 35%);
+  --bar-height: 3.75rem;
   color-scheme: dark;
   font-family: system-ui, sans-serif;
+  line-height: 1.5;
 }
 
 body {
   margin: 0;
-  background: var(--color-background);
+  background: var(--color-background)
+    radial-gradient(120% 28rem at 50% 0, rgb(124 58 237 / 16%), transparent 70%) no-repeat;
   color: var(--color-foreground);
   /* A word longer than its column breaks, with a hyphen where the browser can, instead of
      widening the page: Russian labels such as "Сверхспособность" are long. */
@@ -21,20 +31,132 @@ body {
   hyphens: auto;
 }
 
+/* The top bar stays in reach while the page scrolls. */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--bar-height);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: rgb(13 15 30 / 88%);
+  backdrop-filter: blur(0.75rem);
+}
+
+.brand {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.brand span {
+  color: var(--color-accent);
+  font-size: 0.875rem;
+}
+
+.bar select {
+  width: auto;
+}
+
+button.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  padding: 0;
+  border-color: var(--color-control);
+  background: transparent;
+  color: var(--color-foreground);
+}
+
+/* The menu slides in under the bar, so the button that opened it can close it. */
+.drawer {
+  position: fixed;
+  inset: var(--bar-height) auto 0 0;
+  z-index: 30;
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  width: min(18rem, 85vw);
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: var(--shadow);
+  animation: slide-in 180ms ease-out;
+}
+
+.drawer nav {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.drawer h2 {
+  margin: 0 0 0.25rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.drawer a {
+  justify-content: start;
+  padding: 0 0.75rem;
+  border-color: transparent;
+}
+
+button.backdrop {
+  position: fixed;
+  inset: var(--bar-height) 0 0 0;
+  z-index: 20;
+  width: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgb(0 0 0 / 55%);
+  animation: fade-in 180ms ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 main {
   box-sizing: border-box;
-  max-width: 28rem;
+  max-width: 40rem;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0 1rem 2rem;
 }
 
 h1 {
-  font-size: 1.5rem;
+  margin: 0;
+  font-size: 1.125rem;
 }
 
 h2 {
-  margin-bottom: 0;
-  font-size: 1.25rem;
+  margin: 1.25rem 0 0;
+  font-size: 1.375rem;
 }
 
 h3 {
@@ -42,29 +164,42 @@ h3 {
   font-size: 1.125rem;
 }
 
-nav {
-  margin-bottom: 0.5rem;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 0.5rem;
-}
-
 nav a {
   -webkit-tap-highlight-color: transparent;
   display: grid;
   place-items: center;
   min-height: 2.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius);
   color: inherit;
   text-decoration: none;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
 }
 
 nav a[aria-current] {
   border-color: var(--color-accent);
+  background: var(--color-accent-soft);
   color: var(--color-accent);
   font-weight: 600;
+}
+
+/* The current game's tools, in one row that scrolls sideways when the words run long. */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem -1rem 0;
+  padding: 0 1rem 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs a {
+  flex: 1 0 auto;
+  padding: 0 1rem;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 form {
@@ -87,7 +222,7 @@ label {
 .check input {
   width: 1.5rem;
   height: 1.5rem;
-  accent-color: var(--color-accent);
+  accent-color: var(--color-primary);
 }
 
 /* A link as easy to tap as a button. */
@@ -97,9 +232,10 @@ label {
   place-items: center;
   min-height: 2.75rem;
   margin: 0.5rem 0;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  color: inherit;
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius);
+  color: var(--color-accent);
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -123,18 +259,6 @@ label {
 
 .texts p {
   white-space: pre-line;
-}
-
-/* The title with the language choice beside it. */
-.top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.top select {
-  width: auto;
 }
 
 /* Numbers stay whole: only labels break, so "10" never becomes "1 0" and "14,7 %" stays on a line. */
@@ -192,7 +316,13 @@ fieldset {
   margin: 0;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
+}
+
+legend {
+  padding: 0 0.375rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
 }
 
 /* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
@@ -205,9 +335,9 @@ button {
   min-width: 0; /* a select is otherwise as wide as its longest option */
   min-height: 2.75rem;
   padding: 0 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-card);
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius);
+  background: var(--color-input);
   color: inherit;
   font: inherit;
   font-size: 1rem;
@@ -224,15 +354,21 @@ output {
 }
 
 button {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-weight: 600;
+  cursor: pointer;
+  transition: filter 150ms;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.12);
 }
 
 button.secondary {
   margin-top: 1rem;
-  border-color: var(--color-border);
+  border-color: var(--color-control);
   background: transparent;
   color: var(--color-foreground);
   font-weight: normal;
@@ -240,10 +376,11 @@ button.secondary {
 
 button:disabled {
   opacity: 0.6;
+  cursor: default;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-foreground);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -294,9 +431,11 @@ td:last-child {
 .card {
   padding: 1rem;
   border: 1px solid var(--color-border);
-  border-left: 0.25rem solid var(--element, var(--color-border));
-  border-radius: 0.5rem;
+  border-left: 0.25rem solid var(--element, var(--color-accent));
+  border-radius: var(--radius);
   background: var(--color-card);
+  box-shadow: var(--shadow);
+  scroll-margin-top: calc(var(--bar-height) + 0.5rem); /* a page scrolled to must clear the bar */
 }
 
 .card p {
@@ -448,6 +587,11 @@ summary {
 
 [data-element='imaginary'] {
   --element: #facc15;
+}
+
+/* Results keep their distance from the form above them. */
+[aria-live] > :first-child {
+  margin-top: 1rem;
 }
 
 [role='alert'] {

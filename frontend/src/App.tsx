@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react'
+import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import { useAddress } from './address'
 import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
@@ -62,15 +62,48 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 
+const MENU = 'menu'
+const CLOSE_KEY = 'Escape'
+
 function App(): JSX.Element {
   const here = locate(useAddress())
   const t = useT()
   const language = useLanguage()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open) return undefined
+    const closeOnEscape = (event: KeyboardEvent): void => {
+      if (event.key === CLOSE_KEY) setOpen(false)
+    }
+    document.addEventListener('keydown', closeOnEscape)
+    return (): void => document.removeEventListener('keydown', closeOnEscape)
+  }, [open])
 
   return (
-    <main>
-      <header className="top">
-        <h1>HoYo Toolkit</h1>
+    <>
+      <header className="bar">
+        <button
+          type="button"
+          className="icon"
+          aria-label={t('Menu')}
+          aria-expanded={open}
+          aria-controls={MENU}
+          onClick={() => setOpen(!open)}
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path
+              d="M4 7h16M4 12h16M4 17h16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+        <div className="brand">
+          <h1>HoYo Toolkit</h1>
+          <span data-testid="game">{GAMES[here.game].label}</span>
+        </div>
         <select
           aria-label={t('Language')}
           value={language}
@@ -86,38 +119,56 @@ function App(): JSX.Element {
           ))}
         </select>
       </header>
-      <nav aria-label={t('Games')}>
-        {games.map((game) => (
-          <a
-            key={game}
-            href={href(game, toolsOf(game)[0] ?? '')}
-            aria-current={game === here.game ? 'page' : undefined}
-          >
-            {GAMES[game].label}
-          </a>
-        ))}
-      </nav>
-      <nav aria-label={t('Tools')}>
-        {toolsOf(here.game).map((tool) => (
-          <a
-            key={tool}
-            href={href(here.game, tool)}
-            aria-current={tool === here.tool ? 'page' : undefined}
-          >
-            {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
-          </a>
-        ))}
-      </nav>
-      {games.flatMap((game) =>
-        toolsOf(game).map((tool) => (
-          // Hidden, not unmounted: a loaded showcase or forecast survives switching tools.
-          <div key={href(game, tool)} hidden={game !== here.game || tool !== here.tool}>
-            <ErrorBoundary>{toolEntry(game, tool)?.element}</ErrorBoundary>
+      {open ? (
+        <>
+          <div id={MENU} className="drawer">
+            {games.map((game) => (
+              <nav key={game} aria-label={GAMES[game].label}>
+                <h2>{GAMES[game].label}</h2>
+                {toolsOf(game).map((tool) => (
+                  <a
+                    key={tool}
+                    href={href(game, tool)}
+                    aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    {t(toolEntry(game, tool)?.label ?? 'Tools')}
+                  </a>
+                ))}
+              </nav>
+            ))}
           </div>
-        )),
-      )}
-      <footer>{t('Fan project. Not affiliated with HoYoverse.')}</footer>
-    </main>
+          <button
+            type="button"
+            className="backdrop"
+            aria-label={t('Close menu')}
+            onClick={() => setOpen(false)}
+          />
+        </>
+      ) : null}
+      <main>
+        <nav className="tabs" aria-label={t('Tools')}>
+          {toolsOf(here.game).map((tool) => (
+            <a
+              key={tool}
+              href={href(here.game, tool)}
+              aria-current={tool === here.tool ? 'page' : undefined}
+            >
+              {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
+            </a>
+          ))}
+        </nav>
+        {games.flatMap((game) =>
+          toolsOf(game).map((tool) => (
+            // Hidden, not unmounted: a loaded showcase or forecast survives switching tools.
+            <div key={href(game, tool)} hidden={game !== here.game || tool !== here.tool}>
+              <ErrorBoundary>{toolEntry(game, tool)?.element}</ErrorBoundary>
+            </div>
+          )),
+        )}
+        <footer>{t('Fan project. Not affiliated with HoYoverse.')}</footer>
+      </main>
+    </>
   )
 }
 

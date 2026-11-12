@@ -3,7 +3,8 @@ import { useSyncExternalStore } from 'react'
 // English is the source text and the key. A text missing here is a compile error at its `t()`.
 const RU = {
   // App
-  Games: 'Игры',
+  Menu: 'Меню',
+  'Close menu': 'Закрыть меню',
   Tools: 'Инструменты',
   Language: 'Язык',
   Builds: 'Билды',

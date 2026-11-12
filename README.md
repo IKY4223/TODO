@@ -27,6 +27,10 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
+- **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
+  current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets.
+- **Languages** — English and Russian, with numbers in each language's format. Star Rail
+  numbers are cut off the way the game prints them, not rounded.
 - **Genshin builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
 - **Damage calculator** — for any imported character: enter a talent multiplier, pick the
@@ -47,13 +51,16 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-1. Star Rail effects, the rest of the table: more characters (Hanya, Firefly, Pearl, Tingyun's
-   Eidolons and others), effects at the player's own skill levels instead of level 10, summons
-   that arrive later (Netherwing, Fuyuan) or change SPD (Lightning-Lord), Ultimates timed by
-   energy, enemy turns and slows, and team-wide stat effects (Fleet of the Ageless, Broken Keel)
-   in final stats.
-2. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
-   game and tool buttons.
+1. Star Rail effects, the rest of the table:
+   - characters whose effect depends on a state or on the team (Jingliu, Mydei, Pearl, Lingsha's
+     Fuyuan) and effects that Eidolons add;
+   - effects at the player's own skill levels instead of level 10;
+   - summons that arrive later (Netherwing, Fuyuan) or change SPD (Lightning-Lord), and
+     Firefly's Complete Combustion countdown;
+   - Ultimates timed by energy instead of a fixed beat;
+   - enemy turns and slows;
+   - team-wide stat effects (Fleet of the Ageless, Broken Keel) in final stats.
+2. Design: a sidebar in place of the menu on wide screens.
 3. Share a build: a link that opens a character's page for anyone.
 4. A light theme beside the dark one.
 5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
