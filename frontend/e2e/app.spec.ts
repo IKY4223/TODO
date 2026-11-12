@@ -411,6 +411,44 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
   expect(problems).toEqual([])
 })
 
+test('takes a light theme from the device or the menu, readable in both', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/#starrail/builds')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await loadShowcase(page)
+  await page.evaluate(() => {
+    for (const details of document.querySelectorAll('details')) details.open = true
+  })
+  // The scan checks every text's contrast against the light background.
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+
+  await page.getByRole('button', { name: 'Menu' }).click()
+  await page.getByLabel('Theme').selectOption('dark')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.getByLabel('Theme').selectOption('light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.reload()
+  // The player's choice outlasts the device's preference and a reload.
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.getByRole('button', { name: 'Menu' }).click()
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('every tool stays readable in the light theme', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await openStarRail(page)
+  await loadShowcase(page) // so the Speed and Relics tools have characters to show
+  await expect(card(page, 'Hyacine')).toBeVisible()
+  for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'genshin/history']) {
+    await page.goto(`/#${address}`)
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  }
+  expect(problems).toEqual([])
+})
+
 test('Star Rail is where the app opens', async ({ page }) => {
   await page.goto('/')
   await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()
