@@ -8,11 +8,19 @@ const percent = numberFormat({ style: 'percent', maximumFractionDigits: 1 })
 const plain = numberFormat({ maximumFractionDigits: 1 })
 
 /** The light cone, set or character an effect comes from, as the player knows it. */
-export function sourceName(source: Source, character: StarRailCharacter): string {
+export function sourceName(source: Source, character: StarRailCharacter, t: Translate): string {
   if ('character' in source) return character.name
   if ('cone' in source) return character.light_cone?.name ?? ''
   const relic = character.relics.find(({ set_id }) => set_id === source.set)
-  return `${relic?.set_name ?? ''} (${source.pieces})`
+  if (!source.teammate) return `${relic?.set_name ?? ''} (${source.pieces})`
+  const set = TEAM_SETS[source.set]
+  return t('{set} on a teammate', { set: set ? t(set) : '' })
+}
+
+// The sets a teammate can wear for everyone: the character's own relics do not name them.
+const TEAM_SETS: Partial<Record<number, 'Fleet of the Ageless' | 'Broken Keel'>> = {
+  302: 'Fleet of the Ageless',
+  310: 'Broken Keel',
 }
 
 // "ATK +12%", as the game words it: the % on the value says it is a share.
@@ -27,15 +35,17 @@ export function statEffectText(
 ): string {
   return effect.bonuses
     .map((bonus) => {
-      const tiers = bonus.spdAtLeast ?? bonus.spdBelow
+      const tiers = bonus.atLeast ?? bonus.below
       const own = valueFor(effect.source, bonus.values, character) ?? bonus.values[0] ?? 0
       const values = tiers ? bonus.values : [own]
       const gains = values.map((value) => `+${percent.format(value)}`).join(' / ')
-      const condition = bonus.spdAtLeast
-        ? ` · ${t('at SPD {tiers}', { tiers: bonus.spdAtLeast.join(' / ') })}`
-        : bonus.spdBelow
-          ? ` · ${t('below SPD {tiers}', { tiers: bonus.spdBelow.join(' / ') })}`
-          : ''
+      const condition = bonus.tierStat
+        ? ` · ${t('at Effect RES {tiers}', { tiers: bonus.atLeast?.map((tier) => percent.format(tier)).join(' / ') ?? '' })}`
+        : bonus.atLeast
+          ? ` · ${t('at SPD {tiers}', { tiers: bonus.atLeast.join(' / ') })}`
+          : bonus.below
+            ? ` · ${t('below SPD {tiers}', { tiers: bonus.below.join(' / ') })}`
+            : ''
       return `${bonusName(bonus.stat, t)} ${gains}${condition}`
     })
     .join(', ')
@@ -47,6 +57,7 @@ const TRIGGERS = {
   ultimate: 'On Ultimate',
   always: 'Always',
   summon: "On the memosprite's turn",
+  state: 'On entering its state',
 } as const satisfies Record<Trigger, Parameters<Translate>[0]>
 
 const TARGETS = {
@@ -54,16 +65,35 @@ const TARGETS = {
   allies: 'All allies',
   teammates: 'Teammates',
   chosen: 'Chosen ally',
+  summons: 'Own summon',
+  enemies: 'Enemies',
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
 /** "On Ultimate · All allies: SPD +12% · lasts 1 turn(s)" */
 export function turnEffectText(effect: TurnEffect, value: number, t: Translate): string {
-  const amount = effect.kind === 'spd' ? plain.format(value) : percent.format(value)
-  const what =
-    effect.kind === 'advance'
-      ? t('action advance +{value}', { value: amount })
-      : t('SPD +{value}', { value: amount })
-  const lasting = effect.turns ? ` · ${t('lasts {turns} turn(s)', { turns: effect.turns })}` : ''
-  const needs = effect.minSpd ? ` · ${t('SPD at least {spd}', { spd: effect.minSpd })}` : ''
-  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${lasting}${needs}`
+  const amount = ['spd', 'summon', 'stack'].includes(effect.kind)
+    ? plain.format(value)
+    : percent.format(value)
+  const what = {
+    advance: t('action advance +{value}', { value: amount }),
+    spd: t('SPD +{value}', { value: amount }),
+    spd_percent: t('SPD +{value}', { value: amount }),
+    summon: t('comes in with {value} action(s)', { value: amount }),
+    delay: t('action delay +{value}', { value: amount }),
+    slow: t('SPD −{value}', { value: amount }),
+    stack: t('{value} stack(s)', { value: amount }),
+  }[effect.kind]
+  const notes = [
+    effect.turns ? t('lasts {turns} turn(s)', { turns: effect.turns }) : '',
+    effect.untilSummonLeaves ? t('until its countdown acts') : '',
+    effect.withoutSummon ? t('outside its state') : '',
+    effect.minSpd ? t('SPD at least {spd}', { spd: effect.minSpd }) : '',
+    effect.once ? t('once') : '',
+    effect.eidolon ? t('from Eidolon {eidolon}', { eidolon: effect.eidolon }) : '',
+    effect.byElation ? t('by Elation characters on the team') : '',
+  ]
+    .filter(Boolean)
+    .map((note) => ` · ${note}`)
+    .join('')
+  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${notes}`
 }

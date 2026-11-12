@@ -15,7 +15,8 @@ const RU = {
   'Something went wrong here.': 'Здесь что-то пошло не так.',
   Reload: 'Перезагрузить',
   // Requests
-  'The server took too long to answer. Try again.': 'Сервер отвечает слишком долго. Попробуйте ещё раз.',
+  'The server took too long to answer. Try again.':
+    'Сервер отвечает слишком долго. Попробуйте ещё раз.',
   'Could not reach the server. Check your connection.':
     'Не удалось связаться с сервером. Проверьте соединение.',
   'Loading…': 'Загрузка…',
@@ -25,7 +26,7 @@ const RU = {
   'Character builds': 'Билды персонажей',
   'Load characters': 'Загрузить персонажей',
   '9 or 10 digits': '9 или 10 цифр',
-  'Honkai: Star Rail · characters from your profile\'s showcase':
+  "Honkai: Star Rail · characters from your profile's showcase":
     'Honkai: Star Rail · персонажи с витрины вашего профиля',
   'Trailblaze Lv. {level} · Equilibrium {equilibrium}':
     'Уровень Освоения {level} · Равновесие {equilibrium}',
@@ -111,8 +112,8 @@ const RU = {
   'Without effects: one more turn in cycle 0 at {speed} SPD (+{missing})':
     'Без эффектов: ещё один ход в цикле 0 при скорости {speed} (+{missing})',
   Team: 'Команда',
-  'Effect values: skills at level 10, light cones at their superimposition. Skills are taken as used every turn.':
-    'Числа эффектов: навыки на 10 уровне, конусы по их наложению. Считается, что навык применяется каждый ход.',
+  "Effect values: skills at the character's levels, light cones at their superimposition. Skills are taken as used every turn.":
+    'Числа эффектов: навыки на уровнях персонажа, конусы по их наложению. Считается, что навык применяется каждый ход.',
   'Ultimate every N turns': 'Сверхспособность раз в N ходов',
   Never: 'Никогда',
   'Chosen ally': 'Выбранный союзник',
@@ -121,6 +122,27 @@ const RU = {
   'Cycle {cycle}': 'Цикл {cycle}',
   'Memosprite of {name}': 'Дух памяти: {name}',
   'Summon of {name}': 'Призыв: {name}',
+  'Countdown of {name}': 'Отсчёт: {name}',
+  '{set} on a teammate': '{set} у союзника',
+  // Official names, from the game's Russian texts (StarRailRes).
+  'Fleet of the Ageless': 'Флот нестареющих',
+  'Broken Keel': 'Сломанный киль',
+  'at Effect RES {tiers}': 'при сопротивлении эффектам {tiers}',
+  'Own summon': 'Свой призыв',
+  'comes in with {value} action(s)': 'появляется, действий: {value}',
+  'until its countdown acts': 'до хода отсчёта',
+  'On entering its state': 'При входе в особое состояние',
+  Enemies: 'Враги',
+  Enemy: 'Враг',
+  'Enemy SPD': 'Скорость врага',
+  'No enemy': 'Без врага',
+  'action delay +{value}': 'задержка хода +{value}',
+  'SPD −{value}': 'скорость −{value}',
+  '{value} stack(s)': 'стаков: {value}',
+  once: 'один раз',
+  'from Eidolon {eidolon}': 'с эйдолона {eidolon}',
+  'by Elation characters on the team': 'по числу персонажей Радости в команде',
+  'outside its state': 'вне особого состояния',
   'At battle start': 'В начале боя',
   'Every turn': 'Каждый ход',
   'On Ultimate': 'При сверхспособности',
@@ -153,7 +175,8 @@ const RU = {
   'Genshin Impact · global servers · saved only on this device':
     'Genshin Impact · глобальные серверы · хранится только на этом устройстве',
   '{count} pulls since the last 5★': 'Молитв после последнего 5★: {count}',
-  '{total} pulls in total · {count} since the last 4★': 'Всего молитв: {total} · после последнего 4★: {count}',
+  '{total} pulls in total · {count} since the last 4★':
+    'Всего молитв: {total} · после последнего 4★: {count}',
   '5★ pulls, newest first': '5★, сначала новые',
   Name: 'Имя',
   Pity: 'Гарант',
@@ -215,12 +238,15 @@ const RU = {
     'Этот уровень выше максимума для реликвии такой редкости.',
   'A relic of this rarity and level has more substats than that.':
     'У реликвии такой редкости и уровня доп. статов больше.',
-  'A relic cannot have the same substat twice.': 'У реликвии не бывает двух одинаковых доп. статов.',
+  'A relic cannot have the same substat twice.':
+    'У реликвии не бывает двух одинаковых доп. статов.',
   'A substat cannot be the same as the main stat.': 'Доп. стат не может совпадать с главным.',
   'Enka.Network does not accept this UID.': 'Enka.Network не принимает этот UID.',
   'Enka.Network is not responding. Try again later.': 'Enka.Network не отвечает. Попробуйте позже.',
-  'Enka.Network sent data this app cannot read.': 'Enka.Network прислал данные, которые приложение не может прочитать.',
-  'Enter the current value of the stat you set a goal for.': 'Введите текущее значение стата, для которого задана цель.',
+  'Enka.Network sent data this app cannot read.':
+    'Enka.Network прислал данные, которые приложение не может прочитать.',
+  'Enter the current value of the stat you set a goal for.':
+    'Введите текущее значение стата, для которого задана цель.',
   'Enter the value of every substat you want, to compare relics.':
     'Чтобы сравнить реликвии, введите значения всех нужных доп. статов.',
   'HoYoverse is not responding. Try again later.': 'HoYoverse не отвечает. Попробуйте позже.',
@@ -303,7 +329,10 @@ const RU = {
 } as const
 
 export type Message = keyof typeof RU
-export type Translate = (message: Message, values?: Readonly<Record<string, string | number>>) => string
+export type Translate = (
+  message: Message,
+  values?: Readonly<Record<string, string | number>>,
+) => string
 
 const LANGUAGES = { en: 'EN', ru: 'RU' } as const
 export type Language = keyof typeof LANGUAGES

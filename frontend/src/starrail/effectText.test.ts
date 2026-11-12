@@ -55,9 +55,12 @@ const turn = (id: string): (typeof TURN_EFFECTS)[number] => {
 }
 
 test('names the source as the player knows it', () => {
-  expect(sourceName({ set: 320, pieces: 2 }, CHARACTER)).toBe('Giant Tree of Rapt Brooding (2)')
-  expect(sourceName({ cone: 21045 }, CHARACTER)).toBe('After the Charmony Fall')
-  expect(sourceName({ character: 1101 }, CHARACTER)).toBe('Bronya')
+  expect(sourceName({ set: 320, pieces: 2 }, CHARACTER, t)).toBe('Giant Tree of Rapt Brooding (2)')
+  expect(sourceName({ cone: 21045 }, CHARACTER, t)).toBe('After the Charmony Fall')
+  expect(sourceName({ character: 1101 }, CHARACTER, t)).toBe('Bronya')
+  expect(sourceName({ set: 302, pieces: 2, teammate: true }, CHARACTER, t)).toBe(
+    'Fleet of the Ageless on a teammate',
+  )
 })
 
 test('describes stat effects with their tiers or the superimposition value', () => {
@@ -68,6 +71,7 @@ test('describes stat effects with their tiers or the superimposition value', () 
     'CRIT Rate +20% / +32% · below SPD 110 / 95',
   )
   expect(statEffectText(stat('charmony-fall'), CHARACTER, t)).toBe('SPD +16%')
+  expect(statEffectText(stat('keel'), CHARACTER, t)).toBe('CRIT DMG +10% · at Effect RES 30%')
   expect(statEffectText(stat('warrior-goddess'), CHARACTER, t)).toBe('SPD +6%, CRIT DMG +15%')
 })
 
@@ -83,5 +87,31 @@ test('describes turn effects', () => {
   )
   expect(turnEffectText(turn('mem-skill-8'), 1, t)).toBe(
     "On the memosprite's turn · Chosen ally: action advance +100%",
+  )
+  expect(turnEffectText(turn('lingsha-skill-summon'), 3, t)).toBe(
+    'Every turn · Own summon: comes in with 3 action(s)',
+  )
+  expect(turnEffectText(turn('firefly-spd'), 60, t)).toBe(
+    'On Ultimate · Self: SPD +60 · until its countdown acts',
+  )
+  expect(turnEffectText(turn('firefly-skill'), 0.25, t)).toBe(
+    'Every turn · Self: action advance +25% · outside its state',
+  )
+  expect(turnEffectText(turn('welt-ultimate'), 0.4, t)).toBe(
+    'On Ultimate · Enemies: action delay +40%',
+  )
+  expect(turnEffectText(turn('welt-skill'), 0.1, t)).toBe(
+    'Every turn · Enemies: SPD −10% · lasts 2 turn(s)',
+  )
+  expect(turnEffectText(turn('jingliu-technique'), 1, t)).toBe('At battle start · Self: 1 stack(s)')
+  expect(turnEffectText(turn('jingliu-talent'), 1, t)).toBe(
+    'On entering its state · Self: action advance +100%',
+  )
+  expect(turnEffectText(turn('mydei-vendetta'), 1, t)).toBe(
+    'Every turn · Self: action advance +100% · once',
+  )
+  expect(turnEffectText(turn('march-e1'), 0.1, t)).toBe('Always · Self: SPD +10% · from Eidolon 1')
+  expect(turnEffectText(turn('pearl-ultimate'), 0.15, t)).toBe(
+    'On Ultimate · Chosen ally: action advance +15% · by Elation characters on the team',
   )
 })

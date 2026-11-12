@@ -1,7 +1,7 @@
 import { type JSX, useState } from 'react'
 import { numberFormat, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
-import { SUMMONS, TURN_EFFECTS, baseOf, statOf, valueFor } from './effects'
+import { SUMMONS, SYZYGY, TURN_EFFECTS, baseOf, statOf, turnValue } from './effects'
 import { sourceName, turnEffectText } from './effectText'
 import { nextBreakpoint } from './speed'
 import type { StarRailCharacter } from './starrail'
@@ -16,6 +16,8 @@ const ULTIMATE_CHOICES = [0, 1, 2, 3, 4]
 const DEFAULT_ULTIMATE_EVERY = 3
 const ICON_SIZE = 40
 const SUMMON = ':summon'
+const ENEMY = 'enemy'
+const MAX_ENEMY_SPD = 999
 const TENTHS = 10
 const speed = numberFormat({ minimumFractionDigits: 1, maximumFractionDigits: 1 })
 // Rounded up: 133.3 SPD would fall short of a 133.34 breakpoint.
@@ -30,19 +32,25 @@ interface Settings {
 
 const effectsOf = (
   character: StarRailCharacter,
+  team: readonly StarRailCharacter[],
 ): { effect: (typeof TURN_EFFECTS)[number]; value: number }[] =>
   TURN_EFFECTS.flatMap((effect) => {
-    const value = valueFor(effect.source, effect.values, character)
+    const value = turnValue(effect, character, team)
     if (value === undefined) return []
     return [{ effect, value: effect.ofSourceSpd ? value * statOf(character, 'spd') : value }]
   })
 
 const toUnit = ({ effect, value }: ReturnType<typeof effectsOf>[number]): UnitEffect => ({
+  id: effect.id,
   kind: effect.kind,
   trigger: effect.trigger,
   target: effect.target,
   turns: effect.turns,
   withSummons: effect.withSummons,
+  untilSummonLeaves: effect.untilSummonLeaves,
+  withoutSummon: effect.withoutSummon,
+  once: effect.once,
+  stacks: effect.stacks,
   value,
 })
 
@@ -53,7 +61,7 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
   return team.flatMap((character) => {
     const own = settings(character.id)
     const spd = statOf(character, 'spd')
-    const active = effectsOf(character).filter(
+    const active = effectsOf(character, team).filter(
       ({ effect }) => isOn(own, effect.id, effect.off) && spd >= (effect.minSpd ?? 0),
     )
     const unit: Unit = {
@@ -63,6 +71,10 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
       ultimateEvery: own.ultimateEvery,
       chosen: own.chosen === undefined ? undefined : String(own.chosen),
       effects: active.filter(({ effect }) => effect.trigger !== 'summon').map(toUnit),
+      stacks:
+        character.id === SYZYGY.character
+          ? { enter: SYZYGY.enter, bonus: character.eidolon >= SYZYGY.bonusFrom ? 1 : 0 }
+          : undefined,
     }
     const summons = SUMMONS.filter(({ owner }) => owner === character.id).map((summon): Unit => {
       const summonSpd = summon.ofOwner ? summon.spd * spd : summon.spd
@@ -73,6 +85,12 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
         owner: unit.key,
         ultimateEvery: 0,
         effects: active.filter(({ effect }) => effect.trigger === 'summon').map(toUnit),
+        later: summon.later,
+        arrival: summon.arrival,
+        maxActions: summon.maxActions,
+        maxSpd: summon.maxSpd,
+        blocksUltimate: summon.blocksUltimate,
+        timer: summon.kind === 'countdown',
       }
     })
     return [unit, ...summons]
@@ -86,6 +104,7 @@ export function SpeedPlanner(): JSX.Element {
   const characters = (showcase?.characters ?? []).filter((character) => character.stats.length)
   const [picked, setPicked] = useState<number[]>()
   const [changes, setChanges] = useState<Readonly<Record<number, Settings>>>({})
+  const [enemySpd, setEnemySpd] = useState('')
   const teamIds = picked ?? characters.slice(0, TEAM_SIZE).map(({ id }) => id)
   const team = characters.filter(({ id }) => teamIds.includes(id))
 
@@ -108,15 +127,24 @@ export function SpeedPlanner(): JSX.Element {
     change(id, off ? { on: flip(own.on) } : { off: flip(own.off) })
   }
 
-  const actions = simulate(unitsOf(team, settingsOf), LAST)
+  const typed = Number(enemySpd)
+  const enemy: Unit[] =
+    enemySpd && typed > 0 && typed <= MAX_ENEMY_SPD
+      ? [{ key: ENEMY, spd: typed, baseSpd: typed, ultimateEvery: 0, effects: [], enemy: true }]
+      : []
+  const actions = simulate([...unitsOf(team, settingsOf), ...enemy], LAST)
   const nameOf = (key: string): string => {
+    if (key === ENEMY) return t('Enemy')
     const character = team.find(({ id }) => String(id) === key.replace(SUMMON, ''))
     if (!character) return key
     if (!key.endsWith(SUMMON)) return character.name
     const kind = SUMMONS.find(({ owner }) => owner === character.id)?.kind
-    return kind === 'memosprite'
-      ? t('Memosprite of {name}', { name: character.name })
-      : t('Summon of {name}', { name: character.name })
+    const names = {
+      memosprite: 'Memosprite of {name}',
+      summon: 'Summon of {name}',
+      countdown: 'Countdown of {name}',
+    } as const
+    return t(names[kind ?? 'summon'], { name: character.name })
   }
 
   return (
@@ -153,13 +181,26 @@ export function SpeedPlanner(): JSX.Element {
           ) : null}
           <p className="hint">
             {t(
-              'Effect values: skills at level 10, light cones at their superimposition. Skills are taken as used every turn.',
+              "Effect values: skills at the character's levels, light cones at their superimposition. Skills are taken as used every turn.",
             )}
           </p>
+          <label>
+            {t('Enemy SPD')}
+            <input
+              type="number"
+              inputMode="decimal"
+              min={1}
+              max={MAX_ENEMY_SPD}
+              step="any"
+              value={enemySpd}
+              placeholder={t('No enemy')}
+              onChange={(event) => setEnemySpd(event.target.value)}
+            />
+          </label>
           <ul className="cards">
             {team.map((character) => {
               const own = settingsOf(character.id)
-              const known = effectsOf(character)
+              const known = effectsOf(character, team)
               const spd = statOf(character, 'spd')
               const key = String(character.id)
               return (
@@ -238,7 +279,7 @@ export function SpeedPlanner(): JSX.Element {
                               onChange={() => toggle(character.id, effect.id, effect.off)}
                             />
                             <span>
-                              <strong>{sourceName(effect.source, character)}</strong>
+                              <strong>{sourceName(effect.source, character, t)}</strong>
                               <br />
                               {turnEffectText(effect, value, t)}
                             </span>
@@ -253,13 +294,13 @@ export function SpeedPlanner(): JSX.Element {
           </ul>
           <h3>{t('Turn order')}</h3>
           <ol className="timeline">
-            {actions.map(({ time, unit, ultimate }, index) => {
+            {actions.map(({ time, unit, ultimate, turn }, index) => {
               const cycle = CYCLE_ENDS.findIndex((end) => time <= end)
               const starts =
                 index === 0 ||
                 cycle !== CYCLE_ENDS.findIndex((end) => (actions[index - 1]?.time ?? 0) <= end)
               return (
-                <li key={`${unit}@${time}`} className={starts ? 'cycle-start' : undefined}>
+                <li key={`${unit}#${turn}`} className={starts ? 'cycle-start' : undefined}>
                   {starts ? <strong>{t('Cycle {cycle}', { cycle })}</strong> : null}
                   <span>
                     {speed.format(time)} · {nameOf(unit)}

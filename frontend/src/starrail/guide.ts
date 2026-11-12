@@ -17,12 +17,15 @@ const UNKNOWN = '?'
 
 /** The description with a level's numbers in place. A number the data lacks reads "?". */
 export const describe = (description: string, numbers: readonly number[]): string =>
-  description.replaceAll(PLACEHOLDER, (_, index: string, format: keyof typeof DIGITS, percent: string) => {
-    const number = numbers[Number(index) - 1]
-    if (number === undefined) return UNKNOWN + percent
-    const shown = (percent ? number * PERCENT : number).toFixed(DIGITS[format])
-    return String(Number(shown)) + percent // through Number: "50.0" reads "50"
-  })
+  description.replaceAll(
+    PLACEHOLDER,
+    (_, index: string, format: keyof typeof DIGITS, percent: string) => {
+      const number = numbers[Number(index) - 1]
+      if (number === undefined) return UNKNOWN + percent
+      const shown = (percent ? number * PERCENT : number).toFixed(DIGITS[format])
+      return String(Number(shown)) + percent // through Number: "50.0" reads "50"
+    },
+  )
 
 const isSkillText = (value: unknown): value is SkillText =>
   isRecord(value) &&

@@ -5,8 +5,11 @@
 // shortcut: no table entry means no effect; extend the table when a character needs one.
 import type { Relic, StarRailCharacter } from './starrail'
 
+type SkillKind = StarRailCharacter['skills'][number]['kind']
+
 export type Source =
-  | { readonly set: number; readonly pieces: 2 | 4 }
+  // teammate: the set is worn by someone else on the team and raises all allies' stats.
+  | { readonly set: number; readonly pieces: 2 | 4; readonly teammate?: boolean }
   | { readonly cone: number }
   | { readonly character: number }
 
@@ -21,11 +24,13 @@ export type BonusStat =
 /** A panel stat raised while the effect holds. */
 export interface StatBonus {
   readonly stat: BonusStat
-  /** One value; one per superimposition for a light cone; or one per SPD tier. */
+  /** One value; one per superimposition for a light cone; or one per tier. */
   readonly values: readonly number[]
-  /** Holds by itself at these SPD tiers, the highest one met winning. Without tiers: a switch. */
-  readonly spdAtLeast?: readonly number[]
-  readonly spdBelow?: readonly number[]
+  /** Holds by itself at these tiers of SPD (or `tierStat`), the highest met winning. Without
+   * tiers: a switch. */
+  readonly atLeast?: readonly number[]
+  readonly below?: readonly number[]
+  readonly tierStat?: 'effect_res'
 }
 
 export interface StatEffect {
@@ -38,27 +43,27 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
   {
     id: 'space-sealing',
     source: { set: 301, pieces: 2 },
-    bonuses: [{ stat: 'atk_percent', values: [0.12], spdAtLeast: [120] }],
+    bonuses: [{ stat: 'atk_percent', values: [0.12], atLeast: [120] }],
   },
   {
     id: 'talia',
     source: { set: 307, pieces: 2 },
-    bonuses: [{ stat: 'break_effect', values: [0.2], spdAtLeast: [145] }],
+    bonuses: [{ stat: 'break_effect', values: [0.2], atLeast: [145] }],
   },
   {
     id: 'giant-tree',
     source: { set: 320, pieces: 2 },
-    bonuses: [{ stat: 'outgoing_healing', values: [0.12, 0.2], spdAtLeast: [135, 180] }],
+    bonuses: [{ stat: 'outgoing_healing', values: [0.12, 0.2], atLeast: [135, 180] }],
   },
   {
     id: 'poet',
     source: { set: 124, pieces: 4 },
-    bonuses: [{ stat: 'crit_rate', values: [0.2, 0.32], spdBelow: [110, 95] }],
+    bonuses: [{ stat: 'crit_rate', values: [0.2, 0.32], below: [110, 95] }],
   },
   {
     id: 'diviner',
     source: { set: 130, pieces: 4 },
-    bonuses: [{ stat: 'crit_rate', values: [0.1, 0.18], spdAtLeast: [120, 160] }],
+    bonuses: [{ stat: 'crit_rate', values: [0.1, 0.18], atLeast: [120, 160] }],
   },
   {
     id: 'messenger',
@@ -101,16 +106,42 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
     source: { cone: 21024 },
     bonuses: [{ stat: 'spd_percent', values: [0.08, 0.09, 0.1, 0.11, 0.12] }],
   },
+  // Sets that raise all allies' stats: on the wearer by its own stats, on the others by a switch,
+  // since the wearer's SPD or Effect RES is not on their screen.
+  {
+    id: 'fleet',
+    source: { set: 302, pieces: 2 },
+    bonuses: [{ stat: 'atk_percent', values: [0.08], atLeast: [120] }],
+  },
+  {
+    id: 'keel',
+    source: { set: 310, pieces: 2 },
+    bonuses: [{ stat: 'crit_dmg', values: [0.1], atLeast: [0.3], tierStat: 'effect_res' }],
+  },
+  {
+    id: 'fleet-team',
+    source: { set: 302, pieces: 2, teammate: true },
+    bonuses: [{ stat: 'atk_percent', values: [0.08] }],
+  },
+  {
+    id: 'keel-team',
+    source: { set: 310, pieces: 2, teammate: true },
+    bonuses: [{ stat: 'crit_dmg', values: [0.1] }],
+  },
 ]
 
-export type Trigger = 'start' | 'turn' | 'ultimate' | 'always' | 'summon'
-export type Target = 'self' | 'allies' | 'teammates' | 'chosen'
+export type Trigger = 'start' | 'turn' | 'ultimate' | 'always' | 'summon' | 'state'
+// summons: the source's own
+export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' | 'enemies'
 
 /** What an effect does to the turn order. */
 export interface TurnEffect {
   readonly id: string
   readonly source: Source
-  readonly kind: 'advance' | 'spd_percent' | 'spd'
+  // summon: brings the source's summons in with `values` actions, or adds them if already there.
+  // delay: pushes the target's action back. slow: SPD minus this share of its base. stack: adds
+  // stacks such as Syzygy.
+  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon' | 'delay' | 'slow' | 'stack'
   readonly values: readonly number[] // one, or one per superimposition for a light cone
   readonly trigger: Trigger
   readonly target: Target
@@ -119,6 +150,14 @@ export interface TurnEffect {
   readonly withSummons?: boolean // the target's summons too
   readonly off?: boolean // starts switched off: how the character is played decides it
   readonly ofSourceSpd?: boolean // the value is a share of the source's own SPD
+  readonly untilSummonLeaves?: boolean // the buff ends when the source's summon leaves
+  readonly withoutSummon?: boolean // works only while the source's summon is away
+  readonly once?: boolean // happens on the first trigger only
+  readonly stacks?: number // a buff gained again adds up to this many; without it, it refreshes
+  readonly byLevel?: SkillKind // `values` are one per level of this skill, from level 1
+  readonly eidolon?: number // works from this Eidolon on
+  readonly beforeEidolon?: number // works below this Eidolon only: a higher one changes it
+  readonly byElation?: boolean // `values` are one per Elation character on the team, from 1
 }
 
 // "Every turn" assumes the Skill is used every turn, "On Ultimate" the Ultimate every few turns.
@@ -177,26 +216,35 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     id: 'ruan-mei-talent',
     source: { character: 1303 },
     kind: 'spd_percent',
-    values: [0.1],
+    values: [
+      0.08, 0.082, 0.084, 0.086, 0.088, 0.09, 0.0925, 0.095, 0.0975, 0.1, 0.102, 0.104, 0.106,
+      0.108, 0.11,
+    ],
     trigger: 'always',
     target: 'teammates',
+    byLevel: 'talent',
   },
   {
     id: 'asta-ultimate',
     source: { character: 1009 },
     kind: 'spd',
-    values: [50],
+    values: [36, 37.4, 38.8, 40.2, 41.6, 43, 44.75, 46.5, 48.25, 50, 51.4, 52.8, 54.2, 55.6, 57],
     trigger: 'ultimate',
     target: 'allies',
     turns: 2,
+    byLevel: 'ultimate',
   },
   {
     id: 'march-shifu',
     source: { character: 1224 },
     kind: 'spd_percent',
-    values: [0.12],
+    values: [
+      0.06, 0.064, 0.068, 0.072, 0.076, 0.08, 0.085, 0.09, 0.095, 0.1, 0.104, 0.108, 0.112, 0.116,
+      0.12,
+    ],
     trigger: 'always',
     target: 'chosen',
+    byLevel: 'skill',
   },
   {
     id: 'jade-skill',
@@ -207,7 +255,15 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'chosen',
     turns: 3,
   },
-  // Complete Combustion is taken to last once entered; its countdown is not modelled.
+  {
+    id: 'firefly-skill',
+    source: { character: 1310 },
+    kind: 'advance',
+    values: [0.25],
+    trigger: 'turn',
+    target: 'self',
+    withoutSummon: true, // the Enhanced Skill of Complete Combustion has no advance
+  },
   {
     id: 'firefly-advance',
     source: { character: 1310 },
@@ -220,9 +276,100 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     id: 'firefly-spd',
     source: { character: 1310 },
     kind: 'spd',
-    values: [60],
+    values: [30, 33, 36, 39, 42, 45, 48.75, 52.5, 56.25, 60, 63, 66, 69, 72, 75],
     trigger: 'ultimate',
     target: 'self',
+    untilSummonLeaves: true, // Complete Combustion ends on the countdown's turn
+    byLevel: 'ultimate',
+  },
+  {
+    id: 'firefly-countdown',
+    source: { character: 1310 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  // Lightning-Lord: each Hit Per Action adds SPD 10 for its next turn.
+  {
+    id: 'jing-yuan-skill',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [20],
+    trigger: 'turn',
+    target: 'summons',
+    turns: 1,
+    stacks: 7, // Hits Per Action add up, from 3 to at most 10
+  },
+  {
+    id: 'jing-yuan-ultimate',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [30],
+    trigger: 'ultimate',
+    target: 'summons',
+    turns: 1,
+    stacks: 7, // Hits Per Action add up, from 3 to at most 10
+  },
+  {
+    id: 'jing-yuan-technique',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [30],
+    trigger: 'start',
+    target: 'summons',
+    turns: 1,
+    off: true,
+  },
+  {
+    id: 'lingsha-skill-summon',
+    source: { character: 1222 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'turn',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-skill',
+    source: { character: 1222 },
+    kind: 'advance',
+    values: [0.2],
+    trigger: 'turn',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-ultimate',
+    source: { character: 1222 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-technique',
+    source: { character: 1222 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'start',
+    target: 'summons',
+    off: true,
+  },
+  {
+    id: 'castorice-ultimate',
+    source: { character: 1407 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  {
+    id: 'castorice-technique',
+    source: { character: 1407 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'start',
+    target: 'summons',
+    off: true,
   },
   {
     id: 'seele-skill',
@@ -232,34 +379,238 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'self',
     turns: 2,
+    beforeEidolon: 2,
+  },
+  {
+    id: 'seele-skill-e2',
+    source: { character: 1102 },
+    kind: 'spd_percent',
+    values: [0.25],
+    trigger: 'turn',
+    target: 'self',
+    turns: 2,
+    stacks: 2,
+    eidolon: 2,
+  },
+  {
+    id: 'bronya-e2',
+    source: { character: 1101 },
+    kind: 'spd_percent',
+    values: [0.3],
+    trigger: 'turn',
+    target: 'chosen',
+    turns: 2, // "after taking action, for 1 turn": the advanced turn, then the one after it
+    eidolon: 2,
+  },
+  {
+    id: 'march-e1',
+    source: { character: 1224 },
+    kind: 'spd_percent',
+    values: [0.1],
+    trigger: 'always',
+    target: 'self',
+    eidolon: 1,
+  },
+  {
+    id: 'hanya-e2',
+    source: { character: 1215 },
+    kind: 'spd_percent',
+    values: [0.2],
+    trigger: 'turn',
+    target: 'self',
+    turns: 1,
+    eidolon: 2,
+  },
+  {
+    id: 'fugue-e2',
+    source: { character: 1225 },
+    kind: 'advance',
+    values: [0.24],
+    trigger: 'ultimate',
+    target: 'allies',
+    eidolon: 2,
+  },
+  // Mydei enters Vendetta when his Charge reaches 100 from HP lost: when depends on the battle,
+  // so the player says whether it comes after his first turn.
+  {
+    id: 'mydei-vendetta',
+    source: { character: 1404 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'turn',
+    target: 'self',
+    once: true,
+    off: true,
+  },
+  {
+    id: 'mydei-e6',
+    source: { character: 1404 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'start',
+    target: 'self',
+    eidolon: 6,
+  },
+  // shortcut: Jingliu's later kit (more stacks on entering) is not told apart from the first one.
+  {
+    id: 'jingliu-talent',
+    source: { character: 1212 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'state',
+    target: 'self',
+  },
+  {
+    id: 'jingliu-technique',
+    source: { character: 1212 },
+    kind: 'stack',
+    values: [1],
+    trigger: 'start',
+    target: 'self',
+    off: true,
+  },
+  // shortcut: with 4 or more Elation characters the target also gains an extra turn; not modelled.
+  {
+    id: 'pearl-ultimate',
+    source: { character: 1503 },
+    kind: 'advance',
+    values: [0.1, 0.15, 0.3],
+    trigger: 'ultimate',
+    target: 'chosen',
+    byElation: true,
+  },
+  // On enemies. shortcut: debuffs are taken to land, their base chance aside; Welt's and Jingliu's
+  // later kits are not told apart from the first ones.
+  {
+    id: 'welt-skill',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.1],
+    trigger: 'turn',
+    target: 'enemies',
+    turns: 2,
+  },
+  {
+    id: 'welt-ultimate',
+    source: { character: 1004 },
+    kind: 'delay',
+    values: [
+      0.32, 0.328, 0.336, 0.344, 0.352, 0.36, 0.37, 0.38, 0.39, 0.4, 0.408, 0.416, 0.424, 0.432,
+      0.44,
+    ],
+    trigger: 'ultimate',
+    target: 'enemies',
+    byLevel: 'ultimate',
+  },
+  {
+    id: 'welt-ultimate-slow',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.1],
+    trigger: 'ultimate',
+    target: 'enemies',
+    turns: 1,
+  },
+  {
+    id: 'welt-technique',
+    source: { character: 1004 },
+    kind: 'delay',
+    values: [0.2],
+    trigger: 'start',
+    target: 'enemies',
+    off: true,
+  },
+  {
+    id: 'boothill-ultimate',
+    source: { character: 1315 },
+    kind: 'delay',
+    values: [
+      0.3, 0.31, 0.32, 0.33, 0.34, 0.35, 0.3625, 0.375, 0.3875, 0.4, 0.41, 0.42, 0.43, 0.44, 0.45,
+    ],
+    trigger: 'ultimate',
+    target: 'enemies',
+    byLevel: 'ultimate',
+  },
+  // Dan Heng's Slow needs a CRIT hit from the Skill.
+  {
+    id: 'dan-heng-skill',
+    source: { character: 1002 },
+    kind: 'slow',
+    values: [0.12],
+    trigger: 'turn',
+    target: 'enemies',
+    turns: 2,
+    off: true,
+    beforeEidolon: 6,
+  },
+  {
+    id: 'dan-heng-skill-e6',
+    source: { character: 1002 },
+    kind: 'slow',
+    values: [0.2],
+    trigger: 'turn',
+    target: 'enemies',
+    turns: 2,
+    off: true,
+    eidolon: 6,
+  },
+  {
+    id: 'mem-technique-7',
+    source: { character: 8007 },
+    kind: 'delay',
+    values: [0.5],
+    trigger: 'start',
+    target: 'enemies',
+    off: true,
+  },
+  {
+    id: 'mem-technique-8',
+    source: { character: 8008 },
+    kind: 'delay',
+    values: [0.5],
+    trigger: 'start',
+    target: 'enemies',
+    off: true,
   },
   {
     id: 'hanya-ultimate',
     source: { character: 1215 },
     kind: 'spd',
-    values: [0.2],
+    values: [
+      0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
+      0.225,
+    ],
     trigger: 'ultimate',
     target: 'chosen',
     turns: 2,
     ofSourceSpd: true,
+    byLevel: 'ultimate',
   },
   {
     id: 'sushang-talent',
     source: { character: 1206 },
     kind: 'spd_percent',
-    values: [0.2],
+    values: [
+      0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
+      0.225,
+    ],
     trigger: 'always',
     target: 'self',
     off: true,
+    byLevel: 'talent',
   },
   {
     id: 'aventurine-waveflair-ultimate',
     source: { character: 1513 },
     kind: 'spd_percent',
-    values: [0.3],
+    values: [
+      0.12, 0.138, 0.156, 0.174, 0.192, 0.21, 0.2325, 0.255, 0.2775, 0.3, 0.318, 0.336, 0.354,
+      0.372, 0.39,
+    ],
     trigger: 'ultimate',
     target: 'self',
     turns: 4,
+    byLevel: 'ultimate',
   },
   {
     id: 'aglaea-ultimate',
@@ -415,23 +766,32 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
   },
 ]
 
-/** A summon or memosprite that takes its own turns. */
+/** Jingliu's Syzygy: Spectral Transmigration at 2 stacks; Eidolon 6 adds one on entering. */
+export const SYZYGY = { character: 1212, enter: 2, bonusFrom: 6 } as const
+
+/** A summon, memosprite or countdown that takes its own turns. */
 export interface Summon {
   readonly owner: number
-  readonly kind: 'memosprite' | 'summon'
+  readonly kind: 'memosprite' | 'summon' | 'countdown'
   readonly spd: number
   readonly ofOwner?: boolean // `spd` is a share of the owner's SPD
+  readonly later?: boolean // away until an effect brings it in
+  readonly arrival?: number // the action advance it gets each time it is brought in
+  readonly maxActions?: number
+  readonly maxSpd?: number
+  readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
 }
 
-// shortcut: every summon is on the field from the start of battle and keeps its SPD; summons that
-// arrive later (Netherwing on Castorice's Ultimate, Fuyuan on Lingsha's Skill), Fuyuan's 3-turn
-// limit and Lightning-Lord's SPD gains are not modelled.
+// shortcut: summons keep the SPD and action count the game gives them, past the effects in
+// TURN_EFFECTS; Netherwing leaving early when its HP runs out is not modelled.
 export const SUMMONS: readonly Summon[] = [
   { owner: 1112, kind: 'summon', spd: 80 }, // Numby
-  { owner: 1204, kind: 'summon', spd: 60 }, // Lightning-Lord
-  { owner: 1222, kind: 'summon', spd: 90 }, // Fuyuan
+  { owner: 1204, kind: 'summon', spd: 60, maxSpd: 130 }, // Lightning-Lord, up to 10 hits
+  { owner: 1222, kind: 'summon', spd: 90, later: true, maxActions: 5 }, // Fuyuan
+  { owner: 1310, kind: 'countdown', spd: 70, later: true, blocksUltimate: true }, // Combustion
   { owner: 1414, kind: 'summon', spd: 165 }, // Souldragon
-  { owner: 1407, kind: 'memosprite', spd: 165 }, // Netherwing
+  // Netherwing: Newbud, which fills Castorice's Ultimate, does not grow while it is here.
+  { owner: 1407, kind: 'memosprite', spd: 165, later: true, arrival: 1, blocksUltimate: true },
   { owner: 1413, kind: 'memosprite', spd: 160 }, // Evey
   { owner: 1402, kind: 'memosprite', spd: 0.35, ofOwner: true }, // Garmentmaker
   { owner: 8007, kind: 'memosprite', spd: 130 }, // Mem
@@ -454,7 +814,32 @@ export function valueFor(
       ? values[Math.min(cone.superimposition, values.length) - 1]
       : undefined
   }
-  return pieces(character.relics, source.set) >= source.pieces ? values[0] : undefined
+  // A teammate's set counts only for those without their own: the same effect does not stack.
+  const worn = pieces(character.relics, source.set) >= source.pieces
+  return worn === !source.teammate ? values[0] : undefined
+}
+
+const ASSUMED_LEVEL = 10 // when the showcase lacks the skill's level
+
+/** The value a turn effect has for this character in this team, or undefined when it does not apply. */
+export function turnValue(
+  effect: TurnEffect,
+  character: StarRailCharacter,
+  team: readonly StarRailCharacter[],
+): number | undefined {
+  const value = valueFor(effect.source, effect.values, character)
+  const { eidolon } = character
+  if (value === undefined) return undefined
+  if (eidolon < (effect.eidolon ?? 0) || eidolon >= (effect.beforeEidolon ?? Infinity))
+    return undefined
+  const pick = (count: number): number | undefined =>
+    effect.values[Math.min(count, effect.values.length) - 1]
+  if (effect.byLevel) {
+    const skill = character.skills.find(({ kind }) => kind === effect.byLevel)
+    return pick(skill?.level ?? ASSUMED_LEVEL)
+  }
+  if (effect.byElation) return pick(team.filter(({ path }) => path === 'elation').length)
+  return value
 }
 
 export const statOf = (character: StarRailCharacter, key: string): number =>
@@ -463,14 +848,18 @@ export const statOf = (character: StarRailCharacter, key: string): number =>
 export const baseOf = (character: StarRailCharacter, key: string): number =>
   character.bases.find((stat) => stat.key === key)?.value ?? 0
 
-/** The bonus a tiered effect gives at this SPD, or undefined when no tier is met. */
-export function tierValue(bonus: StatBonus, spd: number): number | undefined {
-  const tiers = bonus.spdAtLeast ?? bonus.spdBelow
+/** The bonus a tiered effect gives at this SPD (or `tierStat`), or undefined when no tier is met. */
+export function tierValue(bonus: StatBonus, stat: number): number | undefined {
+  const tiers = bonus.atLeast ?? bonus.below
   if (!tiers) return undefined
-  const met = tiers.map((tier) => (bonus.spdAtLeast ? spd >= tier : spd < tier))
+  const met = tiers.map((tier) => (bonus.atLeast ? stat >= tier : stat < tier))
   const highest = met.lastIndexOf(true)
   return highest === -1 ? undefined : bonus.values[highest]
 }
+
+/** The bonus a tiered effect gives this character, or undefined when no tier is met. */
+export const tierFor = (bonus: StatBonus, character: StarRailCharacter): number | undefined =>
+  tierValue(bonus, statOf(character, bonus.tierStat ?? 'spd'))
 
 /** The stat effects this character's light cone and sets can trigger. */
 export const statEffectsOf = (character: StarRailCharacter): StatEffect[] =>
@@ -481,13 +870,12 @@ export function withEffects(
   character: StarRailCharacter,
   chosen: readonly StatEffect[],
 ): StarRailCharacter['stats'] {
-  const spd = statOf(character, 'spd')
   const extra = new Map<string, number>()
   for (const effect of chosen) {
     for (const bonus of effect.bonuses) {
       const value =
-        bonus.spdAtLeast || bonus.spdBelow
-          ? tierValue(bonus, spd)
+        bonus.atLeast || bonus.below
+          ? tierFor(bonus, character)
           : valueFor(effect.source, bonus.values, character)
       if (value === undefined) continue
       const [key, gain] =

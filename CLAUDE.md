@@ -29,6 +29,10 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - Work on a branch and open a pull request into `main`; the owner merges it.
 - Before starting a stage, write the plan for the owner: what will be built, in what order, and
   what is left out. Plan several features per stage, not one.
+- The owner prefers quality to saving limits: use subagents where they help (an independent
+  review of a diff, wide searches, reading large sources) and do the rest in this session.
+- When the owner is wrong about a fact, a tool or a plan, say so plainly, with the reason, before
+  doing the work.
 - Before planning a stage, check which installed skills and plugins, and which ones in the plugin
   catalog, would improve the result. Use the installed ones; name catalog ones worth adding.
 - Leave nothing out quietly. Everything the owner asked for is either built or in the README plan
@@ -68,6 +72,9 @@ have a lawyer read the texts before launch.
 - Enka.Network: read its current API rules (identification, caching, limits, credit) and follow them.
 - Security: install the `usestrix/strix` plugin and run it against the deployed site, along with
   the `claude-security` scan of the code. Fix what they find before launch.
+- Telegram: the bot's token is a secret (environment variable, never in the repository or logs);
+  the privacy policy covers the Telegram user ids and messages the bot receives, how long they
+  are kept, and that UIDs sent to the bot reach Enka.Network.
 - Operations: HTTPS only, `FORWARDED_ALLOW_IPS` set to the proxy, rate limits and cache moved out
   of process if there is more than one worker, a contact address for abuse reports.
 
@@ -77,3 +84,32 @@ Remind the owner of these until they confirm them.
 
 - None open. Confirmed so far: Secret scanning and Push protection are on; Star Rail final stats
   match the game once numbers are cut off the way the game prints them (1160.63 DEF reads 1160).
+
+## Working notes
+
+For a session picking the work up again.
+
+- State: PRs #1 to #8 are merged. PR #9 holds stage 9: summons, Firefly's countdown,
+  team-wide sets, the sidebar, own skill levels, Eidolons, Syzygy, Pearl, enemies and slows.
+- Next: the Telegram bot (README plan, item 2), or what is left of the effects table (item 1).
+- The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
+- GitHub tools: pass owner `iky4223` and repo `todo` (the repository was renamed to
+  `IKY4223/TODO---Hoyo-Toolkit`; the new name is refused). Repository settings cannot be changed
+  from a session: ask the owner.
+- Preview: build the frontend, then in `backend/` run
+  `STATIC_DIR=../frontend/dist uv run uvicorn app.main:app --host 0.0.0.0 --port 8000`. Screenshots
+  use Playwright with `/opt/pw-browsers/chromium`; route `https://enka.network/ui/**` through
+  curl, since the browser cannot reach that host directly. The owner's UID is 719781196.
+- Game data and texts: Enka.Network's store (`EnkaNetwork/API-docs`) and StarRailRes
+  (`Mar-7th/StarRailRes`, `index_new/<language>/*.json`). Read numbers from there, never memory.
+- The effect table is `frontend/src/starrail/effects.ts`; the turn order simulator is
+  `frontend/src/starrail/turns.ts`; final stats are `backend/app/starrail/stats.py`. Star Rail
+  numbers are cut off, not rounded, as the game prints them.
+- Skills: `ui-ux-pro-max` is installed. `design-taste-frontend` (Leonxlnx/taste-skill) was installed
+  only in a past container; reinstall it from its repository if a design task needs it. Its rule
+  against violet conflicts with the current palette: ask the owner before following it. The
+  owner asked for headroom and get-shit-done; neither was installed (headroom proxies model
+  traffic, which a cloud session cannot route; get-shit-done is archived and moved to
+  `open-gsd/gsd-core`, and adds hooks and a workflow of its own).
+- Netlify was connected to the repository by the owner and is being removed; it cannot run the
+  backend. No free host is settled yet.
