@@ -2,6 +2,7 @@ import { type JSX, useEffect, useRef } from 'react'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
+import { ShareButton } from '../ui/ShareButton'
 import {
   type CharacterTexts,
   describe,
@@ -135,6 +136,7 @@ export function CharacterPage(props: {
           </span>
         </div>
       </header>
+      <ShareButton address={`${back}/${character.id}`} title={localized(character.name)} />
       {'message' in state && <p role="alert">{localized(state.message)}</p>}
       <div aria-live="polite">
         {state.status === 'loading' && <p className="hint">{t('Loading…')}</p>}

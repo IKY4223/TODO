@@ -237,9 +237,9 @@ test("opens a character page with skills at the player's levels and eidolons", a
   }
   const fetchMock = load(async () => Response.json(SHOWCASE))
   const link = await screen.findByRole('link', { name: 'Skills and eidolons' })
-  expect(link.getAttribute('href')).toBe('#starrail/builds/1409')
+  expect(link.getAttribute('href')).toBe('#starrail/builds/700000001/1409')
   fetchMock.mockImplementation(async () => Response.json(texts))
-  window.location.hash = '#starrail/builds/1409'
+  window.location.hash = '#starrail/builds/700000001/1409'
   window.dispatchEvent(new HashChangeEvent('hashchange'))
 
   // The Skill is level 12 in the showcase: the twelfth set of numbers.
@@ -257,7 +257,7 @@ test("opens a character page with skills at the player's levels and eidolons", a
   expect(screen.getAllByText('Not unlocked')).toHaveLength(3) // SPD Boost; Hyacine is E0
   expect(screen.queryByText('Trailblazer')).toBeNull()
   expect(screen.getByRole('link', { name: '← All characters' }).getAttribute('href')).toBe(
-    '#starrail/builds',
+    '#starrail/builds/700000001',
   )
 })
 
@@ -267,7 +267,7 @@ test('a character page says when its texts cannot be loaded', async () => {
   fetchMock.mockImplementation(async () =>
     Response.json({ detail: 'This app has no texts for this character yet.' }, { status: 404 }),
   )
-  window.location.hash = '#starrail/builds/1409'
+  window.location.hash = '#starrail/builds/700000001/1409'
   window.dispatchEvent(new HashChangeEvent('hashchange'))
   expect((await screen.findByRole('alert')).textContent).toBe(
     'This app has no texts for this character yet.',
@@ -366,4 +366,56 @@ test.each([
   load(respond)
   expect(await screen.findByRole('alert')).toBeDefined()
   expect(screen.getByRole('button', { name: 'Load characters' })).toHaveProperty('disabled', false)
+})
+
+test('a shared link loads the showcase and opens the character it names', async () => {
+  window.location.hash = '#starrail/builds/700000001/1409'
+  const fetchMock = vi.fn(async (url: string) =>
+    url.startsWith('/api/starrail/showcase/')
+      ? Response.json(SHOWCASE)
+      : Response.json({ detail: 'This app has no texts for this character yet.' }, { status: 404 }),
+  )
+  vi.stubGlobal('fetch', fetchMock)
+  render(<StarRailShowcase />)
+  expect(await screen.findByRole('heading', { level: 2, name: 'Hyacine' })).toBeDefined()
+  expect(fetchMock.mock.calls[0]?.[0]).toBe('/api/starrail/showcase/700000001?lang=en')
+  expect((screen.getByLabelText('UID') as HTMLInputElement).value).toBe('700000001')
+  expect(screen.getByRole('button', { name: 'Share link' })).toBeDefined()
+})
+
+test('the profile offers a link to the whole showcase', async () => {
+  const sheet = vi.fn(async () => undefined)
+  load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Hyacine')
+  vi.stubGlobal('navigator', { share: sheet })
+  fireEvent.click(screen.getByRole('button', { name: 'Share link' }))
+  await vi.waitFor(() =>
+    expect(sheet).toHaveBeenCalledWith({
+      title: 'Trailblazer',
+      url: `${window.location.origin}${window.location.pathname}#starrail/builds/700000001`,
+    }),
+  )
+})
+
+test('a link to another player loads that player', async () => {
+  const fetchMock = load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Hyacine')
+  window.location.hash = '#starrail/builds/700000002'
+  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  await vi.waitFor(() =>
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      '/api/starrail/showcase/700000002?lang=en',
+      expect.anything(),
+    ),
+  )
+  expect((screen.getByLabelText('UID') as HTMLInputElement).value).toBe('700000002')
+  expect(fetchMock).toHaveBeenCalledTimes(2)
+})
+
+test('an address without a valid UID loads nothing', () => {
+  window.location.hash = '#starrail/builds/12'
+  const fetchMock = vi.fn(async () => Response.json(SHOWCASE))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<StarRailShowcase />)
+  expect(fetchMock).not.toHaveBeenCalled()
 })

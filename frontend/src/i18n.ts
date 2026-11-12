@@ -320,6 +320,9 @@ const RU = {
   // Character page
   'Skills and eidolons': 'Навыки и эйдолоны',
   '← All characters': '← Все персонажи',
+  'Share link': 'Поделиться ссылкой',
+  'Link copied.': 'Ссылка скопирована.',
+  Link: 'Ссылка',
   Skills: 'Навыки',
   Eidolons: 'Эйдолоны',
   Traces: 'Следы',

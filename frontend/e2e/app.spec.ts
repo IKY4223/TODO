@@ -316,6 +316,34 @@ test('opens a character page and comes back with the back button', async ({ page
   expect(problems).toEqual([])
 })
 
+test('opens a shared link to a character and shares it on', async ({ page }) => {
+  // The phone's share sheet, recorded: a test cannot tap through the real one. The page is
+  // already open, and a link that changes only the part after "#" does not reload it.
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'share', {
+      value: async (data: ShareData) => {
+        document.body.dataset.shared = data.url
+      },
+    })
+  })
+  const address = `/#starrail/builds/${UID}/1409`
+  await page.goto(address)
+  const tool = shown(page)
+  await expect(tool.getByRole('heading', { level: 2, name: 'Hyacine' })).toBeVisible()
+  await expect(tool.getByLabel('UID')).toHaveValue(UID)
+  await tool.getByRole('button', { name: 'Share link' }).click()
+  await expect(page.locator('body')).toHaveAttribute('data-shared', new URL(address, page.url()).href)
+  expectPhoneFriendly(await measureLayout(page), MIN_PAGE_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await tool.getByRole('link', { name: '← All characters' }).click()
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Hyacine',
+    'March 7th',
+  ])
+  expect(problems).toEqual([])
+})
+
 test('tells what the upgrades a relic has left can bring', async ({ page }) => {
   // Load the showcase first: the advisor compares with the relics its characters wear.
   await openStarRail(page)

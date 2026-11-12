@@ -1,9 +1,10 @@
-import { type JSX, type SubmitEvent, useEffect, useState } from 'react'
+import { type JSX, type SubmitEvent, useEffect, useRef, useState } from 'react'
 import { useAddress } from '../address'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
+import { ShareButton } from '../ui/ShareButton'
 import { CharacterPage } from './CharacterPage'
 import { type StatEffect, statEffectsOf, tierFor, withEffects } from './effects'
 import { sourceName, statEffectText } from './effectText'
@@ -23,8 +24,17 @@ import {
 } from './starrail'
 import { loadWanted, publishShowcase, relicScore, saveWanted, type SubstatKey } from './store'
 
-// A character's own page lives one step below the list: #starrail/builds/1409.
+// A player's showcase lives at #starrail/builds/700000001 and a character's own page one step
+// below it, #starrail/builds/700000001/1409, so either can be shared as a link.
 const LIST = '#starrail/builds'
+const UID = new RegExp(UID_PATTERN)
+const listOf = (uid: string): string => `${LIST}/${uid}`
+
+/** The UID and character an address (the part after "#") names, if it is one of these pages. */
+function linked(address: string): { readonly uid?: string; readonly character?: string } {
+  const [game, tool, uid = '', character] = address.split('/')
+  return `#${game}/${tool}` === LIST && UID.test(uid) ? { uid, character } : {}
+}
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
@@ -63,7 +73,11 @@ function RelicItem(props: {
   )
 }
 
-function CharacterCard({ character }: { readonly character: StarRailCharacter }): JSX.Element {
+function CharacterCard(props: {
+  readonly character: StarRailCharacter
+  readonly uid: string
+}): JSX.Element {
+  const { character, uid } = props
   const { element, path, light_cone: cone, relics } = character
   const t = useT()
   const localized = useLocalized()
@@ -165,7 +179,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
           </span>
         </p>
       ) : null}
-      <a className="more" href={`${LIST}/${character.id}`}>
+      <a className="more" href={`${listOf(uid)}/${character.id}`}>
         {t('Skills and eidolons')}
       </a>
       <details>
@@ -217,6 +231,7 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
         </div>
       </header>
       {showcase.signature ? <p className="signature">{showcase.signature}</p> : null}
+      <ShareButton address={listOf(showcase.uid)} title={showcase.nickname} />
       {record ? (
         <dl>
           {(
@@ -240,9 +255,10 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
 
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   const t = useT()
-  const [, , chosen] = useAddress().split('/')
-  const selected = showcase.characters.find(({ id }) => String(id) === chosen)
-  if (selected) return <CharacterPage character={selected} back={LIST} />
+  const { uid, character: chosen } = linked(useAddress())
+  const selected =
+    uid === showcase.uid ? showcase.characters.find(({ id }) => String(id) === chosen) : undefined
+  if (selected) return <CharacterPage character={selected} back={listOf(showcase.uid)} />
   return (
     <>
       <Profile showcase={showcase} />
@@ -252,7 +268,7 @@ function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Elem
           <ul className="cards">
             {showcase.characters.map((character) => (
               <li key={character.id}>
-                <CharacterCard character={character} />
+                <CharacterCard character={character} uid={showcase.uid} />
               </li>
             ))}
           </ul>
@@ -273,10 +289,15 @@ export function StarRailShowcase(): JSX.Element {
   const t = useT()
   const localized = useLocalized()
   const language = useLanguage()
+  const target = linked(useAddress()).uid
+  const [uid, setUid] = useState(target ?? '')
+  const asked = useRef<string | undefined>(undefined) // the UID last asked for
 
-  const load = (uid: string): void => {
+  const load = (wanted: string): void => {
+    asked.current = wanted
+    setUid(wanted)
     void run(async () => {
-      const showcase = await fetchStarRailShowcase(uid, language)
+      const showcase = await fetchStarRailShowcase(wanted, language)
       publishShowcase(showcase)
       return showcase
     })
@@ -284,8 +305,15 @@ export function StarRailShowcase(): JSX.Element {
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    load(String(new FormData(event.currentTarget).get('uid')))
+    load(uid)
   }
+
+  // A shared link, or the back button, names a player: load them unless they are already here.
+  useEffect(() => {
+    if (target && target !== asked.current) load(target)
+    // Only a new address asks; `load` is a new function on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target])
 
   // Game names come in one language: a loaded showcase is asked for again in the new one.
   // The server answers from its cache, without another request to Enka.
@@ -305,6 +333,8 @@ export function StarRailShowcase(): JSX.Element {
           UID
           <input
             name="uid"
+            value={uid}
+            onChange={(event) => setUid(event.target.value)}
             inputMode="numeric"
             pattern={UID_PATTERN}
             title={t('9 or 10 digits')}

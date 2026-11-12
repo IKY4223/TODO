@@ -637,3 +637,19 @@ footer {
   margin-top: 2rem;
   text-align: center;
 }
+
+/* A share button sits under what it shares; what happened appears right below it. */
+.share {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.share button.secondary {
+  margin-top: 0;
+}
+
+.share output,
+.share label {
+  justify-self: stretch;
+}
