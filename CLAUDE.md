@@ -80,3 +80,33 @@ Remind the owner of these until they confirm them.
 
 - None open. Confirmed so far: Secret scanning and Push protection are on; Star Rail final stats
   match the game once numbers are cut off the way the game prints them (1160.63 DEF reads 1160).
+
+## Working notes
+
+For a session picking the work up again.
+
+- State: PRs #1 to #8 are merged. Branch `claude/react-typescript-python-projects-iql4lg` holds
+  only the Telegram plan on top of `main`; restart it from `main` after each merge.
+- Next: the owner chooses between the rest of the effect table (README plan, item 1) and the
+  Telegram bot (item 3). Plan the stage first, per the rules above.
+- The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
+- GitHub tools: pass owner `iky4223` and repo `todo` (the repository was renamed to
+  `IKY4223/TODO---Hoyo-Toolkit`; the new name is refused). Repository settings cannot be changed
+  from a session: ask the owner.
+- Preview: build the frontend, then in `backend/` run
+  `STATIC_DIR=../frontend/dist uv run uvicorn app.main:app --host 0.0.0.0 --port 8000`. Screenshots
+  use Playwright with `/opt/pw-browsers/chromium`; route `https://enka.network/ui/**` through
+  curl, since the browser cannot reach that host directly. The owner's UID is 719781196.
+- Game data and texts: Enka.Network's store (`EnkaNetwork/API-docs`) and StarRailRes
+  (`Mar-7th/StarRailRes`, `index_new/<language>/*.json`). Read numbers from there, never memory.
+- The effect table is `frontend/src/starrail/effects.ts`; the turn order simulator is
+  `frontend/src/starrail/turns.ts`; final stats are `backend/app/starrail/stats.py`. Star Rail
+  numbers are cut off, not rounded, as the game prints them.
+- Skills: `ui-ux-pro-max` is installed. `design-taste-frontend` (Leonxlnx/taste-skill) was installed
+  only in a past container; reinstall it from its repository if a design task needs it. Its rule
+  against violet conflicts with the current palette: ask the owner before following it. The
+  owner asked for headroom and get-shit-done; neither was installed (headroom proxies model
+  traffic, which a cloud session cannot route; get-shit-done is archived and moved to
+  `open-gsd/gsd-core`, and adds hooks and a workflow of its own).
+- Netlify was connected to the repository by the owner and is being removed; it cannot run the
+  backend. No free host is settled yet.
