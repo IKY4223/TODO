@@ -1,0 +1,22 @@
+{
+  "en": {
+    "help": "Send your Honkai: Star Rail UID to see the characters in your showcase.\n/warp PULLS [PITY] [g]: the chance to get the featured 5★ character with these pulls; PITY is pulls since your last 5★, g means the next 5★ is guaranteed.\n/lang en or /lang ru: the language.\nFan project, not affiliated with HoYoverse. Data from Enka.Network.",
+    "warp": "Chance of the featured 5★ within {pulls} pulls: {chance}. Certain by pull {certain}.",
+    "warp_usage": "Write /warp PULLS [PITY] [g], for example /warp 80 10. PITY is below 90.",
+    "player": "Trailblaze Level {level} · {nickname}",
+    "character": "{name} · Lv. {level} · E{eidolon} · SPD {spd}",
+    "empty": "The showcase is empty: put characters in it in the game's profile.",
+    "lang": "Language: English.",
+    "slow": "Too many requests: try again in {seconds} s."
+  },
+  "ru": {
+    "help": "Пришлите UID в Honkai: Star Rail, чтобы увидеть персонажей с витрины.\n/warp ПРЫЖКИ [ГАРАНТ] [g]: шанс получить персонажа баннера за эти прыжки; ГАРАНТ — прыжки после последнего 5★, g — следующий 5★ гарантированно с баннера.\n/lang ru или /lang en: язык.\nФанатский проект, не связан с HoYoverse. Данные с Enka.Network.",
+    "warp": "Шанс получить 5★ с баннера за {pulls} прыжков: {chance}. Наверняка к {certain}-му.",
+    "warp_usage": "Напишите /warp ПРЫЖКИ [ГАРАНТ] [g], например /warp 80 10. ГАРАНТ меньше 90.",
+    "player": "Уровень освоения {level} · {nickname}",
+    "character": "{name} · ур. {level} · E{eidolon} · скорость {spd}",
+    "empty": "Витрина пуста: поставьте персонажей на витрину в профиле игры.",
+    "lang": "Язык: русский.",
+    "slow": "Слишком много запросов: попробуйте через {seconds} с."
+  }
+}
