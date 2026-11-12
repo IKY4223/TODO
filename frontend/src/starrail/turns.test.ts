@@ -188,3 +188,8 @@ test('Syzygy stacks bring Spectral Transmigration, which each turn in it spends'
   // Eidolon 6: one more stack on entering, so one more turn in the state.
   expect(order([jingliu(1)], 620).slice(-3)).toEqual(['500 j', '600 j', '600 j'])
 })
+
+test('a unit that keeps advancing itself to the front stops instead of hanging', () => {
+  const runaway = unit('r', 100, { effects: [effect({ kind: 'advance', value: 1 })] })
+  expect(simulate([runaway], 200).length).toBeLessThanOrEqual(1000)
+})

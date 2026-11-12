@@ -4,6 +4,8 @@ import type { Target, TurnEffect } from './effects'
 
 const GAUGE = 10_000
 const NEVER = 0
+// More actions than any real battle takes: an effect table mistake must not hang the page.
+const MAX_ACTIONS = 1000
 
 export interface UnitEffect extends Pick<
   TurnEffect,
@@ -193,7 +195,7 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
     )
     const elapsed = next.gauge / speedOf(next)
-    if (time + elapsed > until) return actions
+    if (time + elapsed > until || actions.length >= MAX_ACTIONS) return actions
     time += elapsed
     for (const state of present) state.gauge -= speedOf(state) * elapsed
     next.gauge = GAUGE
