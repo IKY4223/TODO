@@ -74,7 +74,10 @@ have a lawyer read the texts before launch.
   the `claude-security` scan of the code. Fix what they find before launch.
 - Telegram: the bot's token is a secret (environment variable, never in the repository or logs);
   the privacy policy covers the Telegram user ids and messages the bot receives, how long they
-  are kept, and that UIDs sent to the bot reach Enka.Network.
+  are kept, and that UIDs sent to the bot reach Enka.Network. With `TELEGRAM_STATE_FILE` set, the
+  bot keeps on disk the ids of chats that chose a language with `/lang`, until they are deleted.
+- Shared links: a link to a build carries the player's UID; whoever has it sees that showcase.
+  Say so in the privacy policy (a UID is public in the game, but the link tells who shared it).
 - Operations: HTTPS only, `FORWARDED_ALLOW_IPS` set to the proxy, rate limits and cache moved out
   of process if there is more than one worker, a contact address for abuse reports.
 
@@ -89,14 +92,17 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #9 are merged. The branch holds stage 10: the daily `Game data` workflow
-  (sync, checks, pull request), the effect table checked against the data, and the Telegram bot
-  (`backend/app/telegram/`, long polling, not running anywhere: no host yet).
-- Next: a host for the bot and the site, then the Mini App (README plan, item 2); or what is left
-  of the effects table (item 1). The owner merges the workflow's `Game data update` pull requests.
+- State: PRs #1 to #9 are merged. PR #10 holds stage 10: the daily `Game data` workflow (sync,
+  checks, pull request), the effect table checked against the data, and the Telegram bot
+  (`backend/app/telegram/`, long polling, not running anywhere: no host yet). Stage 11, on
+  `claude/happy-darwin-2l30x3` and stacked on PR #10, fixes PR #10's Docker build and adds shared
+  links to Star Rail builds, the light theme, Russian failures and a state file for the bot.
+- Next: what is left of the effects table (README plan, item 1), or the UIGF warp import
+  (item 4); a host for the bot and the site waits for the owner. The owner merges the workflow's
+  `Game data update` pull requests.
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
-- GitHub tools: pass owner `iky4223` and repo `todo` (the repository was renamed to
-  `IKY4223/TODO---Hoyo-Toolkit`; the new name is refused). Repository settings cannot be changed
+- GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
+  refused since November 2026). Repository settings cannot be changed
   from a session: ask the owner.
 - Preview: build the frontend, then in `backend/` run
   `STATIC_DIR=../frontend/dist uv run uvicorn app.main:app --host 0.0.0.0 --port 8000`. Screenshots
