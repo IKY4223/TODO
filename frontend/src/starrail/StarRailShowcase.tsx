@@ -87,7 +87,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         </div>
       </header>
       {character.stats.length ? (
-        <dl>
+        <dl className="stats">
           {character.stats.map((stat) => (
             <div key={stat.key}>
               <dt>{t(STATS[stat.key].label)}</dt>

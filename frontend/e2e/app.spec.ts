@@ -339,6 +339,8 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
     'Март 7',
   ])
   await expect(card(page, 'Гиацина').getByText('Ур. 80 · E0 · Ветряной · Память')).toBeVisible()
+  // Russian labels run longer than English ones: the loaded showcase must still fit.
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   await page.reload()
   await expect(page.getByLabel('Язык')).toHaveValue('ru')
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)

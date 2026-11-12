@@ -45,7 +45,7 @@ export function SpeedPlanner(): JSX.Element {
                     </span>
                   </div>
                 </header>
-                <dl>
+                <dl className="stats">
                   {CYCLES.map((cycle) => (
                     <div key={cycle}>
                       <dt>{t('Turns by cycle {cycle}', { cycle })}</dt>
