@@ -452,6 +452,11 @@ td:last-child {
   list-style: none;
 }
 
+/* A field just above a list of cards keeps clear of the first one. */
+label + .cards {
+  margin-top: 1rem;
+}
+
 .card {
   padding: 1rem;
   border: 1px solid var(--color-border);
