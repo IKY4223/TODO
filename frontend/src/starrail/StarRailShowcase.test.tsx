@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 import type { StarRailShowcase as Showcase } from './starrail'
 import { setLanguage } from '../i18n'
@@ -210,6 +210,14 @@ test('a character page says when its texts cannot be loaded', async () => {
   expect((await screen.findByRole('alert')).textContent).toBe(
     'This app has no texts for this character yet.',
   )
+})
+
+test('asks for the showcase again when the language changes', async () => {
+  const fetchMock = load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Hyacine')
+  act(() => setLanguage('ru'))
+  expect(await screen.findByText('Ур. 80 · E0 · Ветряной · Память')).toBeDefined()
+  expect(fetchMock).toHaveBeenLastCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
 })
 
 test('scores relics by the substats the player wants and remembers the choice', async () => {

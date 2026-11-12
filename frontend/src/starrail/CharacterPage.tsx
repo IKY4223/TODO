@@ -1,4 +1,4 @@
-import { type JSX, useEffect } from 'react'
+import { type JSX, useEffect, useRef } from 'react'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
@@ -71,6 +71,12 @@ export function CharacterPage(props: {
   const t = useT()
   const localized = useLocalized()
   const language = useLanguage()
+  const top = useRef<HTMLElement>(null)
+
+  // The page opens below the UID form: bring its start into view.
+  useEffect(() => {
+    top.current?.scrollIntoView?.()
+  }, [])
 
   useEffect(() => {
     void run(async () => fetchCharacterTexts(character.id, language))
@@ -79,14 +85,14 @@ export function CharacterPage(props: {
   }, [character.id, language])
 
   return (
-    <article className="card" data-element={character.element}>
+    <article ref={top} className="card" data-element={character.element}>
       <a className="more" href={back}>
         {t('← All characters')}
       </a>
       <header className="item">
         <Icon src={character.icon} size={ICON_SIZE} />
         <div>
-          <h2>{character.name}</h2>
+          <h2>{localized(character.name)}</h2>
           <span className="hint">
             {t('Lv. {level}', { level: character.level })} · E{character.eidolon}
           </span>

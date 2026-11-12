@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
+import { setLanguage } from '../i18n'
 import { CharacterShowcase } from './CharacterShowcase'
 import type { Showcase } from './showcase'
 
@@ -161,4 +162,16 @@ test.each([
   load(respond)
   expect(await screen.findByRole('alert')).toBeDefined()
   expect(screen.getByRole('button', { name: 'Load characters' })).toHaveProperty('disabled', false)
+})
+
+test('shows the showcase in Russian', async () => {
+  setLanguage('ru')
+  vi.stubGlobal('fetch', vi.fn(async () => Response.json(SHOWCASE)))
+  render(<CharacterShowcase />)
+  fireEvent.change(screen.getByLabelText('UID'), { target: { value: '618285856' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Загрузить персонажей' }))
+  expect(await screen.findByText('Lumine · Ранг приключений 57')).toBeDefined()
+  expect(screen.getByText('Ур. 90 · C6 · Пиро')).toBeDefined()
+  expect(screen.getByText('Таланты 10 / 13 / 13')).toBeDefined()
+  setLanguage('en')
 })

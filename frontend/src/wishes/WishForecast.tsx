@@ -1,6 +1,7 @@
 import type { JSX, SubmitEvent } from 'react'
 import { MAX_COPIES, MAX_PITY, MAX_PULLS } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { useLocalized, useT } from '../i18n'
 import { type Forecast, type ForecastQuery, fetchForecast } from './forecast'
 
 const CERTAIN = 1
@@ -28,19 +29,20 @@ function readQuery(form: HTMLFormElement): ForecastQuery {
 }
 
 function ForecastResult({ forecast }: { readonly forecast: Forecast }): JSX.Element {
+  const t = useT()
   const rows = [...forecast.milestones, { chance: CERTAIN, pulls: forecast.guaranteed_at }]
   return (
     <>
       <p className="chance">
         <strong>{formatChance(forecast.probability)}</strong>
-        <span>chance to reach your target</span>
+        <span>{t('chance to reach your target')}</span>
       </p>
       <table>
-        <caption>Pulls needed</caption>
+        <caption>{t('Pulls needed')}</caption>
         <thead>
           <tr>
-            <th scope="col">Chance</th>
-            <th scope="col">Pulls</th>
+            <th scope="col">{t('Chance')}</th>
+            <th scope="col">{t('Pulls')}</th>
           </tr>
         </thead>
         <tbody>
@@ -58,6 +60,8 @@ function ForecastResult({ forecast }: { readonly forecast: Forecast }): JSX.Elem
 
 export function WishForecast(): JSX.Element {
   const [state, run] = useRequest<Forecast>()
+  const t = useT()
+  const localized = useLocalized()
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
@@ -67,11 +71,11 @@ export function WishForecast(): JSX.Element {
 
   return (
     <section aria-labelledby="forecast-title">
-      <h2 id="forecast-title">Wish forecast</h2>
-      <p className="hint">Genshin Impact · limited character banner</p>
+      <h2 id="forecast-title">{t('Wish forecast')}</h2>
+      <p className="hint">{t('Genshin Impact · limited character banner')}</p>
       <form onSubmit={submit}>
         <label>
-          Pulls since last 5★
+          {t('Pulls since last 5★')}
           <input
             name="pity"
             type="number"
@@ -84,10 +88,10 @@ export function WishForecast(): JSX.Element {
         </label>
         <label className="check">
           <input name="guaranteed" type="checkbox" />
-          Next 5★ is guaranteed
+          {t('Next 5★ is guaranteed')}
         </label>
         <label>
-          Pulls available
+          {t('Pulls available')}
           <input
             name="pulls"
             type="number"
@@ -98,7 +102,7 @@ export function WishForecast(): JSX.Element {
           />
         </label>
         <label>
-          Target
+          {t('Target')}
           <select name="copies">
             {TARGETS.map(({ copies, label }) => (
               <option key={copies} value={copies}>
@@ -108,12 +112,14 @@ export function WishForecast(): JSX.Element {
           </select>
         </label>
         <button type="submit" disabled={state.status === 'loading'}>
-          Calculate
+          {t('Calculate')}
         </button>
       </form>
-      {'message' in state && <p role="alert">Could not calculate: {state.message}</p>}
+      {'message' in state && <p role="alert">
+          {t('Could not calculate: {reason}', { reason: localized(state.message) })}
+        </p>}
       <div aria-live="polite">
-        {state.status === 'loading' && <p className="hint">Calculating…</p>}
+        {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
         {'data' in state && <ForecastResult forecast={state.data} />}
       </div>
     </section>

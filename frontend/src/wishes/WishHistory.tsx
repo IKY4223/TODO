@@ -1,6 +1,7 @@
 import { type JSX, type SubmitEvent, useState } from 'react'
 import { MAX_LINK_LENGTH } from '../api/limits'
 import { useRequest } from '../api/useRequest'
+import { useLocalized, useT } from '../i18n'
 import {
   type BannerSummary,
   EMPTY_HISTORY,
@@ -16,22 +17,26 @@ const DELETE_QUESTION =
 const NOT_SAVED = ' This browser does not keep site data, so the history lasts until this page closes.'
 
 function BannerCard({ summary }: { readonly summary: BannerSummary }): JSX.Element {
+  const t = useT()
   return (
     <article className="card">
-      <h3>{summary.label}</h3>
+      <h3>{t(summary.label)}</h3>
       <p>
-        <strong>{summary.pity5} pulls since the last 5★</strong>
+        <strong>{t('{count} pulls since the last 5★', { count: summary.pity5 })}</strong>
       </p>
       <p className="hint">
-        {summary.total} pulls in total · {summary.pity4} since the last 4★
+        {t('{total} pulls in total · {count} since the last 4★', {
+          total: summary.total,
+          count: summary.pity4,
+        })}
       </p>
       {summary.fiveStars.length ? (
         <table>
-          <caption>5★ pulls, newest first</caption>
+          <caption>{t('5★ pulls, newest first')}</caption>
           <thead>
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Pity</th>
+              <th scope="col">{t('Name')}</th>
+              <th scope="col">{t('Pity')}</th>
             </tr>
           </thead>
           <tbody>
@@ -49,24 +54,25 @@ function BannerCard({ summary }: { readonly summary: BannerSummary }): JSX.Eleme
 }
 
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
+  const t = useT()
   return (
     <>
       <details open={open}>
-        <summary>How to get the link on Android</summary>
+        <summary>{t('How to get the link on Android')}</summary>
         <ol>
-          <li>In the game, open Wish and tap History. Wait for it to load.</li>
-          <li>Turn off Wi-Fi and mobile data.</li>
-          <li>Tap refresh at the top right. An error page appears.</li>
-          <li>Press and hold its text, tap Select all, then Copy.</li>
-          <li>Turn the connection back on and paste the text below.</li>
+          <li>{t('In the game, open Wish and tap History. Wait for it to load.')}</li>
+          <li>{t('Turn off Wi-Fi and mobile data.')}</li>
+          <li>{t('Tap refresh at the top right. An error page appears.')}</li>
+          <li>{t('Press and hold its text, tap Select all, then Copy.')}</li>
+          <li>{t('Turn the connection back on and paste the text below.')}</li>
         </ol>
       </details>
       <details>
-        <summary>On iPhone</summary>
+        <summary>{t('On iPhone')}</summary>
         <p>
-          The game gives iPhones no simple way to copy the link. Apps that record your traffic can
-          capture it, but they need a certificate that lets them read everything your phone sends.
-          Install one only from an app you trust, and remove it afterwards.
+          {t(
+            'The game gives iPhones no simple way to copy the link. Apps that record your traffic can capture it, but they need a certificate that lets them read everything your phone sends. Install one only from an app you trust, and remove it afterwards.',
+          )}
         </p>
       </details>
     </>
@@ -78,35 +84,43 @@ export function WishHistory(): JSX.Element {
   const [link, setLink] = useState('')
   const [progress, setProgress] = useState('')
   const [state, run] = useRequest<string>()
+  const t = useT()
+  const localized = useLocalized()
   const pulls = saved.current ? (saved.accounts[saved.current] ?? []) : []
   const outcome = 'data' in state ? state.data : ''
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     void run(async () => {
-      const result = await importHistory(link, saved, { onProgress: setProgress })
-      if (!result.uid) return 'No pulls found for this link.'
+      const result = await importHistory(link, saved, {
+        onProgress: (banner, count) =>
+          setProgress(t('{banner}: {count} pulls read', { banner: t(banner), count })),
+      })
+      if (!result.uid) return t('No pulls found for this link.')
       setSaved(result.history)
       setLink('') // the link is a key to the account's history: drop it once it has served
       const kept = saveHistory(result.history)
-      return (result.added ? `${result.added} new pulls imported.` : 'No new pulls.') + (kept ? '' : NOT_SAVED)
+      const summary = result.added
+        ? t('{count} new pulls imported.', { count: result.added })
+        : t('No new pulls.')
+      return summary + (kept ? '' : t(NOT_SAVED))
     })
   }
 
   const forget = (): void => {
-    if (!window.confirm(DELETE_QUESTION)) return
+    if (!window.confirm(t(DELETE_QUESTION))) return
     setSaved(EMPTY_HISTORY)
     saveHistory(EMPTY_HISTORY)
   }
 
   return (
     <section aria-labelledby="history-title">
-      <h2 id="history-title">Wish history</h2>
-      <p className="hint">Genshin Impact · global servers · saved only on this device</p>
+      <h2 id="history-title">{t('Wish history')}</h2>
+      <p className="hint">{t('Genshin Impact · global servers · saved only on this device')}</p>
       <Instructions open={!pulls.length} />
       <form onSubmit={submit}>
         <label>
-          Text from the error page
+          {t('Text from the error page')}
           <textarea
             name="link"
             value={link}
@@ -119,14 +133,15 @@ export function WishHistory(): JSX.Element {
           />
         </label>
         <p className="hint">
-          The link lets anyone read your wish history for about a day. This app uses it for the
-          import and never keeps it.
+          {t(
+            'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.',
+          )}
         </p>
         <button type="submit" disabled={state.status === 'loading'}>
-          Import history
+          {t('Import history')}
         </button>
       </form>
-      {'message' in state && <p role="alert">{state.message}</p>}
+      {'message' in state && <p role="alert">{localized(state.message)}</p>}
       <output>{state.status === 'loading' ? progress : outcome}</output>
       {saved.current && pulls.length ? (
         <>
@@ -139,7 +154,7 @@ export function WishHistory(): JSX.Element {
             ))}
           </ul>
           <button type="button" className="secondary" onClick={forget}>
-            Delete saved history
+            {t('Delete saved history')}
           </button>
         </>
       ) : null}

@@ -1,6 +1,7 @@
 import { ApiError, isArrayOf, isNumber, isRecord, isString, postJson } from '../api/http'
 import { HISTORY_PAGE_SIZE } from '../api/limits'
 import type { components } from '../api/schema'
+import type { Message } from '../i18n'
 
 type Schemas = components['schemas']
 export type Pull = Schemas['Pull']
@@ -24,7 +25,7 @@ export interface FiveStar {
 
 export interface BannerSummary {
   readonly banner: Banner
-  readonly label: string
+  readonly label: Message
   readonly total: number
   /** Pulls since the last 5★. */
   readonly pity5: number
@@ -42,7 +43,8 @@ interface ImportResult {
 }
 
 interface ImportOptions {
-  readonly onProgress?: (text: string) => void
+  /** Called after each page with the banner's name and the pulls read from it so far. */
+  readonly onProgress?: (banner: Message, pulls: number) => void
   /** Pauses between requests; replaceable so tests need not wait. */
   readonly wait?: (ms: number) => Promise<void>
 }
@@ -145,7 +147,7 @@ async function readBanner(
   const firstKnown = page.pulls.findIndex((pull) => known.has(pull.id))
   const fresh = firstKnown === -1 ? page.pulls : page.pulls.slice(0, firstKnown)
   const result = { uid: sofar.uid ?? page.uid, pulls: [...sofar.pulls, ...fresh] }
-  onProgress?.(`${BANNERS[banner]}: ${result.pulls.length} pulls read`)
+  onProgress?.(BANNERS[banner], result.pulls.length)
   const last = page.pulls.at(-1)
   if (firstKnown !== -1 || page.pulls.length < HISTORY_PAGE_SIZE || !last) return result
   await wait(PAGE_DELAY_MS)
