@@ -61,13 +61,17 @@ Planned, in order:
    - enemy turns and slows;
    - team-wide stat effects (Fleet of the Ageless, Broken Keel) in final stats.
 2. Design: a sidebar in place of the menu on wide screens.
-3. Share a build: a link that opens a character's page for anyone.
-4. A light theme beside the dark one.
-5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+3. Telegram: a bot and a Telegram Mini App, since a free host for the site is not settled yet.
+   The bot answers by long polling, so it needs no public address and can run on any machine;
+   it reuses the backend's code (showcase, relic advisor, forecasts) rather than calling the
+   site. The Mini App opens the site inside Telegram and needs the site hosted over HTTPS first.
+4. Share a build: a link that opens a character's page for anyone.
+5. A light theme beside the dark one.
+6. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-6. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+7. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-7. Zenless Zone Zero: undecided.
+8. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source

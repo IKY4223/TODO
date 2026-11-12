@@ -68,6 +68,9 @@ have a lawyer read the texts before launch.
 - Enka.Network: read its current API rules (identification, caching, limits, credit) and follow them.
 - Security: install the `usestrix/strix` plugin and run it against the deployed site, along with
   the `claude-security` scan of the code. Fix what they find before launch.
+- Telegram: the bot's token is a secret (environment variable, never in the repository or logs);
+  the privacy policy covers the Telegram user ids and messages the bot receives, how long they
+  are kept, and that UIDs sent to the bot reach Enka.Network.
 - Operations: HTTPS only, `FORWARDED_ALLOW_IPS` set to the proxy, rate limits and cache moved out
   of process if there is more than one worker, a contact address for abuse reports.
 
