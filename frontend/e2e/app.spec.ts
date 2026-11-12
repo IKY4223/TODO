@@ -235,6 +235,7 @@ test('opens a character page and comes back with the back button', async ({ page
   await expect(tool.getByText('Unlocked', { exact: true })).toHaveCount(16)
   await expect(tool.getByText('Not unlocked', { exact: true })).toHaveCount(3)
   await expect(tool.getByText(/#\d+\[/)).toHaveCount(0) // every number is filled in
+  await expect(tool.getByRole('link', { name: '← All characters' })).toBeInViewport()
   // Three of March 7th's stat nodes are not unlocked, so materials are still owed.
   await expect(tool.getByRole('heading', { name: 'Traces', exact: true })).toBeVisible()
   await expect(tool.locator('.materials div').first()).toContainText('Credit')

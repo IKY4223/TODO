@@ -109,10 +109,11 @@ export function CharacterPage(props: {
   const language = useLanguage()
   const top = useRef<HTMLElement>(null)
 
-  // The page opens below the UID form: bring its start into view.
+  // The page opens below the UID form: bring its start into view, again once the texts
+  // arrive, because until then the page is too short to scroll.
   useEffect(() => {
     top.current?.scrollIntoView?.()
-  }, [])
+  }, [state.status])
 
   useEffect(() => {
     void run(async () => fetchCharacterTexts(character.id, language))
