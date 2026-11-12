@@ -436,18 +436,18 @@ test('takes a light theme from the device or the menu, readable in both', async 
   expect(problems).toEqual([])
 })
 
-test('every tool stays readable in the light theme', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'light' })
-  await openStarRail(page)
-  await loadShowcase(page) // so the Speed and Relics tools have characters to show
-  await expect(card(page, 'Hyacine')).toBeVisible()
-  for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'genshin/history']) {
+for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'genshin/history']) {
+  test(`#${address} stays readable in the light theme`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' })
+    await openStarRail(page)
+    await loadShowcase(page) // so the Speed and Relics tools have characters to show
+    await expect(card(page, 'Hyacine')).toBeVisible()
     await page.goto(`/#${address}`)
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-  }
-  expect(problems).toEqual([])
-})
+    expect(problems).toEqual([])
+  })
+}
 
 test('Star Rail is where the app opens', async ({ page }) => {
   await page.goto('/')
