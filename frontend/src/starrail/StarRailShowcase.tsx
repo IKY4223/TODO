@@ -2,7 +2,7 @@ import { type JSX, type SubmitEvent, useEffect, useState } from 'react'
 import { useAddress } from '../address'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { useLanguage, useLocalized, useT } from '../i18n'
+import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
 import { CharacterPage } from './CharacterPage'
 import {
@@ -26,8 +26,8 @@ const LIST = '#starrail/builds'
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
-const count = new Intl.NumberFormat('en')
-const score = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const count = numberFormat()
+const score = numberFormat({ minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
 function RelicItem(props: {
   readonly relic: Relic
@@ -86,6 +86,16 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
           <span className="hint">{summary.join(' · ')}</span>
         </div>
       </header>
+      {character.stats.length ? (
+        <dl>
+          {character.stats.map((stat) => (
+            <div key={stat.key}>
+              <dt>{t(STATS[stat.key].label)}</dt>
+              <dd>{formatValue(stat)}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
       {character.skills.length ? (
         <dl>
           {character.skills.map(({ kind, level, bonus }) => (

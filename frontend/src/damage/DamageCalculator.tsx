@@ -2,7 +2,7 @@ import type { JSX, SubmitEvent } from 'react'
 import { isKeyOf } from '../api/http'
 import { MAX_ENEMY_LEVEL, MAX_MULTIPLIER, MAX_RESISTANCE, MIN_RESISTANCE } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { type Message, useLocalized, useT } from '../i18n'
+import { type Message, useLocalized, useT, numberFormat } from '../i18n'
 import { type Character, formatStat } from '../showcase/showcase'
 import { type Damage, type DamageRequest, fetchDamage } from './damage'
 
@@ -43,7 +43,7 @@ const DEFAULT_RESISTANCE_PERCENT = 10
 const PERCENT = 100
 const NO_BONUS = ''
 
-const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 })
+const whole = numberFormat({ maximumFractionDigits: 0 })
 
 /** The key a <select> holds, or an error if the page was tampered into an impossible choice. */
 function choice<TTable extends object>(table: TTable, value: unknown): keyof TTable {

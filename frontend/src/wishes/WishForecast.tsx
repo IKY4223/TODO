@@ -1,7 +1,7 @@
 import { type JSX, type SubmitEvent, useState } from 'react'
 import { MAX_PULLS, WISH_BANNERS } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { type Message, useLocalized, useT } from '../i18n'
+import { type Message, useLocalized, useT, numberFormat } from '../i18n'
 import { type Forecast, type ForecastQuery, fetchForecast } from './forecast'
 
 const CERTAIN = 1
@@ -40,7 +40,7 @@ const targets = ({ key, prefix, firstCopy }: BannerChoice): { copies: number; la
     label: `${prefix}${index + firstCopy}`,
   }))
 
-const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
+const percent = numberFormat({ style: 'percent', maximumFractionDigits: 1 })
 
 const formatChance = (chance: number): string =>
   percent.format(chance < CERTAIN ? Math.min(chance, HIGHEST_UNCERTAIN) : chance)

@@ -16,6 +16,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   level the player has, the trace tree with what is unlocked, the materials still needed to max
   skills and traces, and eidolons. Texts come from
   [StarRailRes](https://github.com/Mar-7th/StarRailRes).
+- **Star Rail final stats and team speed** — each character's stats as the game's character
+  screen adds them up, and the turns each one takes in Memory of Chaos cycles, with the SPD for
+  one more.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
@@ -32,23 +35,22 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   pity and each 5★ with the pulls it took. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
-- **Warp forecast** — the same exact odds for Star Rail's character and light cone event warps.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
+- **Warp forecast** — the same exact odds for Star Rail's character and light cone event warps.
 
 Character, weapon, light cone, artifact and relic images are loaded from Enka.Network.
 
 Planned, in order:
 
-1. Star Rail: final character stats, a team SPD planner, numbers in the Russian format.
-2. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
+1. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
    game and tool buttons.
-3. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+2. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-4. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+3. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-5. Zenless Zone Zero: undecided.
+4. Zenless Zone Zero: undecided.
 
 Before any public launch, the checklist in `CLAUDE.md` comes first.
 

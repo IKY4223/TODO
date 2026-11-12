@@ -491,6 +491,8 @@ export interface components {
             light_cone: components["schemas"]["LightCone"] | null;
             /** Relics */
             relics: components["schemas"]["Relic"][];
+            /** Stats */
+            stats: components["schemas"]["StarRailStat"][];
             /** Skills */
             skills: components["schemas"]["Skill"][];
             /** Points */

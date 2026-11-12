@@ -1,6 +1,6 @@
 import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
-import type { Language, Message, Translate } from '../i18n'
+import { numberFormat, type NumberFormat, type Language, type Message, type Translate } from '../i18n'
 
 type Schemas = components['schemas']
 export type StarRailShowcase = Schemas['StarRailShowcase']
@@ -91,10 +91,10 @@ export const SKILLS = {
 const SHOWCASE_URL = '/api/starrail/showcase'
 
 const FORMATS = {
-  whole: new Intl.NumberFormat('en', { maximumFractionDigits: 0 }),
-  decimal: new Intl.NumberFormat('en', { maximumFractionDigits: 1 }),
-  percent: new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 }),
-} as const satisfies Record<StatInfo['format'], Intl.NumberFormat>
+  whole: numberFormat({ maximumFractionDigits: 0 }),
+  decimal: numberFormat({ maximumFractionDigits: 1 }),
+  percent: numberFormat({ style: 'percent', maximumFractionDigits: 1 }),
+} as const satisfies Record<StatInfo['format'], NumberFormat>
 
 export const formatValue = ({ key, value }: Stat): string =>
   FORMATS[STATS[key].format].format(value)
@@ -161,6 +161,7 @@ const isCharacter = (value: unknown): value is StarRailCharacter =>
   isNumber(value.eidolon) &&
   isNullable(isLightCone)(value.light_cone) &&
   isArrayOf(value.relics, isRelic) &&
+  isArrayOf(value.stats, isStat) &&
   isArrayOf(value.skills, isSkill) &&
   isArrayOf(value.points, isTracePoint) &&
   isIcon(value.icon)

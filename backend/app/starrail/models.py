@@ -129,6 +129,7 @@ class StarRailCharacter:
     eidolon: int  # 0 to 6
     light_cone: LightCone | None
     relics: tuple[Relic, ...]
+    stats: tuple[StarRailStat, ...]  # final, as the character screen shows; none if unknown
     skills: tuple[Skill, ...]
     points: tuple[TracePoint, ...]  # every trace point the player has unlocked
     icon: str | None

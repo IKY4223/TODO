@@ -4,6 +4,7 @@ import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { RelicAdvisor } from './starrail/RelicAdvisor'
+import { SpeedPlanner } from './starrail/SpeedPlanner'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
@@ -28,6 +29,7 @@ const GAMES = {
       builds: { label: 'Builds', element: <StarRailShowcase /> },
       relics: { label: 'Relics', element: <RelicAdvisor /> },
       warps: { label: 'Warps', element: <WishForecast game="starrail" /> },
+      speed: { label: 'Speed', element: <SpeedPlanner /> },
     },
   },
   genshin: {

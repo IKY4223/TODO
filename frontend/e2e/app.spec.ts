@@ -18,6 +18,7 @@ const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
 const MIN_FORECAST_CONTROLS = 10 // banner, pity, pulls, target, button and the navigation
+const MIN_SPEED_CONTROLS = 6 // the navigation only
 const MIN_PAGE_CONTROLS = 6 // the UID field, its button and the navigation
 const MIN_RELIC_CONTROLS = 19 // 9 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
@@ -101,6 +102,20 @@ test('forecasts Star Rail light cone warps', async ({ page }) => {
   await expect(tool.getByText('100%').first()).toBeVisible()
   await expect(tool.getByRole('row', { name: '100% 160' })).toBeVisible()
   expectPhoneFriendly(await measureLayout(page), MIN_FORECAST_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('shows final stats and plans team speed from the loaded showcase', async ({ page }) => {
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine').getByText('SPD', { exact: true }).first()).toBeVisible()
+  await page.getByRole('link', { name: 'Speed' }).click()
+  const tool = shown(page)
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveCount(2)
+  await expect(tool.getByText(/^One more turn in cycle 0 at \d+\.\d SPD/)).toHaveCount(2)
+  expectPhoneFriendly(await measureLayout(page), MIN_SPEED_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   expect(problems).toEqual([])
 })
@@ -222,7 +237,7 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
   await expect(hyacine.getByText(/SPD 12\.1 ×5/)).toBeVisible()
   const march = card(page, 'March 7th')
   await expect(march.getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
-  await expect(march.locator('dl > div')).toHaveText([
+  await expect(march.locator('dl:has-text("Basic ATK") > div')).toHaveText([
     'Basic ATK7 (+1)',
     'Skill11 (+2)',
     'Ultimate10 (+2)',

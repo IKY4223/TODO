@@ -102,6 +102,15 @@ const RU = {
   'Character Event Warp': 'Прыжок события: персонаж',
   'Light Cone Event Warp': 'Прыжок события: световой конус',
   Warps: 'Прыжки',
+  Speed: 'Скорость',
+  'Team speed': 'Скорость команды',
+  'Honkai: Star Rail · turns in Memory of Chaos: the first cycle lasts 150 action value, each later one 100.':
+    'Honkai: Star Rail · ходы в Зале забвения: первый цикл длится 150 ед. действия, каждый следующий 100.',
+  'Turns by cycle {cycle}': 'Ходов к концу цикла {cycle}',
+  'One more turn in cycle 0 at {speed} SPD (+{missing})':
+    'Ещё один ход в цикле 0 при скорости {speed} (+{missing})',
+  'Load your characters in Builds to see their turns.':
+    'Загрузите персонажей в «Билдах», чтобы увидеть их ходы.',
   'Warp forecast': 'Прогноз прыжков',
   'Genshin Impact · limited character banner': 'Genshin Impact · баннер лимитированного персонажа',
   'Pulls since last 5★': 'Молитв после последнего 5★',
@@ -319,6 +328,22 @@ export const translate = (
     (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
     language === 'ru' ? RU[message] : message,
   )
+
+export interface NumberFormat {
+  readonly format: (value: number) => string
+}
+
+/** Like Intl.NumberFormat, in the language chosen when `format` is called: 1 825 000 in Russian. */
+export function numberFormat(options: Intl.NumberFormatOptions = {}): NumberFormat {
+  const formats = new Map<Language, Intl.NumberFormat>()
+  return {
+    format: (value) => {
+      const format = formats.get(current) ?? new Intl.NumberFormat(current, options)
+      formats.set(current, format)
+      return format.format(value)
+    },
+  }
+}
 
 export const useLanguage = (): Language => useSyncExternalStore(subscribe, () => current)
 

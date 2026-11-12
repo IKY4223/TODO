@@ -18,12 +18,15 @@ class CharacterData(BaseModel):
     icon: str
     # One entry per eidolon: skill tree point (its id's last three digits) -> levels added.
     eidolons: list[dict[int, int]]
+    promotions: list[dict[str, float]]  # per ascension: HPBase, HPAdd per level, SpeedBase, ...
 
 
 class LightConeData(BaseModel):
     name: dict[str, str]
     rarity: int
     icon: str
+    promotions: list[dict[str, float]]  # per ascension: BaseHP, BaseHPAdd per level, ...
+    passive: list[dict[str, float]]  # per superimposition: the stats always given
 
 
 class RelicData(BaseModel):
@@ -41,6 +44,8 @@ class GameData(BaseModel):
     light_cones: dict[str, LightConeData]
     relics: dict[str, RelicData]
     sets: dict[str, dict[str, str]]
+    set_bonuses: dict[str, dict[str, dict[str, float]]]  # set -> pieces -> stats
+    trace_stats: dict[str, dict[str, float]]  # trace point -> stats
     # group -> affix id -> (property, base value, value added per level)
     main_affixes: dict[str, dict[str, tuple[str, float, float]]]
     # group -> affix id -> (property, value per roll, value added per roll step)

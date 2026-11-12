@@ -108,6 +108,7 @@ test('sends values, a goal and the score of the equipped relic to beat', async (
         eidolon: 0,
         light_cone: null,
         relics: [relic],
+        stats: [],
         skills: [],
         points: [],
         icon: null,
