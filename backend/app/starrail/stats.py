@@ -48,32 +48,50 @@ def _grown(stats: Mapping[str, float], base: str, per_level: str, level: int) ->
     return stats.get(base, 0.0) + stats.get(per_level, 0.0) * (level - 1)
 
 
-def final_stats(
-    character: tuple[Mapping[str, float], int],
-    light_cone: tuple[Mapping[str, float], int] | None,
-    bonuses: Mapping[str, float],
+Base = tuple[Mapping[str, float], int]  # an ascension's base stats and the level
+
+
+def base_stats(
+    character: Base, light_cone: Base | None, bonuses: Mapping[str, float]
 ) -> tuple[StarRailStat, ...]:
-    """`character` and `light_cone` are an ascension's base stats and the level; `bonuses` sums
-    every always-on bonus by Enka's property name."""
+    """HP, ATK, DEF and SPD before any % bonus: what a "+12% SPD" is 12% of."""
     own, level = character
     cone, cone_level = light_cone or ({}, 1)
-    bonus = defaultdict(float, bonuses)
 
-    def scaled(stat: str) -> float:
-        """Base HP, ATK or DEF: the character's plus the light cone's, raised by the % bonuses."""
-        base = _grown(own, f"{stat}Base", f"{stat}Add", level)
-        base += _grown(cone, f"Base{stat}", f"Base{stat}Add", cone_level)
+    def base(stat: str) -> float:
+        """The character's base plus the light cone's."""
+        own_part = _grown(own, f"{stat}Base", f"{stat}Add", level)
+        return own_part + _grown(cone, f"Base{stat}", f"Base{stat}Add", cone_level)
+
+    return (
+        StarRailStat(StarRailStatKey.HP, base("HP")),
+        StarRailStat(StarRailStatKey.ATK, base("Attack")),
+        StarRailStat(StarRailStatKey.DEF, base("Defence")),
+        StarRailStat(
+            StarRailStatKey.SPD, own.get("SpeedBase", 0.0) + bonuses.get("BaseSpeed", 0.0)
+        ),
+    )
+
+
+def final_stats(
+    character: Base, light_cone: Base | None, bonuses: Mapping[str, float]
+) -> tuple[StarRailStat, ...]:
+    """`bonuses` sums every always-on bonus by Enka's property name."""
+    own, _level = character
+    bonus = defaultdict(float, bonuses)
+    hp, atk, defence, spd = (stat.value for stat in base_stats(character, light_cone, bonuses))
+
+    def scaled(stat: str, base: float) -> float:
         return base * (1 + bonus[f"{stat}AddedRatio"]) + bonus[f"{stat}Delta"]
 
     totals = defaultdict[StarRailStatKey, float](float)
     for prop, value in bonuses.items():
         if prop in SUMMED:
             totals[SUMMED[prop]] += value
-    totals[StarRailStatKey.HP] = scaled("HP")
-    totals[StarRailStatKey.ATK] = scaled("Attack")
-    totals[StarRailStatKey.DEF] = scaled("Defence")
-    speed = own.get("SpeedBase", 0.0) + bonus["BaseSpeed"]
-    totals[StarRailStatKey.SPD] = speed * (1 + bonus["SpeedAddedRatio"]) + bonus["SpeedDelta"]
+    totals[StarRailStatKey.HP] = scaled("HP", hp)
+    totals[StarRailStatKey.ATK] = scaled("Attack", atk)
+    totals[StarRailStatKey.DEF] = scaled("Defence", defence)
+    totals[StarRailStatKey.SPD] = scaled("Speed", spd)
     totals[StarRailStatKey.CRIT_RATE] += own.get("CriticalChance", 0.0)
     totals[StarRailStatKey.CRIT_DMG] += own.get("CriticalDamage", 0.0)
     totals[StarRailStatKey.ENERGY_REGEN] += ENERGY_REGEN_BASE

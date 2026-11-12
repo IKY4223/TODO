@@ -24,6 +24,7 @@ const SHOWCASE: Showcase = {
       level: 80,
       eidolon: 0,
       light_cone: {
+        id: 21054,
         name: "The Story's Next Page",
         rarity: 4,
         level: 70,
@@ -33,6 +34,7 @@ const SHOWCASE: Showcase = {
       relics: [
         {
           slot: 'head',
+          set_id: 125,
           set_name: 'Warrior Goddess of Sun and Thunder',
           rarity: 5,
           level: 15,
@@ -50,6 +52,10 @@ const SHOWCASE: Showcase = {
         { key: 'hp', value: 4926.3 },
         { key: 'spd', value: 183.532 },
         { key: 'crit_rate', value: 0.1893 },
+      ],
+      bases: [
+        { key: 'hp', value: 1500 },
+        { key: 'spd', value: 110 },
       ],
       skills: [
         { kind: 'basic', level: 5, bonus: 0 },

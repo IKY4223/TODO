@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, test } from 'vitest'
 import type { StarRailCharacter } from './starrail'
 import { SpeedPlanner } from './SpeedPlanner'
@@ -6,7 +6,12 @@ import { publishShowcase } from './store'
 
 afterEach(cleanup)
 
-const character = (id: number, name: string, spd: number): StarRailCharacter => ({
+const character = (
+  id: number,
+  name: string,
+  spd: number,
+  extra: Partial<StarRailCharacter> = {},
+): StarRailCharacter => ({
   id,
   name,
   element: null,
@@ -17,17 +22,14 @@ const character = (id: number, name: string, spd: number): StarRailCharacter => 
   light_cone: null,
   relics: [],
   stats: [{ key: 'spd', value: spd }],
+  bases: [{ key: 'spd', value: spd }],
   skills: [],
   points: [],
   icon: null,
+  ...extra,
 })
 
-test('asks for a showcase first', () => {
-  render(<SpeedPlanner />)
-  expect(screen.getByText(/Load your characters in Builds/)).toBeDefined()
-})
-
-test('lists characters fastest first with their turns and the next breakpoint', () => {
+function show(characters: StarRailCharacter[]): void {
   publishShowcase({
     uid: '700000001',
     nickname: 'Trailblazer',
@@ -36,18 +38,64 @@ test('lists characters fastest first with their turns and the next breakpoint', 
     trailblaze_level: 70,
     equilibrium_level: 6,
     record: null,
-    characters: [character(1, 'Slow', 120), character(2, 'Fast', 160)],
+    characters,
   })
   render(<SpeedPlanner />)
-  expect(screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual([
-    'Fast',
-    'Slow',
+}
+
+const timeline = (): string[] =>
+  [...document.querySelectorAll('.timeline li')].map((item) => item.textContent ?? '')
+
+test('asks for a showcase first', () => {
+  show([])
+  expect(screen.getByText(/Load your characters in Builds/)).toBeDefined()
+})
+
+test('lays out the turn order by cycle with turn counts and the next breakpoint', () => {
+  show([character(1, 'Slow', 120), character(2, 'Fast', 160)])
+  expect(timeline().slice(0, 4)).toEqual([
+    'Cycle 062.5 · Fast',
+    '83.3 · Slow',
+    '125.0 · Fast',
+    'Cycle 1166.7 · Slow',
   ])
-  const fast = screen.getAllByRole('article')[0]
+  const fast = screen.getAllByRole('article')[1]
   expect([...(fast?.querySelectorAll('dl div') ?? [])].map((row) => row.textContent)).toEqual([
     'Turns by cycle 02',
     'Turns by cycle 14',
     'Turns by cycle 25',
   ])
-  expect(screen.getByText('One more turn in cycle 0 at 133.4 SPD (+13.4)')).toBeDefined()
+  expect(
+    screen.getByText('Without effects: one more turn in cycle 0 at 133.4 SPD (+13.4)'),
+  ).toBeDefined()
+})
+
+test('a known support speeds up the chosen ally, and the effect can be switched off', () => {
+  // Bronya advances the chosen ally by 100% every turn.
+  show([character(1101, 'Bronya', 100), character(2, 'DPS', 90)])
+  expect(timeline().slice(0, 2)).toEqual(['Cycle 0100.0 · Bronya', '100.0 · DPS'])
+  expect(screen.getByLabelText('Chosen ally')).toHaveProperty('value', '2')
+  const skill = screen.getByText(/Every turn · Chosen ally: action advance \+100%/)
+  fireEvent.click(skill)
+  expect(timeline()[1]).toBe('111.1 · DPS')
+})
+
+test('the Ultimate comes on the chosen beat', () => {
+  show([character(1, 'Solo', 100)])
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '1' } })
+  expect(timeline()[0]).toBe('Cycle 0100.0 · Solo · Ultimate')
+})
+
+test('memosprites and summons take their own turns', () => {
+  show([character(1402, 'Aglaea', 200)])
+  // Garmentmaker runs at 35% of Aglaea's SPD: 70, a turn at 142.9.
+  expect(timeline()).toContain('142.9 · Memosprite of Aglaea')
+})
+
+test('a team has at most four members', () => {
+  show([1, 2, 3, 4, 5].map((id) => character(id, `C${id}`, 100)))
+  const fifth = screen.getByLabelText('C5')
+  expect(fifth).toHaveProperty('disabled', true)
+  fireEvent.click(screen.getByLabelText('C1'))
+  expect(screen.getByLabelText('C5')).toHaveProperty('disabled', false)
 })

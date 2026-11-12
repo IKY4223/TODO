@@ -121,6 +121,7 @@ const isSubStat = (value: unknown): value is SubStat =>
 
 const isLightCone = (value: unknown): value is LightCone =>
   isRecord(value) &&
+  isNumber(value.id) &&
   isString(value.name) &&
   isNumber(value.rarity) &&
   isNumber(value.level) &&
@@ -130,6 +131,7 @@ const isLightCone = (value: unknown): value is LightCone =>
 const isRelic = (value: unknown): value is Relic =>
   isRecord(value) &&
   isKeyOf(SLOTS, value.slot) &&
+  isNumber(value.set_id) &&
   isString(value.set_name) &&
   isNumber(value.rarity) &&
   isNumber(value.level) &&
@@ -162,6 +164,7 @@ const isCharacter = (value: unknown): value is StarRailCharacter =>
   isNullable(isLightCone)(value.light_cone) &&
   isArrayOf(value.relics, isRelic) &&
   isArrayOf(value.stats, isStat) &&
+  isArrayOf(value.bases, isStat) &&
   isArrayOf(value.skills, isSkill) &&
   isArrayOf(value.points, isTracePoint) &&
   isIcon(value.icon)

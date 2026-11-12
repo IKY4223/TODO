@@ -107,8 +107,35 @@ const RU = {
   'Honkai: Star Rail · turns in Memory of Chaos: the first cycle lasts 150 action value, each later one 100.':
     'Honkai: Star Rail · ходы в Зале забвения: первый цикл длится 150 ед. действия, каждый следующий 100.',
   'Turns by cycle {cycle}': 'Ходов к концу цикла {cycle}',
-  'One more turn in cycle 0 at {speed} SPD (+{missing})':
-    'Ещё один ход в цикле 0 при скорости {speed} (+{missing})',
+  'Without effects: one more turn in cycle 0 at {speed} SPD (+{missing})':
+    'Без эффектов: ещё один ход в цикле 0 при скорости {speed} (+{missing})',
+  Team: 'Команда',
+  'Effect values: skills at level 10, light cones at their superimposition. Skills are taken as used every turn.':
+    'Числа эффектов: навыки на 10 уровне, конусы по их наложению. Считается, что навык применяется каждый ход.',
+  'Ultimate every N turns': 'Сверхспособность раз в N ходов',
+  Never: 'Никогда',
+  'Chosen ally': 'Выбранный союзник',
+  'Effects in battle': 'Эффекты в бою',
+  'Turn order': 'Очередь ходов',
+  'Cycle {cycle}': 'Цикл {cycle}',
+  'Memosprite of {name}': 'Дух памяти: {name}',
+  'Summon of {name}': 'Призыв: {name}',
+  'At battle start': 'В начале боя',
+  'Every turn': 'Каждый ход',
+  'On Ultimate': 'При сверхспособности',
+  Always: 'Всегда',
+  "On the memosprite's turn": 'В ход духа памяти',
+  Self: 'Сам',
+  'All allies': 'Все союзники',
+  Teammates: 'Союзники',
+  'action advance +{value}': 'ускорение хода +{value}',
+  'SPD +{value}': 'скорость +{value}',
+  'lasts {turns} turn(s)': 'ходов: {turns}',
+  'SPD at least {spd}': 'скорость от {spd}',
+  'at SPD {tiers}': 'при скорости от {tiers}',
+  'below SPD {tiers}': 'при скорости ниже {tiers}',
+  'Stats with the effects switched on. Effects that depend on SPD switch on by themselves.':
+    'Статы с включёнными эффектами. Эффекты, зависящие от скорости, включаются сами.',
   'Load your characters in Builds to see their turns.':
     'Загрузите персонажей в «Билдах», чтобы увидеть их ходы.',
   'Warp forecast': 'Прогноз прыжков',

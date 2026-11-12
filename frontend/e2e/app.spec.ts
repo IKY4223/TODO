@@ -18,7 +18,7 @@ const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
 const MIN_FORECAST_CONTROLS = 10 // banner, pity, pulls, target, button and the navigation
-const MIN_SPEED_CONTROLS = 6 // the navigation only
+const MIN_SPEED_CONTROLS = 9 // the navigation, Ultimate choices and March 7th's chosen ally
 const MIN_PAGE_CONTROLS = 6 // the UID field, its button and the navigation
 const MIN_RELIC_CONTROLS = 19 // 9 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
@@ -111,10 +111,15 @@ test('shows final stats and plans team speed from the loaded showcase', async ({
   await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
   await loadShowcase(page)
   await expect(card(page, 'Hyacine').getByText('SPD', { exact: true }).first()).toBeVisible()
+  // Hyacine's relics include the Warrior Goddess set: its SPD bonus is offered as a switch.
+  await card(page, 'Hyacine').getByText(/Warrior Goddess of Sun and Thunder \(4\)/).click()
   await page.getByRole('link', { name: 'Speed' }).click()
   const tool = shown(page)
-  await expect(tool.getByRole('heading', { level: 3 })).toHaveCount(2)
-  await expect(tool.getByText(/^One more turn in cycle 0 at \d+\.\d SPD/)).toHaveCount(2)
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveText(['Hyacine', 'March 7th', 'Turn order'])
+  await expect(tool.getByText(/^Without effects: one more turn in cycle 0 at \d+\.\d SPD/)).toHaveCount(2)
+  await expect(tool.locator('.timeline li').first()).toContainText('Cycle 0')
+  await tool.getByLabel('Ultimate every N turns').first().selectOption('1')
+  await expect(tool.locator('.timeline li').first()).toContainText('Ultimate')
   expectPhoneFriendly(await measureLayout(page), MIN_SPEED_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   expect(problems).toEqual([])

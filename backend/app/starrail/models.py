@@ -101,6 +101,7 @@ class SubStat(StarRailStat):
 @dataclass(frozen=True)
 class Relic:
     slot: StarRailSlot
+    set_id: int
     set_name: str
     rarity: int
     level: int  # 0 to 15 for a 5★ relic
@@ -111,6 +112,7 @@ class Relic:
 
 @dataclass(frozen=True)
 class LightCone:
+    id: int
     name: str
     rarity: int
     level: int
@@ -130,6 +132,7 @@ class StarRailCharacter:
     light_cone: LightCone | None
     relics: tuple[Relic, ...]
     stats: tuple[StarRailStat, ...]  # final, as the character screen shows; none if unknown
+    bases: tuple[StarRailStat, ...]  # HP, ATK, DEF and SPD before % bonuses; none if unknown
     skills: tuple[Skill, ...]
     points: tuple[TracePoint, ...]  # every trace point the player has unlocked
     icon: str | None

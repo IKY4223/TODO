@@ -26,7 +26,7 @@ from app.starrail.models import (
     SubStat,
     TracePoint,
 )
-from app.starrail.stats import final_stats
+from app.starrail.stats import base_stats, final_stats
 
 ENKA_URL = "https://enka.network/api/hsr/uid/{uid}"
 IMAGE_HOST = "https://enka.network"
@@ -177,6 +177,7 @@ def _relic(relic: _Relic, language: Language) -> Relic | None:
     subs = GAMEDATA.sub_affixes[str(data.sub_group)]
     return Relic(
         slot=SLOTS[data.slot],
+        set_id=data.set,
         set_name=GAMEDATA.sets.get(str(data.set), {}).get(language, UNKNOWN_SET),
         rarity=data.rarity,
         level=relic.level,
@@ -197,6 +198,7 @@ def _light_cone(equipment: _Equipment | None, language: Language) -> LightCone |
         return None
     data = GAMEDATA.light_cones.get(str(equipment.tid))
     return LightCone(
+        id=equipment.tid,
         name=data.name[language] if data else UNKNOWN_LIGHT_CONE,
         rarity=data.rarity if data else 0,
         level=equipment.level,
@@ -245,18 +247,20 @@ def _bonuses(avatar: _Avatar, relics: tuple[Relic, ...]) -> defaultdict[str, flo
     return bonuses
 
 
-def _stats(avatar: _Avatar, relics: tuple[Relic, ...]) -> tuple[StarRailStat, ...]:
-    """Final stats, or none for a character newer than the game data."""
+Stats = tuple[StarRailStat, ...]
+
+
+def _stats(avatar: _Avatar, relics: tuple[Relic, ...]) -> tuple[Stats, Stats]:
+    """Final and base stats, or none for a character newer than the game data."""
     data = GAMEDATA.characters.get(str(avatar.avatar_id))
     if data is None:
-        return ()
+        return (), ()
     equipment = avatar.equipment
     cone = equipment and GAMEDATA.light_cones.get(str(equipment.tid))
-    return final_stats(
-        (data.promotions[avatar.promotion], avatar.level),
-        (cone.promotions[equipment.promotion], equipment.level) if equipment and cone else None,
-        _bonuses(avatar, relics),
-    )
+    own = (data.promotions[avatar.promotion], avatar.level)
+    worn = (cone.promotions[equipment.promotion], equipment.level) if equipment and cone else None
+    bonuses = _bonuses(avatar, relics)
+    return final_stats(own, worn, bonuses), base_stats(own, worn, bonuses)
 
 
 def _character(avatar: _Avatar, language: Language) -> StarRailCharacter:
@@ -264,6 +268,7 @@ def _character(avatar: _Avatar, language: Language) -> StarRailCharacter:
     relics = tuple(
         relic for relic in (_relic(relic, language) for relic in avatar.relic_list) if relic
     )
+    stats, bases = _stats(avatar, relics)
     return StarRailCharacter(
         id=avatar.avatar_id,
         name=data.name[language] if data else UNKNOWN_CHARACTER,
@@ -274,7 +279,8 @@ def _character(avatar: _Avatar, language: Language) -> StarRailCharacter:
         eidolon=avatar.rank,
         light_cone=_light_cone(avatar.equipment, language),
         relics=relics,
-        stats=_stats(avatar, relics),
+        stats=stats,
+        bases=bases,
         skills=_skills(avatar, data.eidolons if data else []),
         points=tuple(TracePoint(point.point_id, point.level) for point in avatar.skill_tree_list),
         icon=_icon(data.icon) if data else None,

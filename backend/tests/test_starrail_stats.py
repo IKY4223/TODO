@@ -8,7 +8,7 @@ import pytest
 from app.starrail.enka import parse
 from app.starrail.models import StarRailStat
 from app.starrail.models import StarRailStatKey as Stat
-from app.starrail.stats import final_stats
+from app.starrail.stats import base_stats, final_stats
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "enka_starrail.json").read_bytes()
 OWN = {
@@ -114,3 +114,20 @@ def test_unknown_character_has_no_final_stats() -> None:
     raw = json.loads(FIXTURE)
     raw["detailInfo"]["avatarDetailList"][0]["avatarId"] = 1999
     assert parse("700000001", json.dumps(raw).encode())[0].characters[0].stats == ()
+
+
+def test_bases_are_what_percent_bonuses_multiply() -> None:
+    bonuses = {"HPAddedRatio": 0.5, "BaseSpeed": 12.0, "SpeedAddedRatio": 0.1}
+    bases = {stat.key: stat.value for stat in base_stats((OWN, 11), (CONE, 21), bonuses)}
+    assert bases == {Stat.HP: 440, Stat.ATK: 140, Stat.DEF: 80, Stat.SPD: 112}
+    final = shown(final_stats((OWN, 11), (CONE, 21), bonuses))
+    assert final["spd"] == pytest.approx(112 * 1.1)
+
+
+def test_showcase_characters_carry_ids_for_their_effects() -> None:
+    hyacine = parse("700000001", FIXTURE)[0].characters[0]
+    assert hyacine.light_cone is not None
+    assert hyacine.light_cone.id == 21054
+    assert [relic.set_id for relic in hyacine.relics] == [125] * 4 + [320] * 2
+    assert [stat.key for stat in hyacine.bases] == [Stat.HP, Stat.ATK, Stat.DEF, Stat.SPD]
+    assert hyacine.bases[3].value == 110

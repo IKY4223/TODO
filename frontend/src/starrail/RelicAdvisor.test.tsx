@@ -79,6 +79,7 @@ test('a relic with three substats leaves the fourth out', async () => {
 test('sends values, a goal and the score of the equipped relic to beat', async () => {
   const relic: Relic = {
     slot: 'head',
+    set_id: 125,
     set_name: 'Set',
     rarity: 5,
     level: 15,
@@ -109,6 +110,7 @@ test('sends values, a goal and the score of the equipped relic to beat', async (
         light_cone: null,
         relics: [relic],
         stats: [],
+        bases: [],
         skills: [],
         points: [],
         icon: null,

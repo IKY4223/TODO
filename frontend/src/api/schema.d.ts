@@ -310,6 +310,8 @@ export interface components {
         };
         /** LightCone */
         LightCone: {
+            /** Id */
+            id: number;
             /** Name */
             name: string;
             /** Rarity */
@@ -363,6 +365,8 @@ export interface components {
         /** Relic */
         Relic: {
             slot: components["schemas"]["StarRailSlot"];
+            /** Set Id */
+            set_id: number;
             /** Set Name */
             set_name: string;
             /** Rarity */
@@ -493,6 +497,8 @@ export interface components {
             relics: components["schemas"]["Relic"][];
             /** Stats */
             stats: components["schemas"]["StarRailStat"][];
+            /** Bases */
+            bases: components["schemas"]["StarRailStat"][];
             /** Skills */
             skills: components["schemas"]["Skill"][];
             /** Points */

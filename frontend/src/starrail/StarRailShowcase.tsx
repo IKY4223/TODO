@@ -5,6 +5,8 @@ import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
 import { CharacterPage } from './CharacterPage'
+import { type StatEffect, statEffectsOf, statOf, tierValue, withEffects } from './effects'
+import { sourceName, statEffectText } from './effectText'
 import {
   ELEMENTS,
   fetchStarRailShowcase,
@@ -45,7 +47,9 @@ function RelicItem(props: {
           {t(SLOTS[relic.slot])} · {localized(relic.set_name)} +{relic.level}
         </span>
         <strong>{formatStat(relic.main, t)}</strong>
-        <span className="hint">{t('Score {score}', { score: score.format(relicScore(relic, wanted)) })}</span>
+        <span className="hint">
+          {t('Score {score}', { score: score.format(relicScore(relic, wanted)) })}
+        </span>
         <ul className="substats" aria-label={t('{slot} substats', { slot: t(SLOTS[relic.slot]) })}>
           {relic.subs.map((sub) => (
             <li key={sub.key} className={isWanted(sub.key) ? 'wanted' : undefined}>
@@ -64,6 +68,27 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
   const t = useT()
   const localized = useLocalized()
   const [wanted, setWanted] = useState(() => loadWanted(character.id))
+  const effects = statEffectsOf(character)
+  // Effects that depend on SPD start on when the SPD meets them; the rest wait for the player.
+  const [enabled, setEnabled] = useState<ReadonlySet<string>>(
+    () =>
+      new Set(
+        effects
+          .filter(({ bonuses }) =>
+            bonuses.some((bonus) => tierValue(bonus, statOf(character, 'spd')) !== undefined),
+          )
+          .map(({ id }) => id),
+      ),
+  )
+  const flip = (effect: StatEffect): void => {
+    const next = new Set(enabled)
+    if (!next.delete(effect.id)) next.add(effect.id)
+    setEnabled(next)
+  }
+  const stats = withEffects(
+    character,
+    effects.filter(({ id }) => enabled.has(id)),
+  )
   const total = relics.reduce((sum, relic) => sum + relicScore(relic, wanted), 0)
 
   const toggle = (key: SubstatKey): void => {
@@ -88,13 +113,37 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
       </header>
       {character.stats.length ? (
         <dl className="stats">
-          {character.stats.map((stat) => (
+          {stats.map((stat) => (
             <div key={stat.key}>
               <dt>{t(STATS[stat.key].label)}</dt>
               <dd>{formatValue(stat)}</dd>
             </div>
           ))}
         </dl>
+      ) : null}
+      {character.stats.length && effects.length ? (
+        <fieldset className="effects">
+          <legend>{t('Effects in battle')}</legend>
+          <p className="hint">
+            {t(
+              'Stats with the effects switched on. Effects that depend on SPD switch on by themselves.',
+            )}
+          </p>
+          {effects.map((effect) => (
+            <label key={effect.id} className="check">
+              <input
+                type="checkbox"
+                checked={enabled.has(effect.id)}
+                onChange={() => flip(effect)}
+              />
+              <span>
+                <strong>{sourceName(effect.source, character)}</strong>
+                <br />
+                {statEffectText(effect, character, t)}
+              </span>
+            </label>
+          ))}
+        </fieldset>
       ) : null}
       {character.skills.length ? (
         <dl>
@@ -113,7 +162,8 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
         <p className="item">
           <Icon src={cone.icon} size={ITEM_ICON_SIZE} />
           <span>
-            {localized(cone.name)} · {t('Lv. {level}', { level: cone.level })} · S{cone.superimposition}
+            {localized(cone.name)} · {t('Lv. {level}', { level: cone.level })} · S
+            {cone.superimposition}
           </span>
         </p>
       ) : null}

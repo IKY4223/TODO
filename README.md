@@ -17,8 +17,11 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   skills and traces, and eidolons. Texts come from
   [StarRailRes](https://github.com/Mar-7th/StarRailRes).
 - **Star Rail final stats and team speed** — each character's stats as the game's character
-  screen adds them up, and the turns each one takes in Memory of Chaos cycles, with the SPD for
-  one more.
+  screen adds them up, with switches for the effects that need a condition: relic sets whose
+  bonus depends on SPD switch on by themselves. The Speed tool lays out the turn order of a team
+  of four through Memory of Chaos cycles 0 to 2, with speed buffs, action advance, Ultimates on a
+  chosen beat and summons taking their own turns, from a table of popular supports, light cones
+  and sets with the numbers from the game's texts.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
@@ -44,16 +47,20 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-1. Star Rail: conditional bonuses (light cone passives, relic sets and traces that need a
-   trigger, teammates' buffs) as switches in final stats and team speed; action advance and
-   speed buffs in the turn order; summons and memosprites as their own turns.
+1. Star Rail effects, the rest of the table: more characters (Hanya, Firefly, Pearl, Tingyun's
+   Eidolons and others), effects at the player's own skill levels instead of level 10, summons
+   that arrive later (Netherwing, Fuyuan) or change SPD (Lightning-Lord), Ultimates timed by
+   energy, enemy turns and slows, and team-wide stat effects (Fleet of the Ageless, Broken Keel)
+   in final stats.
 2. Design: a navigation bar that folds into a burger menu on phones, in place of the rows of
    game and tool buttons.
-3. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+3. Share a build: a link that opens a character's page for anyone.
+4. A light theme beside the dark one.
+5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-4. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+6. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-5. Zenless Zone Zero: undecided.
+7. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source

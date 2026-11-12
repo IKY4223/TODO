@@ -137,6 +137,33 @@ label {
   width: auto;
 }
 
+/* Numbers stay whole: only labels break, so "10" never becomes "1 0" and "14,7 %" stays on a line. */
+.card dd,
+.answers dd,
+.substats span:not(:first-child) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* One effect per line: they carry a sentence each. */
+fieldset.effects {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.timeline {
+  display: grid;
+  gap: 0.25rem;
+  padding-left: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline .cycle-start strong {
+  display: block;
+  margin-top: 0.75rem;
+}
+
 /* A stat and its value side by side. */
 .pair {
   display: grid;
