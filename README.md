@@ -70,7 +70,8 @@ Planned, in order:
      which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
    Telegram (it needs the site hosted over HTTPS); the bot's replies to failures in Russian (the
-   API's reasons are English today).
+   API's reasons are English today); the bot's offset and chosen languages kept in a store, so a
+   restart neither answers the last messages again nor forgets a /lang choice.
 3. Share a build: a link that opens a character's page for anyone.
 4. A light theme beside the dark one.
 5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives

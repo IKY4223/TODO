@@ -23,6 +23,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # An open update keeps its branch: a fix the owner pushed to it must survive the next sync.
+      - name: Continue an open update
+        id: base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            git fetch --depth=1 origin "$BRANCH:$BRANCH"
+            git switch "$BRANCH"
+            echo "open=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: astral-sh/setup-uv@v7
       - run: uv run python scripts/sync_gamedata.py
         working-directory: backend
@@ -53,22 +66,29 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          OPEN: ${{ steps.base.outputs.open }}
           OUTCOME: ${{ steps.check.outcome }}
           RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -C "$BRANCH"
           git add -A
-          git commit -m "Sync game data from Enka.Network and StarRailRes"
-          git push --force origin "$BRANCH"
+          if [ "$OPEN" = true ]; then
+            git commit -m "Sync game data from Enka.Network and StarRailRes"
+            git push origin "$BRANCH"
+          else
+            # No open update: a branch left from a merged or closed one holds nothing to keep.
+            git switch -C "$BRANCH"
+            git commit -m "Sync game data from Enka.Network and StarRailRes"
+            git push --force origin "$BRANCH"
+          fi
           if [ "$OUTCOME" = success ]; then
             result="Every check passed. Merge when ready."
           else
             result="A check failed: see $RUN. The data format may have changed; the code needs a fix before this merges."
           fi
           body="New game data from Enka.Network and StarRailRes. $result"
-          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+          if [ "$OPEN" = true ]; then
             gh pr edit "$BRANCH" --body "$body"
           else
             gh pr create --base main --head "$BRANCH" --title "Game data update" --body "$body"

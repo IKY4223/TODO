@@ -1,6 +1,7 @@
 """The two Telegram Bot API calls the bot makes, over the standard library."""
 
 import json
+from http.client import HTTPException
 from typing import Any
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -30,7 +31,7 @@ def call(token: str, method: str, payload: dict[str, Any], timeout: float = 60) 
             body = json.loads(response.read(MAX_RESPONSE_BYTES))
     except HTTPError as error:
         raise TelegramError(error.code) from None
-    except (OSError, ValueError):  # no connection, timeout, or not JSON
+    except (OSError, ValueError, HTTPException):  # no connection, timeout, bad URL or not JSON
         raise TelegramError(None) from None
     if not isinstance(body, dict) or not body.get("ok"):
         status = body.get("error_code") if isinstance(body, dict) else None

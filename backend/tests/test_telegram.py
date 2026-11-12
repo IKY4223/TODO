@@ -204,3 +204,49 @@ def test_the_bot_loads_showcases_as_the_site_does(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(entry, "fetch", lambda *_, **__: FIXTURE)
     starrail_cache.clear()
     assert entry.load(UID)["en"].uid == UID
+
+
+def test_a_message_that_breaks_the_bot_does_not_stop_it(caplog: pytest.LogCaptureFixture) -> None:
+    def broken(uid: str) -> dict[Language, StarRailShowcase]:
+        raise RuntimeError("unexpected")
+
+    telegram = FakeTelegram([message(1, UID), message(2, "/start")])
+    chats = Chats()
+    assert poll_once(telegram, broken, RateLimiter(limit=10, window=60), chats)
+    assert chats.offset == 3  # moved past the update that broke, so it is not read again
+    assert len(telegram.sent) == 1
+    assert "could not answer an update" in caplog.text
+
+
+def test_an_odd_batch_counts_as_a_failed_poll() -> None:
+    assert not poll_once(
+        lambda *_: {"not": "a list"}, load, RateLimiter(limit=1, window=60), Chats()
+    )
+
+
+def test_a_url_telegram_cannot_take_is_an_error_without_the_token() -> None:
+    with pytest.raises(TelegramError) as raised:
+        client.call(TOKEN + "\r", "getMe", {})
+    assert TOKEN not in repr(raised.value)
+    assert raised.value.__cause__ is None
+
+
+def test_the_token_must_look_like_one() -> None:
+    from app.telegram import __main__ as entry  # noqa: PLC0415 - the module that runs the bot
+
+    assert entry.valid_token(TOKEN)
+    for wrong in ("", "secret", TOKEN + "\n", " " + TOKEN, "123:abc def"):
+        assert not entry.valid_token(wrong), repr(wrong)
+
+
+def test_the_bot_limits_its_lookups_on_enka_for_all_chats(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.telegram import __main__ as entry  # noqa: PLC0415 - the module that runs the bot
+
+    monkeypatch.setattr(entry, "fetch", lambda *_, **__: FIXTURE)
+    monkeypatch.setattr(entry, "lookups", RateLimiter(limit=1, window=60, clock=lambda: 0.0))
+    starrail_cache.clear()
+    entry.load(UID)
+    starrail_cache.clear()
+    with pytest.raises(HTTPException) as raised:
+        entry.load(UID)
+    assert raised.value.status_code == 429

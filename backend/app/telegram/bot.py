@@ -1,7 +1,7 @@
 """What the bot answers, and one round of reading and answering messages.
 
-shortcut: the chats' languages live in memory, so a restart forgets a /lang choice; keep them in
-a store if the bot runs on more than one machine.
+shortcut: the offset and the chats' languages live in memory, so a restart forgets a /lang
+choice and answers the last batch of messages again; keep them in a store once the bot has a host.
 """
 
 import json
@@ -147,9 +147,14 @@ def poll_once(call: Call, load: LoadShowcase, limiter: RateLimiter, chats: Chats
         # No message text or chat id: the log keeps nothing a user sent.
         logger.warning("Telegram getUpdates failed: %s", error.status)
         return False
-    for update in updates if isinstance(updates, list) else []:
+    if not isinstance(updates, list):
+        return False
+    for update in updates:
         if not isinstance(update, dict) or not isinstance(update.get("update_id"), int):
             continue
         chats.offset = update["update_id"] + 1  # answered or skipped, it is not read again
-        _handle(update, call, load, limiter, chats)
+        try:
+            _handle(update, call, load, limiter, chats)
+        except Exception:  # one message that breaks the bot must not stop it for everyone
+            logger.exception("The bot could not answer an update")
     return True
