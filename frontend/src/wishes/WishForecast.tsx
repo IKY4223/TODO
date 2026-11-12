@@ -1,26 +1,54 @@
-import type { JSX, SubmitEvent } from 'react'
-import { MAX_COPIES, MAX_PITY, MAX_PULLS } from '../api/limits'
+import { type JSX, type SubmitEvent, useState } from 'react'
+import { MAX_PULLS, WISH_BANNERS } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { useLocalized, useT } from '../i18n'
+import { type Message, useLocalized, useT } from '../i18n'
 import { type Forecast, type ForecastQuery, fetchForecast } from './forecast'
 
 const CERTAIN = 1
 // An uncertain chance must never read as 100%.
 const HIGHEST_UNCERTAIN = 0.999
 
-const TARGETS = Array.from({ length: MAX_COPIES }, (_, constellation) => ({
-  copies: constellation + 1,
-  label: `C${constellation}`,
-}))
+type BannerKey = keyof typeof WISH_BANNERS
+
+interface BannerChoice {
+  readonly key: BannerKey
+  readonly label: Message
+  /** How the game names a count of copies: C0 for one Genshin character, S1 for one light cone. */
+  readonly prefix: 'C' | 'E' | 'S'
+  readonly firstCopy: 0 | 1
+}
+
+const GAMES = {
+  genshin: {
+    title: 'Wish forecast',
+    hint: 'Genshin Impact · limited character banner',
+    banners: [{ key: 'genshin_character', label: 'Character Event', prefix: 'C', firstCopy: 0 }],
+  },
+  starrail: {
+    title: 'Warp forecast',
+    hint: 'Honkai: Star Rail · limited warps',
+    banners: [
+      { key: 'starrail_character', label: 'Character Event Warp', prefix: 'E', firstCopy: 0 },
+      { key: 'starrail_light_cone', label: 'Light Cone Event Warp', prefix: 'S', firstCopy: 1 },
+    ],
+  },
+} as const satisfies Record<string, { title: Message; hint: Message; banners: readonly BannerChoice[] }>
+
+const targets = ({ key, prefix, firstCopy }: BannerChoice): { copies: number; label: string }[] =>
+  Array.from({ length: WISH_BANNERS[key].max_copies }, (_, index) => ({
+    copies: index + 1,
+    label: `${prefix}${index + firstCopy}`,
+  }))
 
 const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
 
 const formatChance = (chance: number): string =>
   percent.format(chance < CERTAIN ? Math.min(chance, HIGHEST_UNCERTAIN) : chance)
 
-function readQuery(form: HTMLFormElement): ForecastQuery {
+function readQuery(form: HTMLFormElement, banner: BannerKey): ForecastQuery {
   const data = new FormData(form)
   return {
+    banner,
     pity: Number(data.get('pity')),
     guaranteed: data.has('guaranteed'),
     copies: Number(data.get('copies')),
@@ -58,22 +86,42 @@ function ForecastResult({ forecast }: { readonly forecast: Forecast }): JSX.Elem
   )
 }
 
-export function WishForecast(): JSX.Element {
+export function WishForecast({ game }: { readonly game: keyof typeof GAMES }): JSX.Element {
+  const { title, hint, banners } = GAMES[game]
+  const [chosen, setChosen] = useState<BannerKey>(banners[0].key)
+  const banner: BannerChoice = banners.find(({ key }) => key === chosen) ?? banners[0]
   const [state, run] = useRequest<Forecast>()
   const t = useT()
   const localized = useLocalized()
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    const query = readQuery(event.currentTarget)
+    const query = readQuery(event.currentTarget, banner.key)
     void run(() => fetchForecast(query))
   }
 
   return (
-    <section aria-labelledby="forecast-title">
-      <h2 id="forecast-title">{t('Wish forecast')}</h2>
-      <p className="hint">{t('Genshin Impact · limited character banner')}</p>
+    <section aria-labelledby={`${game}-forecast-title`}>
+      <h2 id={`${game}-forecast-title`}>{t(title)}</h2>
+      <p className="hint">{t(hint)}</p>
       <form onSubmit={submit}>
+        {banners.length > 1 ? (
+          <label>
+            {t('Banner')}
+            <select
+              value={banner.key}
+              onChange={(event) => {
+                setChosen(banners.find(({ key }) => key === event.target.value)?.key ?? chosen)
+              }}
+            >
+              {banners.map(({ key, label }) => (
+                <option key={key} value={key}>
+                  {t(label)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
         <label>
           {t('Pulls since last 5★')}
           <input
@@ -81,7 +129,7 @@ export function WishForecast(): JSX.Element {
             type="number"
             inputMode="numeric"
             min={0}
-            max={MAX_PITY}
+            max={WISH_BANNERS[banner.key].max_pity}
             defaultValue={0}
             required
           />
@@ -104,7 +152,7 @@ export function WishForecast(): JSX.Element {
         <label>
           {t('Target')}
           <select name="copies">
-            {TARGETS.map(({ copies, label }) => (
+            {targets(banner).map(({ copies, label }) => (
               <option key={copies} value={copies}>
                 {label}
               </option>

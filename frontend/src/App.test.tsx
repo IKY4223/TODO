@@ -42,7 +42,7 @@ const tools = (): (string | null)[] =>
 
 test('each game lists only its own tools', async () => {
   render(<App />)
-  expect(tools()).toEqual(['Builds', 'Relics'])
+  expect(tools()).toEqual(['Builds', 'Relics', 'Warps'])
   window.location.hash = '#genshin/builds'
   await screen.findByRole('link', { name: 'Wishes' })
   expect(tools()).toEqual(['Builds', 'Wishes', 'History'])

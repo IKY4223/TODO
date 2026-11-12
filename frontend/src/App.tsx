@@ -27,13 +27,14 @@ const GAMES = {
     tools: {
       builds: { label: 'Builds', element: <StarRailShowcase /> },
       relics: { label: 'Relics', element: <RelicAdvisor /> },
+      warps: { label: 'Warps', element: <WishForecast game="starrail" /> },
     },
   },
   genshin: {
     label: 'Genshin',
     tools: {
       builds: { label: 'Builds', element: <CharacterShowcase /> },
-      wishes: { label: 'Wishes', element: <WishForecast /> },
+      wishes: { label: 'Wishes', element: <WishForecast game="genshin" /> },
       history: { label: 'History', element: <WishHistory /> },
     },
   },

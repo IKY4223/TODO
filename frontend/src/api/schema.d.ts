@@ -796,6 +796,7 @@ export interface operations {
     wish_forecast_api_wishes_forecast_get: {
         parameters: {
             query: {
+                banner?: "genshin_character" | "starrail_character" | "starrail_light_cone";
                 /** @description Pulls since the last 5★ */
                 pity: number;
                 /** @description The next 5★ is guaranteed to be the featured one */
