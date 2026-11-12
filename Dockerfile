@@ -15,6 +15,8 @@ RUN uv sync --frozen --no-dev
 COPY backend/app ./app
 COPY --from=frontend /frontend/dist ./static
 ENV PATH="/app/.venv/bin:$PATH"
+# Where the Telegram bot may keep its state (TELEGRAM_STATE_FILE); mount a volume on it.
+RUN mkdir /data && chown nobody /data
 USER nobody
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
