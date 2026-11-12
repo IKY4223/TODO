@@ -55,9 +55,12 @@ const turn = (id: string): (typeof TURN_EFFECTS)[number] => {
 }
 
 test('names the source as the player knows it', () => {
-  expect(sourceName({ set: 320, pieces: 2 }, CHARACTER)).toBe('Giant Tree of Rapt Brooding (2)')
-  expect(sourceName({ cone: 21045 }, CHARACTER)).toBe('After the Charmony Fall')
-  expect(sourceName({ character: 1101 }, CHARACTER)).toBe('Bronya')
+  expect(sourceName({ set: 320, pieces: 2 }, CHARACTER, t)).toBe('Giant Tree of Rapt Brooding (2)')
+  expect(sourceName({ cone: 21045 }, CHARACTER, t)).toBe('After the Charmony Fall')
+  expect(sourceName({ character: 1101 }, CHARACTER, t)).toBe('Bronya')
+  expect(sourceName({ set: 302, pieces: 2, teammate: true }, CHARACTER, t)).toBe(
+    'Fleet of the Ageless on a teammate',
+  )
 })
 
 test('describes stat effects with their tiers or the superimposition value', () => {
@@ -68,6 +71,7 @@ test('describes stat effects with their tiers or the superimposition value', () 
     'CRIT Rate +20% / +32% · below SPD 110 / 95',
   )
   expect(statEffectText(stat('charmony-fall'), CHARACTER, t)).toBe('SPD +16%')
+  expect(statEffectText(stat('keel'), CHARACTER, t)).toBe('CRIT DMG +10% · at Effect RES 30%')
   expect(statEffectText(stat('warrior-goddess'), CHARACTER, t)).toBe('SPD +6%, CRIT DMG +15%')
 })
 

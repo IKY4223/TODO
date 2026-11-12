@@ -46,9 +46,7 @@ export function saveWanted(
 
 /** A relic's worth in highest single rolls, counting only the wanted substats. */
 export const relicScore = (relic: Relic, wanted: readonly string[]): number =>
-  relic.subs
-    .filter((sub) => wanted.includes(sub.key))
-    .reduce((total, sub) => total + sub.score, 0)
+  relic.subs.filter((sub) => wanted.includes(sub.key)).reduce((total, sub) => total + sub.score, 0)
 
 // The showcase last loaded, shared so the relic advisor can compare with equipped relics.
 let showcase: StarRailShowcase | undefined

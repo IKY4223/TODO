@@ -4,7 +4,14 @@ import { RelicAdvisor } from './RelicAdvisor'
 import type { Relic } from './starrail'
 import { publishShowcase } from './store'
 
-const FORECAST = { upgrades: 2, chances: [0.25, 0.5, 0.25], expected: 1, score: null, beats: null, reaches: null }
+const FORECAST = {
+  upgrades: 2,
+  chances: [0.25, 0.5, 0.25],
+  expected: 1,
+  score: null,
+  beats: null,
+  reaches: null,
+}
 
 afterEach(() => {
   cleanup()

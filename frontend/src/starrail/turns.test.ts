@@ -88,17 +88,10 @@ test('a summon that comes later acts only once summoned, for its count of action
   // Castorice: the Ultimate summons Netherwing for 3 turns and advances it by 100%.
   const castorice = unit('c', 100, {
     ultimateEvery: 1,
-    effects: [
-      effect({ kind: 'summon', value: 3, trigger: 'ultimate', target: 'summons' }),
-    ],
+    effects: [effect({ kind: 'summon', value: 3, trigger: 'ultimate', target: 'summons' })],
   })
   const netherwing = unit('n', 165, { owner: 'c', later: true, arrival: 1, blocksUltimate: true })
-  expect(order([castorice, netherwing], 200)).toEqual([
-    '100 c!',
-    '100 n',
-    '160.6 n',
-    '200 c',
-  ])
+  expect(order([castorice, netherwing], 200)).toEqual(['100 c!', '100 n', '160.6 n', '200 c'])
 })
 
 test('summoning again adds actions up to the cap', () => {

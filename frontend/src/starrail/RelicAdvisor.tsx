@@ -44,9 +44,11 @@ function readQuery(form: HTMLFormElement, beat: number | null): RelicQuery {
     main: stats('main')[0] ?? 'hp',
     level: Number(data.get('level')),
     // Every slot posts a stat and a value, chosen or not: pair them before dropping the empty.
-    subs: data.getAll('sub').flatMap((key, slot) =>
-      isKeyOf(STATS, key) ? [{ key, value: numberOrNull(values[slot] ?? null) }] : [],
-    ),
+    subs: data
+      .getAll('sub')
+      .flatMap((key, slot) =>
+        isKeyOf(STATS, key) ? [{ key, value: numberOrNull(values[slot] ?? null) }] : [],
+      ),
     wanted: stats('wanted'),
     beat,
     goal: goalKey && goalValue !== null ? { key: goalKey, value: goalValue } : null,
@@ -132,7 +134,10 @@ export function RelicAdvisor(): JSX.Element {
   const localized = useLocalized()
   const showcase = useShowcase()
   const rivals: Rival[] = (showcase?.characters ?? []).flatMap((character) =>
-    character.relics.map((relic) => ({ label: `${character.name} · ${t(SLOTS[relic.slot])}`, relic })),
+    character.relics.map((relic) => ({
+      label: `${character.name} · ${t(SLOTS[relic.slot])}`,
+      relic,
+    })),
   )
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
@@ -207,7 +212,14 @@ export function RelicAdvisor(): JSX.Element {
             </label>
             <label>
               {t('Value {slot}', { slot })}
-              <input name="value" type="number" inputMode="decimal" min={0} max={MAX_STAT_VALUE} step="any" />
+              <input
+                name="value"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                max={MAX_STAT_VALUE}
+                step="any"
+              />
             </label>
           </div>
         ))}
@@ -244,7 +256,14 @@ export function RelicAdvisor(): JSX.Element {
           </label>
           <label>
             {t('Goal value')}
-            <input name="goalValue" type="number" inputMode="decimal" min={0} max={MAX_STAT_VALUE} step="any" />
+            <input
+              name="goalValue"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              max={MAX_STAT_VALUE}
+              step="any"
+            />
           </label>
         </div>
         {rivals.length ? (

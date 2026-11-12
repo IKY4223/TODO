@@ -1,6 +1,12 @@
 import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
-import { numberFormat, type NumberFormat, type Language, type Message, type Translate } from '../i18n'
+import {
+  numberFormat,
+  type NumberFormat,
+  type Language,
+  type Message,
+  type Translate,
+} from '../i18n'
 
 type Schemas = components['schemas']
 export type StarRailShowcase = Schemas['StarRailShowcase']

@@ -105,7 +105,9 @@ const rows = (list: string): (string | null)[] =>
 test('asks the API for the entered UID', async () => {
   const fetchMock = load(async () => Response.json(SHOWCASE))
   await screen.findByText('Hyacine')
-  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/starrail/showcase/700000001?lang=en'])
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+    '/api/starrail/showcase/700000001?lang=en',
+  ])
 })
 
 test('shows who the showcase belongs to', async () => {
@@ -179,14 +181,17 @@ test('shows the showcase in Russian', async () => {
   fireEvent.change(screen.getByLabelText('UID'), { target: { value: '700000001' } })
   fireEvent.click(screen.getByRole('button', { name: 'Загрузить персонажей' }))
   expect(await screen.findByText('Ур. 80 · E0 · Ветряной · Память')).toBeDefined()
-  expect(fetchMock).toHaveBeenCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
+  expect(fetchMock).toHaveBeenCalledWith(
+    '/api/starrail/showcase/700000001?lang=ru',
+    expect.anything(),
+  )
   // Numbers in the Russian format too: a decimal comma, a space between thousands.
   expect(rows('Голова: доп. статы')[1]).toBe('Скорость 12,1 ×5')
   expect(screen.getByText('Реликвии (1) · оценка 4,6')).toBeDefined()
   expect(pairs(/^4\s926$/)[0]).toMatch(/^HP4\s926$/)
 })
 
-test('opens a character page with skills at the player\'s levels and eidolons', async () => {
+test("opens a character page with skills at the player's levels and eidolons", async () => {
   const texts = {
     skills: [
       {
@@ -199,9 +204,30 @@ test('opens a character page with skills at the player\'s levels and eidolons', 
       { kind: null, label: 'Technique', name: 'Day So Right', description: 'Heals.', params: [] },
     ],
     traces: [
-      { id: 1409002, name: 'Love Over the Rainbow', skill: true, description: '', params: [], costs: [{}, { '2': 100 }, { '2': 200 }] },
-      { id: 1409101, name: 'Gloomy Grin', skill: false, description: 'CRIT Rate +#1[i]%.', params: [1], costs: [{ '2': 5000 }] },
-      { id: 1409203, name: 'SPD Boost', skill: false, description: '+2', params: [], costs: [{ '2': 9000, '110252': 3 }] },
+      {
+        id: 1409002,
+        name: 'Love Over the Rainbow',
+        skill: true,
+        description: '',
+        params: [],
+        costs: [{}, { '2': 100 }, { '2': 200 }],
+      },
+      {
+        id: 1409101,
+        name: 'Gloomy Grin',
+        skill: false,
+        description: 'CRIT Rate +#1[i]%.',
+        params: [1],
+        costs: [{ '2': 5000 }],
+      },
+      {
+        id: 1409203,
+        name: 'SPD Boost',
+        skill: false,
+        description: '+2',
+        params: [],
+        costs: [{ '2': 9000, '110252': 3 }],
+      },
     ],
     items: { '2': 'Credit', '110252': 'Harmonic Tune' },
     eidolons: [
@@ -218,7 +244,10 @@ test('opens a character page with skills at the player\'s levels and eidolons', 
 
   // The Skill is level 12 in the showcase: the twelfth set of numbers.
   expect(await screen.findByText('Restores HP equal to 12% of Max HP plus 120.')).toBeDefined()
-  expect(fetchMock).toHaveBeenLastCalledWith('/api/starrail/characters/1409?lang=en', expect.anything())
+  expect(fetchMock).toHaveBeenLastCalledWith(
+    '/api/starrail/characters/1409?lang=en',
+    expect.anything(),
+  )
   expect(screen.getByText('Skill · Lv. 12')).toBeDefined()
   expect(screen.getByText('Technique')).toBeDefined()
   expect(screen.getByRole('heading', { name: 'E1 · Cradle the Candle of Night' })).toBeDefined()
@@ -250,7 +279,10 @@ test('asks for the showcase again when the language changes', async () => {
   await screen.findByText('Hyacine')
   act(() => setLanguage('ru'))
   expect(await screen.findByText('Ур. 80 · E0 · Ветряной · Память')).toBeDefined()
-  expect(fetchMock).toHaveBeenLastCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
+  expect(fetchMock).toHaveBeenLastCalledWith(
+    '/api/starrail/showcase/700000001?lang=ru',
+    expect.anything(),
+  )
 })
 
 test('scores relics by the substats the player wants and remembers the choice', async () => {
@@ -301,14 +333,20 @@ test('explains how to fill an empty showcase', async () => {
 })
 
 test.each([
-  { name: 'API refusal', respond: async () => Response.json({ detail: 'Player not found. Check the UID.' }, { status: 404 }) },
+  {
+    name: 'API refusal',
+    respond: async () =>
+      Response.json({ detail: 'Player not found. Check the UID.' }, { status: 404 }),
+  },
   { name: 'unexpected body', respond: async () => Response.json({ characters: 'many' }) },
   {
     name: 'unknown skill',
     respond: async () =>
       Response.json({
         ...SHOWCASE,
-        characters: [{ ...SHOWCASE.characters[0], skills: [{ kind: 'technique', level: 1, bonus: 0 }] }],
+        characters: [
+          { ...SHOWCASE.characters[0], skills: [{ kind: 'technique', level: 1, bonus: 0 }] },
+        ],
       }),
   },
   {
@@ -316,7 +354,12 @@ test.each([
     respond: async () =>
       Response.json({
         ...SHOWCASE,
-        characters: [{ ...SHOWCASE.characters[0], relics: [{ ...SHOWCASE.characters[0].relics[0], main: { key: 'luck', value: 1 } }] }],
+        characters: [
+          {
+            ...SHOWCASE.characters[0],
+            relics: [{ ...SHOWCASE.characters[0].relics[0], main: { key: 'luck', value: 1 } }],
+          },
+        ],
       }),
   },
 ])('$name shows an error and allows a retry', async ({ respond }) => {

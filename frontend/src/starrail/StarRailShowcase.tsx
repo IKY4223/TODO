@@ -5,7 +5,7 @@ import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
 import { CharacterPage } from './CharacterPage'
-import { type StatEffect, statEffectsOf, statOf, tierValue, withEffects } from './effects'
+import { type StatEffect, statEffectsOf, tierFor, withEffects } from './effects'
 import { sourceName, statEffectText } from './effectText'
 import {
   ELEMENTS,
@@ -74,9 +74,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
     () =>
       new Set(
         effects
-          .filter(({ bonuses }) =>
-            bonuses.some((bonus) => tierValue(bonus, statOf(character, 'spd')) !== undefined),
-          )
+          .filter(({ bonuses }) => bonuses.some((bonus) => tierFor(bonus, character) !== undefined))
           .map(({ id }) => id),
       ),
   )
@@ -137,7 +135,7 @@ function CharacterCard({ character }: { readonly character: StarRailCharacter })
                 onChange={() => flip(effect)}
               />
               <span>
-                <strong>{sourceName(effect.source, character)}</strong>
+                <strong>{sourceName(effect.source, character, t)}</strong>
                 <br />
                 {statEffectText(effect, character, t)}
               </span>

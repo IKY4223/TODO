@@ -249,7 +249,7 @@ export function SpeedPlanner(): JSX.Element {
                               onChange={() => toggle(character.id, effect.id, effect.off)}
                             />
                             <span>
-                              <strong>{sourceName(effect.source, character)}</strong>
+                              <strong>{sourceName(effect.source, character, t)}</strong>
                               <br />
                               {turnEffectText(effect, value, t)}
                             </span>

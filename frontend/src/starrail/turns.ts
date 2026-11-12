@@ -54,7 +54,8 @@ interface State {
 }
 
 function speedOf({ unit, buffs }: State): number {
-  const spd = unit.spd + buffs.reduce((sum, buff) => sum + buff.percent * unit.baseSpd + buff.flat, 0)
+  const spd =
+    unit.spd + buffs.reduce((sum, buff) => sum + buff.percent * unit.baseSpd + buff.flat, 0)
   return Math.min(spd, unit.maxSpd ?? spd)
 }
 

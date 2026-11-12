@@ -56,9 +56,9 @@ test('a set effect needs its pieces', () => {
 })
 
 test('the highest SPD tier met wins', () => {
-  const tree = { stat: 'outgoing_healing', values: [0.12, 0.2], spdAtLeast: [135, 180] } as const
+  const tree = { stat: 'outgoing_healing', values: [0.12, 0.2], atLeast: [135, 180] } as const
   expect([100, 150, 183.5].map((spd) => tierValue(tree, spd))).toEqual([undefined, 0.12, 0.2])
-  const poet = { stat: 'crit_rate', values: [0.2, 0.32], spdBelow: [110, 95] } as const
+  const poet = { stat: 'crit_rate', values: [0.2, 0.32], below: [110, 95] } as const
   expect([120, 100, 90].map((spd) => tierValue(poet, spd))).toEqual([undefined, 0.2, 0.32])
 })
 
@@ -67,7 +67,27 @@ test('lists what the light cone and sets can trigger', () => {
     'giant-tree',
     'warrior-goddess',
     'charmony-fall',
+    'fleet-team',
+    'keel-team',
   ])
+})
+
+test("a set that raises all allies' stats works on its wearer by itself, and on others by a switch", () => {
+  const wearer: StarRailCharacter = {
+    ...HYACINE,
+    relics: [relic(302), relic(302), relic(310), relic(310)],
+    stats: [...HYACINE.stats, { key: 'effect_res', value: 0.3 }],
+  }
+  const own = statEffectsOf(wearer)
+  expect(own.map(({ id }) => id)).toEqual(['charmony-fall', 'fleet', 'keel'])
+  const stats = withEffects(wearer, own)
+  const value = (key: string): number | undefined => stats.find((stat) => stat.key === key)?.value
+  expect(value('atk')).toBeCloseTo(1000 + 500 * 0.08) // SPD 183.5 meets 120
+  expect(value('crit_dmg')).toBeCloseTo(0.6) // Effect RES 30% meets 30%
+  const low = { ...wearer, stats: [...HYACINE.stats, { key: 'effect_res' as const, value: 0.29 }] }
+  expect(withEffects(low, own).find((stat) => stat.key === 'crit_dmg')?.value).toBe(0.5)
+  const teammate = withEffects(HYACINE, [byId('fleet-team')])
+  expect(teammate.find((stat) => stat.key === 'atk')?.value).toBeCloseTo(1040)
 })
 
 const byId = (id: string): (typeof STAT_EFFECTS)[number] => {

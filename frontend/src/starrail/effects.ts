@@ -6,7 +6,8 @@
 import type { Relic, StarRailCharacter } from './starrail'
 
 export type Source =
-  | { readonly set: number; readonly pieces: 2 | 4 }
+  // teammate: the set is worn by someone else on the team and raises all allies' stats.
+  | { readonly set: number; readonly pieces: 2 | 4; readonly teammate?: boolean }
   | { readonly cone: number }
   | { readonly character: number }
 
@@ -21,11 +22,13 @@ export type BonusStat =
 /** A panel stat raised while the effect holds. */
 export interface StatBonus {
   readonly stat: BonusStat
-  /** One value; one per superimposition for a light cone; or one per SPD tier. */
+  /** One value; one per superimposition for a light cone; or one per tier. */
   readonly values: readonly number[]
-  /** Holds by itself at these SPD tiers, the highest one met winning. Without tiers: a switch. */
-  readonly spdAtLeast?: readonly number[]
-  readonly spdBelow?: readonly number[]
+  /** Holds by itself at these tiers of SPD (or `tierStat`), the highest met winning. Without
+   * tiers: a switch. */
+  readonly atLeast?: readonly number[]
+  readonly below?: readonly number[]
+  readonly tierStat?: 'effect_res'
 }
 
 export interface StatEffect {
@@ -38,27 +41,27 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
   {
     id: 'space-sealing',
     source: { set: 301, pieces: 2 },
-    bonuses: [{ stat: 'atk_percent', values: [0.12], spdAtLeast: [120] }],
+    bonuses: [{ stat: 'atk_percent', values: [0.12], atLeast: [120] }],
   },
   {
     id: 'talia',
     source: { set: 307, pieces: 2 },
-    bonuses: [{ stat: 'break_effect', values: [0.2], spdAtLeast: [145] }],
+    bonuses: [{ stat: 'break_effect', values: [0.2], atLeast: [145] }],
   },
   {
     id: 'giant-tree',
     source: { set: 320, pieces: 2 },
-    bonuses: [{ stat: 'outgoing_healing', values: [0.12, 0.2], spdAtLeast: [135, 180] }],
+    bonuses: [{ stat: 'outgoing_healing', values: [0.12, 0.2], atLeast: [135, 180] }],
   },
   {
     id: 'poet',
     source: { set: 124, pieces: 4 },
-    bonuses: [{ stat: 'crit_rate', values: [0.2, 0.32], spdBelow: [110, 95] }],
+    bonuses: [{ stat: 'crit_rate', values: [0.2, 0.32], below: [110, 95] }],
   },
   {
     id: 'diviner',
     source: { set: 130, pieces: 4 },
-    bonuses: [{ stat: 'crit_rate', values: [0.1, 0.18], spdAtLeast: [120, 160] }],
+    bonuses: [{ stat: 'crit_rate', values: [0.1, 0.18], atLeast: [120, 160] }],
   },
   {
     id: 'messenger',
@@ -100,6 +103,28 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
     id: 'river-flows',
     source: { cone: 21024 },
     bonuses: [{ stat: 'spd_percent', values: [0.08, 0.09, 0.1, 0.11, 0.12] }],
+  },
+  // Sets that raise all allies' stats: on the wearer by its own stats, on the others by a switch,
+  // since the wearer's SPD or Effect RES is not on their screen.
+  {
+    id: 'fleet',
+    source: { set: 302, pieces: 2 },
+    bonuses: [{ stat: 'atk_percent', values: [0.08], atLeast: [120] }],
+  },
+  {
+    id: 'keel',
+    source: { set: 310, pieces: 2 },
+    bonuses: [{ stat: 'crit_dmg', values: [0.1], atLeast: [0.3], tierStat: 'effect_res' }],
+  },
+  {
+    id: 'fleet-team',
+    source: { set: 302, pieces: 2, teammate: true },
+    bonuses: [{ stat: 'atk_percent', values: [0.08] }],
+  },
+  {
+    id: 'keel-team',
+    source: { set: 310, pieces: 2, teammate: true },
+    bonuses: [{ stat: 'crit_dmg', values: [0.1] }],
   },
 ]
 
@@ -559,7 +584,9 @@ export function valueFor(
       ? values[Math.min(cone.superimposition, values.length) - 1]
       : undefined
   }
-  return pieces(character.relics, source.set) >= source.pieces ? values[0] : undefined
+  // A teammate's set counts only for those without their own: the same effect does not stack.
+  const worn = pieces(character.relics, source.set) >= source.pieces
+  return worn === !source.teammate ? values[0] : undefined
 }
 
 export const statOf = (character: StarRailCharacter, key: string): number =>
@@ -568,14 +595,18 @@ export const statOf = (character: StarRailCharacter, key: string): number =>
 export const baseOf = (character: StarRailCharacter, key: string): number =>
   character.bases.find((stat) => stat.key === key)?.value ?? 0
 
-/** The bonus a tiered effect gives at this SPD, or undefined when no tier is met. */
-export function tierValue(bonus: StatBonus, spd: number): number | undefined {
-  const tiers = bonus.spdAtLeast ?? bonus.spdBelow
+/** The bonus a tiered effect gives at this SPD (or `tierStat`), or undefined when no tier is met. */
+export function tierValue(bonus: StatBonus, stat: number): number | undefined {
+  const tiers = bonus.atLeast ?? bonus.below
   if (!tiers) return undefined
-  const met = tiers.map((tier) => (bonus.spdAtLeast ? spd >= tier : spd < tier))
+  const met = tiers.map((tier) => (bonus.atLeast ? stat >= tier : stat < tier))
   const highest = met.lastIndexOf(true)
   return highest === -1 ? undefined : bonus.values[highest]
 }
+
+/** The bonus a tiered effect gives this character, or undefined when no tier is met. */
+export const tierFor = (bonus: StatBonus, character: StarRailCharacter): number | undefined =>
+  tierValue(bonus, statOf(character, bonus.tierStat ?? 'spd'))
 
 /** The stat effects this character's light cone and sets can trigger. */
 export const statEffectsOf = (character: StarRailCharacter): StatEffect[] =>
@@ -586,13 +617,12 @@ export function withEffects(
   character: StarRailCharacter,
   chosen: readonly StatEffect[],
 ): StarRailCharacter['stats'] {
-  const spd = statOf(character, 'spd')
   const extra = new Map<string, number>()
   for (const effect of chosen) {
     for (const bonus of effect.bonuses) {
       const value =
-        bonus.spdAtLeast || bonus.spdBelow
-          ? tierValue(bonus, spd)
+        bonus.atLeast || bonus.below
+          ? tierFor(bonus, character)
           : valueFor(effect.source, bonus.values, character)
       if (value === undefined) continue
       const [key, gain] =
