@@ -34,6 +34,10 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - Leave nothing out quietly. Everything the owner asked for is either built or in the README plan
   with its place in the order; a mechanic left out of the code gets a `shortcut:` comment and a
   plan entry too. Before reporting a stage done, reread the owner's request and tick off each part.
+- When you see something that would improve the site (a feature, a fix, a safer or clearer way),
+  propose it to the owner with the reason. Do not build it unasked.
+- Game mechanics come from game data and from the open implementations listed in the README, not
+  from memory. No plugin covers them; say so rather than inventing a source.
 - Game rates the publisher does not document are community estimates. Say so in a comment, and
   mark every mechanic left out with a `shortcut:` comment.
 
@@ -70,6 +74,9 @@ have a lawyer read the texts before launch.
 ## Owner checks still open
 
 Remind the owner of these until they confirm them.
+
+- Turn on GitHub Secret scanning and Push protection (repository Settings, Code security). The
+  session's GitHub access may not write repository settings, so the owner does it from the phone.
 
 - Compare Star Rail final stats with the game for one character. For Hyacine on UID 719781196 the
   app shows HP 4926, ATK 1227, DEF 1161, SPD 183.5, CRIT Rate 18.9%.

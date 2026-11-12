@@ -55,6 +55,11 @@ Planned, in order:
    the imported history.
 5. Zenless Zone Zero: undecided.
 
+Reference implementations to check game mechanics against (read, never copied):
+[StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source
+[Fribbels HSR Optimizer](https://github.com/fribbels/hsr-optimizer) for how conditional effects and
+speed are modelled. Check each project's licence before reusing anything from it.
+
 Before any public launch, the checklist in `CLAUDE.md` comes first.
 
 ## Stack
