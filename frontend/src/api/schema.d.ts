@@ -310,6 +310,8 @@ export interface components {
         };
         /** LightCone */
         LightCone: {
+            /** Id */
+            id: number;
             /** Name */
             name: string;
             /** Rarity */
@@ -363,6 +365,8 @@ export interface components {
         /** Relic */
         Relic: {
             slot: components["schemas"]["StarRailSlot"];
+            /** Set Id */
+            set_id: number;
             /** Set Name */
             set_name: string;
             /** Rarity */
@@ -491,6 +495,10 @@ export interface components {
             light_cone: components["schemas"]["LightCone"] | null;
             /** Relics */
             relics: components["schemas"]["Relic"][];
+            /** Stats */
+            stats: components["schemas"]["StarRailStat"][];
+            /** Bases */
+            bases: components["schemas"]["StarRailStat"][];
             /** Skills */
             skills: components["schemas"]["Skill"][];
             /** Points */
@@ -796,6 +804,7 @@ export interface operations {
     wish_forecast_api_wishes_forecast_get: {
         parameters: {
             query: {
+                banner?: "genshin_character" | "starrail_character" | "starrail_light_cone";
                 /** @description Pulls since the last 5★ */
                 pity: number;
                 /** @description The next 5★ is guaranteed to be the featured one */

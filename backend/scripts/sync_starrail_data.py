@@ -44,6 +44,7 @@ def main() -> None:
     relics = load("relics.json")
     affixes = load("affixes.json")
     ranks = load("ranks.json")
+    tree = load("tree.json")
     gamedata = {
         "characters": {
             key: {
@@ -52,6 +53,10 @@ def main() -> None:
                 "element": avatar["Element"],
                 "path": avatar["AvatarBaseType"],
                 "icon": avatar["AvatarSideIconPath"],
+                # Base stats per ascension, under Enka's names: HPBase, HPAdd per level, ...
+                "promotions": [
+                    avatar["Promotion"][str(step)] for step in range(len(avatar["Promotion"]))
+                ],
                 "eidolons": [
                     {
                         int(point) % 1000: levels
@@ -70,6 +75,14 @@ def main() -> None:
                 # The store only names the 2 MB full-size art; the game's square icon is
                 # 30 KB and sits at a path built from the id.
                 "icon": f"/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/{key}.png",
+                "promotions": [
+                    cone["Promotion"][str(step)] for step in range(len(cone["Promotion"]))
+                ],
+                # Per superimposition: the stats its passive always gives.
+                "passive": [
+                    cone["EquipmentSkill"][str(rank)]["props"]
+                    for rank in range(1, len(cone["EquipmentSkill"]) + 1)
+                ],
             }
             for key, cone in load("weapons.json").items()
         },
@@ -85,6 +98,15 @@ def main() -> None:
             for key, item in relics["Items"].items()
         },
         "sets": {key: names(relic_set["Name"]) for key, relic_set in relics["Sets"].items()},
+        # Set -> pieces needed ("2", "4") -> the stats that bonus always gives.
+        "set_bonuses": {
+            key: {pieces: skill["props"] for pieces, skill in relic_set["SetSkills"].items()}
+            for key, relic_set in relics["Sets"].items()
+        },
+        # Trace stat nodes: point -> the stats it gives once unlocked.
+        "trace_stats": {
+            point: levels["1"]["props"] for point, levels in tree.items() if levels["1"]["props"]
+        },
         # A main stat is base + per level; a substat is base per roll + step per roll upgrade.
         "main_affixes": {
             group: {

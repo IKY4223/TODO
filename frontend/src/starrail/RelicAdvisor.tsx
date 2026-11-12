@@ -2,7 +2,7 @@ import { type JSX, type SubmitEvent, useState } from 'react'
 import { ApiError, isKeyOf } from '../api/http'
 import { MAX_RELIC_LEVEL, RELIC_SUBSTATS, RELIC_UPGRADE_EVERY } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { useLocalized, useT } from '../i18n'
+import { useLocalized, useT, numberFormat } from '../i18n'
 import { fetchRelicForecast, type RelicForecast, type RelicQuery } from './relics'
 import { type Relic, SLOTS, statName, STATS } from './starrail'
 import { relicScore, useShowcase } from './store'
@@ -20,9 +20,9 @@ const LEVELS = Array.from(
   (_, step) => step * RELIC_UPGRADE_EVERY,
 )
 
-const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
-const average = new Intl.NumberFormat('en', { maximumFractionDigits: 2 })
-const score = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const percent = numberFormat({ style: 'percent', maximumFractionDigits: 1 })
+const average = numberFormat({ maximumFractionDigits: 2 })
+const score = numberFormat({ minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const NO_CHOICE = ''
 const MAX_STAT_VALUE = 10_000
 

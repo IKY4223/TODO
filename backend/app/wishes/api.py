@@ -3,14 +3,14 @@ from collections.abc import Callable
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.ratelimit import RateLimiter, limited
 from app.wishes import history
-from app.wishes.engine import GENSHIN_CHARACTER, Forecast, forecast
+from app.wishes.engine import BANNERS, Forecast, forecast
 from app.wishes.history import HistoryError, LinkError, Page
 
-MAX_COPIES = 7  # C0 through C6
+MAX_COPIES = max(banner.max_copies for banner in BANNERS.values())
 MAX_PULLS = 2000
 
 MAX_LINK_LENGTH = 5000  # the whole error page text, link included, is about 1.5 kB
@@ -32,17 +32,30 @@ history_limiter = RateLimiter(limit=HISTORY_REQUESTS_PER_MINUTE, window=60)
 router = APIRouter(prefix="/api/wishes", tags=["wishes"])
 
 
+ForecastBanner = Literal["genshin_character", "starrail_character", "starrail_light_cone"]
+
+
 class ForecastQuery(BaseModel):
-    pity: int = Field(ge=0, lt=GENSHIN_CHARACTER.hard_pity, description="Pulls since the last 5★")
+    banner: ForecastBanner = "genshin_character"
+    pity: int = Field(ge=0, description="Pulls since the last 5★")
     guaranteed: bool = Field(description="The next 5★ is guaranteed to be the featured one")
     copies: int = Field(ge=1, le=MAX_COPIES, description="Featured copies wanted")
     pulls: int = Field(ge=0, le=MAX_PULLS, description="Pulls available")
+
+    @model_validator(mode="after")
+    def fits_the_banner(self) -> "ForecastQuery":
+        banner = BANNERS[self.banner]
+        if self.pity >= banner.hard_pity:
+            raise ValueError(f"pity must be below {banner.hard_pity} on this banner")
+        if self.copies > banner.max_copies:
+            raise ValueError(f"at most {banner.max_copies} copies on this banner")
+        return self
 
 
 @router.get("/forecast", dependencies=[Depends(limited(limiter))])
 def wish_forecast(query: Annotated[ForecastQuery, Query()]) -> Forecast:
     return forecast(
-        GENSHIN_CHARACTER,
+        BANNERS[query.banner],
         pity=query.pity,
         guaranteed=query.guaranteed,
         copies=query.copies,

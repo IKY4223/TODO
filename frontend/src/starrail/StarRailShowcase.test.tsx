@@ -24,6 +24,7 @@ const SHOWCASE: Showcase = {
       level: 80,
       eidolon: 0,
       light_cone: {
+        id: 21054,
         name: "The Story's Next Page",
         rarity: 4,
         level: 70,
@@ -33,6 +34,7 @@ const SHOWCASE: Showcase = {
       relics: [
         {
           slot: 'head',
+          set_id: 125,
           set_name: 'Warrior Goddess of Sun and Thunder',
           rarity: 5,
           level: 15,
@@ -45,6 +47,15 @@ const SHOWCASE: Showcase = {
           ],
           icon: `${ICONS}ItemIcon/RelicIcons/IconRelic_125_1.png`,
         },
+      ],
+      stats: [
+        { key: 'hp', value: 4926.3 },
+        { key: 'spd', value: 183.532 },
+        { key: 'crit_rate', value: 0.1893 },
+      ],
+      bases: [
+        { key: 'hp', value: 1500 },
+        { key: 'spd', value: 110 },
       ],
       skills: [
         { kind: 'basic', level: 5, bonus: 0 },
@@ -81,7 +92,7 @@ function load(respond: () => Promise<Response>): ReturnType<typeof vi.fn> {
 }
 
 // The term-value pairs of the <dl> that `term` belongs to.
-const pairs = (term: string): (string | null)[] => {
+const pairs = (term: string | RegExp): (string | null)[] => {
   const list = screen.getByText(term).closest('dl')
   return [...(list?.querySelectorAll('div') ?? [])].map((pair) => pair.textContent)
 }
@@ -115,6 +126,12 @@ test('leaves out what the player keeps private', async () => {
   await screen.findByRole('heading', { name: 'Trailblazer' })
   expect(screen.queryByText('Achievements')).toBeNull()
   expect(document.querySelector('.signature')).toBeNull()
+})
+
+test('shows final stats as the character screen does', async () => {
+  load(async () => Response.json(SHOWCASE))
+  await screen.findByText('Hyacine')
+  expect(pairs('4,926')).toEqual(['HP4,926', 'SPD183.5', 'CRIT Rate18.9%'])
 })
 
 test('shows skill levels with what eidolons add', async () => {
@@ -162,8 +179,10 @@ test('shows the showcase in Russian', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Загрузить персонажей' }))
   expect(await screen.findByText('Ур. 80 · E0 · Ветряной · Память')).toBeDefined()
   expect(fetchMock).toHaveBeenCalledWith('/api/starrail/showcase/700000001?lang=ru', expect.anything())
-  expect(rows('Голова: доп. статы')[1]).toBe('Скорость 12.1 ×5')
-  expect(screen.getByText('Реликвии (1) · оценка 4.6')).toBeDefined()
+  // Numbers in the Russian format too: a decimal comma, a space between thousands.
+  expect(rows('Голова: доп. статы')[1]).toBe('Скорость 12,1 ×5')
+  expect(screen.getByText('Реликвии (1) · оценка 4,6')).toBeDefined()
+  expect(pairs(/^4\s926$/)[0]).toMatch(/^HP4\s926$/)
 })
 
 test('opens a character page with skills at the player\'s levels and eidolons', async () => {

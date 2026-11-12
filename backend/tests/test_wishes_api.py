@@ -5,7 +5,7 @@ from app.main import app
 
 client = TestClient(app)
 URL = "/api/wishes/forecast"
-VALID = {"pity": 0, "guaranteed": True, "copies": 1, "pulls": 90}
+VALID: dict[str, str | int | bool] = {"pity": 0, "guaranteed": True, "copies": 1, "pulls": 90}
 
 
 def test_forecast_returns_probability_and_milestones() -> None:
@@ -25,9 +25,21 @@ def test_forecast_uses_every_parameter() -> None:
     assert 0 < body["probability"] < 1
 
 
+def test_star_rail_banners() -> None:
+    character = client.get(URL, params={**VALID, "banner": "starrail_character"}).json()
+    assert character == client.get(URL, params=VALID).json()  # the same rules as Genshin's
+    cone = {**VALID, "banner": "starrail_light_cone", "guaranteed": False, "pulls": 80}
+    body = client.get(URL, params=cone).json()
+    assert body["guaranteed_at"] == 160  # a lost 75/25 costs one more cycle of 80
+    assert 0.75 < body["probability"] < 1
+
+
 @pytest.mark.parametrize(
     "override",
     [
+        {"banner": "starrail_light_cone", "pity": 80},
+        {"banner": "starrail_light_cone", "copies": 6},
+        {"banner": "standard"},
         {"pity": -1},
         {"pity": 90},
         {"copies": 0},

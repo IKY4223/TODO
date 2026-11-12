@@ -20,7 +20,7 @@ afterEach(() => {
 function calculate(respond: () => Promise<Response>): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn(respond)
   vi.stubGlobal('fetch', fetchMock)
-  render(<WishForecast />)
+  render(<WishForecast game="genshin" />)
   fireEvent.change(screen.getByLabelText('Pulls since last 5★'), { target: { value: '10' } })
   fireEvent.click(screen.getByLabelText('Next 5★ is guaranteed'))
   fireEvent.change(screen.getByLabelText('Pulls available'), { target: { value: '80' } })
@@ -33,8 +33,29 @@ test('asks the API with the entered values', async () => {
   const fetchMock = calculate(async () => Response.json(FORECAST))
   await screen.findByText('43.2%')
   expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
-    '/api/wishes/forecast?pity=10&guaranteed=true&copies=2&pulls=80',
+    '/api/wishes/forecast?banner=genshin_character&pity=10&guaranteed=true&copies=2&pulls=80',
   ])
+})
+
+const targets = (): string[] =>
+  [...screen.getByLabelText<HTMLSelectElement>('Target').options].map((option) => option.text)
+
+test('Star Rail offers both warps, with light cones counted from S1 and pity up to 79', async () => {
+  const fetchMock = vi.fn(async () => Response.json(FORECAST))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<WishForecast game="starrail" />)
+  expect(targets()).toEqual(['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6'])
+  fireEvent.change(screen.getByLabelText('Banner'), { target: { value: 'starrail_light_cone' } })
+  expect(targets()).toEqual(['S1', 'S2', 'S3', 'S4', 'S5'])
+  expect(screen.getByLabelText('Pulls since last 5★').getAttribute('max')).toBe('79')
+  fireEvent.change(screen.getByLabelText('Pulls available'), { target: { value: '80' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Calculate' }))
+  await screen.findByText('43.2%')
+  expect(screen.getByRole('heading', { name: 'Warp forecast' })).toBeDefined()
+  expect(fetchMock).toHaveBeenCalledWith(
+    '/api/wishes/forecast?banner=starrail_light_cone&pity=0&guaranteed=false&copies=1&pulls=80',
+    expect.anything(),
+  )
 })
 
 test('shows the chance and the pulls needed for each milestone', async () => {

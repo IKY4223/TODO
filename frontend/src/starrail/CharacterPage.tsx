@@ -1,6 +1,6 @@
 import { type JSX, useEffect, useRef } from 'react'
 import { useRequest } from '../api/useRequest'
-import { useLanguage, useLocalized, useT } from '../i18n'
+import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
 import { Icon } from '../ui/Icon'
 import {
   type CharacterTexts,
@@ -12,7 +12,7 @@ import {
 import type { StarRailCharacter } from './starrail'
 
 const ICON_SIZE = 56
-const count = new Intl.NumberFormat('en')
+const count = numberFormat()
 
 function SkillItem(props: {
   readonly skill: SkillText

@@ -97,15 +97,57 @@ const RU = {
   'Vaporize / Melt ×1.5': 'Пар / Таяние ×1.5',
   'Vaporize / Melt ×2': 'Пар / Таяние ×2',
   'Wish forecast': 'Прогноз молитв',
+  'Honkai: Star Rail · limited warps': 'Honkai: Star Rail · лимитированные прыжки',
+  Banner: 'Баннер',
+  'Character Event Warp': 'Прыжок события: персонаж',
+  'Light Cone Event Warp': 'Прыжок события: световой конус',
+  Warps: 'Прыжки',
+  Speed: 'Скорость',
+  'Team speed': 'Скорость команды',
+  'Honkai: Star Rail · turns in Memory of Chaos: the first cycle lasts 150 action value, each later one 100.':
+    'Honkai: Star Rail · ходы в Зале забвения: первый цикл длится 150 ед. действия, каждый следующий 100.',
+  'Turns by cycle {cycle}': 'Ходов к концу цикла {cycle}',
+  'Without effects: one more turn in cycle 0 at {speed} SPD (+{missing})':
+    'Без эффектов: ещё один ход в цикле 0 при скорости {speed} (+{missing})',
+  Team: 'Команда',
+  'Effect values: skills at level 10, light cones at their superimposition. Skills are taken as used every turn.':
+    'Числа эффектов: навыки на 10 уровне, конусы по их наложению. Считается, что навык применяется каждый ход.',
+  'Ultimate every N turns': 'Сверхспособность раз в N ходов',
+  Never: 'Никогда',
+  'Chosen ally': 'Выбранный союзник',
+  'Effects in battle': 'Эффекты в бою',
+  'Turn order': 'Очередь ходов',
+  'Cycle {cycle}': 'Цикл {cycle}',
+  'Memosprite of {name}': 'Дух памяти: {name}',
+  'Summon of {name}': 'Призыв: {name}',
+  'At battle start': 'В начале боя',
+  'Every turn': 'Каждый ход',
+  'On Ultimate': 'При сверхспособности',
+  Always: 'Всегда',
+  "On the memosprite's turn": 'В ход духа памяти',
+  Self: 'Сам',
+  'All allies': 'Все союзники',
+  Teammates: 'Союзники',
+  'action advance +{value}': 'ускорение хода +{value}',
+  'SPD +{value}': 'скорость +{value}',
+  'lasts {turns} turn(s)': 'ходов: {turns}',
+  'SPD at least {spd}': 'скорость от {spd}',
+  'at SPD {tiers}': 'при скорости от {tiers}',
+  'below SPD {tiers}': 'при скорости ниже {tiers}',
+  'Stats with the effects switched on. Effects that depend on SPD switch on by themselves.':
+    'Статы с включёнными эффектами. Эффекты, зависящие от скорости, включаются сами.',
+  'Load your characters in Builds to see their turns.':
+    'Загрузите персонажей в «Билдах», чтобы увидеть их ходы.',
+  'Warp forecast': 'Прогноз прыжков',
   'Genshin Impact · limited character banner': 'Genshin Impact · баннер лимитированного персонажа',
-  'Pulls since last 5★': 'Молитв после последнего 5★',
+  'Pulls since last 5★': 'Круток после последнего 5★',
   'Next 5★ is guaranteed': 'Следующий 5★ гарантирован',
-  'Pulls available': 'Доступно молитв',
+  'Pulls available': 'Доступно круток',
   Target: 'Цель',
   'Could not calculate: {reason}': 'Не удалось рассчитать: {reason}',
   'chance to reach your target': 'шанс получить цель',
-  'Pulls needed': 'Сколько нужно молитв',
-  Pulls: 'Молитвы',
+  'Pulls needed': 'Сколько нужно круток',
+  Pulls: 'Крутки',
   'Wish history': 'История молитв',
   'Genshin Impact · global servers · saved only on this device':
     'Genshin Impact · глобальные серверы · хранится только на этом устройстве',
@@ -313,6 +355,22 @@ export const translate = (
     (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
     language === 'ru' ? RU[message] : message,
   )
+
+export interface NumberFormat {
+  readonly format: (value: number) => string
+}
+
+/** Like Intl.NumberFormat, in the language chosen when `format` is called: 1 825 000 in Russian. */
+export function numberFormat(options: Intl.NumberFormatOptions = {}): NumberFormat {
+  const formats = new Map<Language, Intl.NumberFormat>()
+  return {
+    format: (value) => {
+      const format = formats.get(current) ?? new Intl.NumberFormat(current, options)
+      formats.set(current, format)
+      return format.format(value)
+    },
+  }
+}
 
 export const useLanguage = (): Language => useSyncExternalStore(subscribe, () => current)
 

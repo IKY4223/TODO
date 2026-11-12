@@ -1,6 +1,6 @@
 import { getJson, isArrayOf, isKeyOf, isNumber, isRecord, isString } from '../api/http'
 import type { components } from '../api/schema'
-import type { Message, Translate } from '../i18n'
+import { numberFormat, type Message, type Translate } from '../i18n'
 
 type Schemas = components['schemas']
 export type Showcase = Schemas['Showcase']
@@ -58,8 +58,8 @@ export const ELEMENTS = {
 
 const SHOWCASE_URL = '/api/showcase'
 
-const whole = new Intl.NumberFormat('en', { maximumFractionDigits: 0 })
-const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 })
+const whole = numberFormat({ maximumFractionDigits: 0 })
+const percent = numberFormat({ style: 'percent', maximumFractionDigits: 1 })
 
 export const formatValue = ({ key, value }: Stat): string =>
   (STATS[key].percent ? percent : whole).format(value)

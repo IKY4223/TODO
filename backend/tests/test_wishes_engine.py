@@ -3,6 +3,7 @@ from collections import defaultdict
 import pytest
 
 from app.wishes.engine import (
+    BANNERS,
     GENSHIN_CHARACTER,
     MILESTONE_CHANCES,
     Banner,
@@ -98,7 +99,9 @@ def test_success_is_certain_at_the_worst_case_pull_count(
 
 
 def test_rate_never_exceeds_certainty_on_a_steep_banner() -> None:
-    steep = Banner(base_rate=0.5, soft_pity=2, rate_step=0.4, hard_pity=10, featured_rate=0.5)
+    steep = Banner(
+        base_rate=0.5, soft_pity=2, rate_step=0.4, hard_pity=10, featured_rate=0.5, max_copies=7
+    )
     assert five_star_rate(steep, 3) == 1.0
     distribution = pull_distribution(steep, pity=0, guaranteed=True, copies=1)
     assert min(distribution) >= 0
@@ -138,3 +141,15 @@ def test_each_milestone_is_the_first_pull_count_reaching_its_chance(
     for milestone in milestones:
         assert chance(milestone.pulls) >= milestone.chance
         assert chance(milestone.pulls - 1) < milestone.chance
+
+
+@pytest.mark.parametrize(
+    ("name", "published"),
+    [("genshin_character", 0.016), ("starrail_character", 0.016), ("starrail_light_cone", 0.0187)],
+)
+def test_soft_pity_reproduces_the_published_consolidated_rate(name: str, published: float) -> None:
+    """The ramp is an estimate; the consolidated rate (one 5-star per N pulls) is published."""
+    banner = BANNERS[name]
+    chances = pull_distribution(banner, pity=0, guaranteed=True, copies=1)
+    pulls_per_five_star = sum(pulls * chance for pulls, chance in enumerate(chances))
+    assert 1 / pulls_per_five_star == pytest.approx(published, abs=0.0002)

@@ -1,7 +1,8 @@
-"""Exact odds of pulling a featured 5-star from a limited character banner.
+"""Exact odds of pulling a featured 5-star from a limited banner.
 
-HoYoverse publishes the base rate, the hard pity and the 1.6% consolidated rate.
-The soft pity ramp is a community estimate that reproduces that consolidated rate.
+HoYoverse publishes each banner's base rate, hard pity, consolidated rate and featured rate
+on the game's banner details page. The soft pity ramps are community estimates, chosen so that
+they reproduce the published consolidated rate.
 """
 
 from bisect import bisect_left
@@ -17,6 +18,7 @@ class Banner:
     rate_step: float  # added to the rate on every pull from soft pity on
     hard_pity: int  # this pull is always a 5-star
     featured_rate: float  # chance that a 5-star without a guarantee is the featured one
+    max_copies: int  # copies worth having: C0 to C6 is 7, S1 to S5 is 5
 
 
 @dataclass(frozen=True)
@@ -35,8 +37,22 @@ class Forecast:
 # shortcut: Capturing Radiance (5.0+) is not modelled, so real odds are slightly better;
 # model it once its trigger rule is confirmed.
 GENSHIN_CHARACTER = Banner(
-    base_rate=0.006, soft_pity=74, rate_step=0.06, hard_pity=90, featured_rate=0.5
+    base_rate=0.006, soft_pity=74, rate_step=0.06, hard_pity=90, featured_rate=0.5, max_copies=7
 )
+# Published: 0.6% base, 1.6% consolidated, a 5-star within 90, 50% featured. The same ramp
+# as Genshin's reproduces it.
+STAR_RAIL_CHARACTER = Banner(
+    base_rate=0.006, soft_pity=74, rate_step=0.06, hard_pity=90, featured_rate=0.5, max_copies=7
+)
+# Published: 0.8% base, 1.87% consolidated, a 5-star within 80, 75% featured.
+STAR_RAIL_LIGHT_CONE = Banner(
+    base_rate=0.008, soft_pity=66, rate_step=0.07, hard_pity=80, featured_rate=0.75, max_copies=5
+)
+BANNERS = {
+    "genshin_character": GENSHIN_CHARACTER,
+    "starrail_character": STAR_RAIL_CHARACTER,
+    "starrail_light_cone": STAR_RAIL_LIGHT_CONE,
+}
 
 MILESTONE_CHANCES = (0.5, 0.9, 0.99)
 

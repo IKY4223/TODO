@@ -17,6 +17,8 @@ const MIN_CONTROLS_ON_SCREEN = 10
 const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
+const MIN_FORECAST_CONTROLS = 10 // banner, pity, pulls, target, button and the navigation
+const MIN_SPEED_CONTROLS = 9 // the navigation, Ultimate choices and March 7th's chosen ally
 const MIN_PAGE_CONTROLS = 6 // the UID field, its button and the navigation
 const MIN_RELIC_CONTROLS = 19 // 9 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
@@ -82,11 +84,44 @@ test('explains why an import failed', async ({ page }) => {
 
 test('forecasts wishes', async ({ page }) => {
   await page.getByRole('link', { name: 'Wishes' }).click()
-  await page.getByLabel('Pulls since last 5★').fill('10')
-  await page.getByLabel('Pulls available').fill('80')
-  await page.getByRole('button', { name: 'Calculate', exact: true }).click()
+  await shown(page).getByLabel('Pulls since last 5★').fill('10')
+  await shown(page).getByLabel('Pulls available').fill('80')
+  await shown(page).getByRole('button', { name: 'Calculate', exact: true }).click()
   await expect(page.getByText('56.9%')).toBeVisible()
   await expect(page.getByRole('row', { name: '100% 170' })).toBeVisible()
+  expect(problems).toEqual([])
+})
+
+test('forecasts Star Rail light cone warps', async ({ page }) => {
+  await page.goto('/#starrail/warps')
+  const tool = shown(page)
+  await tool.getByLabel('Banner').selectOption('starrail_light_cone')
+  await tool.getByLabel('Pulls available').fill('160')
+  await tool.getByRole('button', { name: 'Calculate', exact: true }).click()
+  // 160 pulls cover a lost 75/25 and the guaranteed light cone after it.
+  await expect(tool.getByText('100%').first()).toBeVisible()
+  await expect(tool.getByRole('row', { name: '100% 160' })).toBeVisible()
+  expectPhoneFriendly(await measureLayout(page), MIN_FORECAST_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('shows final stats and plans team speed from the loaded showcase', async ({ page }) => {
+  await page.getByRole('link', { name: 'Star Rail' }).click()
+  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine').getByText('SPD', { exact: true }).first()).toBeVisible()
+  // Hyacine's relics include the Warrior Goddess set: its SPD bonus is offered as a switch.
+  await card(page, 'Hyacine').getByText(/Warrior Goddess of Sun and Thunder \(4\)/).click()
+  await page.getByRole('link', { name: 'Speed' }).click()
+  const tool = shown(page)
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveText(['Hyacine', 'March 7th', 'Turn order'])
+  await expect(tool.getByText(/^Without effects: one more turn in cycle 0 at \d+\.\d SPD/)).toHaveCount(2)
+  await expect(tool.locator('.timeline li').first()).toContainText('Cycle 0')
+  await tool.getByLabel('Ultimate every N turns').first().selectOption('1')
+  await expect(tool.locator('.timeline li').first()).toContainText('Ultimate')
+  expectPhoneFriendly(await measureLayout(page), MIN_SPEED_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   expect(problems).toEqual([])
 })
 
@@ -156,9 +191,9 @@ test('has no accessibility violations in either tool', async ({ page }) => {
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 
   await page.getByRole('link', { name: 'Wishes' }).click()
-  await page.getByLabel('Pulls available').fill('80')
-  await page.getByRole('button', { name: 'Calculate', exact: true }).click()
-  await expect(page.getByRole('table')).toBeVisible()
+  await shown(page).getByLabel('Pulls available').fill('80')
+  await shown(page).getByRole('button', { name: 'Calculate', exact: true }).click()
+  await expect(shown(page).getByRole('table')).toBeVisible()
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
 
@@ -207,7 +242,7 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
   await expect(hyacine.getByText(/SPD 12\.1 ×5/)).toBeVisible()
   const march = card(page, 'March 7th')
   await expect(march.getByText(/E6 · Imaginary · The Hunt/)).toBeVisible()
-  await expect(march.locator('dl > div')).toHaveText([
+  await expect(march.locator('dl:has-text("Basic ATK") > div')).toHaveText([
     'Basic ATK7 (+1)',
     'Skill11 (+2)',
     'Ultimate10 (+2)',
@@ -309,6 +344,8 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
     'Март 7',
   ])
   await expect(card(page, 'Гиацина').getByText('Ур. 80 · E0 · Ветряной · Память')).toBeVisible()
+  // Russian labels run longer than English ones: the loaded showcase must still fit.
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   await page.reload()
   await expect(page.getByLabel('Язык')).toHaveValue('ru')
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
