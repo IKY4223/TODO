@@ -29,7 +29,8 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - Work on a branch and open a pull request into `main`; the owner merges it.
 - Before starting a stage, write the plan for the owner: what will be built, in what order, and
   what is left out. Plan several features per stage, not one.
-- The owner is on a Pro plan: do the work in this session; start subagents only when asked.
+- The owner prefers quality to saving limits: use subagents where they help (an independent
+  review of a diff, wide searches, reading large sources) and do the rest in this session.
 - When the owner is wrong about a fact, a tool or a plan, say so plainly, with the reason, before
   doing the work.
 - Before planning a stage, check which installed skills and plugins, and which ones in the plugin
