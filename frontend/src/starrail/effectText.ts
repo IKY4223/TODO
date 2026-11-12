@@ -54,16 +54,26 @@ const TARGETS = {
   allies: 'All allies',
   teammates: 'Teammates',
   chosen: 'Chosen ally',
+  summons: 'Own summon',
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
 /** "On Ultimate · All allies: SPD +12% · lasts 1 turn(s)" */
 export function turnEffectText(effect: TurnEffect, value: number, t: Translate): string {
-  const amount = effect.kind === 'spd' ? plain.format(value) : percent.format(value)
-  const what =
-    effect.kind === 'advance'
-      ? t('action advance +{value}', { value: amount })
-      : t('SPD +{value}', { value: amount })
-  const lasting = effect.turns ? ` · ${t('lasts {turns} turn(s)', { turns: effect.turns })}` : ''
-  const needs = effect.minSpd ? ` · ${t('SPD at least {spd}', { spd: effect.minSpd })}` : ''
-  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${lasting}${needs}`
+  const amount = ['spd', 'summon'].includes(effect.kind) ? plain.format(value) : percent.format(value)
+  const what = {
+    advance: t('action advance +{value}', { value: amount }),
+    spd: t('SPD +{value}', { value: amount }),
+    spd_percent: t('SPD +{value}', { value: amount }),
+    summon: t('comes in with {value} action(s)', { value: amount }),
+  }[effect.kind]
+  const notes = [
+    effect.turns ? t('lasts {turns} turn(s)', { turns: effect.turns }) : '',
+    effect.untilSummonLeaves ? t('until its countdown acts') : '',
+    effect.withoutSummon ? t('outside its state') : '',
+    effect.minSpd ? t('SPD at least {spd}', { spd: effect.minSpd }) : '',
+  ]
+    .filter(Boolean)
+    .map((note) => ` · ${note}`)
+    .join('')
+  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${notes}`
 }

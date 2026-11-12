@@ -84,4 +84,13 @@ test('describes turn effects', () => {
   expect(turnEffectText(turn('mem-skill-8'), 1, t)).toBe(
     "On the memosprite's turn · Chosen ally: action advance +100%",
   )
+  expect(turnEffectText(turn('lingsha-skill-summon'), 3, t)).toBe(
+    'Every turn · Own summon: comes in with 3 action(s)',
+  )
+  expect(turnEffectText(turn('firefly-spd'), 60, t)).toBe(
+    'On Ultimate · Self: SPD +60 · until its countdown acts',
+  )
+  expect(turnEffectText(turn('firefly-skill'), 0.25, t)).toBe(
+    'Every turn · Self: action advance +25% · outside its state',
+  )
 })

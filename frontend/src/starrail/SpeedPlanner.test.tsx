@@ -110,3 +110,16 @@ test("an effect counted from the source's SPD, and one that waits to be switched
   // 120 SPD from the first moment: the first turn comes at 83.3 instead of 100.
   expect(timeline()).toContain('83.3 · Sushang')
 })
+
+test("Firefly's Complete Combustion ends on its countdown's turn", () => {
+  show([character(1310, 'Firefly', 100)])
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '1' } })
+  // Skill advance 25% at 100, then the Ultimate: advance 100%, SPD 160, countdown at SPD 70.
+  expect(timeline().slice(0, 5)).toEqual([
+    'Cycle 0100.0 · Firefly · Ultimate',
+    '100.0 · Firefly',
+    'Cycle 1162.5 · Firefly',
+    '225.0 · Firefly',
+    '242.9 · Countdown of Firefly',
+  ])
+})

@@ -104,13 +104,14 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
 ]
 
 export type Trigger = 'start' | 'turn' | 'ultimate' | 'always' | 'summon'
-export type Target = 'self' | 'allies' | 'teammates' | 'chosen'
+export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' // summons: the source's own
 
 /** What an effect does to the turn order. */
 export interface TurnEffect {
   readonly id: string
   readonly source: Source
-  readonly kind: 'advance' | 'spd_percent' | 'spd'
+  // summon: brings the source's summons in with `values` actions, or adds them if already there.
+  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon'
   readonly values: readonly number[] // one, or one per superimposition for a light cone
   readonly trigger: Trigger
   readonly target: Target
@@ -119,6 +120,8 @@ export interface TurnEffect {
   readonly withSummons?: boolean // the target's summons too
   readonly off?: boolean // starts switched off: how the character is played decides it
   readonly ofSourceSpd?: boolean // the value is a share of the source's own SPD
+  readonly untilSummonLeaves?: boolean // the buff ends when the source's summon leaves
+  readonly withoutSummon?: boolean // works only while the source's summon is away
 }
 
 // "Every turn" assumes the Skill is used every turn, "On Ultimate" the Ultimate every few turns.
@@ -207,7 +210,15 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'chosen',
     turns: 3,
   },
-  // Complete Combustion is taken to last once entered; its countdown is not modelled.
+  {
+    id: 'firefly-skill',
+    source: { character: 1310 },
+    kind: 'advance',
+    values: [0.25],
+    trigger: 'turn',
+    target: 'self',
+    withoutSummon: true, // the Enhanced Skill of Complete Combustion has no advance
+  },
   {
     id: 'firefly-advance',
     source: { character: 1310 },
@@ -223,6 +234,94 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [60],
     trigger: 'ultimate',
     target: 'self',
+    untilSummonLeaves: true, // Complete Combustion ends on the countdown's turn
+  },
+  {
+    id: 'firefly-countdown',
+    source: { character: 1310 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  // Lightning-Lord: each Hit Per Action adds SPD 10 for its next turn.
+  {
+    id: 'jing-yuan-skill',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [20],
+    trigger: 'turn',
+    target: 'summons',
+    turns: 1,
+  },
+  {
+    id: 'jing-yuan-ultimate',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [30],
+    trigger: 'ultimate',
+    target: 'summons',
+    turns: 1,
+  },
+  {
+    id: 'jing-yuan-technique',
+    source: { character: 1204 },
+    kind: 'spd',
+    values: [30],
+    trigger: 'start',
+    target: 'summons',
+    turns: 1,
+    off: true,
+  },
+  {
+    id: 'lingsha-skill-summon',
+    source: { character: 1222 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'turn',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-skill',
+    source: { character: 1222 },
+    kind: 'advance',
+    values: [0.2],
+    trigger: 'turn',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-ultimate',
+    source: { character: 1222 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  {
+    id: 'lingsha-technique',
+    source: { character: 1222 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'start',
+    target: 'summons',
+    off: true,
+  },
+  {
+    id: 'castorice-ultimate',
+    source: { character: 1407 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  {
+    id: 'castorice-technique',
+    source: { character: 1407 },
+    kind: 'summon',
+    values: [3],
+    trigger: 'start',
+    target: 'summons',
+    off: true,
   },
   {
     id: 'seele-skill',
@@ -415,23 +514,29 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
   },
 ]
 
-/** A summon or memosprite that takes its own turns. */
+/** A summon, memosprite or countdown that takes its own turns. */
 export interface Summon {
   readonly owner: number
-  readonly kind: 'memosprite' | 'summon'
+  readonly kind: 'memosprite' | 'summon' | 'countdown'
   readonly spd: number
   readonly ofOwner?: boolean // `spd` is a share of the owner's SPD
+  readonly later?: boolean // away until an effect brings it in
+  readonly arrival?: number // the action advance it gets each time it is brought in
+  readonly maxActions?: number
+  readonly maxSpd?: number
+  readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
 }
 
-// shortcut: every summon is on the field from the start of battle and keeps its SPD; summons that
-// arrive later (Netherwing on Castorice's Ultimate, Fuyuan on Lingsha's Skill), Fuyuan's 3-turn
-// limit and Lightning-Lord's SPD gains are not modelled.
+// shortcut: summons keep the SPD and action count the game gives them, past the effects in
+// TURN_EFFECTS; Netherwing leaving early when its HP runs out is not modelled.
 export const SUMMONS: readonly Summon[] = [
   { owner: 1112, kind: 'summon', spd: 80 }, // Numby
-  { owner: 1204, kind: 'summon', spd: 60 }, // Lightning-Lord
-  { owner: 1222, kind: 'summon', spd: 90 }, // Fuyuan
+  { owner: 1204, kind: 'summon', spd: 60, maxSpd: 130 }, // Lightning-Lord, up to 10 hits
+  { owner: 1222, kind: 'summon', spd: 90, later: true, maxActions: 5 }, // Fuyuan
+  { owner: 1310, kind: 'countdown', spd: 70, later: true, blocksUltimate: true }, // Combustion
   { owner: 1414, kind: 'summon', spd: 165 }, // Souldragon
-  { owner: 1407, kind: 'memosprite', spd: 165 }, // Netherwing
+  // Netherwing: Newbud, which fills Castorice's Ultimate, does not grow while it is here.
+  { owner: 1407, kind: 'memosprite', spd: 165, later: true, arrival: 1, blocksUltimate: true },
   { owner: 1413, kind: 'memosprite', spd: 160 }, // Evey
   { owner: 1402, kind: 'memosprite', spd: 0.35, ofOwner: true }, // Garmentmaker
   { owner: 8007, kind: 'memosprite', spd: 130 }, // Mem

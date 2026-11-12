@@ -43,6 +43,8 @@ const toUnit = ({ effect, value }: ReturnType<typeof effectsOf>[number]): UnitEf
   target: effect.target,
   turns: effect.turns,
   withSummons: effect.withSummons,
+  untilSummonLeaves: effect.untilSummonLeaves,
+  withoutSummon: effect.withoutSummon,
   value,
 })
 
@@ -73,6 +75,12 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
         owner: unit.key,
         ultimateEvery: 0,
         effects: active.filter(({ effect }) => effect.trigger === 'summon').map(toUnit),
+        later: summon.later,
+        arrival: summon.arrival,
+        maxActions: summon.maxActions,
+        maxSpd: summon.maxSpd,
+        blocksUltimate: summon.blocksUltimate,
+        timer: summon.kind === 'countdown',
       }
     })
     return [unit, ...summons]
@@ -114,9 +122,12 @@ export function SpeedPlanner(): JSX.Element {
     if (!character) return key
     if (!key.endsWith(SUMMON)) return character.name
     const kind = SUMMONS.find(({ owner }) => owner === character.id)?.kind
-    return kind === 'memosprite'
-      ? t('Memosprite of {name}', { name: character.name })
-      : t('Summon of {name}', { name: character.name })
+    const names = {
+      memosprite: 'Memosprite of {name}',
+      summon: 'Summon of {name}',
+      countdown: 'Countdown of {name}',
+    } as const
+    return t(names[kind ?? 'summon'], { name: character.name })
   }
 
   return (
@@ -253,13 +264,13 @@ export function SpeedPlanner(): JSX.Element {
           </ul>
           <h3>{t('Turn order')}</h3>
           <ol className="timeline">
-            {actions.map(({ time, unit, ultimate }, index) => {
+            {actions.map(({ time, unit, ultimate, turn }, index) => {
               const cycle = CYCLE_ENDS.findIndex((end) => time <= end)
               const starts =
                 index === 0 ||
                 cycle !== CYCLE_ENDS.findIndex((end) => (actions[index - 1]?.time ?? 0) <= end)
               return (
-                <li key={`${unit}@${time}`} className={starts ? 'cycle-start' : undefined}>
+                <li key={`${unit}#${turn}`} className={starts ? 'cycle-start' : undefined}>
                   {starts ? <strong>{t('Cycle {cycle}', { cycle })}</strong> : null}
                   <span>
                     {speed.format(time)} · {nameOf(unit)}
