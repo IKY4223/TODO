@@ -64,12 +64,30 @@ const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 
 const MENU = 'menu'
 const CLOSE_KEY = 'Escape'
+// From this width the menu stays open beside the page and the tabs go.
+const WIDE = '(min-width: 64rem)'
+
+const wideQuery = (): MediaQueryList | undefined =>
+  typeof window.matchMedia === 'function' ? window.matchMedia(WIDE) : undefined
+
+function useWide(): boolean {
+  const [wide, setWide] = useState(() => wideQuery()?.matches ?? false)
+  useEffect(() => {
+    const query = wideQuery()
+    if (!query) return undefined
+    const update = (): void => setWide(query.matches)
+    query.addEventListener('change', update)
+    return (): void => query.removeEventListener('change', update)
+  }, [])
+  return wide
+}
 
 function App(): JSX.Element {
   const here = locate(useAddress())
   const t = useT()
   const language = useLanguage()
   const [open, setOpen] = useState(false)
+  const wide = useWide()
 
   useEffect(() => {
     if (!open) return undefined
@@ -80,26 +98,44 @@ function App(): JSX.Element {
     return (): void => document.removeEventListener('keydown', closeOnEscape)
   }, [open])
 
+  const menu = games.map((game) => (
+    <nav key={game} aria-label={GAMES[game].label}>
+      <h2>{GAMES[game].label}</h2>
+      {toolsOf(game).map((tool) => (
+        <a
+          key={tool}
+          href={href(game, tool)}
+          aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
+          onClick={() => setOpen(false)}
+        >
+          {t(toolEntry(game, tool)?.label ?? 'Tools')}
+        </a>
+      ))}
+    </nav>
+  ))
+
   return (
     <>
       <header className="bar">
-        <button
-          type="button"
-          className="icon"
-          aria-label={t('Menu')}
-          aria-expanded={open}
-          aria-controls={MENU}
-          onClick={() => setOpen(!open)}
-        >
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            <path
-              d="M4 7h16M4 12h16M4 17h16"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        {wide ? null : (
+          <button
+            type="button"
+            className="icon"
+            aria-label={t('Menu')}
+            aria-expanded={open}
+            aria-controls={MENU}
+            onClick={() => setOpen(!open)}
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        )}
         <div className="brand">
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{GAMES[here.game].label}</span>
@@ -119,24 +155,14 @@ function App(): JSX.Element {
           ))}
         </select>
       </header>
-      {open ? (
+      {wide ? (
+        <aside className="sidebar" aria-label={t('Menu')}>
+          {menu}
+        </aside>
+      ) : open ? (
         <>
           <div id={MENU} className="drawer">
-            {games.map((game) => (
-              <nav key={game} aria-label={GAMES[game].label}>
-                <h2>{GAMES[game].label}</h2>
-                {toolsOf(game).map((tool) => (
-                  <a
-                    key={tool}
-                    href={href(game, tool)}
-                    aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
-                    onClick={() => setOpen(false)}
-                  >
-                    {t(toolEntry(game, tool)?.label ?? 'Tools')}
-                  </a>
-                ))}
-              </nav>
-            ))}
+            {menu}
           </div>
           <button
             type="button"
@@ -147,17 +173,19 @@ function App(): JSX.Element {
         </>
       ) : null}
       <main>
-        <nav className="tabs" aria-label={t('Tools')}>
-          {toolsOf(here.game).map((tool) => (
-            <a
-              key={tool}
-              href={href(here.game, tool)}
-              aria-current={tool === here.tool ? 'page' : undefined}
-            >
-              {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
-            </a>
-          ))}
-        </nav>
+        {wide ? null : (
+          <nav className="tabs" aria-label={t('Tools')}>
+            {toolsOf(here.game).map((tool) => (
+              <a
+                key={tool}
+                href={href(here.game, tool)}
+                aria-current={tool === here.tool ? 'page' : undefined}
+              >
+                {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
+              </a>
+            ))}
+          </nav>
+        )}
         {games.flatMap((game) =>
           toolsOf(game).map((tool) => (
             // Hidden, not unmounted: a loaded showcase or forecast survives switching tools.

@@ -21,14 +21,19 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   bonus depends on SPD switch on by themselves. The Speed tool lays out the turn order of a team
   of four through Memory of Chaos cycles 0 to 2, with speed buffs, action advance, Ultimates on a
   chosen beat and summons taking their own turns, from a table of popular supports, light cones
-  and sets with the numbers from the game's texts.
+  and sets with the numbers from the game's texts. Summons come when the game brings them in
+  and leave when their actions run out (Netherwing, Fuyuan), Lightning-Lord speeds up with its
+  hits, and Firefly's Complete Combustion ends on its countdown's turn. Sets that raise all
+  allies' stats (Fleet of the Ageless, Broken Keel) count on the wearer by its own stats and on
+  the others by a switch.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
-  current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets.
+  current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets. On a
+  wide screen the menu stays open beside the page in place of the tabs.
 - **Languages** — English and Russian, with numbers in each language's format. Star Rail
   numbers are cut off the way the game prints them, not rounded.
 - **Genshin builds** — enter a UID and see every character in the player's showcase: final
@@ -52,26 +57,24 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 Planned, in order:
 
 1. Star Rail effects, the rest of the table:
-   - characters whose effect depends on a state or on the team (Jingliu, Mydei, Pearl, Lingsha's
-     Fuyuan) and effects that Eidolons add;
+   - characters whose effect depends on a state or on the team (Jingliu's Spectral
+     Transmigration, Mydei's Vendetta, Pearl's count of Elation teammates) and effects that
+     Eidolons add;
    - effects at the player's own skill levels instead of level 10;
-   - summons that arrive later (Netherwing, Fuyuan) or change SPD (Lightning-Lord), and
-     Firefly's Complete Combustion countdown;
-   - Ultimates timed by energy instead of a fixed beat;
-   - enemy turns and slows;
-   - team-wide stat effects (Fleet of the Ageless, Broken Keel) in final stats.
-2. Design: a sidebar in place of the menu on wide screens.
-3. Telegram: a bot and a Telegram Mini App, since a free host for the site is not settled yet.
+   - enemy turns and slows (Welt, Boothill, Dan Heng), with the enemy's SPD typed in;
+   - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
+     which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
+2. Telegram: a bot and a Telegram Mini App, since a free host for the site is not settled yet.
    The bot answers by long polling, so it needs no public address and can run on any machine;
    it reuses the backend's code (showcase, relic advisor, forecasts) rather than calling the
    site. The Mini App opens the site inside Telegram and needs the site hosted over HTTPS first.
-4. Share a build: a link that opens a character's page for anyone.
-5. A light theme beside the dark one.
-6. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+3. Share a build: a link that opens a character's page for anyone.
+4. A light theme beside the dark one.
+5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-7. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+6. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-8. Zenless Zone Zero: undecided.
+7. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source

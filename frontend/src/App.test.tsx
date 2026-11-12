@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test } from 'vitest'
 import App from './App'
 
@@ -103,4 +103,28 @@ test('switches to Russian and remembers it', () => {
   expect(localStorage.getItem('language')).toBe('ru')
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
   expect(screen.getByRole('button', { name: 'Menu' })).toBeDefined()
+})
+
+test('on a wide screen the menu stays open beside the page in place of the tabs', () => {
+  const listeners = new Set<() => void>()
+  const query = {
+    matches: true,
+    addEventListener: (_: string, listener: () => void) => listeners.add(listener),
+    removeEventListener: (_: string, listener: () => void) => listeners.delete(listener),
+  }
+  window.matchMedia = (() => query) as unknown as typeof window.matchMedia
+  try {
+    const { unmount } = render(<App />)
+    expect(screen.queryByRole('button', { name: 'Menu' })).toBeNull()
+    expect(screen.queryByRole('navigation', { name: 'Tools' })).toBeNull()
+    const sidebar = screen.getByRole('complementary', { name: 'Menu' })
+    expect(within(sidebar).getByRole('navigation', { name: 'Genshin' })).toBeDefined()
+    query.matches = false
+    for (const listener of listeners) act(listener)
+    expect(screen.getByRole('button', { name: 'Menu' })).toBeDefined()
+    unmount()
+    expect(listeners.size).toBe(0)
+  } finally {
+    Reflect.deleteProperty(window, 'matchMedia')
+  }
 })

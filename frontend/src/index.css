@@ -92,12 +92,14 @@ button.icon {
   animation: slide-in 180ms ease-out;
 }
 
-.drawer nav {
+.drawer nav,
+.sidebar nav {
   display: grid;
   gap: 0.25rem;
 }
 
-.drawer h2 {
+.drawer h2,
+.sidebar h2 {
   margin: 0 0 0.25rem;
   color: var(--color-muted-foreground);
   font-size: 0.8125rem;
@@ -105,10 +107,32 @@ button.icon {
   text-transform: uppercase;
 }
 
-.drawer a {
+.drawer a,
+.sidebar a {
   justify-content: start;
   padding: 0 0.75rem;
   border-color: transparent;
+}
+
+/* On a wide screen the menu stays beside the page, and the page keeps to the middle of what is left. */
+.sidebar {
+  position: fixed;
+  inset: var(--bar-height) auto 0 0;
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  width: 16rem;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+@media (min-width: 64rem) {
+  main {
+    margin-left: max(17rem, calc(50% - 20rem));
+  }
 }
 
 button.backdrop {

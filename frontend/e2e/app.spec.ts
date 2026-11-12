@@ -52,7 +52,10 @@ async function loadShowcase(page: Page, uid = UID): Promise<void> {
 /** Through the menu, as a player would: from the Genshin tool the tests start on to Star Rail. */
 async function openStarRail(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Menu' }).click()
-  await page.getByRole('navigation', { name: 'Star Rail' }).getByRole('link', { name: 'Builds' }).click()
+  await page
+    .getByRole('navigation', { name: 'Star Rail' })
+    .getByRole('link', { name: 'Builds' })
+    .click()
   // Until the switch renders, the Genshin tool is still the one on screen.
   await expect(page.getByRole('banner').getByTestId('game')).toHaveText('Star Rail')
   await expect(page.getByRole('button', { name: 'Menu' })).toHaveAttribute('aria-expanded', 'false')
@@ -120,11 +123,24 @@ test('shows final stats and plans team speed from the loaded showcase', async ({
   await loadShowcase(page)
   await expect(card(page, 'Hyacine').getByText('SPD', { exact: true }).first()).toBeVisible()
   // Hyacine's relics include the Warrior Goddess set: its SPD bonus is offered as a switch.
-  await card(page, 'Hyacine').getByText(/Warrior Goddess of Sun and Thunder \(4\)/).click()
+  await card(page, 'Hyacine')
+    .getByText(/Warrior Goddess of Sun and Thunder \(4\)/)
+    .click()
+  // A teammate's Fleet of the Ageless raises ATK by 8% of the base.
+  const atk = card(page, 'Hyacine').locator('dt', { hasText: /^ATK$/ }).locator('+ dd')
+  const before = await atk.textContent()
+  await card(page, 'Hyacine').getByText('Fleet of the Ageless on a teammate').click()
+  await expect(atk).not.toHaveText(before ?? '')
   await page.getByRole('link', { name: 'Speed' }).click()
   const tool = shown(page)
-  await expect(tool.getByRole('heading', { level: 3 })).toHaveText(['Hyacine', 'March 7th', 'Turn order'])
-  await expect(tool.getByText(/^Without effects: one more turn in cycle 0 at \d+\.\d SPD/)).toHaveCount(2)
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveText([
+    'Hyacine',
+    'March 7th',
+    'Turn order',
+  ])
+  await expect(
+    tool.getByText(/^Without effects: one more turn in cycle 0 at \d+\.\d SPD/),
+  ).toHaveCount(2)
   await expect(tool.locator('.timeline li').first()).toContainText('Cycle 0')
   await tool.getByLabel('Ultimate every N turns').first().selectOption('1')
   await expect(tool.locator('.timeline li').first()).toContainText('Ultimate')
@@ -172,7 +188,10 @@ async function measureLayout(page: Page): Promise<Layout> {
       tooSmall: controls
         .map((control) => ({ control, height: control.getBoundingClientRect().height }))
         .filter(({ height }) => height < minHeight)
-        .map(({ control, height }) => `${control.tagName} "${control.textContent.trim()}" is ${height}px`),
+        .map(
+          ({ control, height }) =>
+            `${control.tagName} "${control.textContent.trim()}" is ${height}px`,
+        ),
       smallestInputFont: Math.min(
         ...controls
           .filter((control) => control.matches('input, select, textarea'))
@@ -205,13 +224,17 @@ test('has no accessibility violations in either tool', async ({ page }) => {
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
 
-test('imports wish history from the text Android shows and keeps it on the device', async ({ page }) => {
+test('imports wish history from the text Android shows and keeps it on the device', async ({
+  page,
+}) => {
   test.setTimeout(IMPORT_TIMEOUT_MS * 2)
   await page.getByRole('link', { name: 'History' }).click()
   await page.getByLabel('Text from the error page').fill(ANDROID_TEXT)
   await page.getByRole('button', { name: 'Import history' }).click()
   // Served by backend/tests/gacha_fixture.py: 25 character pulls, 3 standard ones.
-  await expect(page.getByRole('status')).toHaveText('28 new pulls imported.', { timeout: IMPORT_TIMEOUT_MS })
+  await expect(page.getByRole('status')).toHaveText('28 new pulls imported.', {
+    timeout: IMPORT_TIMEOUT_MS,
+  })
   await expect(page.getByLabel('Text from the error page')).toHaveValue('')
 
   const character = card(page, 'Character Event')
@@ -360,4 +383,22 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
 test('Star Rail is where the app opens', async ({ page }) => {
   await page.goto('/')
   await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()
+})
+
+test('on a wide screen the menu stays beside the page', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  const sidebar = page.getByRole('complementary', { name: 'Menu' })
+  await expect(sidebar.getByRole('navigation', { name: 'Genshin' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Menu' })).toHaveCount(0)
+  await sidebar.getByRole('link', { name: 'Speed' }).click()
+  await expect(shown(page).getByRole('heading', { name: 'Team speed' })).toBeVisible()
+  // The page keeps clear of the sidebar.
+  const [aside, main] = await Promise.all([
+    sidebar.boundingBox(),
+    page.getByRole('main').boundingBox(),
+  ])
+  expect((main?.x ?? 0) >= (aside?.x ?? 0) + (aside?.width ?? 0)).toBe(true)
+  expect((await measureLayout(page)).overflows).toBe(false)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
