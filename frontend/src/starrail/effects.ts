@@ -118,6 +118,7 @@ export interface TurnEffect {
   readonly minSpd?: number // works only when the source's SPD reaches this
   readonly withSummons?: boolean // the target's summons too
   readonly off?: boolean // starts switched off: how the character is played decides it
+  readonly ofSourceSpd?: boolean // the value is a share of the source's own SPD
 }
 
 // "Every turn" assumes the Skill is used every turn, "On Ultimate" the Ultimate every few turns.
@@ -205,6 +206,95 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'chosen',
     turns: 3,
+  },
+  // Complete Combustion is taken to last once entered; its countdown is not modelled.
+  {
+    id: 'firefly-advance',
+    source: { character: 1310 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'self',
+  },
+  {
+    id: 'firefly-spd',
+    source: { character: 1310 },
+    kind: 'spd',
+    values: [60],
+    trigger: 'ultimate',
+    target: 'self',
+  },
+  {
+    id: 'seele-skill',
+    source: { character: 1102 },
+    kind: 'spd_percent',
+    values: [0.25],
+    trigger: 'turn',
+    target: 'self',
+    turns: 2,
+  },
+  {
+    id: 'hanya-ultimate',
+    source: { character: 1215 },
+    kind: 'spd',
+    values: [0.2],
+    trigger: 'ultimate',
+    target: 'chosen',
+    turns: 2,
+    ofSourceSpd: true,
+  },
+  {
+    id: 'sushang-talent',
+    source: { character: 1206 },
+    kind: 'spd_percent',
+    values: [0.2],
+    trigger: 'always',
+    target: 'self',
+    off: true,
+  },
+  {
+    id: 'aventurine-waveflair-ultimate',
+    source: { character: 1513 },
+    kind: 'spd_percent',
+    values: [0.3],
+    trigger: 'ultimate',
+    target: 'self',
+    turns: 4,
+  },
+  {
+    id: 'aglaea-ultimate',
+    source: { character: 1402 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'self',
+  },
+  {
+    id: 'fugue-technique',
+    source: { character: 1225 },
+    kind: 'advance',
+    values: [0.4],
+    trigger: 'start',
+    target: 'self',
+    off: true,
+  },
+  {
+    id: 'robin-summeretto-technique',
+    source: { character: 1512 },
+    kind: 'advance',
+    values: [0.2],
+    trigger: 'start',
+    target: 'self',
+    off: true,
+  },
+  {
+    id: 'multiplication',
+    source: { cone: 20015 },
+    kind: 'advance',
+    values: [0.12, 0.14, 0.16, 0.18, 0.2],
+    trigger: 'turn',
+    target: 'self',
+    off: true,
   },
   {
     id: 'mem-skill-7',

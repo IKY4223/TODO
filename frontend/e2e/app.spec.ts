@@ -49,6 +49,15 @@ async function loadShowcase(page: Page, uid = UID): Promise<void> {
   await shown(page).getByRole('button', { name: 'Load characters' }).click()
 }
 
+/** Through the menu, as a player would: from the Genshin tool the tests start on to Star Rail. */
+async function openStarRail(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Menu' }).click()
+  await page.getByRole('navigation', { name: 'Star Rail' }).getByRole('link', { name: 'Builds' }).click()
+  // Until the switch renders, the Genshin tool is still the one on screen.
+  await expect(page.getByRole('banner').getByTestId('game')).toHaveText('Star Rail')
+  await expect(page.getByRole('button', { name: 'Menu' })).toHaveAttribute('aria-expanded', 'false')
+}
+
 const card = (page: Page, name: string): Locator =>
   page.getByRole('article').filter({ has: page.getByRole('heading', { name }) })
 
@@ -107,8 +116,7 @@ test('forecasts Star Rail light cone warps', async ({ page }) => {
 })
 
 test('shows final stats and plans team speed from the loaded showcase', async ({ page }) => {
-  await page.getByRole('link', { name: 'Star Rail' }).click()
-  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await openStarRail(page)
   await loadShowcase(page)
   await expect(card(page, 'Hyacine').getByText('SPD', { exact: true }).first()).toBeVisible()
   // Hyacine's relics include the Warrior Goddess set: its SPD bonus is offered as a switch.
@@ -220,9 +228,7 @@ test('imports wish history from the text Android shows and keeps it on the devic
 })
 
 test('imports a Star Rail profile and showcase with skills and relic rolls', async ({ page }) => {
-  await page.getByRole('link', { name: 'Star Rail' }).click()
-  // Until the switch renders, the Genshin tool is still the one on screen.
-  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await openStarRail(page)
   await loadShowcase(page)
   // Served from backend/tests/fixtures/enka_starrail.json.
   await expect(shown(page).getByRole('heading', { level: 3 })).toHaveText([
@@ -258,8 +264,7 @@ test('imports a Star Rail profile and showcase with skills and relic rolls', asy
 })
 
 test('opens a character page and comes back with the back button', async ({ page }) => {
-  await page.getByRole('link', { name: 'Star Rail' }).click()
-  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await openStarRail(page)
   await loadShowcase(page)
   await card(page, 'March 7th').getByRole('link', { name: 'Skills and eidolons' }).click()
   const tool = shown(page)
@@ -287,8 +292,7 @@ test('opens a character page and comes back with the back button', async ({ page
 
 test('tells what the upgrades a relic has left can bring', async ({ page }) => {
   // Load the showcase first: the advisor compares with the relics its characters wear.
-  await page.getByRole('link', { name: 'Star Rail' }).click()
-  await expect(page.getByRole('link', { name: 'Star Rail' })).toHaveAttribute('aria-current', 'page')
+  await openStarRail(page)
   await loadShowcase(page)
   await expect(card(page, 'Hyacine').getByText(/Relics \(6\) · score \d+\.\d/)).toBeVisible()
   await page.getByRole('link', { name: 'Relics' }).click()

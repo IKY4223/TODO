@@ -7,32 +7,36 @@ afterEach(() => {
   window.location.hash = ''
 })
 
-const current = (navigation: string): string | null | undefined =>
+const shown = (): HTMLElement => screen.getByRole('region')
+const game = (): string | null | undefined =>
+  within(screen.getByRole('banner')).getByTestId('game').textContent
+const currentIn = (navigation: string): string | null | undefined =>
   within(screen.getByRole('navigation', { name: navigation }))
     .getAllByRole('link')
     .find((link) => link.getAttribute('aria-current') === 'page')?.textContent
-
-const shown = (): HTMLElement => screen.getByRole('region')
+const openMenu = (): void => {
+  fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+}
 
 test('opens on Star Rail builds', () => {
   render(<App />)
-  expect(current('Games')).toBe('Star Rail')
-  expect(current('Tools')).toBe('Builds')
+  expect(game()).toBe('Star Rail')
+  expect(currentIn('Tools')).toBe('Builds')
   expect(within(shown()).getByText(/Honkai: Star Rail/)).toBeDefined()
 })
 
 test.each([
-  { address: '#genshin/builds', game: 'Genshin', tool: 'Builds', heading: 'Character builds' },
-  { address: '#genshin/wishes', game: 'Genshin', tool: 'Wishes', heading: 'Wish forecast' },
-  { address: '#genshin/history', game: 'Genshin', tool: 'History', heading: 'Wish history' },
-  { address: '#starrail/builds', game: 'Star Rail', tool: 'Builds', heading: 'Character builds' },
-  { address: '#starrail/relics', game: 'Star Rail', tool: 'Relics', heading: 'Relic advisor' },
-])('$address shows $game $tool', async ({ address, game, tool, heading }) => {
+  { address: '#genshin/builds', name: 'Genshin', tool: 'Builds', heading: 'Character builds' },
+  { address: '#genshin/wishes', name: 'Genshin', tool: 'Wishes', heading: 'Wish forecast' },
+  { address: '#genshin/history', name: 'Genshin', tool: 'History', heading: 'Wish history' },
+  { address: '#starrail/builds', name: 'Star Rail', tool: 'Builds', heading: 'Character builds' },
+  { address: '#starrail/relics', name: 'Star Rail', tool: 'Relics', heading: 'Relic advisor' },
+])('$address shows $name $tool', async ({ address, name, tool, heading }) => {
   render(<App />)
   window.location.hash = address
   expect(await screen.findByRole('heading', { name: heading })).toBeDefined()
-  expect(current('Games')).toBe(game)
-  expect(current('Tools')).toBe(tool)
+  expect(game()).toBe(name)
+  expect(currentIn('Tools')).toBe(tool)
 })
 
 const tools = (): (string | null)[] =>
@@ -48,10 +52,36 @@ test('each game lists only its own tools', async () => {
   expect(tools()).toEqual(['Builds', 'Wishes', 'History'])
 })
 
-test('a game link opens that game on its first tool', () => {
+test('the menu lists every tool of every game and marks where you are', () => {
   render(<App />)
-  const genshin = within(screen.getByRole('navigation', { name: 'Games' })).getByRole('link', { name: 'Genshin' })
-  expect(genshin.getAttribute('href')).toBe('#genshin/builds')
+  const button = screen.getByRole('button', { name: 'Menu' })
+  expect(button.getAttribute('aria-expanded')).toBe('false')
+  expect(screen.queryByRole('navigation', { name: 'Genshin' })).toBeNull()
+  openMenu()
+  expect(button.getAttribute('aria-expanded')).toBe('true')
+  const genshin = within(screen.getByRole('navigation', { name: 'Genshin' }))
+  expect(genshin.getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
+    '#genshin/builds',
+    '#genshin/wishes',
+    '#genshin/history',
+  ])
+  expect(currentIn('Star Rail')).toBe('Builds')
+  expect(currentIn('Genshin')).toBeUndefined()
+})
+
+const closed = (): boolean => screen.queryByRole('navigation', { name: 'Genshin' }) === null
+
+test('the menu closes after a choice, on Escape and on a tap outside', () => {
+  render(<App />)
+  openMenu()
+  fireEvent.click(within(screen.getByRole('navigation', { name: 'Genshin' })).getByText('Wishes'))
+  expect(closed()).toBe(true)
+  openMenu()
+  fireEvent.keyDown(document, { key: 'Escape' })
+  expect(closed()).toBe(true)
+  openMenu()
+  fireEvent.click(screen.getByRole('button', { name: 'Close menu' }))
+  expect(closed()).toBe(true)
 })
 
 test.each(['#toString', '#genshin/toString', '#starrail/history', '#genshin'])(
@@ -59,18 +89,18 @@ test.each(['#toString', '#genshin/toString', '#starrail/history', '#genshin'])(
   (address) => {
     window.location.hash = address
     render(<App />)
-    expect(current('Tools')).toBe('Builds')
+    expect(currentIn('Tools')).toBe('Builds')
   },
 )
 
 test('switches to Russian and remembers it', () => {
   render(<App />)
   fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
-  expect(screen.getByRole('navigation', { name: 'Игры' })).toBeDefined()
+  expect(screen.getByRole('button', { name: 'Меню' })).toBeDefined()
   expect(screen.getByRole('link', { name: 'Реликвии' })).toBeDefined()
   expect(within(shown()).getByRole('heading', { name: 'Билды персонажей' })).toBeDefined()
   expect(document.documentElement.lang).toBe('ru')
   expect(localStorage.getItem('language')).toBe('ru')
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
-  expect(screen.getByRole('navigation', { name: 'Games' })).toBeDefined()
+  expect(screen.getByRole('button', { name: 'Menu' })).toBeDefined()
 })

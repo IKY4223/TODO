@@ -96,8 +96,20 @@ const FORMATS = {
   percent: numberFormat({ style: 'percent', maximumFractionDigits: 1 }),
 } as const satisfies Record<StatInfo['format'], NumberFormat>
 
-export const formatValue = ({ key, value }: Stat): string =>
-  FORMATS[STATS[key].format].format(value)
+// The steps each format shows per unit: whole numbers, tenths, tenths of a percent.
+const STEPS = { whole: 1, decimal: 10, percent: 1000 } as const satisfies Record<
+  StatInfo['format'],
+  number
+>
+// Keeps a value that is a whole step in theory, but a hair below it in floats, on its step.
+const FLOAT_NOISE = 1e-6
+
+/** As the game prints it: cut off, never rounded up. 1160.63 DEF reads 1160 in the game. */
+export function formatValue({ key, value }: Stat): string {
+  const { format } = STATS[key]
+  const steps = STEPS[format]
+  return FORMATS[format].format(Math.floor(value * steps + FLOAT_NOISE) / steps)
+}
 
 export const formatStat = (stat: Stat, t: Translate): string =>
   `${t(STATS[stat.key].label)} ${formatValue(stat)}`

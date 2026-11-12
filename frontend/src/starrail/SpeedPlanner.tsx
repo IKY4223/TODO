@@ -33,7 +33,8 @@ const effectsOf = (
 ): { effect: (typeof TURN_EFFECTS)[number]; value: number }[] =>
   TURN_EFFECTS.flatMap((effect) => {
     const value = valueFor(effect.source, effect.values, character)
-    return value === undefined ? [] : [{ effect, value }]
+    if (value === undefined) return []
+    return [{ effect, value: effect.ofSourceSpd ? value * statOf(character, 'spd') : value }]
   })
 
 const toUnit = ({ effect, value }: ReturnType<typeof effectsOf>[number]): UnitEffect => ({
