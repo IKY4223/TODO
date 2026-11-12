@@ -43,14 +43,14 @@ const RU = {
     'Персонажей нет. В игре откройте профиль, добавьте персонажей на витрину и разрешите другим игрокам видеть их детали.',
   // Relic advisor
   'Relic advisor': 'Советник по реликвиям',
-  'Honkai: Star Rail · is a 5★ relic worth leveling? Exact chances, not a simulation.':
-    'Honkai: Star Rail · стоит ли качать реликвию 5★? Точные шансы, не симуляция.',
+  'Honkai: Star Rail · is a relic worth leveling? Exact chances, not a simulation.':
+    'Honkai: Star Rail · стоит ли качать реликвию? Точные шансы, не симуляция.',
+  Rarity: 'Редкость',
   'Main stat': 'Главный стат',
   Level: 'Уровень',
   Choose: 'Выберите',
   'Substat {slot}': 'Доп. стат {slot}',
   'Value {slot}': 'Значение {slot}',
-  'None (3 substats)': 'Нет (3 доп. стата)',
   'Values as the game shows them: 5.8 for 5.8%. They are only needed to compare relics or to set a goal. The game rounds values down, so the answer is slightly cautious.':
     'Значения как в игре: 5.8 для 5.8%. Они нужны только для сравнения реликвий и для цели. Игра округляет значения вниз, поэтому ответ немного занижен.',
   'Substats you want': 'Нужные доп. статы',
@@ -168,8 +168,10 @@ const RU = {
   Goblet: 'Кубок',
   Circlet: 'Корона',
   // Messages the server sends
-  'A 5★ relic has 3 or 4 substats.': 'У реликвии 5★ 3 или 4 доп. стата.',
-  'A relic at +3 or higher has 4 substats.': 'У реликвии +3 и выше 4 доп. стата.',
+  'This level is above the highest a relic of this rarity reaches.':
+    'Этот уровень выше максимума для реликвии такой редкости.',
+  'A relic of this rarity and level has more substats than that.':
+    'У реликвии такой редкости и уровня доп. статов больше.',
   'A relic cannot have the same substat twice.': 'У реликвии не бывает двух одинаковых доп. статов.',
   'A substat cannot be the same as the main stat.': 'Доп. стат не может совпадать с главным.',
   'Enka.Network does not accept this UID.': 'Enka.Network не принимает этот UID.',

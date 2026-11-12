@@ -33,6 +33,11 @@ def test_compares_and_checks_a_goal_in_the_units_the_game_shows() -> None:
     assert (body["beats"], body["reaches"]) == (0.25, 0.25)
 
 
+def test_four_star_relic() -> None:
+    body = client.post(URL, json={**RELIC, "rarity": 4, "level": 6}).json()
+    assert body["upgrades"] == 2
+
+
 def test_impossible_relic_is_explained() -> None:
     twice = [{"key": "atk"}, {"key": "atk"}, {"key": "def"}, {"key": "spd"}]
     response = client.post(URL, json={**RELIC, "subs": twice})
@@ -46,6 +51,7 @@ def test_invalid_input_is_refused() -> None:
         {"level": -1},
         {"main": "luck"},
         {"subs": []},
+        {"rarity": 3},
         {"beat": -1},
         {"goal": {"key": "spd", "value": -2}},
         {"subs": [{"key": "atk", "value": -1}]},

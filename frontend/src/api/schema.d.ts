@@ -401,6 +401,12 @@ export interface components {
         };
         /** RelicQuery */
         RelicQuery: {
+            /**
+             * Rarity
+             * @default 5
+             * @enum {integer}
+             */
+            rarity: 4 | 5;
             main: components["schemas"]["StarRailStatKey"];
             /** Subs */
             subs: components["schemas"]["RelicSub"][];

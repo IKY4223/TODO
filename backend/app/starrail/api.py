@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from functools import partial
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, Field
@@ -75,6 +75,7 @@ class RelicGoal(BaseModel):
 
 
 class RelicQuery(BaseModel):
+    rarity: Literal[4, 5] = 5
     main: StarRailStatKey
     subs: list[RelicSub] = Field(min_length=1, max_length=MAX_SUBSTATS)
     level: int = Field(ge=0, le=MAX_LEVEL)
@@ -103,6 +104,7 @@ def relic_forecast(query: RelicQuery) -> RelicForecast:
             [sub.key for sub in query.subs],
             query.level,
             query.wanted,
+            rarity=query.rarity,
             values=values,
             beat=query.beat,
             goal=goal,

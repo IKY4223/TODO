@@ -18,7 +18,7 @@ const MIN_STARRAIL_CONTROLS = 6
 // Three tabs, two instruction toggles, the text box, two buttons.
 const MIN_HISTORY_CONTROLS = 8
 const MIN_PAGE_CONTROLS = 6 // the UID field, its button and the navigation
-const MIN_RELIC_CONTROLS = 18 // 8 selects, 5 number fields, the button and the navigation links
+const MIN_RELIC_CONTROLS = 19 // 9 selects, 5 number fields, the button and the navigation links
 // A 1x1 transparent PNG: no test may depend on the real image host.
 const PIXEL = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',

@@ -36,6 +36,7 @@ test('sends the relic and the wanted substats', async () => {
   const [[url, init]] = fetchMock.mock.calls as [[string, RequestInit]]
   expect(url).toBe('/api/starrail/relics/forecast')
   expect(JSON.parse(String(init.body))).toEqual({
+    rarity: 5,
     main: 'hp',
     level: 9,
     subs: [
@@ -144,6 +145,23 @@ test('sends values, a goal and the score of the equipped relic to beat', async (
     'Chance to beat the equipped relic43.2%',
     'Chance to reach SPD 1012.5%',
   ])
+})
+
+test('a 4★ relic may have two substats', async () => {
+  const fetchMock = vi.fn(async () => Response.json(FORECAST))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<RelicAdvisor />)
+  choose('Rarity', '4')
+  choose('Main stat', 'hp')
+  choose('Substat 1', 'atk')
+  choose('Substat 2', 'spd')
+  fireEvent.click(screen.getByRole('button', { name: 'Calculate' }))
+  await screen.findByText('2 upgrades left')
+  const [[, init]] = fetchMock.mock.calls as unknown as [[string, RequestInit]]
+  expect(JSON.parse(String(init.body))).toMatchObject({
+    rarity: 4,
+    subs: [{ key: 'atk' }, { key: 'spd' }],
+  })
 })
 
 test('asks for a wanted substat before calling the API', async () => {

@@ -13,9 +13,9 @@ from app.starrail.enka import PROPERTIES
 from app.starrail.gamedata import GAMEDATA
 from app.starrail.models import StarRailStatKey
 
-FIVE_STAR_GROUP = "5"
-
-MAX_LEVEL = 15
+RARITIES = (4, 5)
+BEST_RARITY = 5
+MAX_LEVEL = 15  # of a 5★ relic; every star below takes three levels off
 UPGRADE_EVERY = 3
 MAX_SUBSTATS = 4
 
@@ -37,12 +37,16 @@ SUBSTAT_WEIGHTS = {
 }
 
 
-# What one roll adds to a 5★ substat: low, medium or high. Community estimate: the three
+# What one roll adds to a substat: low, medium or high. Community estimate: the three
 # are taken to be equally likely.
-ROLLS = {
-    PROPERTIES[prop]: (base, base + step, base + 2 * step)
-    for prop, base, step in GAMEDATA.sub_affixes[FIVE_STAR_GROUP].values()
+ROLLS_BY_RARITY = {
+    rarity: {
+        PROPERTIES[prop]: (base, base + step, base + 2 * step)
+        for prop, base, step in GAMEDATA.sub_affixes[str(rarity)].values()
+    }
+    for rarity in RARITIES
 }
+ROLLS = ROLLS_BY_RARITY[BEST_RARITY]  # scores count in these, so relics of any rarity compare
 # Keeps sums of rolls that differ only by float noise in one bucket.
 PRECISION = 9
 TOLERANCE = 10**-PRECISION
@@ -66,19 +70,24 @@ class RelicForecast:
     reaches: float | None  # the chance the goal stat ends at its goal or above, when one was set
 
 
-def _check(main: StarRailStatKey, subs: Sequence[StarRailStatKey], level: int) -> None:
+def _max_level(rarity: int) -> int:
+    return MAX_LEVEL - UPGRADE_EVERY * (BEST_RARITY - rarity)
+
+
+def _check(main: StarRailStatKey, subs: Sequence[StarRailStatKey], level: int, rarity: int) -> None:
     if len(set(subs)) != len(subs):
         raise RelicError("A relic cannot have the same substat twice.")
     if main in subs:
         raise RelicError("A substat cannot be the same as the main stat.")
     if not all(sub in SUBSTAT_WEIGHTS for sub in subs):
         raise RelicError("One of these stats never appears as a substat.")
-    # shortcut: 5★ relics only; add the lower rarities' substat counts and level caps
-    # when someone asks to judge a 4★ relic.
-    if len(subs) not in (MAX_SUBSTATS - 1, MAX_SUBSTATS):
-        raise RelicError("A 5★ relic has 3 or 4 substats.")
-    if len(subs) < MAX_SUBSTATS and level >= UPGRADE_EVERY:
-        raise RelicError("A relic at +3 or higher has 4 substats.")
+    if level > _max_level(rarity):
+        raise RelicError("This level is above the highest a relic of this rarity reaches.")
+    # shortcut: 4★ and 5★ relics only; nobody levels a 3★ one.
+    # A 5★ relic drops with 3 or 4 substats, a 4★ one with 2 or 3; each upgrade adds one up to 4.
+    fewest = min(MAX_SUBSTATS, rarity - 2 + level // UPGRADE_EVERY)
+    if len(subs) < fewest:
+        raise RelicError("A relic of this rarity and level has more substats than that.")
 
 
 def score_of(stat: StarRailStatKey, value: float) -> float:
@@ -108,13 +117,14 @@ def _spread(
     main: StarRailStatKey, subs: Sequence[StarRailStatKey], upgrades: int, gains: Gains
 ) -> Spread:
     """Exact, not simulated: the cases are few enough to add up."""
-    if len(subs) == MAX_SUBSTATS:
+    if len(subs) == MAX_SUBSTATS or upgrades == 0:
         return _upgraded(subs, upgrades, gains)
+    # With a free slot, the upgrade adds a substat instead of raising one.
     taken = {main, *subs}
     pool = {stat: weight for stat, weight in SUBSTAT_WEIGHTS.items() if stat not in taken}
     spread: Spread = {}
     for new, weight in pool.items():
-        later = _upgraded([*subs, new], upgrades - 1, gains)
+        later = _spread(main, [*subs, new], upgrades - 1, gains)
         _add(later, gains(new), weight / sum(pool.values()), spread)  # the roll it arrives with
     return spread
 
@@ -129,14 +139,16 @@ def forecast(  # noqa: PLR0913 - a relic and two optional questions about it
     level: int,
     wanted: Collection[StarRailStatKey],
     *,
+    rarity: int = BEST_RARITY,
     values: Mapping[StarRailStatKey, float] | None = None,
     beat: float | None = None,
     goal: tuple[StarRailStatKey, float] | None = None,
 ) -> RelicForecast:
     """`values` are the substats' current values; `beat` is a score, `goal` a stat and a value."""
-    _check(main, subs, level)
+    _check(main, subs, level, rarity)
     values = values or {}
-    upgrades = (MAX_LEVEL - level + UPGRADE_EVERY - 1) // UPGRADE_EVERY
+    upgrades = (_max_level(rarity) - level + UPGRADE_EVERY - 1) // UPGRADE_EVERY
+    rolls = ROLLS_BY_RARITY[rarity]
 
     hits = _spread(main, subs, upgrades, lambda stat: (1.0,) if stat in wanted else (0.0,))
     chances = tuple(hits.get(float(count), 0.0) for count in range(upgrades + 1))
@@ -154,7 +166,7 @@ def forecast(  # noqa: PLR0913 - a relic and two optional questions about it
             subs,
             upgrades,
             lambda stat: (
-                [roll / ROLLS[stat][-1] for roll in ROLLS[stat]] if stat in wanted else (0.0,)
+                [roll / ROLLS[stat][-1] for roll in rolls[stat]] if stat in wanted else (0.0,)
             ),
         )
         # Above, not level with: a relic that only ties is not worth the materials.
@@ -166,7 +178,7 @@ def forecast(  # noqa: PLR0913 - a relic and two optional questions about it
             raise RelicError("The goal must be a stat this relic can have as a substat.")
         if stat in subs and stat not in values:
             raise RelicError("Enter the current value of the stat you set a goal for.")
-        gained = _spread(main, subs, upgrades, lambda sub: ROLLS[sub] if sub == stat else (0.0,))
+        gained = _spread(main, subs, upgrades, lambda sub: rolls[sub] if sub == stat else (0.0,))
         reaches = _above(gained, least - values.get(stat, 0.0))
     return RelicForecast(
         upgrades=upgrades,
