@@ -36,8 +36,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
-  current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets. On a
-  wide screen the menu stays open beside the page in place of the tabs.
+  current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
+  a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
+  page in place of the tab bar. A night sky of indigo and violet, or a light theme.
 - **Light and dark themes** — the app follows the device's setting until the player picks a
   theme under Settings in the menu; the pick is kept on the device.
 - **Share a Star Rail build** — every showcase and character page has its own address

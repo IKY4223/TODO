@@ -1,5 +1,6 @@
 import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import { useAddress } from './address'
+import { ToolIcon, type ToolIconName } from './ui/ToolIcon'
 import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
 import { CharacterShowcase } from './showcase/CharacterShowcase'
@@ -13,6 +14,7 @@ import { WishHistory } from './wishes/WishHistory'
 
 interface ToolEntry {
   readonly label: Message
+  readonly icon: ToolIconName
   readonly element: ReactNode
 }
 
@@ -28,19 +30,19 @@ const GAMES = {
   starrail: {
     label: 'Star Rail',
     tools: {
-      builds: { label: 'Builds', element: <StarRailShowcase /> },
-      relics: { label: 'Relics', element: <RelicAdvisor /> },
-      warps: { label: 'Warps', element: <WishForecast game="starrail" /> },
-      history: { label: 'History', element: <WarpHistory /> },
-      speed: { label: 'Speed', element: <SpeedPlanner /> },
+      builds: { label: 'Builds', icon: 'builds', element: <StarRailShowcase /> },
+      relics: { label: 'Relics', icon: 'relics', element: <RelicAdvisor /> },
+      warps: { label: 'Warps', icon: 'warps', element: <WishForecast game="starrail" /> },
+      history: { label: 'History', icon: 'history', element: <WarpHistory /> },
+      speed: { label: 'Speed', icon: 'speed', element: <SpeedPlanner /> },
     },
   },
   genshin: {
     label: 'Genshin',
     tools: {
-      builds: { label: 'Builds', element: <CharacterShowcase /> },
-      wishes: { label: 'Wishes', element: <WishForecast game="genshin" /> },
-      history: { label: 'History', element: <WishHistory /> },
+      builds: { label: 'Builds', icon: 'builds', element: <CharacterShowcase /> },
+      wishes: { label: 'Wishes', icon: 'warps', element: <WishForecast game="genshin" /> },
+      history: { label: 'History', icon: 'history', element: <WishHistory /> },
     },
   },
 } as const satisfies Record<string, GameEntry>
@@ -167,6 +169,19 @@ function App(): JSX.Element {
             </svg>
           </button>
         )}
+        <svg className="logo" viewBox="0 0 32 32" width="36" height="36" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#a78bfa" />
+              <stop offset="1" stopColor="#4f46e5" />
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="9" fill="url(#logo-fill)" />
+          <path
+            d="M16 6c.8 4.6 4.4 8.2 9 9-4.6.8-8.2 4.4-9 9-.8-4.6-4.4-8.2-9-9 4.6-.8 8.2-4.4 9-9Z"
+            fill="#fff"
+          />
+        </svg>
         <div className="brand">
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{GAMES[here.game].label}</span>
@@ -212,7 +227,8 @@ function App(): JSX.Element {
                 href={href(here.game, tool)}
                 aria-current={tool === here.tool ? 'page' : undefined}
               >
-                {t(toolEntry(here.game, tool)?.label ?? 'Tools')}
+                <ToolIcon name={toolEntry(here.game, tool)?.icon ?? 'builds'} />
+                <span>{t(toolEntry(here.game, tool)?.label ?? 'Tools')}</span>
               </a>
             ))}
           </nav>
