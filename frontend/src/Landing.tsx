@@ -75,7 +75,8 @@ const PROMISES: readonly Message[] = [
   'No account and no cookies: a UID is all it asks for.',
 ]
 
-// The Warps tool's own answer for a featured 5★ within 80 warps, from no pity and no guarantee.
+// The Warps tool's own answer for a featured 5★ within 80 warps, from no pity and no guarantee;
+// backend/tests/test_wishes_engine.py fails if the engine's answer moves away from it.
 const FEATURED_WITHIN_80 = 0.51
 const percent = numberFormat({ style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
