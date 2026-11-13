@@ -85,7 +85,7 @@ def message(update_id: int, text: Any, chat: int = 7, language: str = "en") -> d
 
 
 def test_a_poll_answers_each_message_and_moves_past_it() -> None:
-    telegram = FakeTelegram([message(1, "/start", language="ru"), message(2, UID)])
+    telegram = FakeTelegram([message(1, "/start"), message(2, UID, language="ru")])
     chats = Chats()
     poll_once(telegram, load, RateLimiter(limit=10, window=60), chats)
     assert [sent["chat_id"] for sent in telegram.sent] == [7, 7]
@@ -250,3 +250,81 @@ def test_the_bot_limits_its_lookups_on_enka_for_all_chats(monkeypatch: pytest.Mo
     with pytest.raises(HTTPException) as raised:
         entry.load(UID)
     assert raised.value.status_code == 429
+
+
+def test_failures_are_explained_in_russian_too() -> None:
+    from app.showcase import api as showcase_api  # noqa: PLC0415 - the reasons the API gives
+    from app.telegram import __main__ as entry  # noqa: PLC0415 - the module that runs the bot
+
+    def failing(reason: str) -> bot.LoadShowcase:
+        def fail(uid: str) -> dict[Language, StarRailShowcase]:
+            raise HTTPException(502, reason)
+
+        return fail
+
+    reasons = [detail for _, detail in showcase_api.FAILURES.values()]
+    reasons += [showcase_api.UNAVAILABLE[1], showcase_api.UNREADABLE[1], entry.BUSY]
+    for reason in reasons:
+        assert answer(UID, "en", failing(reason)).text == reason
+        russian = answer(UID, "ru", failing(reason)).text
+        assert russian != reason, reason
+        assert not any("a" <= letter <= "z" for letter in russian.replace("Enka.Network", "")), (
+            russian
+        )
+    # A reason this bot has no translation for still reaches the player.
+    assert answer(UID, "ru", failing("Something new.")).text == "Something new."
+
+
+def test_only_a_language_the_chat_chose_is_remembered() -> None:
+    telegram = FakeTelegram([message(1, "/start", chat=7), message(2, "/lang ru", chat=8)])
+    chats = Chats()
+    poll_once(telegram, load, RateLimiter(limit=10, window=60), chats)
+    assert chats.languages == {8: "ru"}
+
+
+def test_the_bot_keeps_its_place_and_the_chosen_languages_across_restarts(
+    tmp_path: Path,
+) -> None:
+    state = tmp_path / "bot.json"
+    chats = Chats.load(state)
+    assert chats == Chats(path=state)  # nothing saved yet
+    telegram = FakeTelegram([message(1, "/lang ru", chat=8), message(2, "/start", chat=8)])
+    poll_once(telegram, load, RateLimiter(limit=10, window=60), chats)
+    restarted = Chats.load(state)
+    assert (restarted.offset, restarted.languages) == (3, {8: "ru"})
+    assert state.stat().st_mode & 0o077 == 0  # chat ids: readable by the bot's user alone
+    telegram = FakeTelegram([message(3, "/start", chat=8)])
+    poll_once(telegram, load, RateLimiter(limit=10, window=60), restarted)
+    assert telegram.offsets == [3]
+    assert telegram.sent[0]["text"].startswith("Пришлите UID")
+
+
+def test_an_unreadable_state_file_starts_afresh(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    state = tmp_path / "bot.json"
+    for broken in (
+        "not json",
+        '{"offset": "x", "languages": {}}',
+        '{"languages": {"8": "de"}}',
+        '{"offset": 1, "languages": {"8": ["ru"]}}',
+    ):
+        state.write_text(broken)
+        assert Chats.load(state) == Chats(path=state), broken
+    assert caplog.text.count("starts afresh") == 4
+
+
+def test_without_a_state_file_the_bot_keeps_its_place_in_memory() -> None:
+    telegram = FakeTelegram([message(1, "/lang ru")])
+    chats = Chats()
+    poll_once(telegram, load, RateLimiter(limit=10, window=60), chats)
+    assert (chats.offset, chats.languages, chats.path) == (2, {7: "ru"}, None)
+
+
+def test_a_state_file_that_cannot_be_written_does_not_stop_the_bot(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    chats = Chats(path=tmp_path / "missing" / "bot.json")
+    assert poll_once(FakeTelegram([message(1, "/start")]), load, RateLimiter(10, 60), chats)
+    assert chats.offset == 2
+    assert "could not save its state" in caplog.text

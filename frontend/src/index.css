@@ -12,6 +12,8 @@
   --color-accent: #a78bfa; /* text and marks on dark */
   --color-accent-soft: rgb(124 58 237 / 22%);
   --color-destructive: #f87171;
+  --color-bar: rgb(13 15 30 / 88%); /* the top bar, over the page scrolling under it */
+  --glow: rgb(124 58 237 / 16%); /* the light at the top of the page */
   --radius: 0.75rem;
   --shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 35%);
   --bar-height: 3.75rem;
@@ -20,10 +22,30 @@
   line-height: 1.5;
 }
 
+/* The same roles on a light page, chosen in the menu or taken from the device (see theme.ts).
+   Text keeps 4.5:1 on the background and on cards; outlines of controls 3:1. */
+:root[data-theme='light'] {
+  --color-background: #f4f3fa;
+  --color-card: #ffffff;
+  --color-input: #ffffff;
+  --color-border: #dcd9ec;
+  --color-control: #7f7ba3;
+  --color-foreground: #16182c;
+  --color-muted-foreground: #555a78;
+  --color-primary: #6d28d9;
+  --color-accent: #6d28d9;
+  --color-accent-soft: rgb(109 40 217 / 12%);
+  --color-destructive: #b42318;
+  --color-bar: rgb(244 243 250 / 88%);
+  --glow: rgb(124 58 237 / 10%);
+  --shadow: 0 0.5rem 1.5rem rgb(30 20 80 / 12%);
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   background: var(--color-background)
-    radial-gradient(120% 28rem at 50% 0, rgb(124 58 237 / 16%), transparent 70%) no-repeat;
+    radial-gradient(120% 28rem at 50% 0, var(--glow), transparent 70%) no-repeat;
   color: var(--color-foreground);
   /* A word longer than its column breaks, with a hyphen where the browser can, instead of
      widening the page: Russian labels such as "Сверхспособность" are long. */
@@ -43,7 +65,7 @@ body {
   min-height: var(--bar-height);
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--color-border);
-  background: rgb(13 15 30 / 88%);
+  background: var(--color-bar);
   backdrop-filter: blur(0.75rem);
 }
 
@@ -618,6 +640,43 @@ summary {
   --element: #facc15;
 }
 
+/* On a light page the pale tones would vanish: the same hues, darker. */
+:root[data-theme='light'] :is([data-element='pyro'], [data-element='fire']) {
+  --element: #c2410c;
+}
+
+:root[data-theme='light'] [data-element='hydro'] {
+  --element: #0369a1;
+}
+
+:root[data-theme='light'] :is([data-element='electro'], [data-element='lightning']) {
+  --element: #9333ea;
+}
+
+:root[data-theme='light'] :is([data-element='cryo'], [data-element='ice']) {
+  --element: #0e7490;
+}
+
+:root[data-theme='light'] :is([data-element='anemo'], [data-element='wind']) {
+  --element: #0f766e;
+}
+
+:root[data-theme='light'] :is([data-element='geo'], [data-element='imaginary']) {
+  --element: #a16207;
+}
+
+:root[data-theme='light'] [data-element='dendro'] {
+  --element: #4d7c0f;
+}
+
+:root[data-theme='light'] [data-element='physical'] {
+  --element: #6b7280;
+}
+
+:root[data-theme='light'] [data-element='quantum'] {
+  --element: #4f46e5;
+}
+
 /* Results keep their distance from the form above them. */
 [aria-live] > :first-child {
   margin-top: 1rem;
@@ -636,4 +695,21 @@ footer {
 footer {
   margin-top: 2rem;
   text-align: center;
+}
+
+/* A share button sits under what it shares; what happened appears right below it. */
+.share {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  margin: 1rem 0;
+}
+
+.share button.secondary {
+  margin-top: 0;
+}
+
+.share output,
+.share label {
+  justify-self: stretch;
 }

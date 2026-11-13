@@ -6,6 +6,7 @@ import re
 import sys
 import time
 from functools import partial
+from pathlib import Path
 
 from fastapi import HTTPException
 
@@ -27,6 +28,7 @@ lookups = RateLimiter(limit=30, window=60)
 ALL_CHATS = "all"
 # What @BotFather hands out. Anything else, a stray space or line break, would end up in the URL.
 TOKEN = re.compile(r"\d+:[\w-]+")
+BUSY = "The bot is looking up many players right now: try in a minute."
 RETRY_SECONDS = 5  # after a failed poll, so a Telegram outage is not hammered
 
 
@@ -36,7 +38,7 @@ def valid_token(token: str) -> bool:
 
 def download(uid: str) -> bytes:
     if lookups.seconds_until_allowed(ALL_CHATS):
-        raise HTTPException(429, "The bot is looking up many players right now: try in a minute.")
+        raise HTTPException(429, BUSY)
     return fetch(uid, url=enka.ENKA_URL)
 
 
@@ -54,7 +56,9 @@ def main() -> None:  # pragma: no cover - the loop runs until the process is sto
         logger.error("Set TELEGRAM_BOT_TOKEN to the token @BotFather gave the bot, nothing else.")
         sys.exit(1)
     call = partial(client.call, token, timeout=POLL_SECONDS + 10)
-    chats = Chats()
+    # Where the bot keeps its place and the languages chats chose; without it, in memory only.
+    state = os.environ.get("TELEGRAM_STATE_FILE")
+    chats = Chats.load(Path(state)) if state else Chats()
     logger.info("The bot is running.")
     while True:
         if not poll_once(call, load, limiter, chats):

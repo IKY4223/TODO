@@ -37,6 +37,13 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
   current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets. On a
   wide screen the menu stays open beside the page in place of the tabs.
+- **Light and dark themes** — the app follows the device's setting until the player picks a
+  theme under Settings in the menu; the pick is kept on the device.
+- **Share a Star Rail build** — every showcase and character page has its own address
+  (`#starrail/builds/UID` and `#starrail/builds/UID/CHARACTER`), and a Share link button hands
+  it to the phone's share sheet or copies it. Whoever opens the link sees the same page, loaded
+  fresh from Enka.Network. The UID stays after "#", so the browser never sends it to the server
+  as part of the page address.
 - **Languages** — English and Russian, with numbers in each language's format. Star Rail
   numbers are cut off the way the game prints them, not rounded.
 - **Genshin builds** — enter a UID and see every character in the player's showcase: final
@@ -69,16 +76,14 @@ Planned, in order:
    - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
      which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
-   Telegram (it needs the site hosted over HTTPS); the bot's replies to failures in Russian (the
-   API's reasons are English today); the bot's offset and chosen languages kept in a store, so a
-   restart neither answers the last messages again nor forgets a /lang choice.
-3. Share a build: a link that opens a character's page for anyone.
-4. A light theme beside the dark one.
-5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
+   Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
+   page of each character once the site has an address.
+3. Share a Genshin build the same way; Star Rail builds can be shared already.
+4. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
    phones no way to copy the history link.
-6. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+5. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-7. Zenless Zone Zero: undecided.
+6. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source
@@ -148,7 +153,18 @@ cd backend && uv run python -m app.telegram
 docker run -e TELEGRAM_BOT_TOKEN hoyo-toolkit python -m app.telegram
 ```
 
-It logs neither messages nor chat ids, and its errors never carry the token.
+It logs neither messages nor chat ids, and its errors never carry the token. Failures are
+explained in the chat's language.
+
+Set `TELEGRAM_STATE_FILE` to a file the bot may write, and it keeps its place in the message
+stream and the languages chats chose with `/lang` across restarts; without it, a restart answers
+the last batch of messages again and forgets those choices. The file holds the ids of the chats
+that used `/lang`, and nothing else about anyone. In Docker, keep it on a volume:
+
+```sh
+docker run -e TELEGRAM_BOT_TOKEN -e TELEGRAM_STATE_FILE=/data/bot.json -v hoyo-bot:/data \
+  hoyo-toolkit python -m app.telegram
+```
 
 ## Checks
 

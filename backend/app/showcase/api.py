@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 UID_PATTERN = r"^\d{9,10}$"
 UNAVAILABLE = (502, "Enka.Network is not responding. Try again later.")
+UNREADABLE = (502, "Enka.Network sent data this app cannot read.")
 # Enka's status -> the status and message this API answers with.
 FAILURES: dict[int | None, tuple[int, str]] = {
     400: (400, "Enka.Network does not accept this UID."),
@@ -59,7 +60,7 @@ def serve[TShowcase](
     except enka.UpstreamDataError as error:
         # With the cause: an unreadable response usually means Enka changed its format.
         logger.warning("Enka data for %s is unreadable", uid, exc_info=error)
-        raise HTTPException(502, "Enka.Network sent data this app cannot read.") from error
+        raise HTTPException(*UNREADABLE) from error
     store.put(uid, result, ttl)  # Enka asks clients not to refetch before the ttl ends
     return result
 
