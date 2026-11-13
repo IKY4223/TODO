@@ -54,6 +54,7 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
 - **Warp forecast** — the same exact odds for Star Rail's character and light cone event warps.
+- **Telegram bot** — a Star Rail showcase and warp odds in Telegram; see below to run it.
 
 Character, weapon, light cone, artifact and relic images are loaded from Enka.Network.
 
@@ -67,10 +68,10 @@ Planned, in order:
    - debuffs by their base chance instead of always landing;
    - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
      which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
-2. Telegram: a bot and a Telegram Mini App, since a free host for the site is not settled yet.
-   The bot answers by long polling, so it needs no public address and can run on any machine;
-   it reuses the backend's code (showcase, relic advisor, forecasts) rather than calling the
-   site. The Mini App opens the site inside Telegram and needs the site hosted over HTTPS first.
+2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
+   Telegram (it needs the site hosted over HTTPS); the bot's replies to failures in Russian (the
+   API's reasons are English today); the bot's offset and chosen languages kept in a store, so a
+   restart neither answers the last messages again nor forgets a /lang choice.
 3. Share a build: a link that opens a character's page for anyone.
 4. A light theme beside the dark one.
 5. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
@@ -123,7 +124,31 @@ uv run python scripts/sync_starrail_data.py
 ```
 
 A character released since the last rebuild still shows up, as "Unknown character".
-A weekly workflow fails when the file is behind the game.
+
+The `Game data` workflow runs the sync every day (and on demand from the Actions tab). When the
+sources changed, it runs every check and opens a `Game data update` pull request, which says
+whether the checks passed: merge a green one; a red one means the data format changed and the
+code needs a fix first. A new character's effects on the turn order still need adding to
+`frontend/src/starrail/effects.ts` by hand; until then the Speed tool says none are known, and a
+test fails if the tables name an id the data no longer has.
+
+## Telegram bot
+
+`backend/app/telegram/` answers in Telegram by long polling, so it needs no public address: send
+it a Star Rail UID for the showcase's characters, `/warp PULLS [PITY] [g]` for the odds of the
+featured 5★ character, `/lang ru` or `/lang en` for the language. It uses the same code and the
+same cache of Enka.Network answers as the site, and limits each chat to 10 messages a minute.
+
+Create a bot with [@BotFather](https://t.me/BotFather), then run it where it can stay on:
+
+```sh
+export TELEGRAM_BOT_TOKEN=...   # the token is a secret: never commit it or paste it in a chat
+cd backend && uv run python -m app.telegram
+# or from the Docker image, passing the variable through from the environment
+docker run -e TELEGRAM_BOT_TOKEN hoyo-toolkit python -m app.telegram
+```
+
+It logs neither messages nor chat ids, and its errors never carry the token.
 
 ## Checks
 

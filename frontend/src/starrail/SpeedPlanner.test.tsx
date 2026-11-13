@@ -143,3 +143,10 @@ test("Jingliu's Spectral Transmigration advances her action at two Syzygy", () =
     'Cycle 2300.0 · Jingliu',
   ])
 })
+
+test('a character without known effects says so instead of staying silent', () => {
+  show([character(1, 'Newcomer', 100)])
+  expect(
+    screen.getByText('No effects on the turn order are known for this character yet.'),
+  ).toBeDefined()
+})

@@ -1,23 +1,98 @@
 name: Game data
 
-# A new game version adds characters, gear and sets that the vendored game data lacks.
+# A new game version adds characters, gear and sets that the vendored game data lacks. Every day
+# this syncs the data from Enka.Network and StarRailRes; when it changed, it runs every check and
+# opens (or updates) a pull request for the owner to merge, red when a check failed.
 on:
   schedule:
-    - cron: "17 5 * * 1" # Mondays
+    - cron: "17 5 * * *" # daily: a game version lands in the sources within a day or two
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: gamedata
+
+env:
+  BRANCH: game-data
+  UV_LOCKED: 1
+
 jobs:
-  fresh:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # An open update keeps its branch: a fix the owner pushed to it must survive the next sync.
+      - name: Continue an open update
+        id: base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            git fetch --depth=1 origin "$BRANCH:$BRANCH"
+            git switch "$BRANCH"
+            echo "open=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: astral-sh/setup-uv@v7
       - run: uv run python scripts/sync_gamedata.py
         working-directory: backend
       - run: uv run python scripts/sync_starrail_data.py
         working-directory: backend
-      - name: gamedata.json matches the current game version
+      - name: Anything new?
+        id: diff
         run: |
-          git diff --exit-code --stat && exit 0
-          echo "::error::Game data is out of date. Run the sync scripts in backend/scripts and open a pull request."
-          exit 1
+          if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+          git diff --stat
+
+      # A pull request opened with this workflow's token does not start CI, so the checks run here.
+      - if: steps.diff.outputs.changed == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - if: steps.diff.outputs.changed == 'true'
+        run: npm ci && npx playwright install --with-deps chromium
+        working-directory: frontend
+      - if: steps.diff.outputs.changed == 'true'
+        id: check
+        continue-on-error: true
+        run: ./check.sh
+
+      - name: Open or update the pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPEN: ${{ steps.base.outputs.open }}
+          OUTCOME: ${{ steps.check.outcome }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if [ "$OPEN" = true ]; then
+            git commit -m "Sync game data from Enka.Network and StarRailRes"
+            git push origin "$BRANCH"
+          else
+            # No open update: a branch left from a merged or closed one holds nothing to keep.
+            git switch -C "$BRANCH"
+            git commit -m "Sync game data from Enka.Network and StarRailRes"
+            git push --force origin "$BRANCH"
+          fi
+          if [ "$OUTCOME" = success ]; then
+            result="Every check passed. Merge when ready."
+          else
+            result="A check failed: see $RUN. The data format may have changed; the code needs a fix before this merges."
+          fi
+          body="New game data from Enka.Network and StarRailRes. $result"
+          if [ "$OPEN" = true ]; then
+            gh pr edit "$BRANCH" --body "$body"
+          else
+            gh pr create --base main --head "$BRANCH" --title "Game data update" --body "$body"
+          fi
+      - name: Fail the run when a check failed
+        if: steps.check.outcome == 'failure'
+        run: exit 1

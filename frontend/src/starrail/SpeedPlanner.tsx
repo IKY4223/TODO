@@ -286,7 +286,11 @@ export function SpeedPlanner(): JSX.Element {
                           </label>
                         ))}
                       </fieldset>
-                    ) : null}
+                    ) : (
+                      <p className="hint">
+                        {t('No effects on the turn order are known for this character yet.')}
+                      </p>
+                    )}
                   </article>
                 </li>
               )

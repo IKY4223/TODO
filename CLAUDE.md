@@ -89,9 +89,11 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #8 are merged. PR #9 holds stage 9: summons, Firefly's countdown,
-  team-wide sets, the sidebar, own skill levels, Eidolons, Syzygy, Pearl, enemies and slows.
-- Next: the Telegram bot (README plan, item 2), or what is left of the effects table (item 1).
+- State: PRs #1 to #9 are merged. The branch holds stage 10: the daily `Game data` workflow
+  (sync, checks, pull request), the effect table checked against the data, and the Telegram bot
+  (`backend/app/telegram/`, long polling, not running anywhere: no host yet).
+- Next: a host for the bot and the site, then the Mini App (README plan, item 2); or what is left
+  of the effects table (item 1). The owner merges the workflow's `Game data update` pull requests.
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo` (the repository was renamed to
   `IKY4223/TODO---Hoyo-Toolkit`; the new name is refused). Repository settings cannot be changed

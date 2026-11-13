@@ -135,6 +135,8 @@ const RU = {
   Enemies: 'Враги',
   Enemy: 'Враг',
   'Enemy SPD': 'Скорость врага',
+  'No effects on the turn order are known for this character yet.':
+    'Эффекты этого персонажа на порядок ходов пока не известны.',
   'No enemy': 'Без врага',
   'action delay +{value}': 'задержка хода +{value}',
   'SPD −{value}': 'скорость −{value}',
