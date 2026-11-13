@@ -1,9 +1,9 @@
-"""Wish history from HoYoverse, read with the link the game's history page opens.
+"""Wish and warp history from HoYoverse, read with the link the game's history page opens.
 
 The link carries an `authkey` that lets anyone holding it read the account's wish history for
 about a day. It is treated as a secret: used for the request, never stored, never logged.
 HoYoverse does not document this API; the parameters and codes are those community importers
-(paimon.moe) rely on.
+rely on: paimon.moe for Genshin, biuuu/star-rail-warp-export for Honkai: Star Rail.
 
 shortcut: only the global servers are supported; the China servers use another host.
 """
@@ -17,6 +17,9 @@ from urllib.request import Request, urlopen
 from pydantic import BaseModel, ValidationError
 
 API_URL = "https://public-operation-hk4e-sg.hoyoverse.com/gacha_info/api/getGachaLog"
+# Star Rail's own API; collaboration warps (21, 22) are read from getLdGachaLog beside it.
+WARP_API = "https://public-operation-hkrpg-sg.hoyoverse.com/common/hkrpg_gacha_record/api/"
+COLLABORATION_WARPS = frozenset({"21", "22"})
 PAGE_SIZE = 20  # the most the API returns at once
 TIMEOUT_SECONDS = 10
 MAX_RESPONSE_BYTES = 200_000  # a page of 20 pulls is about 6 kB
@@ -103,7 +106,7 @@ def parse_link(text: str) -> dict[str, str]:
     raise LinkError("No wish history link found. Paste the whole text from the error page.")
 
 
-def history_url(params: dict[str, str], banner: str, end_id: str) -> str:
+def history_url(params: dict[str, str], banner: str, end_id: str, api: str = API_URL) -> str:
     """The API request for one page of `banner`, older than the pull `end_id` ("0": newest)."""
     # Paging is set here, whatever the pasted link holds.
     query = {
@@ -114,7 +117,13 @@ def history_url(params: dict[str, str], banner: str, end_id: str) -> str:
         "end_id": end_id,
         "lang": "en",
     }
-    return f"{API_URL}?{urlencode(query)}"
+    return f"{api}?{urlencode(query)}"
+
+
+def warp_url(params: dict[str, str], banner: str, end_id: str) -> str:
+    """The Star Rail API request for one page of the warp banner `banner`."""
+    method = "getLdGachaLog" if banner in COLLABORATION_WARPS else "getGachaLog"
+    return history_url(params, banner, end_id, WARP_API + method)
 
 
 def fetch(url: str) -> bytes:

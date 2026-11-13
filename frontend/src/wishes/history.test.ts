@@ -7,6 +7,7 @@ import {
   type SavedHistory,
   saveHistory,
   summarize,
+  WISHES,
 } from './history'
 
 const UID = '700000001'
@@ -21,7 +22,14 @@ function pull(n: number, rank: number, name = 'Xiangling', banner = '301'): Pull
 
 /** 25 character pulls, a 5★ on the 10th; three standard pulls; nothing else. Oldest first. */
 const SERVER: Record<string, Pull[]> = {
-  '301': Array.from({ length: 25 }, (_, i) => pull(i + 1, i + 1 === 10 ? 5 : 3, i + 1 === 10 ? 'Furina' : 'Xiangling', i + 1 === 20 ? '400' : '301')),
+  '301': Array.from({ length: 25 }, (_, i) =>
+    pull(
+      i + 1,
+      i + 1 === 10 ? 5 : 3,
+      i + 1 === 10 ? 'Furina' : 'Xiangling',
+      i + 1 === 20 ? '400' : '301',
+    ),
+  ),
   '200': [pull(101, 4, 'Amber', '200'), pull(102, 3, 'Amber', '200'), pull(103, 3, 'Amber', '200')],
 }
 
@@ -55,32 +63,38 @@ afterEach(() => vi.unstubAllGlobals())
 describe('importHistory', () => {
   test('pages through every banner and keeps the pulls oldest first', async () => {
     const fetchMock = serve()
-    const { history, added } = await importHistory(LINK, EMPTY_HISTORY, { wait: noWait })
+    const { history, added } = await importHistory(LINK, EMPTY_HISTORY, { wait: noWait }, WISHES)
     expect(added).toBe(28)
     expect(history.current).toBe(UID)
     const pulls = history.accounts[UID] ?? []
-    expect(pulls.map((p) => p.id)).toEqual([...SERVER['200'], ...SERVER['301']].map((p) => p.id).toSorted())
+    expect(pulls.map((p) => p.id)).toEqual(
+      [...SERVER['200'], ...SERVER['301']].map((p) => p.id).toSorted(),
+    )
     // Two pages for the character banner, the second one after its 20th pull.
-    expect(sentBodies(fetchMock).filter((body) => body.banner === '301').map((body) => body.end_id)).toEqual([
-      '0',
-      id(6),
-    ])
+    expect(
+      sentBodies(fetchMock)
+        .filter((body) => body.banner === '301')
+        .map((body) => body.end_id),
+    ).toEqual(['0', id(6)])
     expect(sentBodies(fetchMock).every((body) => body.link === LINK)).toBe(true)
   })
 
   test('stops at the first pull it already has', async () => {
     const saved: SavedHistory = { current: UID, accounts: { [UID]: SERVER['301'].slice(0, 22) } }
     const fetchMock = serve()
-    const { history, added } = await importHistory(LINK, saved, { wait: noWait })
+    const { history, added } = await importHistory(LINK, saved, { wait: noWait }, WISHES)
     expect(added).toBe(3 + 3) // three newer character pulls, three standard ones
     expect(history.accounts[UID]).toHaveLength(28)
     expect(sentBodies(fetchMock).filter((body) => body.banner === '301')).toHaveLength(1)
   })
 
   test('keeps accounts apart', async () => {
-    const other: SavedHistory = { current: '800000002', accounts: { '800000002': [pull(500, 5, 'Diluc', '200')] } }
+    const other: SavedHistory = {
+      current: '800000002',
+      accounts: { '800000002': [pull(500, 5, 'Diluc', '200')] },
+    }
     serve()
-    const { history } = await importHistory(LINK, other, { wait: noWait })
+    const { history } = await importHistory(LINK, other, { wait: noWait }, WISHES)
     expect(history.accounts['800000002']).toHaveLength(1)
     expect(history.accounts[UID]).toHaveLength(28)
     expect(history.current).toBe(UID)
@@ -91,32 +105,49 @@ describe('importHistory', () => {
     const fetchMock = vi.fn(async () => {
       if (refusals) {
         refusals -= 1
-        return Response.json({ detail: 'Too many requests.' }, { status: 429, headers: { 'Retry-After': '7' } })
+        return Response.json(
+          { detail: 'Too many requests.' },
+          { status: 429, headers: { 'Retry-After': '7' } },
+        )
       }
       return Response.json({ uid: null, pulls: [] })
     })
     vi.stubGlobal('fetch', fetchMock)
     const waits: number[] = []
-    await importHistory(LINK, EMPTY_HISTORY, { wait: async (ms) => void waits.push(ms) })
+    await importHistory(LINK, EMPTY_HISTORY, { wait: async (ms) => void waits.push(ms) }, WISHES)
     expect(waits.filter((ms) => ms === 7000)).toHaveLength(2)
   })
 
   test('gives up when asked to slow down again and again', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ detail: 'Too many requests.' }, { status: 429 })))
-    await expect(importHistory(LINK, EMPTY_HISTORY, { wait: noWait })).rejects.toThrow('Too many requests.')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Response.json({ detail: 'Too many requests.' }, { status: 429 })),
+    )
+    await expect(importHistory(LINK, EMPTY_HISTORY, { wait: noWait }, WISHES)).rejects.toThrow(
+      'Too many requests.',
+    )
   })
 
   test('passes any other refusal straight on', async () => {
-    const fetchMock = vi.fn(async () => Response.json({ detail: 'This link has expired.' }, { status: 410 }))
+    const fetchMock = vi.fn(async () =>
+      Response.json({ detail: 'This link has expired.' }, { status: 410 }),
+    )
     vi.stubGlobal('fetch', fetchMock)
-    await expect(importHistory(LINK, EMPTY_HISTORY, { wait: noWait })).rejects.toThrow('This link has expired.')
+    await expect(importHistory(LINK, EMPTY_HISTORY, { wait: noWait }, WISHES)).rejects.toThrow(
+      'This link has expired.',
+    )
     expect(fetchMock).toHaveBeenCalledOnce()
   })
 
   test('reports its progress', async () => {
     serve()
     const progress: string[] = []
-    await importHistory(LINK, EMPTY_HISTORY, { wait: noWait, onProgress: (banner, pulls) => progress.push(`${banner}: ${pulls}`) })
+    await importHistory(
+      LINK,
+      EMPTY_HISTORY,
+      { wait: noWait, onProgress: (banner, pulls) => progress.push(`${banner}: ${pulls}`) },
+      WISHES,
+    )
     expect(progress).toContain('Character Event: 20')
     expect(progress.at(-1)).toBe("Beginners' Wish: 0")
   })
@@ -126,8 +157,16 @@ describe('summarize', () => {
   test('counts pity per banner, both character banners together', () => {
     const [character, standard] = summarize(SERVER['200'].concat(SERVER['301']))
     expect(character).toMatchObject({ label: 'Character Event', total: 25, pity5: 15, pity4: 15 })
-    expect(character?.fiveStars).toEqual([{ id: id(10), name: 'Furina', pity: 10, time: '2026-10-01 12:00:00' }])
-    expect(standard).toMatchObject({ label: 'Standard', total: 3, pity5: 3, pity4: 2, fiveStars: [] })
+    expect(character?.fiveStars).toEqual([
+      { id: id(10), name: 'Furina', pity: 10, time: '2026-10-01 12:00:00' },
+    ])
+    expect(standard).toMatchObject({
+      label: 'Standard',
+      total: 3,
+      pity5: 3,
+      pity4: 2,
+      fiveStars: [],
+    })
   })
 
   test('lists 5★ pulls newest first with the pity each took', () => {

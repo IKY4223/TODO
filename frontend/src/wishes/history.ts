@@ -42,6 +42,13 @@ interface ImportResult {
   readonly uid: string | null
 }
 
+/** Where a game's history is read from, and its banners in import and display order. */
+export interface HistorySource<B extends string = string> {
+  readonly url: string
+  readonly banners: readonly B[]
+  readonly labels: Readonly<Record<B, Message>>
+}
+
 interface ImportOptions {
   /** Called after each page with the banner's name and the pulls read from it so far. */
   readonly onProgress?: (banner: Message, pulls: number) => void
@@ -103,8 +110,8 @@ const byId = (a: Pull, b: Pull): number => {
   return x < y ? -1 : Number(x > y)
 }
 
-async function fetchPage(link: string, banner: Banner, endId: string): Promise<Page> {
-  return postJson(HISTORY_URL, { link, banner, end_id: endId }, isPage)
+async function fetchPage(url: string, link: string, banner: string, endId: string): Promise<Page> {
+  return postJson(url, { link, banner, end_id: endId }, isPage)
 }
 
 /** One page, waiting and asking again while the server says it is being asked too fast. */
@@ -133,30 +140,32 @@ interface BannerResult {
  * Reads one banner newest first, page by page, until the history ends or reaches a pull
  * this device already has.
  */
-async function readBanner(
+async function readBanner<B extends string>(
+  source: HistorySource<B>,
   link: string,
-  banner: Banner,
+  banner: B,
   known: ReadonlySet<string>,
   { onProgress, wait = pause }: ImportOptions,
   endId = FIRST_PAGE,
   sofar: BannerResult = { uid: null, pulls: [] },
 ): Promise<BannerResult> {
-  const page = await fetchPatiently(async () => fetchPage(link, banner, endId), wait)
+  const page = await fetchPatiently(async () => fetchPage(source.url, link, banner, endId), wait)
   const firstKnown = page.pulls.findIndex((pull) => known.has(pull.id))
   const fresh = firstKnown === -1 ? page.pulls : page.pulls.slice(0, firstKnown)
   const result = { uid: sofar.uid ?? page.uid, pulls: [...sofar.pulls, ...fresh] }
-  onProgress?.(BANNERS[banner], result.pulls.length)
+  onProgress?.(source.labels[banner], result.pulls.length)
   const last = page.pulls.at(-1)
   if (firstKnown !== -1 || page.pulls.length < HISTORY_PAGE_SIZE || !last) return result
   await wait(PAGE_DELAY_MS)
-  return readBanner(link, banner, known, { onProgress, wait }, last.id, result)
+  return readBanner(source, link, banner, known, { onProgress, wait }, last.id, result)
 }
 
 /** Reads every banner the link's account has pulled on and adds the new pulls to `saved`. */
-export async function importHistory(
+export async function importHistory<B extends string>(
   link: string,
   saved: SavedHistory,
-  options: ImportOptions = {},
+  options: ImportOptions,
+  source: HistorySource<B>,
 ): Promise<ImportResult> {
   const known = new Set(
     Object.values(saved.accounts).flatMap((pulls) => pulls.map((pull) => pull.id)),
@@ -164,10 +173,10 @@ export async function importHistory(
   const wait = options.wait ?? pause
 
   const readFrom = async (index: number, sofar: BannerResult): Promise<BannerResult> => {
-    const banner = banners[index]
+    const banner = source.banners[index]
     if (!banner) return sofar
     if (index) await wait(BANNER_DELAY_MS)
-    const read = await readBanner(link, banner, known, { ...options, wait })
+    const read = await readBanner(source, link, banner, known, { ...options, wait })
     return readFrom(index + 1, {
       uid: sofar.uid ?? read.uid,
       pulls: [...sofar.pulls, ...read.pulls],
@@ -220,6 +229,9 @@ export function summarizeBanners<B extends string>(
     )
     .filter((summary) => summary.total)
 }
+
+/** Genshin's wish history. */
+export const WISHES: HistorySource<Banner> = { url: HISTORY_URL, banners, labels: BANNERS }
 
 /** Per Genshin banner with any pulls: its pity counters and its 5★ pulls. `pulls` oldest first. */
 export const summarize = (pulls: readonly Pull[]): BannerSummary[] =>

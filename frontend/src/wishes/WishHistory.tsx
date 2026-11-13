@@ -9,6 +9,7 @@ import {
   loadHistory,
   saveHistory,
   summarize,
+  WISHES,
 } from './history'
 
 const LINK_ROWS = 4
@@ -104,10 +105,15 @@ export function WishHistory(): JSX.Element {
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     void run(async () => {
-      const result = await importHistory(link, saved, {
-        onProgress: (banner, count) =>
-          setProgress(t('{banner}: {count} pulls read', { banner: t(banner), count })),
-      })
+      const result = await importHistory(
+        link,
+        saved,
+        {
+          onProgress: (banner, count) =>
+            setProgress(t('{banner}: {count} pulls read', { banner: t(banner), count })),
+        },
+        WISHES,
+      )
       if (!result.uid) return t('No pulls found for this link.')
       setSaved(result.history)
       setLink('') // the link is a key to the account's history: drop it once it has served

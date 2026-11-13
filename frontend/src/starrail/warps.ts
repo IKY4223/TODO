@@ -5,6 +5,7 @@ import { isArrayOf, isKeyOf, isRecord, isString } from '../api/http'
 import type { Message } from '../i18n'
 import {
   type BannerSummary,
+  type HistorySource,
   type Pull,
   type SavedHistory,
   loadSaved,
@@ -126,6 +127,13 @@ export function mergeWarps(
     if (fresh.length > most || current === null) [most, current] = [fresh.length, uid]
   }
   return { history: { current, accounts: merged }, added }
+}
+
+/** Star Rail's warp history, read with the link its history page opens. */
+export const WARPS: HistorySource<WarpBanner> = {
+  url: '/api/wishes/warps',
+  banners: ORDER,
+  labels: WARP_BANNERS,
 }
 
 /** Per warp banner with any warps: its pity counters and 5★ warps. */

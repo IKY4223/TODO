@@ -23,6 +23,8 @@ RETRY_AFTER_SECONDS = 3
 Fetch = Callable[[str], bytes]
 # The banner types to ask for; 400, the second character banner, comes back with 301.
 HistoryBanner = Literal["100", "200", "301", "302", "500"]
+# Star Rail's warp banners: regular, starter, character and light cone events, collaborations.
+WarpBanner = Literal["1", "2", "11", "12", "21", "22"]
 
 logger = logging.getLogger(__name__)
 
@@ -78,16 +80,13 @@ def get_history_fetch() -> Fetch:
     return history.fetch
 
 
-# POST, not GET: the link holds a secret key, and URLs end up in access logs.
-@router.post("/history", dependencies=[Depends(limited(history_limiter))])
-def wish_history(
-    request: HistoryRequest, fetch: Annotated[Fetch, Depends(get_history_fetch)]
-) -> Page:
+class WarpHistoryRequest(HistoryRequest):
+    banner: WarpBanner  # type: ignore[assignment] # Star Rail's banners in place of Genshin's
+
+
+def _read(link: str, url: Callable[[dict[str, str]], str], fetch: Fetch) -> Page:
     try:
-        params = history.parse_link(request.link)
-        page = history.parse_page(
-            fetch(history.history_url(params, request.banner, request.end_id))
-        )
+        return history.parse_page(fetch(url(history.parse_link(link))))
     except LinkError as error:
         raise HTTPException(400, str(error)) from error
     except HistoryError as error:
@@ -95,4 +94,27 @@ def wish_history(
         logger.warning("Wish history request failed: %s %s", error.status, error.detail)
         headers = {"Retry-After": str(RETRY_AFTER_SECONDS)} if error.status == THROTTLED else None
         raise HTTPException(error.status, error.detail, headers=headers) from None
-    return page
+
+
+# POST, not GET: the link holds a secret key, and URLs end up in access logs.
+@router.post("/history", dependencies=[Depends(limited(history_limiter))])
+def wish_history(
+    request: HistoryRequest, fetch: Annotated[Fetch, Depends(get_history_fetch)]
+) -> Page:
+    return _read(
+        request.link,
+        lambda params: history.history_url(params, request.banner, request.end_id),
+        fetch,
+    )
+
+
+@router.post("/warps", dependencies=[Depends(limited(history_limiter))])
+def warp_history(
+    request: WarpHistoryRequest, fetch: Annotated[Fetch, Depends(get_history_fetch)]
+) -> Page:
+    """One page of a Honkai: Star Rail warp banner, read with the link its history page opens."""
+    return _read(
+        request.link,
+        lambda params: history.warp_url(params, request.banner, request.end_id),
+        fetch,
+    )

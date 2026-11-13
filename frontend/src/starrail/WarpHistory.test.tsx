@@ -32,7 +32,9 @@ const file = (accounts: Record<string, unknown[]>, name = 'warps.json'): File =>
   )
 
 const choose = (chosen: File): void => {
-  fireEvent.change(screen.getByLabelText('UIGF or SRGF file'), { target: { files: [chosen] } })
+  fireEvent.change(screen.getByLabelText('Or from a UIGF or SRGF file'), {
+    target: { files: [chosen] },
+  })
 }
 
 test('a chosen file shows each banner pity and is kept on the device', async () => {
@@ -94,4 +96,38 @@ test('a file the phone cannot read, or a delete the browser refuses, says so', a
   expect(
     screen.getByText('This browser kept its saved data: the history may come back on reload.'),
   ).toBeDefined()
+})
+
+test('imports warps with the link from the error page, and says how to get it', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true }) // the import pauses between banners
+  const pull = {
+    id: '1',
+    banner: '11',
+    time: '2025-01-01 12:00:00',
+    name: 'Acheron',
+    kind: 'Character',
+    rank: 5,
+  }
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const { banner } = JSON.parse(String(init?.body)) as { banner: string }
+    expect(url).toBe('/api/wishes/warps')
+    return Response.json(
+      banner === '11' ? { uid: '700000001', pulls: [pull] } : { uid: null, pulls: [] },
+    )
+  })
+  vi.stubGlobal('fetch', fetchMock)
+  render(<WarpHistory />)
+  expect(screen.getByText('On a Windows PC')).toBeDefined()
+  expect(screen.getByText(/Close the records and open them again/)).toBeDefined()
+  fireEvent.change(screen.getByLabelText('Text from the error page'), {
+    target: { value: 'The webpage at https://example.org/?authkey=x#/log could not be loaded' },
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'Import history' }))
+  await vi.runAllTimersAsync()
+  expect(await screen.findByText('1 new warps imported.')).toBeDefined()
+  expect(screen.getByRole('heading', { name: 'Character Event Warp' })).toBeDefined()
+  expect(screen.getByLabelText('Text from the error page')).toHaveProperty('value', '')
+  expect(fetchMock.mock.calls).toHaveLength(6) // one page of each warp banner
+  vi.useRealTimers()
+  vi.unstubAllGlobals()
 })

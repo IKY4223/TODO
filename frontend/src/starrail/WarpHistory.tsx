@@ -1,10 +1,13 @@
-import { type ChangeEvent, type JSX, useState } from 'react'
-import { type Message, useT } from '../i18n'
+import { type ChangeEvent, type JSX, type SubmitEvent, useState } from 'react'
+import { MAX_LINK_LENGTH } from '../api/limits'
+import { useRequest } from '../api/useRequest'
+import { type Message, useLocalized, useT } from '../i18n'
 import { BannerCard, NOT_SAVED } from '../wishes/WishHistory'
-import { EMPTY_HISTORY } from '../wishes/history'
+import { EMPTY_HISTORY, importHistory } from '../wishes/history'
 import {
   MAX_FILE_BYTES,
   WarpFileError,
+  WARPS,
   loadWarps,
   mergeWarps,
   parseWarpFile,
@@ -16,11 +19,55 @@ const TOO_LARGE: Message = 'This file is too large to be a warp history.'
 const UNREADABLE: Message = 'This file could not be read.'
 const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
+const LINK_ROWS = 4
 
-/** Star Rail warp history, imported from a UIGF or SRGF file another app exported. */
+function Instructions({ open }: { readonly open: boolean }): JSX.Element {
+  const t = useT()
+  return (
+    <>
+      <details open={open}>
+        <summary>{t('How to get the link on Android')}</summary>
+        <ol>
+          <li>{t('In the game, open Warp and open the warp records. Wait for them to load.')}</li>
+          <li>{t('Turn off Wi-Fi and mobile data.')}</li>
+          <li>{t('Close the records and open them again. An error page appears.')}</li>
+          <li>{t('Press and hold its text, tap Select all, then Copy.')}</li>
+          <li>{t('Turn the connection back on and paste the text below.')}</li>
+        </ol>
+      </details>
+      <details>
+        <summary>{t('On a Windows PC')}</summary>
+        <p>
+          {t(
+            'Open the warp records in the game. A warp tracker you trust, such as stardb.gg, gives a PowerShell command that finds the link: paste what it prints below. Run only commands from a source you trust.',
+          )}
+        </p>
+        <p>
+          {t(
+            'Or export the history to a UIGF or SRGF file with a warp exporter such as star-rail-warp-export or Starward, and choose the file below. It is read on this device and never sent anywhere.',
+          )}
+        </p>
+      </details>
+      <details>
+        <summary>{t('On iPhone')}</summary>
+        <p>
+          {t(
+            'The game gives iPhones no simple way to copy the link. Apps that record your traffic can capture it, but they need a certificate that lets them read everything your phone sends. Install one only from an app you trust, and remove it afterwards.',
+          )}
+        </p>
+      </details>
+    </>
+  )
+}
+
+/** Star Rail warp history: read with the link the game's history page opens, or from a file. */
 export function WarpHistory(): JSX.Element {
   const t = useT()
+  const localized = useLocalized()
   const [saved, setSaved] = useState(loadWarps)
+  const [link, setLink] = useState('')
+  const [progress, setProgress] = useState('')
+  const [state, run] = useRequest<string>()
   const [outcome, setOutcome] = useState('')
   const [problem, setProblem] = useState<Message>()
   const pulls = saved.current ? (saved.accounts[saved.current] ?? []) : []
@@ -55,6 +102,30 @@ export function WarpHistory(): JSX.Element {
     }
   }
 
+  const submit = (event: SubmitEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+    setOutcome('')
+    setProblem(undefined)
+    void run(async () => {
+      const result = await importHistory(
+        link,
+        saved,
+        {
+          onProgress: (banner, count) =>
+            setProgress(t('{banner}: {count} warps read', { banner: t(banner), count })),
+        },
+        WARPS,
+      )
+      if (!result.uid) return t('No warps found for this link.')
+      setLink('') // the link is a key to the account's history: drop it once it has served
+      const kept = keep(result.history)
+      const summary = result.added
+        ? t('{count} new warps imported.', { count: result.added })
+        : t('No new warps.')
+      return summary + (kept ? '' : t(NOT_SAVED))
+    })
+  }
+
   const forget = (): void => {
     if (!window.confirm(t('Delete the saved warp history from this device?'))) return
     setOutcome(keep(EMPTY_HISTORY) ? '' : t(NOT_DELETED))
@@ -63,19 +134,36 @@ export function WarpHistory(): JSX.Element {
   return (
     <section aria-labelledby="warp-history-title">
       <h2 id="warp-history-title">{t('Warp history')}</h2>
-      <p className="hint">
-        {t('Honkai: Star Rail · from a UIGF or SRGF file · saved only on this device')}
-      </p>
-      <details open={!pulls.length}>
-        <summary>{t('Where to get the file')}</summary>
-        <p>
+      <p className="hint">{t('Honkai: Star Rail · global servers · saved only on this device')}</p>
+      <Instructions open={!pulls.length} />
+      <form onSubmit={submit}>
+        <label>
+          {t('Text from the error page')}
+          <textarea
+            name="link"
+            value={link}
+            onChange={(event) => setLink(event.target.value)}
+            rows={LINK_ROWS}
+            maxLength={MAX_LINK_LENGTH}
+            autoComplete="off"
+            spellCheck={false}
+            required
+          />
+        </label>
+        <p className="hint">
           {t(
-            'Apps that track warps can export your history as a UIGF (v4) or SRGF file. Choose that file here: it is read on this device and never sent anywhere.',
+            'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.',
           )}
         </p>
-      </details>
+        <button type="submit" disabled={state.status === 'loading'}>
+          {t('Import history')}
+        </button>
+      </form>
+      {'message' in state && <p role="alert">{localized(state.message)}</p>}
+      {state.status === 'loading' ? <output>{progress}</output> : null}
+      {'data' in state ? <output>{state.data}</output> : null}
       <label>
-        {t('UIGF or SRGF file')}
+        {t('Or from a UIGF or SRGF file')}
         <input type="file" accept=".json,application/json" onChange={(event) => void read(event)} />
       </label>
       {problem ? <p role="alert">{t(problem)}</p> : null}
