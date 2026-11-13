@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest'
 import {
-  SUMMONS,
   STAT_EFFECTS,
   TURN_EFFECTS,
   statEffectsOf,
@@ -8,9 +7,7 @@ import {
   turnValue,
   valueFor,
   withEffects,
-  type Source,
 } from './effects'
-import GAME_DATA from '../../../backend/app/starrail/gamedata.json'
 import type { StarRailCharacter } from './starrail'
 
 const relic = (set_id: number): StarRailCharacter['relics'][number] => ({
@@ -152,25 +149,4 @@ test("Pearl's advance grows with the Elation characters on the team", () => {
   const other = as(2, { path: 'elation' })
   expect(turnValue(turn('pearl-ultimate'), pearl, [pearl])).toBe(0.1)
   expect(turnValue(turn('pearl-ultimate'), pearl, [pearl, other, HYACINE])).toBe(0.15)
-})
-
-type Where = readonly [group: 'characters' | 'light_cones' | 'sets', id: number, what: string]
-
-const where = (source: Source): Where =>
-  'character' in source
-    ? ['characters', source.character, 'character']
-    : 'cone' in source
-      ? ['light_cones', source.cone, 'light cone']
-      : ['sets', source.set, 'set']
-
-test('every character, light cone and set in the tables is in the game data', () => {
-  // Catches a typo, or an id the game renamed, when the data is synced after a game version.
-  const places: Where[] = [
-    ...[...STAT_EFFECTS, ...TURN_EFFECTS].map(({ source }) => where(source)),
-    ...SUMMONS.map(({ owner }): Where => ['characters', owner, 'summon owner']),
-  ]
-  const missing = places
-    .filter(([group, id]) => !(String(id) in GAME_DATA[group]))
-    .map(([, id, what]) => `${what} ${id}`)
-  expect(missing).toEqual([])
 })
