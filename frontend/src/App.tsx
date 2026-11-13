@@ -169,18 +169,16 @@ function App(): JSX.Element {
             </svg>
           </button>
         )}
-        <svg className="logo" viewBox="0 0 32 32" width="36" height="36" aria-hidden="true">
-          <defs>
-            <linearGradient id="logo-fill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#a78bfa" />
-              <stop offset="1" stopColor="#4f46e5" />
-            </linearGradient>
-          </defs>
-          <rect width="32" height="32" rx="9" fill="url(#logo-fill)" />
+        {/* The dealt mark: an arc, in the accent colour. */}
+        <svg className="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
           <path
-            d="M16 6c.8 4.6 4.4 8.2 9 9-4.6.8-8.2 4.4-9 9-.8-4.6-4.4-8.2-9-9 4.6-.8 8.2-4.4 9-9Z"
-            fill="#fff"
+            d="M6 24a10 10 0 0 1 20 0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3.5"
+            strokeLinecap="round"
           />
+          <circle cx="16" cy="24" r="2.5" fill="currentColor" />
         </svg>
         <div className="brand">
           <h1>HoYo Toolkit</h1>

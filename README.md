@@ -38,7 +38,8 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
   current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
   a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
-  page in place of the tab bar. A night sky of indigo and violet, or a light theme.
+  page in place of the tab bar. A palette and type dealt by the taste skill: a green-black ground,
+  bone text and a muted green accent in Geist, or its inverse as the light theme.
 - **Light and dark themes** — the app follows the device's setting until the player picks a
   theme under Settings in the menu; the pick is kept on the device.
 - **Share a Star Rail build** — every showcase and character page has its own address
@@ -76,8 +77,10 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-0. The site's layout rebuilt from scratch with the taste skill, in a palette without violet
-   (the owner's choice).
+0. The rest of the taste skill's page plan, which this stage did not take: it is made for landing
+   pages (a hero alone on the first screen, one section per screen, photographs on every screen,
+   real product icons, its browser finish gate), which a phone tool of forms and cards does not
+   fit. Decide with the owner whether a landing page in front of the tools should take it.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
