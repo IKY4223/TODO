@@ -50,6 +50,11 @@ def history(banner: str) -> list[dict[str, str]]:
         ]
     elif banner == "200":
         pulls = [pull(100 + i, "Amber", 4, banner="200") for i in range(1, 4)]
+    elif banner == "11":  # a Star Rail character event warp: Acheron on the third warp
+        pulls = [
+            pull(200 + i, "Acheron" if i == 3 else "Arrows", 5 if i == 3 else 3, banner="11")
+            for i in range(1, 6)
+        ]
     else:
         pulls = []
     return pulls[::-1]

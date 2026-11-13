@@ -114,11 +114,20 @@ const RU = {
   'Regular Warp': 'Стандартный прыжок',
   'Starter Warp': 'Прыжок новичка',
   'Warp history': 'История прыжков',
-  'Honkai: Star Rail · from a UIGF or SRGF file · saved only on this device':
-    'Honkai: Star Rail · из файла UIGF или SRGF · хранится только на этом устройстве',
-  'Where to get the file': 'Где взять файл',
-  'Apps that track warps can export your history as a UIGF (v4) or SRGF file. Choose that file here: it is read on this device and never sent anywhere.':
-    'Приложения для учёта прыжков умеют выгружать историю в файл UIGF (v4) или SRGF. Выберите этот файл здесь: он читается на этом устройстве и никуда не отправляется.',
+  'Honkai: Star Rail · global servers · saved only on this device':
+    'Honkai: Star Rail · глобальные серверы · хранится только на этом устройстве',
+  'In the game, open Warp and open the warp records. Wait for them to load.':
+    'В игре откройте Прыжки и откройте записи прыжков. Дождитесь загрузки.',
+  'Close the records and open them again. An error page appears.':
+    'Закройте записи и откройте их снова. Появится страница с ошибкой.',
+  'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.':
+    'По ссылке любой может читать вашу историю прыжков около суток. Приложение использует её для импорта и не сохраняет.',
+  'On a Windows PC': 'На ПК с Windows',
+  'Open the warp records in the game. A warp tracker you trust, such as stardb.gg, gives a PowerShell command that finds the link: paste what it prints below. Run only commands from a source you trust.':
+    'Откройте в игре записи прыжков. Трекер прыжков, которому вы доверяете, например stardb.gg, даёт команду для PowerShell, которая находит ссылку: вставьте то, что она выведет, ниже. Запускайте только команды из источника, которому доверяете.',
+  'Or export the history to a UIGF or SRGF file with a warp exporter such as star-rail-warp-export or Starward, and choose the file below. It is read on this device and never sent anywhere.':
+    'Или выгрузите историю в файл UIGF или SRGF экспортёром прыжков, например star-rail-warp-export или Starward, и выберите файл ниже. Он читается на этом устройстве и никуда не отправляется.',
+  'Or from a UIGF or SRGF file': 'Или из файла UIGF или SRGF',
   'UIGF or SRGF file': 'Файл UIGF или SRGF',
   'This file is not a UIGF or SRGF file.': 'Это не файл UIGF или SRGF.',
   'This file holds no Star Rail warps.': 'В этом файле нет прыжков Star Rail.',
@@ -127,6 +136,8 @@ const RU = {
   'This file is too large to be a warp history.': 'Файл слишком большой для истории прыжков.',
   '{count} new warps imported.': 'Импортировано новых прыжков: {count}.',
   'No new warps.': 'Новых прыжков нет.',
+  'No warps found for this link.': 'По этой ссылке прыжков не найдено.',
+  '{banner}: {count} warps read': '{banner}: прочитано прыжков: {count}',
   'This file could not be read.': 'Не удалось прочитать файл.',
   'This browser kept its saved data: the history may come back on reload.':
     'Браузер не удалил сохранённые данные: история может вернуться после перезагрузки.',

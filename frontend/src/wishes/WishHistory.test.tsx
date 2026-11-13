@@ -17,7 +17,13 @@ const pull = (n: number, rank: number, name: string): Pull => ({
 })
 
 // Newest first, as the API pages: a 5★ on the 2nd pull, 3 pulls since.
-const PULLS = [pull(5, 3, 'Noelle'), pull(4, 4, 'Bennett'), pull(3, 3, 'Noelle'), pull(2, 5, 'Furina'), pull(1, 3, 'Noelle')]
+const PULLS = [
+  pull(5, 3, 'Noelle'),
+  pull(4, 4, 'Bennett'),
+  pull(3, 3, 'Noelle'),
+  pull(2, 5, 'Furina'),
+  pull(1, 3, 'Noelle'),
+]
 
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true }) // the import pauses between requests
@@ -99,15 +105,18 @@ test('a second import adds only the new pulls', async () => {
 test.each([
   { answer: false, kept: true },
   { answer: true, kept: false },
-])('deleting asks first, since pulls older than a year cannot be imported again', async ({ answer, kept }) => {
-  serve(characterOnly)
-  vi.spyOn(window, 'confirm').mockReturnValue(answer)
-  render(<WishHistory />)
-  await importFrom(ANDROID_TEXT)
-  fireEvent.click(await screen.findByRole('button', { name: 'Delete saved history' }))
-  expect(screen.queryByRole('heading', { name: 'Character Event' }) !== null).toBe(kept)
-  expect(window.localStorage.getItem('hoyo-toolkit:wish-history')?.includes(UID)).toBe(kept)
-})
+])(
+  'deleting asks first, since pulls older than a year cannot be imported again',
+  async ({ answer, kept }) => {
+    serve(characterOnly)
+    vi.spyOn(window, 'confirm').mockReturnValue(answer)
+    render(<WishHistory />)
+    await importFrom(ANDROID_TEXT)
+    fireEvent.click(await screen.findByRole('button', { name: 'Delete saved history' }))
+    expect(screen.queryByRole('heading', { name: 'Character Event' }) !== null).toBe(kept)
+    expect(window.localStorage.getItem('hoyo-toolkit:wish-history')?.includes(UID)).toBe(kept)
+  },
+)
 
 test('deletes the saved history on request', async () => {
   serve(characterOnly)

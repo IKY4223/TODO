@@ -126,6 +126,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/wishes/warps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Warp History
+         * @description One page of a Honkai: Star Rail warp banner, read with the link its history page opens.
+         */
+        post: operations["warp_history_api_wishes_warps_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -612,6 +632,24 @@ export interface components {
             /** Context */
             ctx?: Record<string, never>;
         };
+        /** WarpHistoryRequest */
+        WarpHistoryRequest: {
+            /**
+             * Link
+             * @description The wish history link, or the text it is in
+             */
+            link: string;
+            /**
+             * Banner
+             * @enum {string}
+             */
+            banner: "1" | "2" | "11" | "12" | "21" | "22";
+            /**
+             * End Id
+             * @description Return pulls older than this one; 0 for the newest
+             */
+            end_id: string;
+        };
         /** Weapon */
         Weapon: {
             /** Name */
@@ -850,6 +888,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["HistoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    warp_history_api_wishes_warps_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WarpHistoryRequest"];
             };
         };
         responses: {

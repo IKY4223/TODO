@@ -232,13 +232,13 @@ test('imports wish history from the text Android shows and keeps it on the devic
 }) => {
   test.setTimeout(IMPORT_TIMEOUT_MS * 2)
   await page.getByRole('link', { name: 'History' }).click()
-  await page.getByLabel('Text from the error page').fill(ANDROID_TEXT)
-  await page.getByRole('button', { name: 'Import history' }).click()
+  await shown(page).getByLabel('Text from the error page').fill(ANDROID_TEXT)
+  await shown(page).getByRole('button', { name: 'Import history' }).click()
   // Served by backend/tests/gacha_fixture.py: 25 character pulls, 3 standard ones.
-  await expect(page.getByRole('status')).toHaveText('28 new pulls imported.', {
+  await expect(shown(page).getByRole('status')).toHaveText('28 new pulls imported.', {
     timeout: IMPORT_TIMEOUT_MS,
   })
-  await expect(page.getByLabel('Text from the error page')).toHaveValue('')
+  await expect(shown(page).getByLabel('Text from the error page')).toHaveValue('')
 
   const character = card(page, 'Character Event')
   await expect(character.getByText('15 pulls since the last 5★')).toBeVisible()
@@ -493,7 +493,7 @@ test('imports Star Rail warps from a UIGF file chosen on the phone', async ({ pa
     hkrpg: [{ uid: UID, timezone: 8, list: [warp('1', '3', 'Arrows'), warp('2', '5', 'Acheron')] }],
   }
   const tool = shown(page)
-  await tool.getByLabel('UIGF or SRGF file').setInputFiles({
+  await tool.getByLabel('Or from a UIGF or SRGF file').setInputFiles({
     name: 'warps.json',
     mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify(uigf)),
@@ -509,4 +509,17 @@ test('a shared Genshin link opens the player straight away', async ({ page }) =>
   await page.goto(`/#genshin/builds/${UID}`)
   await expect(card(page, 'Ganyu')).toBeVisible()
   await expect(shown(page).getByRole('button', { name: 'Share link' })).toBeVisible()
+})
+
+test('imports Star Rail warps with the link from the error page', async ({ page }) => {
+  await page.goto('/#starrail/history')
+  const tool = shown(page)
+  await expect(tool.getByText('On a Windows PC')).toBeVisible()
+  await tool
+    .getByLabel('Text from the error page')
+    .fill(ANDROID_TEXT.replace('genshin/event/e20190909gacha-v3', 'hkrpg/event/e20211215gacha-v2'))
+  await tool.getByRole('button', { name: 'Import history' }).click()
+  await expect(tool.getByText('5 new warps imported.')).toBeVisible({ timeout: 20_000 })
+  await expect(tool.getByRole('heading', { name: 'Character Event Warp' })).toBeVisible()
+  await expect(tool.getByRole('cell', { name: 'Acheron' })).toBeVisible()
 })

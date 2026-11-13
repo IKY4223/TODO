@@ -36,8 +36,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
-  current game's tools as tabs. Built for a phone first: 360px wide, 44px touch targets. On a
-  wide screen the menu stays open beside the page in place of the tabs.
+  current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
+  a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
+  page in place of the tab bar. A night sky of indigo and violet, or a light theme.
 - **Light and dark themes** — the app follows the device's setting until the player picks a
   theme under Settings in the menu; the pick is kept on the device.
 - **Share a Star Rail build** — every showcase and character page has its own address
@@ -59,8 +60,10 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   pity and each 5★ with the pulls it took. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
-- **Star Rail warp history** — choose a UIGF (v4) or SRGF file that another warp tracker
-  exported: each banner's pity and 5★ warps, read on the device and never sent anywhere.
+- **Star Rail warp history** — import it with the link the game's warp records open, as for
+  Genshin (the Android steps are the Genshin ones, not yet confirmed on Star Rail), or choose a
+  UIGF (v4) or SRGF file that another warp tracker exported, read on the device and never sent
+  anywhere. Shows each banner's pity and 5★ warps. Global servers only.
   Collaboration warps count their pity apart from event warps until a source says they share it.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is

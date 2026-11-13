@@ -32,7 +32,10 @@ const GAMES = {
       { key: 'starrail_light_cone', label: 'Light Cone Event Warp', prefix: 'S', firstCopy: 1 },
     ],
   },
-} as const satisfies Record<string, { title: Message; hint: Message; banners: readonly BannerChoice[] }>
+} as const satisfies Record<
+  string,
+  { title: Message; hint: Message; banners: readonly BannerChoice[] }
+>
 
 const targets = ({ key, prefix, firstCopy }: BannerChoice): { copies: number; label: string }[] =>
   Array.from({ length: WISH_BANNERS[key].max_copies }, (_, index) => ({
@@ -140,14 +143,7 @@ export function WishForecast({ game }: { readonly game: keyof typeof GAMES }): J
         </label>
         <label>
           {t('Pulls available')}
-          <input
-            name="pulls"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={MAX_PULLS}
-            required
-          />
+          <input name="pulls" type="number" inputMode="numeric" min={0} max={MAX_PULLS} required />
         </label>
         <label>
           {t('Target')}
@@ -163,9 +159,11 @@ export function WishForecast({ game }: { readonly game: keyof typeof GAMES }): J
           {t('Calculate')}
         </button>
       </form>
-      {'message' in state && <p role="alert">
+      {'message' in state && (
+        <p role="alert">
           {t('Could not calculate: {reason}', { reason: localized(state.message) })}
-        </p>}
+        </p>
+      )}
       <div aria-live="polite">
         {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
         {'data' in state && <ForecastResult forecast={state.data} />}
