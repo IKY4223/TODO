@@ -97,8 +97,18 @@ Remind the owner of these until they confirm them.
 For a session picking the work up again.
 
 - State: PRs #1 to #14 are merged.
-- Next: a host for the bot and the site, then the Mini App (README plan, item 2); or what is left
-  of the effects table (item 1). The owner merges the workflow's `Game data update` pull requests.
+- Next (stage 15, set by the owner, in this order):
+  1. Rewrite the warp and wish history import instructions from scratch. Add nothing of our own:
+     every step comes from a trustworthy source (the game's publisher, or a well-known open
+     source tracker's own docs), read and quoted; say where each step comes from. Remove steps
+     that no such source confirms (the Android error-page steps for Star Rail are unconfirmed).
+  2. Tell players they can write to HoYoverse support and ask them to send the account's full
+     warp history (confirm the support address and the process on HoYoverse's own site first;
+     do not guess an address).
+  3. Try rebuilding the site's layout from scratch with the `design-taste-frontend` skill. Its
+     rule against violet conflicts with the palette: ask the owner before following it.
+  Then: a host for the bot and the Mini App (README plan, item 2), or what is left of the
+  effects table (item 1).
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed

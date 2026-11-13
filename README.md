@@ -75,6 +75,10 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
+0. Next stage, from the owner: rewrite the history import instructions from trustworthy sources
+   only, adding nothing of our own; tell players they can ask HoYoverse support for their full
+   warp history (once the address and process are confirmed on HoYoverse's own site); and try
+   rebuilding the site's layout from scratch with the taste skill.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
