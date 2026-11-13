@@ -4,6 +4,7 @@ import { useRequest } from '../api/useRequest'
 import { type Message, numberFormat, useLocalized, useT } from '../i18n'
 import { DataRequest } from './DataRequest'
 import { ExportButton } from './HistoryFiles'
+import { PcScript } from './PcScript'
 import { readHistoryFile } from './uigf'
 import {
   type BannerSummary,
@@ -133,6 +134,7 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('On iPhone')}</summary>
         <Steps steps={IPHONE} />
       </details>
+      <PcScript game="genshin" />
       <DataRequest game="genshin" />
     </>
   )

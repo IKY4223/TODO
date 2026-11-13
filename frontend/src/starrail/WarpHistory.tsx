@@ -4,6 +4,7 @@ import { useRequest } from '../api/useRequest'
 import { type Message, useLocalized, useT } from '../i18n'
 import { DataRequest } from '../wishes/DataRequest'
 import { ExportButton } from '../wishes/HistoryFiles'
+import { PcScript } from '../wishes/PcScript'
 import { BannerCard, NOT_SAVED } from '../wishes/WishHistory'
 import { EMPTY_HISTORY, importHistory } from '../wishes/history'
 import { readHistoryFile } from '../wishes/uigf'
@@ -13,8 +14,8 @@ const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
 const LINK_ROWS = 4
 
-// No trustworthy source gives a way to get this link on a phone. The one PC way a source gives
-// runs another tracker's own script, which the owner does not send players to.
+// No trustworthy source gives a way to get this link on a phone. On a PC, this site's own script
+// finds it where the open source tracker biuuu/star-rail-warp-export looks (see PcScript).
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
@@ -23,10 +24,11 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('Where to get the history')}</summary>
         <p>
           {t(
-            'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.',
+            'No trustworthy source gives a way to get this link on Android or iPhone. On a PC, the script below finds it; a file another warp tracker exported (UIGF or SRGF) can be read too.',
           )}
         </p>
       </details>
+      <PcScript game="starrail" />
       <DataRequest game="starrail" />
     </>
   )

@@ -67,6 +67,11 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   instead, on the device. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
+- **History link on a PC** — both histories show this site's own PowerShell script in full, with
+  a button that copies it: pasted into PowerShell, it reads the game's log and web cache and
+  prints the history link. It sends nothing over the network and changes no file; CI runs it
+  against a made-up game on Windows, in Windows PowerShell 5.1 and PowerShell 7. Global servers
+  only.
 - **Save the history to a file** — both histories save to a UIGF v4 file that this site and other
   trackers read, so clearing the browser's data loses nothing. A Star Rail file keeps the
   server's time offset and the item and pool ids HoYoverse sends; Genshin's history sends no
@@ -87,8 +92,6 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-0. Own PowerShell scripts, served from this site, that find the Genshin and Star Rail history
-   links on a PC, so the PC way comes back without sending players to another tracker.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
@@ -262,3 +265,8 @@ first digit are those of [genshin-wish-export](https://github.com/biuuu/genshin-
 (`src/main/UIGFJson.js`); a Star Rail export takes the offset HoYoverse's warp history sends, as
 [star-rail-warp-export](https://github.com/biuuu/star-rail-warp-export) does. Both are MIT
 licensed; nothing was copied from them.
+
+The PC scripts (`frontend/src/wishes/link-scripts`) look for the link where those two exporters
+do (`src/main/getData.js`): the game's own folder from its log in `AppData\LocalLow`, then the
+newest `webCaches\…\Cache\Cache_Data\data_2` under it. Their first step, opening the history in
+the game, is quoted from each exporter's `docs/README_EN.md`.

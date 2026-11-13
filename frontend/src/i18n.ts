@@ -255,8 +255,21 @@ const RU = {
   'A browser should open up. Copy the link and paste it below':
     'Должен открыться браузер. Скопируйте ссылку и вставьте ниже',
   'On Android': 'На Android',
-  'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
-    'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
+  'No trustworthy source gives a way to get this link on Android or iPhone. On a PC, the script below finds it; a file another warp tracker exported (UIGF or SRGF) can be read too.':
+    'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. На ПК её находит скрипт ниже; можно также прочитать файл, выгруженный другим трекером прыжков (UIGF или SRGF).',
+  'On a PC (Windows)': 'На ПК (Windows)',
+  'Open the wish history of the game': 'Откройте историю молитв в игре',
+  'Open the warp details page of the game': 'Откройте в игре страницу с историей прыжков',
+  'On the PC, open Windows PowerShell: press Win+X and choose Windows PowerShell, or Terminal on Windows 11':
+    'На ПК откройте Windows PowerShell: нажмите Win+X и выберите Windows PowerShell или, в Windows 11, Терминал',
+  'Copy the script below, paste it into PowerShell and press Enter':
+    'Скопируйте скрипт ниже, вставьте его в PowerShell и нажмите Enter',
+  'It prints the link and copies it: paste it into the box below':
+    'Он выведет ссылку и скопирует её: вставьте её в поле ниже',
+  "The script reads the game's log and web cache and prints the link. It sends nothing over the network and changes no file. Read it before you run it.":
+    'Скрипт читает журнал и веб-кэш игры и выводит ссылку. Он ничего не отправляет в сеть и не меняет файлы. Прочитайте его перед запуском.',
+  'Copy the script': 'Скопировать скрипт',
+  Copied: 'Скопировано',
   'The link': 'Ссылка',
   Home: 'Главная',
   'Every showcased character: final stats, relics, light cone and skill levels.':

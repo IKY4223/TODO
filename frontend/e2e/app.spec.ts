@@ -603,6 +603,32 @@ test('imports Genshin wishes from a UIGF file, saves them to one and reads that 
   expect(problems).toEqual([])
 })
 
+for (const [address, game] of [
+  ['genshin/history', 'Genshin Impact'],
+  ['starrail/history', 'Honkai: Star Rail'],
+] as const) {
+  test(`#${address} shows the PC script in full and copies it`, async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`/#${address}`)
+    const tool = shown(page)
+    await tool.getByText('On a PC (Windows)').click()
+    const script = tool.locator('pre.script code')
+    await expect(script).toContainText(`finds the ${game}`)
+    await tool.getByRole('button', { name: 'Copy the script' }).click()
+    await expect(tool.getByRole('button', { name: 'Copied' })).toBeVisible()
+    expect(await page.evaluate(async () => navigator.clipboard.readText())).toBe(
+      await script.textContent(),
+    )
+    // The script's long lines wrap: the page stays as wide as the screen.
+    expect((await measureLayout(page)).overflows).toBe(false)
+    await page.getByLabel('Language').selectOption('ru')
+    await expect(tool.getByRole('button', { name: 'Скопировано' })).toBeVisible()
+    expect((await measureLayout(page)).overflows).toBe(false)
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+    expect(problems).toEqual([])
+  })
+}
+
 test('a shared Genshin link opens the player straight away', async ({ page }) => {
   await page.goto(`/#genshin/builds/${UID}`)
   await expect(card(page, 'Ganyu')).toBeVisible()

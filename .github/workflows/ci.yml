@@ -40,6 +40,19 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:9000/)" = 401
           curl -fsS -u anyone:ci-only http://localhost:9000/ | grep -q '<div id="root">'
 
+  link-scripts:
+    # The PC scripts that find a history link, run against a made-up game in both PowerShells
+    # a player may have.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Windows PowerShell 5.1
+        shell: powershell
+        run: ./frontend/src/wishes/link-scripts/test.ps1
+      - name: PowerShell 7
+        shell: pwsh
+        run: ./frontend/src/wishes/link-scripts/test.ps1
+
   audit:
     runs-on: ubuntu-latest
     steps:
