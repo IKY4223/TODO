@@ -504,3 +504,9 @@ test('imports Star Rail warps from a UIGF file chosen on the phone', async ({ pa
   expectPhoneFriendly(await measureLayout(page), 3)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
+
+test('a shared Genshin link opens the player straight away', async ({ page }) => {
+  await page.goto(`/#genshin/builds/${UID}`)
+  await expect(card(page, 'Ganyu')).toBeVisible()
+  await expect(shown(page).getByRole('button', { name: 'Share link' })).toBeVisible()
+})

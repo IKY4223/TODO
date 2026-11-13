@@ -130,7 +130,12 @@ test('leaves out an icon the API does not have', async () => {
 })
 
 test('lists a character whose element and talents are unknown', async () => {
-  const newcomer = { ...SHOWCASE.characters[0], name: 'Unknown character', element: null, talents: [] }
+  const newcomer = {
+    ...SHOWCASE.characters[0],
+    name: 'Unknown character',
+    element: null,
+    talents: [],
+  }
   load(async () => Response.json({ ...SHOWCASE, characters: [newcomer] }))
   expect(await screen.findByText('Lv. 90 · C6')).toBeDefined()
   expect(screen.queryByText(/^Talents/)).toBeNull()
@@ -166,7 +171,10 @@ test.each([
 
 test('shows the showcase in Russian', async () => {
   setLanguage('ru')
-  vi.stubGlobal('fetch', vi.fn(async () => Response.json(SHOWCASE)))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async () => Response.json(SHOWCASE)),
+  )
   render(<CharacterShowcase />)
   fireEvent.change(screen.getByLabelText('UID'), { target: { value: '618285856' } })
   fireEvent.click(screen.getByRole('button', { name: 'Загрузить персонажей' }))
@@ -174,4 +182,18 @@ test('shows the showcase in Russian', async () => {
   expect(screen.getByText('Ур. 90 · C6 · Пиро')).toBeDefined()
   expect(screen.getByText('Таланты 10 / 13 / 13')).toBeDefined()
   setLanguage('en')
+})
+
+test('a shared link loads its player, and loading another moves the address along', async () => {
+  window.location.hash = '#genshin/builds/618285856'
+  const fetchMock = vi.fn(async (_url: string) => Response.json(SHOWCASE))
+  vi.stubGlobal('fetch', fetchMock)
+  render(<CharacterShowcase />)
+  await screen.findByText('Amber')
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/showcase/618285856'])
+  expect(screen.getByRole('button', { name: 'Share link' })).toBeDefined()
+  fireEvent.change(screen.getByLabelText('UID'), { target: { value: '700000001' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Load characters' }))
+  expect(window.location.hash).toBe('#genshin/builds/700000001')
+  window.location.hash = ''
 })

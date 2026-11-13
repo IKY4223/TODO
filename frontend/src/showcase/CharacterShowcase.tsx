@@ -1,8 +1,10 @@
-import type { JSX, SubmitEvent } from 'react'
+import { type JSX, type SubmitEvent, useEffect, useRef, useState } from 'react'
+import { linked, useAddress } from '../address'
 import { UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { useLocalized, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
+import { ShareButton } from '../ui/ShareButton'
 import { DamageCalculator } from '../damage/DamageCalculator'
 import {
   type Artifact,
@@ -16,6 +18,9 @@ import {
   STATS,
 } from './showcase'
 
+// A player's showcase lives at #genshin/builds/618285856, so it can be shared as a link.
+const LIST = '#genshin/builds'
+const listOf = (uid: string): string => `${LIST}/${uid}`
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
@@ -29,7 +34,10 @@ function ArtifactItem({ artifact }: { readonly artifact: Artifact }): JSX.Elemen
           {t(SLOTS[artifact.slot])} · {artifact.set_name} +{artifact.level}
         </span>
         <strong>{formatStat(artifact.main, t)}</strong>
-        <ul className="substats" aria-label={t('{slot} substats', { slot: t(SLOTS[artifact.slot]) })}>
+        <ul
+          className="substats"
+          aria-label={t('{slot} substats', { slot: t(SLOTS[artifact.slot]) })}
+        >
           {artifact.subs.map((sub) => (
             <li key={sub.key}>
               <span>{t(STATS[sub.key].label)}</span> <span>{formatValue(sub)}</span>
@@ -93,6 +101,7 @@ function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Elem
       <p>
         {showcase.nickname} · {t('AR {rank}', { rank: showcase.adventure_rank })}
       </p>
+      <ShareButton address={listOf(showcase.uid)} title={showcase.nickname} />
       {showcase.characters.length ? (
         <ul className="cards">
           {showcase.characters.map((character) => (
@@ -116,12 +125,30 @@ export function CharacterShowcase(): JSX.Element {
   const [state, run] = useRequest<Showcase>()
   const t = useT()
   const localized = useLocalized()
+  const target = linked(useAddress(), LIST).uid
+  const [uid, setUid] = useState(target ?? '')
+  const asked = useRef<string | undefined>(undefined) // the UID last asked for
+
+  const load = (wanted: string): void => {
+    asked.current = wanted
+    setUid(wanted)
+    void run(() => fetchShowcase(wanted))
+  }
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    const uid = String(new FormData(event.currentTarget).get('uid'))
-    void run(() => fetchShowcase(uid))
+    // On a page whose address names a player, the address follows to the new one and the
+    // effect below loads them, so the address never names someone not on screen.
+    if (target && target !== uid) window.location.hash = listOf(uid)
+    else load(uid)
   }
+
+  // A shared link, or the back button, names a player: load them unless they are already here.
+  useEffect(() => {
+    if (target && target !== asked.current) load(target)
+    // Only a new address asks; `load` is a new function on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target])
 
   return (
     <section aria-labelledby="showcase-title">
@@ -132,6 +159,8 @@ export function CharacterShowcase(): JSX.Element {
           UID
           <input
             name="uid"
+            value={uid}
+            onChange={(event) => setUid(event.target.value)}
             inputMode="numeric"
             pattern={UID_PATTERN}
             title={t('9 or 10 digits')}
