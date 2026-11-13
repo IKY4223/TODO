@@ -107,66 +107,79 @@ export function WishForecast({ game }: { readonly game: keyof typeof GAMES }): J
     <section aria-labelledby={`${game}-forecast-title`}>
       <h2 id={`${game}-forecast-title`}>{t(title)}</h2>
       <p className="hint">{t(hint)}</p>
-      <form onSubmit={submit}>
-        {banners.length > 1 ? (
-          <label>
-            {t('Banner')}
-            <select
-              value={banner.key}
-              onChange={(event) => {
-                setChosen(banners.find(({ key }) => key === event.target.value)?.key ?? chosen)
-              }}
-            >
-              {banners.map(({ key, label }) => (
-                <option key={key} value={key}>
-                  {t(label)}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : null}
-        <label>
-          {t('Pulls since last 5★')}
-          <input
-            name="pity"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={WISH_BANNERS[banner.key].max_pity}
-            defaultValue={0}
-            required
-          />
-        </label>
-        <label className="check">
-          <input name="guaranteed" type="checkbox" />
-          {t('Next 5★ is guaranteed')}
-        </label>
-        <label>
-          {t('Pulls available')}
-          <input name="pulls" type="number" inputMode="numeric" min={0} max={MAX_PULLS} required />
-        </label>
-        <label>
-          {t('Target')}
-          <select name="copies">
-            {targets(banner).map(({ copies, label }) => (
-              <option key={copies} value={copies}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="submit" disabled={state.status === 'loading'}>
-          {t('Calculate')}
-        </button>
-      </form>
-      {'message' in state && (
-        <p role="alert">
-          {t('Could not calculate: {reason}', { reason: localized(state.message) })}
-        </p>
-      )}
-      <div aria-live="polite">
-        {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
-        {'data' in state && <ForecastResult forecast={state.data} />}
+      <div className="workspace">
+        <div className="controls">
+          <form onSubmit={submit}>
+            {banners.length > 1 ? (
+              <label>
+                {t('Banner')}
+                <select
+                  value={banner.key}
+                  onChange={(event) => {
+                    setChosen(banners.find(({ key }) => key === event.target.value)?.key ?? chosen)
+                  }}
+                >
+                  {banners.map(({ key, label }) => (
+                    <option key={key} value={key}>
+                      {t(label)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+            <label>
+              {t('Pulls since last 5★')}
+              <input
+                name="pity"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={WISH_BANNERS[banner.key].max_pity}
+                defaultValue={0}
+                required
+              />
+            </label>
+            <label className="check">
+              <input name="guaranteed" type="checkbox" />
+              {t('Next 5★ is guaranteed')}
+            </label>
+            <label>
+              {t('Pulls available')}
+              <input
+                name="pulls"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={MAX_PULLS}
+                required
+              />
+            </label>
+            <label>
+              {t('Target')}
+              <select name="copies">
+                {targets(banner).map(({ copies, label }) => (
+                  <option key={copies} value={copies}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="submit" disabled={state.status === 'loading'}>
+              {t('Calculate')}
+            </button>
+          </form>
+        </div>
+        <div className="results">
+          {'message' in state && (
+            <p role="alert">
+              {t('Could not calculate: {reason}', { reason: localized(state.message) })}
+            </p>
+          )}
+          <div aria-live="polite">
+            {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
+            {'data' in state && <ForecastResult forecast={state.data} />}
+          </div>
+        </div>
       </div>
     </section>
   )

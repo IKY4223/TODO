@@ -1,6 +1,11 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test } from 'vitest'
 import App from './App'
+
+// The tools' tests start in Star Rail's builds; the start page's tests clear the address.
+beforeEach(() => {
+  window.location.hash = '#starrail/builds'
+})
 
 afterEach(() => {
   cleanup()
@@ -18,11 +23,33 @@ const openMenu = (): void => {
   fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
 }
 
-test('opens on Star Rail builds', () => {
+test('opens on the start page, which leads into the tools', () => {
+  window.location.hash = ''
   render(<App />)
-  expect(game()).toBe('Star Rail')
-  expect(currentIn('Tools')).toBe('Builds')
-  expect(within(shown()).getByText(/Honkai: Star Rail/)).toBeDefined()
+  expect(game()).toBe('Home')
+  expect(screen.queryByRole('navigation', { name: 'Tools' })).toBeNull()
+  expect(
+    screen.getByRole('heading', { name: 'Build, speed and warp tools for Star Rail and Genshin' }),
+  ).toBeDefined()
+  expect(screen.getByRole('link', { name: 'Open your builds' })).toHaveProperty(
+    'hash',
+    '#starrail/builds',
+  )
+})
+
+test('the start page sends a UID to its builds', () => {
+  window.location.hash = ''
+  render(<App />)
+  const uid = screen
+    .getAllByLabelText('UID')
+    .find((input) => input.getAttribute('name') === 'landing-uid')
+  if (!uid) throw new Error('no UID field on the start page')
+  fireEvent.change(uid, { target: { value: '12' } })
+  fireEvent.submit(uid.closest('form') as HTMLFormElement)
+  expect(window.location.hash).toBe('') // too short: the field asks for 9 or 10 digits
+  fireEvent.change(uid, { target: { value: '700000001' } })
+  fireEvent.submit(uid.closest('form') as HTMLFormElement)
+  expect(window.location.hash).toBe('#starrail/builds/700000001')
 })
 
 test.each([

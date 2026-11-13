@@ -243,6 +243,42 @@ const RU = {
   'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
     'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
   'The link': 'Ссылка',
+  Home: 'Главная',
+  'Every showcased character: final stats, relics, light cone and skill levels.':
+    'Каждый персонаж с витрины: итоговые характеристики, реликвии, световой конус и уровни навыков.',
+  "The exact chance a relic's upgrades land on the substats you want.":
+    'Точный шанс, что улучшения реликвии попадут в нужные вам характеристики.',
+  'The exact odds of a featured 5★ with the warps you have.':
+    'Точный шанс получить 5★ с баннера за ваши прыжки.',
+  "Each banner's pity and 5★ warps, from a link or a UIGF file.":
+    'Гарант и 5★ каждого баннера — по ссылке или из файла UIGF.',
+  'The turn order of a team of four through Memory of Chaos cycles.':
+    'Порядок ходов команды из четырёх в циклах Зала забвения.',
+  'Final stats, talents, weapon and artifacts from the showcase.':
+    'Итоговые характеристики, таланты, оружие и артефакты с витрины.',
+  'The exact odds of a featured 5★ with the wishes you have.':
+    'Точный шанс получить 5★ с баннера за ваши молитвы.',
+  'The whole wish history, imported straight from a phone.':
+    'Вся история молитв — импорт прямо с телефона.',
+  'A history link is used once for the import and never kept.':
+    'Ссылка на историю используется один раз для импорта и не сохраняется.',
+  'Pulls are saved only in this browser, never on a server.':
+    'Крутки хранятся только в этом браузере, никогда на сервере.',
+  'No account and no cookies: a UID is all it asks for.':
+    'Ни аккаунта, ни cookie: нужен только UID.',
+  'Honkai: Star Rail · Genshin Impact': 'Honkai: Star Rail · Genshin Impact',
+  'Build, speed and warp tools for Star Rail and Genshin':
+    'Билды, скорость и прыжки для Star Rail и Genshin',
+  "Enter a UID and see every showcased character's final stats, relics and turn order. Warp odds are exact math, not a simulation.":
+    'Введите UID и увидите итоговые характеристики, реликвии и порядок ходов каждого персонажа с витрины. Шансы прыжков — точный расчёт, а не симуляция.',
+  'Open your builds': 'Открыть ваши билды',
+  'Plan team speed': 'Рассчитать скорость команды',
+  'The Speed tool': 'Инструмент «Скорость»',
+  'chance of a featured 5★ within 80 warps': 'шанс 5★ с баннера за 80 прыжков',
+  'Five tools for Honkai: Star Rail': 'Пять инструментов для Honkai: Star Rail',
+  'Three for Genshin Impact': 'Три для Genshin Impact',
+  'Your history stays on your device': 'Ваша история остаётся на вашем устройстве',
+  'Start with your UID': 'Начните с вашего UID',
   'Where to get the history': 'Где взять историю',
   'Ask HoYoverse for your data': 'Запросить данные у HoYoverse',
   "HoYoverse's privacy policy says you may have the right to ask for a copy of the personal data it holds, by a verifiable request to its Data Protection Office at privacy@hoyoverse.com. It does not say whether the history of pulls is part of that data.":

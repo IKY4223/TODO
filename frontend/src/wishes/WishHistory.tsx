@@ -162,47 +162,53 @@ export function WishHistory(): JSX.Element {
     <section aria-labelledby="history-title">
       <h2 id="history-title">{t('Wish history')}</h2>
       <p className="hint">{t('Genshin Impact · global servers · saved only on this device')}</p>
-      <Instructions open={!pulls.length} />
-      <form onSubmit={submit}>
-        <label>
-          {t('Text from the error page')}
-          <textarea
-            name="link"
-            value={link}
-            onChange={(event) => setLink(event.target.value)}
-            rows={LINK_ROWS}
-            maxLength={MAX_LINK_LENGTH}
-            autoComplete="off"
-            spellCheck={false}
-            required
-          />
-        </label>
-        <p className="hint">
-          {t(
-            'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.',
-          )}
-        </p>
-        <button type="submit" disabled={state.status === 'loading'}>
-          {t('Import history')}
-        </button>
-      </form>
-      {'message' in state && <p role="alert">{localized(state.message)}</p>}
-      <output>{state.status === 'loading' ? progress : outcome}</output>
-      {saved.current && pulls.length ? (
-        <>
-          <p>UID {saved.current}</p>
-          <ul className="cards">
-            {summarize(pulls).map((summary) => (
-              <li key={summary.banner}>
-                <BannerCard summary={summary} />
-              </li>
-            ))}
-          </ul>
-          <button type="button" className="secondary" onClick={forget}>
-            {t('Delete saved history')}
-          </button>
-        </>
-      ) : null}
+      <div className="workspace">
+        <div className="controls">
+          <Instructions open={!pulls.length} />
+          <form onSubmit={submit}>
+            <label>
+              {t('Text from the error page')}
+              <textarea
+                name="link"
+                value={link}
+                onChange={(event) => setLink(event.target.value)}
+                rows={LINK_ROWS}
+                maxLength={MAX_LINK_LENGTH}
+                autoComplete="off"
+                spellCheck={false}
+                required
+              />
+            </label>
+            <p className="hint">
+              {t(
+                'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.',
+              )}
+            </p>
+            <button type="submit" disabled={state.status === 'loading'}>
+              {t('Import history')}
+            </button>
+          </form>
+        </div>
+        <div className="results">
+          {'message' in state && <p role="alert">{localized(state.message)}</p>}
+          <output>{state.status === 'loading' ? progress : outcome}</output>
+          {saved.current && pulls.length ? (
+            <>
+              <p>UID {saved.current}</p>
+              <ul className="cards">
+                {summarize(pulls).map((summary) => (
+                  <li key={summary.banner}>
+                    <BannerCard summary={summary} />
+                  </li>
+                ))}
+              </ul>
+              <button type="button" className="secondary" onClick={forget}>
+                {t('Delete saved history')}
+              </button>
+            </>
+          ) : null}
+        </div>
+      </div>
     </section>
   )
 }

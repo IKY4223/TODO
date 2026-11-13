@@ -35,6 +35,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
+- **Start page** — what the toolkit does, built to the taste skill's plan: the hero with the
+  product's own interface alone on the first screen, then one section a screen on a computer, and
+  a UID field that opens the player's builds.
 - **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
   current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
   a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
@@ -77,10 +80,8 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-0. The rest of the taste skill's page plan, which this stage did not take: it is made for landing
-   pages (a hero alone on the first screen, one section per screen, photographs on every screen,
-   real product icons, its browser finish gate), which a phone tool of forms and cards does not
-   fit. Decide with the owner whether a landing page in front of the tools should take it.
+0. Own PowerShell scripts, served from this site, that find the Genshin and Star Rail history
+   links on a PC, so the PC way comes back without sending players to another tracker.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,

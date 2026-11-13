@@ -394,7 +394,7 @@ test('explains why a relic cannot exist', async ({ page }) => {
 })
 
 test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/#starrail/builds')
   await page.getByLabel('Language').selectOption('ru')
   await expect(page.getByRole('link', { name: 'Билды' })).toHaveAttribute('aria-current', 'page')
   await shown(page).getByLabel('UID').fill(UID)
@@ -452,9 +452,24 @@ for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'g
   })
 }
 
-test('Star Rail is where the app opens', async ({ page }) => {
+test('the app opens on a start page that leads to a player', async ({ page }) => {
   await page.goto('/')
-  await expect(shown(page).getByText(/Honkai: Star Rail/)).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Build, speed and warp tools for Star Rail and Genshin' }),
+  ).toBeVisible()
+  const start = page.locator('.landing-close')
+  await start.getByLabel('UID').fill(UID)
+  await start.getByRole('button', { name: 'Load characters' }).click()
+  await expect(card(page, 'Hyacine')).toBeVisible()
+  expectPhoneFriendly(await measureLayout(page), 3)
+  await page.goto('/')
+  // The hero fades in once; contrast is read when it has.
+  await page.evaluate(async () =>
+    Promise.all(document.getAnimations().map(async (a) => a.finished)),
+  )
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await page.emulateMedia({ colorScheme: 'light' })
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
 
 test('on a wide screen the menu stays beside the page', async ({ page }) => {

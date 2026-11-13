@@ -2,6 +2,8 @@ import type { JSX } from 'react'
 
 // Line icons drawn for this app on a 24px grid: stroke only, so they take the text colour.
 const PATHS = {
+  // A house: the start page.
+  home: 'M4 11l8-7 8 7v9h-5v-6H9v6H4Z',
   // A person: builds and showcases.
   builds: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
   // A gem: relics.
