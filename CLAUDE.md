@@ -19,7 +19,11 @@ Build optimizer and wish tracker for HoYoverse games. `backend/` is FastAPI mana
 - Never lower a coverage floor or switch off a lint rule to get a change through.
 - The owner works from a phone and cannot open the preview. Never leave a step that needs a
   computer. After a UI change, start the app, report its port, and send phone-sized screenshots.
-- The UI is mobile-first: it must work at 360px wide with 16px inputs and 44px touch targets.
+- The owner gives the wide screen of a computer priority now (November 2026): lay pages out for
+  it first, with room for more per page. It must still work at 360px wide with 16px inputs and
+  44px touch targets.
+- The site links no other tracker or similar service (paimon.moe, stardb.gg and the like), so
+  players stay on it: credit sources in the README and in code comments instead.
 - `backend/app/showcase/gamedata.json`, `backend/app/starrail/gamedata.json` and
   `backend/app/starrail/texts.json` are generated: run `scripts/sync_gamedata.py` and
   `scripts/sync_starrail_data.py` in `backend/` after each game version, never edit them by hand.

@@ -58,15 +58,15 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   modelled.
 - **Wish history** — import the whole wish history straight from a phone: on Android, copy the
   text of the error page the game's history shows offline and paste it in. Shows every banner's
-  pity and each 5★ with the pulls it took. The steps for Android, iPhone and PC are paimon.moe's
-  own (MIT), and both histories quote what HoYoverse's privacy policy says about asking for a copy
+  pity and each 5★ with the pulls it took. The steps for Android and iPhone are paimon.moe's
+  own (see Credits), and both histories quote what HoYoverse's privacy policy says about asking for a copy
   of one's data. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
-- **Star Rail warp history** — import it with the link from the warp records, found on a
-  Windows PC with stardb.gg's PowerShell command (no trustworthy source gives a way on a phone),
-  or choose a UIGF (v4) or SRGF file another warp tracker exported, read on the device and never
-  sent anywhere. Shows each banner's pity and 5★ warps. Global servers only.
+- **Star Rail warp history** — import it with a warp history link, or choose a UIGF (v4) or SRGF
+  file another warp tracker exported, read on the device and never sent anywhere. No trustworthy
+  source gives a way to get the link on a phone. Shows each banner's pity and 5★ warps. Global
+  servers only.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
@@ -239,3 +239,9 @@ acceptable use policy names Telegram bot frameworks among what it refuses. It ne
 ## Licence
 
 MIT: see `LICENSE`. Game data, names and images belong to HoYoverse.
+
+## Credits
+
+The Genshin wish history steps for Android and iPhone are paimon.moe's, word for word in English
+and Russian: [paimon-moe](https://github.com/MadeBaruna/paimon-moe), MIT licence, copyright (c)
+2021 Made Baruna. The site itself links no other tracker, so players stay on it.

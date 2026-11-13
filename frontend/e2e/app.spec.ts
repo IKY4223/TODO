@@ -514,7 +514,7 @@ test('a shared Genshin link opens the player straight away', async ({ page }) =>
 test('imports Star Rail warps with the link from the error page', async ({ page }) => {
   await page.goto('/#starrail/history')
   const tool = shown(page)
-  await expect(tool.getByText('On a Windows PC')).toBeVisible()
+  await expect(tool.getByText('Where to get the history')).toBeVisible()
   await tool
     .getByLabel('The link')
     .fill(ANDROID_TEXT.replace('genshin/event/e20190909gacha-v3', 'hkrpg/event/e20211215gacha-v2'))

@@ -67,7 +67,9 @@ export function BannerCard(props: {
   )
 }
 
-// Word for word the steps paimon.moe gives (MIT licence), in its own English and Russian.
+// Word for word the steps paimon.moe gives (github.com/MadeBaruna/paimon-moe, MIT licence,
+// copyright (c) 2021 Made Baruna), in its own English and Russian. Credited in the README, not
+// linked: the owner keeps players on this site.
 const ANDROID: readonly Message[] = [
   'Open Wish (in the game)',
   'Press History',
@@ -88,7 +90,6 @@ const IPHONE: readonly Message[] = [
   'There is a link on the bottom of the reply; press that',
   'A browser should open up. Copy the link and paste it below',
 ]
-const PAIMON = 'https://paimon.moe/wish/import'
 
 function Steps({ steps }: { readonly steps: readonly Message[] }): JSX.Element {
   const t = useT()
@@ -113,17 +114,6 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('On iPhone')}</summary>
         <Steps steps={IPHONE} />
       </details>
-      <details>
-        <summary>{t('On a Windows PC')}</summary>
-        <p>
-          {t(
-            'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.',
-          )}
-        </p>
-      </details>
-      <p className="hint">
-        {t('Steps from')} <a href={PAIMON}>paimon.moe</a>
-      </p>
       <DataRequest game="genshin" />
     </>
   )

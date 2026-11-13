@@ -118,7 +118,6 @@ const RU = {
     'Honkai: Star Rail · глобальные серверы · хранится только на этом устройстве',
   'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.':
     'По ссылке любой может читать вашу историю прыжков около суток. Приложение использует её для импорта и не сохраняет.',
-  'On a Windows PC': 'На ПК с Windows',
   'Or from a UIGF or SRGF file': 'Или из файла UIGF или SRGF',
   'UIGF or SRGF file': 'Файл UIGF или SRGF',
   'This file is not a UIGF or SRGF file.': 'Это не файл UIGF или SRGF.',
@@ -219,7 +218,7 @@ const RU = {
   Name: 'Имя',
   Pity: 'Гарант',
   'On iPhone': 'На iPhone',
-  // paimon.moe's own steps (MIT licence), its English and its Russian, word for word.
+  // paimon.moe's own steps (MIT licence, credited in the README), its English and Russian.
   'Open Wish (in the game)': 'Откройте Молитвы (в игре)',
   'Press History': 'Нажмите кнопку История',
   'Wait for it to load': 'Подождите пока она загрузится',
@@ -241,24 +240,10 @@ const RU = {
   'A browser should open up. Copy the link and paste it below':
     'Должен открыться браузер. Скопируйте ссылку и вставьте ниже',
   'On Android': 'На Android',
-  'On a phone': 'На телефоне',
-  'Steps from': 'Шаги взяты с',
-  'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.':
-    'paimon.moe даёт команду PowerShell, которая копирует ссылку. Выполните шаги на его странице импорта и вставьте ссылку ниже.',
-  // stardb.gg's steps (https://stardb.gg/en/warp-import), translated.
-  'Start Honkai: Star Rail on your PC and open your Warp records history':
-    'Запустите Honkai: Star Rail на ПК и откройте историю записей прыжков',
-  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar":
-    'Откройте Windows PowerShell: найдите «PowerShell» в поиске Windows',
-  'Copy and paste this command into Powershell and press Enter (global servers):':
-    'Скопируйте эту команду в PowerShell и нажмите Enter (глобальные серверы):',
-  'Paste the output of the command into the input below':
-    'Вставьте то, что вывела команда, в поле ниже',
-  "The command runs stardb.gg's own script on your PC: use it only if you trust that site.":
-    'Команда запускает на вашем ПК скрипт stardb.gg: используйте её, только если доверяете этому сайту.',
   'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
     'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
   'The link': 'Ссылка',
+  'Where to get the history': 'Где взять историю',
   'Ask HoYoverse for your data': 'Запросить данные у HoYoverse',
   "HoYoverse's privacy policy says you may have the right to ask for a copy of the personal data it holds, by a verifiable request to its Data Protection Office at privacy@hoyoverse.com. It does not say whether the history of pulls is part of that data.":
     'В политике конфиденциальности HoYoverse сказано, что вы можете иметь право запросить копию ваших персональных данных, отправив подтверждаемый запрос в отдел защиты данных на privacy@hoyoverse.com. Входит ли в эти данные история круток, там не сказано.',

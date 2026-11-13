@@ -22,39 +22,14 @@ const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
 const LINK_ROWS = 4
 
-// The steps stardb.gg gives, quoted (https://stardb.gg/en/warp-import). No trustworthy source
-// gives a way to get this link on a phone, so none is offered.
-const STARDB = 'https://stardb.gg/en/warp-import'
-const PC: readonly Message[] = [
-  'Start Honkai: Star Rail on your PC and open your Warp records history',
-  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar",
-  'Copy and paste this command into Powershell and press Enter (global servers):',
-]
-
+// No trustworthy source gives a way to get this link on a phone. The one PC way a source gives
+// runs another tracker's own script, which the owner does not send players to.
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
     <>
       <details open={open}>
-        <summary>{t('On a Windows PC')}</summary>
-        <ol>
-          {PC.map((step) => (
-            <li key={step}>{t(step)}</li>
-          ))}
-          <li>
-            <code>iwr -useb stardb.gg/warp | iex</code>
-          </li>
-          <li>{t('Paste the output of the command into the input below')}</li>
-        </ol>
-        <p className="hint">
-          {t(
-            "The command runs stardb.gg's own script on your PC: use it only if you trust that site.",
-          )}{' '}
-          {t('Steps from')} <a href={STARDB}>stardb.gg</a>
-        </p>
-      </details>
-      <details>
-        <summary>{t('On a phone')}</summary>
+        <summary>{t('Where to get the history')}</summary>
         <p>
           {t(
             'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.',
