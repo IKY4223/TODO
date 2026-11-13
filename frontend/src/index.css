@@ -1033,6 +1033,10 @@ footer {
     max-width: 26rem;
   }
 
+  .workspace:has(.pc-script[open]) .pc-script > button {
+    width: auto;
+  }
+
   .results > :first-child {
     margin-top: 0;
   }
