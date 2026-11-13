@@ -243,6 +243,9 @@ test('imports wish history from the text Android shows and keeps it on the devic
   const character = card(page, 'Character Event')
   await expect(character.getByText('15 pulls since the last 5★')).toBeVisible()
   await expect(character.getByRole('row', { name: 'Furina 10' })).toBeVisible()
+  await expect(
+    character.getByText('10 pulls per 5★ on average · at most 15 in a row without one'),
+  ).toBeVisible()
   await expect(card(page, 'Standard').getByText('3 pulls since the last 5★')).toBeVisible()
 
   expectPhoneFriendly(await measureLayout(page), MIN_HISTORY_CONTROLS)
@@ -520,6 +523,86 @@ test('imports Star Rail warps from a UIGF file chosen on the phone', async ({ pa
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
 
+const wish = (id: string, rank_type: string, name: string, gacha_type = '301') => ({
+  uigf_gacha_type: '301',
+  gacha_type,
+  item_id: '',
+  time: '2025-01-01 12:00:00',
+  name,
+  item_type: 'Character',
+  rank_type,
+  id,
+})
+
+/** Clicks the export button and reads back the file the browser saved. */
+async function exported(page: Page): Promise<{ readonly name: string; readonly text: string }> {
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    shown(page).getByRole('button', { name: 'Save to a file' }).click(),
+  ])
+  const stream = await download.createReadStream()
+  const chunks: Buffer[] = []
+  for await (const chunk of stream) chunks.push(Buffer.from(chunk as Uint8Array))
+  return { name: download.suggestedFilename(), text: Buffer.concat(chunks).toString() }
+}
+
+test('imports Genshin wishes from a UIGF file, saves them to one and reads that back', async ({
+  page,
+}) => {
+  await page.goto('/#genshin/history')
+  const tool = shown(page)
+  const uigf = {
+    info: { export_timestamp: 1, export_app: 'test', export_app_version: '1', version: 'v4.0' },
+    hk4e: [
+      {
+        uid: UID,
+        timezone: 1,
+        list: [wish('1', '3', 'Xiangling'), wish('2', '5', 'Furina', '400')],
+      },
+    ],
+  }
+  await tool.getByLabel('Or from a UIGF file').setInputFiles({
+    name: 'wishes.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(uigf)),
+  })
+  await expect(tool.getByText('2 new pulls imported.')).toBeVisible()
+  const character = card(page, 'Character Event')
+  await expect(character.getByRole('row', { name: 'Furina 2' })).toBeVisible()
+  await expect(
+    character.getByText('2 pulls per 5★ on average · at most 1 in a row without one'),
+  ).toBeVisible()
+
+  const file = await exported(page)
+  expect(file.name).toMatch(/^hoyo-toolkit-genshin-\d{4}-\d{2}-\d{2}\.json$/)
+  const saved = JSON.parse(file.text) as typeof uigf
+  expect(saved.info.version).toBe('v4.2')
+  expect(saved.hk4e[0]?.timezone).toBe(1)
+  expect(saved.hk4e[0]?.list.map(({ id, uigf_gacha_type }) => [id, uigf_gacha_type])).toEqual([
+    ['1', '301'],
+    ['2', '301'],
+  ])
+
+  // On a device that has nothing saved, the exported file brings the same history back.
+  await page.evaluate(() => window.localStorage.clear())
+  await page.reload()
+  await expect(shown(page).getByRole('button', { name: 'Save to a file' })).toHaveCount(0)
+  await shown(page).getByLabel('Or from a UIGF file').setInputFiles({
+    name: file.name,
+    mimeType: 'application/json',
+    buffer: Buffer.from(file.text),
+  })
+  await expect(shown(page).getByText('2 new pulls imported.')).toBeVisible()
+  await expect(card(page, 'Character Event').getByRole('row', { name: 'Furina 2' })).toBeVisible()
+
+  // Russian runs longer: the history, its statistics and the file buttons must still fit.
+  await page.getByLabel('Language').selectOption('ru')
+  await expect(shown(page).getByRole('button', { name: 'Сохранить в файл' })).toBeVisible()
+  expectPhoneFriendly(await measureLayout(page), MIN_HISTORY_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
 test('a shared Genshin link opens the player straight away', async ({ page }) => {
   await page.goto(`/#genshin/builds/${UID}`)
   await expect(card(page, 'Ganyu')).toBeVisible()
@@ -537,4 +620,18 @@ test('imports Star Rail warps with the link from the error page', async ({ page 
   await expect(tool.getByText('5 new warps imported.')).toBeVisible({ timeout: 20_000 })
   await expect(tool.getByRole('heading', { name: 'Character Event Warp' })).toBeVisible()
   await expect(tool.getByRole('cell', { name: 'Acheron' })).toBeVisible()
+
+  // The file keeps what HoYoverse sent and other trackers need: the server's offset, the ids.
+  const file = await exported(page)
+  expect(file.name).toMatch(/^hoyo-toolkit-starrail-/)
+  const { hkrpg } = JSON.parse(file.text) as {
+    hkrpg: { uid: string; timezone: number; list: Record<string, string>[] }[]
+  }
+  expect(hkrpg.map(({ uid, timezone }) => [uid, timezone])).toEqual([[UID, 1]])
+  expect(hkrpg[0]?.list.find(({ name }) => name === 'Acheron')).toMatchObject({
+    item_id: '1308',
+    gacha_id: '2001',
+    gacha_type: '11',
+    rank_type: '5',
+  })
 })

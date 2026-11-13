@@ -40,14 +40,18 @@ interface Sent {
 }
 
 /** Answers like the backend: one page, newest first, older than end_id. */
-function serve(server = SERVER, uid = UID): ReturnType<typeof vi.fn> {
+function serve(
+  server = SERVER,
+  uid = UID,
+  timezone: number | null = null,
+): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
     const sent = JSON.parse(String(init?.body)) as Sent // the test sends this body itself
     const pulls = (server[sent.banner] ?? [])
       .toReversed()
       .filter((p) => sent.end_id === '0' || BigInt(p.id) < BigInt(sent.end_id))
       .slice(0, PAGE_SIZE)
-    return Response.json({ uid: pulls.length ? uid : null, pulls })
+    return Response.json({ uid: pulls.length ? uid : null, timezone, pulls })
   })
   vi.stubGlobal('fetch', fetchMock)
   return fetchMock
@@ -77,6 +81,15 @@ describe('importHistory', () => {
         .map((body) => body.end_id),
     ).toEqual(['0', id(6)])
     expect(sentBodies(fetchMock).every((body) => body.link === LINK)).toBe(true)
+  })
+
+  test("keeps the server's time zone where the game sends it, as Star Rail does", async () => {
+    serve(SERVER, UID, 1)
+    const { history } = await importHistory(LINK, EMPTY_HISTORY, { wait: noWait }, WISHES)
+    expect(history.timezones).toEqual({ [UID]: 1 })
+    serve()
+    const again = await importHistory(LINK, history, { wait: noWait }, WISHES)
+    expect(again.history.timezones).toEqual({ [UID]: 1 }) // a page without one keeps it
   })
 
   test('stops at the first pull it already has', async () => {
@@ -110,7 +123,7 @@ describe('importHistory', () => {
           { status: 429, headers: { 'Retry-After': '7' } },
         )
       }
-      return Response.json({ uid: null, pulls: [] })
+      return Response.json({ uid: null, timezone: null, pulls: [] })
     })
     vi.stubGlobal('fetch', fetchMock)
     const waits: number[] = []
@@ -160,6 +173,9 @@ describe('summarize', () => {
     expect(character?.fiveStars).toEqual([
       { id: id(10), name: 'Furina', pity: 10, time: '2026-10-01 12:00:00' },
     ])
+    // Nine pulls went by before Furina; fifteen have gone by since.
+    expect(character).toMatchObject({ averagePity: 10, longestDry: 15 })
+    expect(standard).toMatchObject({ averagePity: null, longestDry: 3 })
     expect(standard).toMatchObject({
       label: 'Standard',
       total: 3,
@@ -177,6 +193,7 @@ describe('summarize', () => {
       ['Furina', 2],
     ])
     expect(character?.pity5).toBe(0)
+    expect(character).toMatchObject({ averagePity: 2.5, longestDry: 2 })
   })
 
   test('leaves out banners without pulls', () => {
@@ -205,6 +222,9 @@ describe('storage', () => {
     const saved: SavedHistory = { current: UID, accounts: { [UID]: SERVER['200'] } }
     expect(saveHistory(saved, storage)).toBe(true)
     expect(loadHistory(storage)).toEqual(saved)
+    const zoned: SavedHistory = { ...saved, timezones: { [UID]: 1 } }
+    saveHistory(zoned, storage)
+    expect(loadHistory(storage)).toEqual(zoned)
   })
 
   test.each([

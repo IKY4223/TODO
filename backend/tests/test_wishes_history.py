@@ -80,6 +80,16 @@ def test_page_becomes_pulls() -> None:
     assert pulls[5].banner == "400"  # the second character banner shares the first one's history
 
 
+def test_a_warp_page_keeps_the_ids_and_time_zone_an_export_needs() -> None:
+    page = parse_page(body("11", "0"))
+    assert page.timezone == 1
+    acheron = next(p for p in page.pulls if p.name == "Acheron")
+    assert (acheron.item_id, acheron.gacha_id) == ("1308", "2001")
+    genshin = parse_page(body("301", "0"))
+    assert genshin.timezone is None
+    assert (genshin.pulls[0].item_id, genshin.pulls[0].gacha_id) == ("", "")
+
+
 def test_last_page_is_shorter() -> None:
     assert len(parse_page(body("301", "1700000000000000006")).pulls) == 5
     empty = parse_page(body("302", "0"))

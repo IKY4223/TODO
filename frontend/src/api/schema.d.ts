@@ -354,6 +354,8 @@ export interface components {
         Page: {
             /** Uid */
             uid: string | null;
+            /** Timezone */
+            timezone: number | null;
             /** Pulls */
             pulls: components["schemas"]["Pull"][];
         };
@@ -376,6 +378,16 @@ export interface components {
             kind: string;
             /** Rank */
             rank: number;
+            /**
+             * Item Id
+             * @default
+             */
+            item_id: string;
+            /**
+             * Gacha Id
+             * @default
+             */
+            gacha_id: string;
         };
         /**
          * Reaction

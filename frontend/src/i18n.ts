@@ -130,6 +130,21 @@ const RU = {
   'No warps found for this link.': 'По этой ссылке прыжков не найдено.',
   '{banner}: {count} warps read': '{banner}: прочитано прыжков: {count}',
   'This file could not be read.': 'Не удалось прочитать файл.',
+  'Or from a UIGF file': 'Или из файла UIGF',
+  'This file is not a UIGF file.': 'Это не файл UIGF.',
+  'This file holds no Genshin wishes.': 'В этом файле нет молитв Genshin.',
+  'This file does not say the star rank of each wish: export it again with every field.':
+    'В файле не указана редкость молитв: выгрузите его заново со всеми полями.',
+  'This file is too large to be a wish history.': 'Файл слишком большой для истории молитв.',
+  'Save to a file': 'Сохранить в файл',
+  'A UIGF file, which this page and other trackers read. Keep it: clearing the browser’s data deletes the history saved here.':
+    'Файл UIGF: его читают эта страница и другие трекеры. Храните его: очистка данных браузера удаляет историю, сохранённую здесь.',
+  'At most {longest} warps in a row without a 5★': 'Больше всего прыжков подряд без 5★: {longest}',
+  'At most {longest} pulls in a row without a 5★': 'Больше всего молитв подряд без 5★: {longest}',
+  '{average} warps per 5★ on average · at most {longest} in a row without one':
+    'Прыжков на 5★ в среднем: {average} · больше всего подряд без 5★: {longest}',
+  '{average} pulls per 5★ on average · at most {longest} in a row without one':
+    'Молитв на 5★ в среднем: {average} · больше всего подряд без 5★: {longest}',
   'This browser kept its saved data: the history may come back on reload.':
     'Браузер не удалил сохранённые данные: история может вернуться после перезагрузки.',
   '{count} warps since the last 5★': 'Прыжков после последнего 5★: {count}',
