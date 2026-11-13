@@ -57,7 +57,7 @@ The app is private until these are done. Do not deploy it publicly or share the 
 and remind the owner when a change moves toward a public launch. None of this is legal advice:
 have a lawyer read the texts before launch.
 
-- Licence: choose one for the code (the owner decides) and list the licences of dependencies.
+- Licence: MIT, chosen by the owner (`LICENSE`). Still to do: list the licences of dependencies.
 - Disclaimer: "Fan project, not affiliated with HoYoverse" stays visible. Read HoYoverse's current
   fan content policy; no ads, payments or donations until it is confirmed allowed. Game images
   come from Enka.Network and belong to HoYoverse.
@@ -119,5 +119,7 @@ For a session picking the work up again.
   owner asked for headroom and get-shit-done; neither was installed (headroom proxies model
   traffic, which a cloud session cannot route; get-shit-done is archived and moved to
   `open-gsd/gsd-core`, and adds hooks and a workflow of its own).
-- Netlify was connected to the repository by the owner and is being removed; it cannot run the
-  backend. No free host is settled yet.
+- Hosting: the owner tests the site on SnapDeploy (Docker from GitHub, free tier sleeps when
+  idle), behind `SITE_PASSWORD`. Its acceptable use policy refuses Telegram bot frameworks, so the
+  bot needs another host. The owner gave an email for the privacy policy's contact: use it only
+  in that page, when it is written, and remind them it will be public there.

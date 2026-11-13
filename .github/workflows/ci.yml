@@ -33,6 +33,12 @@ jobs:
           docker run -d -p 8000:8000 hoyo-toolkit
           curl -fsS --retry 10 --retry-delay 1 --retry-all-errors http://localhost:8000/api/health
           curl -fsS http://localhost:8000/ | grep -q '<div id="root">'
+      - name: The image listens on the host's PORT and can ask for a password
+        run: |
+          docker run -d -p 9000:9000 -e PORT=9000 -e SITE_PASSWORD=ci-only hoyo-toolkit
+          curl -fsS --retry 10 --retry-delay 1 --retry-all-errors http://localhost:9000/api/health
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:9000/)" = 401
+          curl -fsS -u anyone:ci-only http://localhost:9000/ | grep -q '<div id="root">'
 
   audit:
     runs-on: ubuntu-latest

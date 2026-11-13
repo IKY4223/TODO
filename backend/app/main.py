@@ -1,4 +1,7 @@
+import base64
+import binascii
 import os
+import secrets
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Literal
@@ -34,7 +37,36 @@ SECURITY_HEADERS = {
     ),
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer",  # the image host must not learn which page asked
+    # Private until the launch checklist in CLAUDE.md is done: search engines must not list it.
+    "X-Robots-Tag": "noindex, nofollow",
 }
+# A test deploy can ask for a password: set SITE_PASSWORD on the host. The host's health check
+# must still reach the app.
+OPEN_PATHS = ("/api/health",)
+
+
+def _password_given(request: Request, password: str) -> bool:
+    scheme, _, token = request.headers.get("Authorization", "").partition(" ")
+    if scheme.lower() != "basic":
+        return False
+    try:
+        given = base64.b64decode(token, validate=True).decode().partition(":")[2]
+    except (binascii.Error, UnicodeDecodeError):
+        return False
+    return secrets.compare_digest(given.encode(), password.encode())
+
+
+@app.middleware("http")
+async def ask_for_password(
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
+) -> Response:
+    password = os.environ.get("SITE_PASSWORD", "")
+    if password and request.url.path not in OPEN_PATHS and not _password_given(request, password):
+        return Response(
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="HoYo Toolkit", charset="UTF-8"'},
+        )
+    return await call_next(request)
 
 
 @app.middleware("http")

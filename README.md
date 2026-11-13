@@ -210,3 +210,23 @@ One image serves both the API and the built frontend on http://localhost:8000:
 ```sh
 docker compose up --build
 ```
+
+The image listens on the port in `PORT` (8000 without it), as hosts such as SnapDeploy expect.
+
+## A private test deploy
+
+Until the launch checklist in `CLAUDE.md` is done, the site is for its owner only. Every page
+tells search engines not to list it, and setting `SITE_PASSWORD` on the host makes every page
+ask for that password (any user name); only `/api/health` stays open for the host's checks.
+
+On [SnapDeploy](https://snapdeploy.dev), from its phone app or the site: Deploy from GitHub,
+pick this repository and `main`, and it builds the `Dockerfile` as it is. Add the environment
+variable `SITE_PASSWORD` with a password of your own before the first deploy. The free tier
+sleeps after 15 idle minutes and wakes in about a minute on the next visit.
+
+The Telegram bot does not run there: a sleeping container cannot poll, and SnapDeploy's
+acceptable use policy names Telegram bot frameworks among what it refuses. It needs another host.
+
+## Licence
+
+MIT: see `LICENSE`. Game data, names and images belong to HoYoverse.

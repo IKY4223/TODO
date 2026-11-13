@@ -17,4 +17,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 RUN mkdir /data && chown nobody /data
 USER nobody
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Hosts such as SnapDeploy name the port in PORT; 8000 otherwise.
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
