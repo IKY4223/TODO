@@ -100,19 +100,16 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #14 are merged.
-- Next (stage 15, set by the owner, in this order):
-  1. Rewrite the warp and wish history import instructions from scratch. Add nothing of our own:
-     every step comes from a trustworthy source (the game's publisher, or a well-known open
-     source tracker's own docs), read and quoted; say where each step comes from. Remove steps
-     that no such source confirms (the Android error-page steps for Star Rail are unconfirmed).
-  2. Tell players they can write to HoYoverse support and ask them to send the account's full
-     warp history (confirm the support address and the process on HoYoverse's own site first;
-     do not guess an address).
-  3. Try rebuilding the site's layout from scratch with the `design-taste-frontend` skill. Its
-     rule against violet conflicts with the palette: ask the owner before following it.
-  Then: a host for the bot and the Mini App (README plan, item 2), or what is left of the
-  effects table (item 1).
+- State: PRs #1 to #16 are merged. `HANDOFF.md` holds the owner's task list and the plan of
+  stages 17 to 22; `README.md` and this file win where they differ.
+- Next (stage 17, approved by the owner, in this order):
+  1. Export the saved history of both games to a UIGF v4 file that our import reads back.
+  2. Import UIGF files for Genshin, as Star Rail already does.
+  3. Luck statistics from the saved history: pulls per 5★, 50/50s won, the longest dry run.
+  4. Own PowerShell scripts, served from the site, that find the history link on a PC (README
+     plan item 0, approved): read the game's files only, send nothing, write nothing; where the
+     link lives comes from well-known open trackers' docs, named in the README.
+  Then stage 18, the rest of the effects table (README plan item 1).
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed
