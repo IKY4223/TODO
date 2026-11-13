@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
-# Every check CI runs. Push only when this exits 0.
+# Every check CI runs, except the PC link scripts' test, which needs Windows (the link-scripts
+# job). Push only when this exits 0.
 set -eu
 cd "$(dirname "$0")"
 

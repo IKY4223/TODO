@@ -114,7 +114,9 @@ test('imports warps with the link from the error page, and says how to get it', 
     const { banner } = JSON.parse(String(init?.body)) as { banner: string }
     expect(url).toBe('/api/wishes/warps')
     return Response.json(
-      banner === '11' ? { uid: '700000001', pulls: [pull] } : { uid: null, pulls: [] },
+      banner === '11'
+        ? { uid: '700000001', timezone: 1, pulls: [pull] }
+        : { uid: null, timezone: null, pulls: [] },
     )
   })
   vi.stubGlobal('fetch', fetchMock)

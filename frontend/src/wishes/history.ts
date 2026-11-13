@@ -2,9 +2,12 @@ import { ApiError, isArrayOf, isNumber, isRecord, isString, postJson } from '../
 import { HISTORY_PAGE_SIZE } from '../api/limits'
 import type { components } from '../api/schema'
 import type { Message } from '../i18n'
+import type { HistoryFileFormat } from './uigf'
 
 type Schemas = components['schemas']
-export type Pull = Schemas['Pull']
+type Ids = 'item_id' | 'gacha_id'
+/** A pull; pulls saved before the app kept the game's ids have none. */
+export type Pull = Omit<Schemas['Pull'], Ids> & Partial<Pick<Schemas['Pull'], Ids>>
 type Page = Schemas['Page']
 type Banner = Schemas['HistoryRequest']['banner']
 
@@ -13,6 +16,8 @@ export interface SavedHistory {
   readonly current: string | null
   /** Each account's pulls, oldest first. */
   readonly accounts: Readonly<Record<string, readonly Pull[]>>
+  /** Each account's server offset from UTC in hours, where the game or a file told it. */
+  readonly timezones?: Readonly<Record<string, number>>
 }
 
 export interface FiveStar {
@@ -33,6 +38,10 @@ export interface BannerSummary {
   readonly pity4: number
   /** Newest first. */
   readonly fiveStars: readonly FiveStar[]
+  /** The pulls a 5★ took on average; null before the first one. */
+  readonly averagePity: number | null
+  /** The most pulls in a row without a 5★, the current run included. */
+  readonly longestDry: number
 }
 
 interface ImportResult {
@@ -100,10 +109,17 @@ const isPull = (value: unknown): value is Pull =>
   isString(value.time) &&
   isString(value.name) &&
   isString(value.kind) &&
-  isNumber(value.rank)
+  isNumber(value.rank) &&
+  (value.item_id === undefined || isString(value.item_id)) &&
+  (value.gacha_id === undefined || isString(value.gacha_id))
+
+const isOffset = (value: unknown): value is number => Number.isInteger(value)
 
 const isPage = (value: unknown): value is Page =>
-  isRecord(value) && (value.uid === null || isString(value.uid)) && isArrayOf(value.pulls, isPull)
+  isRecord(value) &&
+  (value.uid === null || isString(value.uid)) &&
+  (value.timezone === null || isOffset(value.timezone)) &&
+  isArrayOf(value.pulls, isPull)
 
 const byId = (a: Pull, b: Pull): number => {
   const [x, y] = [BigInt(a.id), BigInt(b.id)]
@@ -133,6 +149,7 @@ async function fetchPatiently(
 
 interface BannerResult {
   readonly uid: string | null
+  readonly timezone: number | null
   readonly pulls: readonly Pull[]
 }
 
@@ -147,12 +164,16 @@ async function readBanner<B extends string>(
   known: ReadonlySet<string>,
   { onProgress, wait = pause }: ImportOptions,
   endId = FIRST_PAGE,
-  sofar: BannerResult = { uid: null, pulls: [] },
+  sofar: BannerResult = { uid: null, timezone: null, pulls: [] },
 ): Promise<BannerResult> {
   const page = await fetchPatiently(async () => fetchPage(source.url, link, banner, endId), wait)
   const firstKnown = page.pulls.findIndex((pull) => known.has(pull.id))
   const fresh = firstKnown === -1 ? page.pulls : page.pulls.slice(0, firstKnown)
-  const result = { uid: sofar.uid ?? page.uid, pulls: [...sofar.pulls, ...fresh] }
+  const result = {
+    uid: sofar.uid ?? page.uid,
+    timezone: sofar.timezone ?? page.timezone,
+    pulls: [...sofar.pulls, ...fresh],
+  }
   onProgress?.(source.labels[banner], result.pulls.length)
   const last = page.pulls.at(-1)
   if (firstKnown !== -1 || page.pulls.length < HISTORY_PAGE_SIZE || !last) return result
@@ -179,32 +200,45 @@ export async function importHistory<B extends string>(
     const read = await readBanner(source, link, banner, known, { ...options, wait })
     return readFrom(index + 1, {
       uid: sofar.uid ?? read.uid,
+      timezone: sofar.timezone ?? read.timezone,
       pulls: [...sofar.pulls, ...read.pulls],
     })
   }
 
-  const { uid, pulls } = await readFrom(0, { uid: null, pulls: [] })
+  const { uid, timezone, pulls } = await readFrom(0, { uid: null, timezone: null, pulls: [] })
   if (!uid) return { history: saved, added: 0, uid }
   const merged = [...(saved.accounts[uid] ?? []), ...pulls].toSorted(byId)
-  const history = { current: uid, accounts: { ...saved.accounts, [uid]: merged } }
+  const history = {
+    current: uid,
+    accounts: { ...saved.accounts, [uid]: merged },
+    timezones: timezone === null ? saved.timezones : { ...saved.timezones, [uid]: timezone },
+  }
   return { history, added: pulls.length, uid }
 }
 
 function summarizeBanner(banner: string, label: Message, pulls: readonly Pull[]): BannerSummary {
   const fives = pulls.flatMap((pull, index) => (pull.rank === FIVE_STAR ? [index] : []))
   const lastFour = pulls.findLastIndex((pull) => pull.rank >= FOUR_STAR)
+  const fiveStars = fives.map((index, n) => {
+    const { id, name, time } = pulls[index] as Pull // `index` comes from `pulls` itself
+    return { id, name, time, pity: index - (fives[n - 1] ?? -1) }
+  })
+  const pity5 = pulls.length - 1 - (fives.at(-1) ?? -1)
+  // shortcut: the history reaches back about a year, so the first 5★'s pity counts only the pulls
+  // since then: the average and the longest run can read low for an older account.
+  // shortcut: the share of 50/50s won is left out: it needs to know which 5★ are standard, which
+  // neither game data source here gives (README plan, item 3).
+  const pities = fiveStars.map(({ pity }) => pity)
   return {
     banner,
     label,
     total: pulls.length,
-    pity5: pulls.length - 1 - (fives.at(-1) ?? -1),
+    pity5,
     pity4: pulls.length - 1 - lastFour,
-    fiveStars: fives
-      .map((index, n) => {
-        const { id, name, time } = pulls[index] as Pull // `index` comes from `pulls` itself
-        return { id, name, time, pity: index - (fives[n - 1] ?? -1) }
-      })
-      .toReversed(),
+    fiveStars: fiveStars.toReversed(),
+    averagePity: pities.length ? pities.reduce((a, b) => a + b) / pities.length : null,
+    // Each 5★ ends a run one pull shorter than its pity.
+    longestDry: Math.max(pity5, ...pities.map((pity) => pity - 1)),
   }
 }
 
@@ -230,6 +264,18 @@ export function summarizeBanners<B extends string>(
     .filter((summary) => summary.total)
 }
 
+/** Genshin's section of a UIGF v4 file, or a whole UIGF v2–v3 file. */
+export const GENSHIN_FILE: HistoryFileFormat = {
+  section: 'hk4e',
+  legacyVersion: 'uigf_version',
+  banners: { ...BANNERS, ...SAME_POOL },
+  samePool: SAME_POOL,
+  notAFile: 'This file is not a UIGF file.',
+  noPulls: 'This file holds no Genshin wishes.',
+  noRanks: 'This file does not say the star rank of each wish: export it again with every field.',
+  tooLarge: 'This file is too large to be a wish history.',
+}
+
 /** Genshin's wish history. */
 export const WISHES: HistorySource<Banner> = { url: HISTORY_URL, banners, labels: BANNERS }
 
@@ -242,7 +288,9 @@ const isSavedHistory = (value: unknown): value is SavedHistory & { readonly vers
   value.version === STORAGE_VERSION &&
   (value.current === null || isString(value.current)) &&
   isRecord(value.accounts) &&
-  Object.values(value.accounts).every((pulls) => isArrayOf(pulls, isPull))
+  Object.values(value.accounts).every((pulls) => isArrayOf(pulls, isPull)) &&
+  (value.timezones === undefined ||
+    (isRecord(value.timezones) && Object.values(value.timezones).every(isOffset)))
 
 /** A history saved on this device under `key`. Storage can be off or corrupted: then it is empty. */
 export function loadSaved(key: string, storage?: Storage): SavedHistory {
@@ -250,9 +298,9 @@ export function loadSaved(key: string, storage?: Storage): SavedHistory {
     // Reached inside the `try`: where site data is blocked, reading window.localStorage throws.
     const store = storage ?? window.localStorage
     const saved: unknown = JSON.parse(store.getItem(key) ?? 'null')
-    return isSavedHistory(saved)
-      ? { current: saved.current, accounts: saved.accounts }
-      : EMPTY_HISTORY
+    if (!isSavedHistory(saved)) return EMPTY_HISTORY
+    const { current, accounts, timezones } = saved
+    return timezones ? { current, accounts, timezones } : { current, accounts }
   } catch {
     // Private browsing, blocked site data or a corrupted entry: start from nothing.
     return EMPTY_HISTORY

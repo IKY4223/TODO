@@ -1,11 +1,15 @@
-import { type JSX, type SubmitEvent, useState } from 'react'
+import { type ChangeEvent, type JSX, type SubmitEvent, useState } from 'react'
 import { MAX_LINK_LENGTH } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { type Message, useLocalized, useT } from '../i18n'
+import { type Message, numberFormat, useLocalized, useT } from '../i18n'
 import { DataRequest } from './DataRequest'
+import { ExportButton } from './HistoryFiles'
+import { PcScript } from './PcScript'
+import { readHistoryFile } from './uigf'
 import {
   type BannerSummary,
   EMPTY_HISTORY,
+  GENSHIN_FILE,
   importHistory,
   loadHistory,
   saveHistory,
@@ -18,6 +22,7 @@ const DELETE_QUESTION =
   'Delete the saved wish history from this device? Pulls older than a year cannot be imported again.'
 export const NOT_SAVED =
   ' This browser does not keep site data, so the history lasts until this page closes.'
+const average = numberFormat({ maximumFractionDigits: 1 })
 
 export function BannerCard(props: {
   readonly summary: BannerSummary
@@ -43,6 +48,21 @@ export function BannerCard(props: {
             : '{total} pulls in total · {count} since the last 4★',
           { total: summary.total, count: summary.pity4 },
         )}
+      </p>
+      <p className="hint">
+        {summary.averagePity === null
+          ? t(
+              warps
+                ? 'At most {longest} warps in a row without a 5★'
+                : 'At most {longest} pulls in a row without a 5★',
+              { longest: summary.longestDry },
+            )
+          : t(
+              warps
+                ? '{average} warps per 5★ on average · at most {longest} in a row without one'
+                : '{average} pulls per 5★ on average · at most {longest} in a row without one',
+              { average: average.format(summary.averagePity), longest: summary.longestDry },
+            )}
       </p>
       {summary.fiveStars.length ? (
         <table>
@@ -114,6 +134,7 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('On iPhone')}</summary>
         <Steps steps={IPHONE} />
       </details>
+      <PcScript game="genshin" />
       <DataRequest game="genshin" />
     </>
   )
@@ -129,6 +150,28 @@ export function WishHistory(): JSX.Element {
   const pulls = saved.current ? (saved.accounts[saved.current] ?? []) : []
   const outcome = 'data' in state ? state.data : ''
 
+  const keep = (history: typeof saved): boolean => {
+    setSaved(history)
+    return saveHistory(history)
+  }
+
+  // A file goes through the same request as a link, so it is not merged into an older copy of
+  // the history while a link import runs.
+  const read = (event: ChangeEvent<HTMLInputElement>): void => {
+    const input = event.currentTarget
+    const file = input.files?.[0]
+    input.value = '' // the same file chosen again is read again
+    if (!file) return
+    void run(async () => {
+      const { history, added } = await readHistoryFile(file, saved, GENSHIN_FILE, t)
+      const kept = keep(history)
+      const summary = added
+        ? t('{count} new pulls imported.', { count: added })
+        : t('No new pulls.')
+      return summary + (kept ? '' : t(NOT_SAVED))
+    })
+  }
+
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
     void run(async () => {
@@ -142,9 +185,8 @@ export function WishHistory(): JSX.Element {
         WISHES,
       )
       if (!result.uid) return t('No pulls found for this link.')
-      setSaved(result.history)
       setLink('') // the link is a key to the account's history: drop it once it has served
-      const kept = saveHistory(result.history)
+      const kept = keep(result.history)
       const summary = result.added
         ? t('{count} new pulls imported.', { count: result.added })
         : t('No new pulls.')
@@ -154,8 +196,7 @@ export function WishHistory(): JSX.Element {
 
   const forget = (): void => {
     if (!window.confirm(t(DELETE_QUESTION))) return
-    setSaved(EMPTY_HISTORY)
-    saveHistory(EMPTY_HISTORY)
+    keep(EMPTY_HISTORY)
   }
 
   return (
@@ -188,6 +229,15 @@ export function WishHistory(): JSX.Element {
               {t('Import history')}
             </button>
           </form>
+          <label>
+            {t('Or from a UIGF file')}
+            <input
+              type="file"
+              accept=".json,application/json"
+              disabled={state.status === 'loading'}
+              onChange={read}
+            />
+          </label>
         </div>
         <div className="results">
           {'message' in state && <p role="alert">{localized(state.message)}</p>}
@@ -202,6 +252,7 @@ export function WishHistory(): JSX.Element {
                   </li>
                 ))}
               </ul>
+              <ExportButton saved={saved} format={GENSHIN_FILE} game="genshin" />
               <button type="button" className="secondary" onClick={forget}>
                 {t('Delete saved history')}
               </button>

@@ -66,11 +66,14 @@ class Pull:
     name: str
     kind: str  # "Character" or "Weapon"
     rank: int  # 3, 4 or 5 stars
+    item_id: str = ""  # the game's id of what was pulled; Genshin's history sends none
+    gacha_id: str = ""  # the warp pool's id; Star Rail only
 
 
 @dataclass(frozen=True)
 class Page:
     uid: str | None  # the account's in-game UID; an empty page cannot tell
+    timezone: int | None  # the server's UTC offset in hours, sent by Star Rail; UIGF files need it
     pulls: list[Pull]  # newest first; fewer than PAGE_SIZE means the history has no more
 
 
@@ -82,10 +85,13 @@ class _Item(BaseModel):
     name: str
     item_type: str
     rank_type: int
+    item_id: str = ""
+    gacha_id: str = ""
 
 
 class _Data(BaseModel):
     list: list[_Item]
+    region_time_zone: int | None = None
 
 
 class _Answer(BaseModel):
@@ -159,7 +165,10 @@ def parse_page(body: bytes) -> Page:
             name=item.name,
             kind=item.item_type,
             rank=item.rank_type,
+            item_id=item.item_id,
+            gacha_id=item.gacha_id,
         )
         for item in items
     ]
-    return Page(uid=items[0].uid if items else None, pulls=pulls)
+    uid = items[0].uid if items else None
+    return Page(uid=uid, timezone=answer.data.region_time_zone, pulls=pulls)

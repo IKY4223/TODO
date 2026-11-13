@@ -47,7 +47,11 @@ function serve(respond: (banner: string) => Response): ReturnType<typeof vi.fn> 
 }
 
 const characterOnly = (banner: string): Response =>
-  Response.json(banner === '301' ? { uid: UID, pulls: PULLS } : { uid: null, pulls: [] })
+  Response.json(
+    banner === '301'
+      ? { uid: UID, timezone: null, pulls: PULLS }
+      : { uid: null, timezone: null, pulls: [] },
+  )
 
 async function importFrom(text: string): Promise<void> {
   fireEvent.change(screen.getByLabelText('Text from the error page'), { target: { value: text } })
@@ -150,7 +154,7 @@ test('says so when the browser will not keep the history', async () => {
 })
 
 test('says so when the account has no pulls', async () => {
-  serve(() => Response.json({ uid: null, pulls: [] }))
+  serve(() => Response.json({ uid: null, timezone: null, pulls: [] }))
   render(<WishHistory />)
   await importFrom(ANDROID_TEXT)
   expect((await screen.findByRole('status')).textContent).toBe('No pulls found for this link.')

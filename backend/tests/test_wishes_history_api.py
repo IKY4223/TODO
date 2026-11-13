@@ -50,6 +50,8 @@ def test_returns_one_page_of_pulls(hoyoverse: Callable[[Fetch], list[str]]) -> N
         "name": "Xiangling",
         "kind": "Character",
         "rank": 4,
+        "item_id": "",
+        "gacha_id": "",
     }
     assert len(requested) == 1
 

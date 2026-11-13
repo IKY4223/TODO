@@ -1,5 +1,8 @@
 import { expect, test } from 'vitest'
-import { mergeWarps, parseWarpFile, summarizeWarps, WarpFileError } from './warps'
+import { HistoryFileError, mergeFile, parseHistoryFile } from '../wishes/uigf'
+import { STAR_RAIL_FILE, summarizeWarps } from './warps'
+
+const parseWarpFile = (text: string) => parseHistoryFile(text, STAR_RAIL_FILE).accounts
 
 const item = (id: string, gacha_type: string, rank_type: string, name = `Item ${id}`) => ({
   gacha_id: '1',
@@ -43,7 +46,7 @@ function reason(text: string): string {
   try {
     parseWarpFile(text)
   } catch (error) {
-    if (error instanceof WarpFileError) return error.message
+    if (error instanceof HistoryFileError) return error.message
     throw error
   }
   return 'accepted'
@@ -63,10 +66,10 @@ test('refuses what is not a Star Rail warp history, saying why', () => {
 })
 
 test('merging keeps each warp once', () => {
-  const first = parseWarpFile(uigf([item('1', '11', '3'), item('2', '11', '5')]))
-  const again = parseWarpFile(uigf([item('2', '11', '5'), item('3', '11', '4')]))
-  const { history, added } = mergeWarps({ current: null, accounts: {} }, first)
-  const second = mergeWarps(history, again)
+  const first = parseHistoryFile(uigf([item('1', '11', '3'), item('2', '11', '5')]), STAR_RAIL_FILE)
+  const again = parseHistoryFile(uigf([item('2', '11', '5'), item('3', '11', '4')]), STAR_RAIL_FILE)
+  const { history, added } = mergeFile({ current: null, accounts: {} }, first)
+  const second = mergeFile(history, again)
   expect(added).toBe(2)
   expect(second.added).toBe(1)
   expect(second.history.current).toBe('700000001')

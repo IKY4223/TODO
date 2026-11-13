@@ -3,27 +3,19 @@ import { MAX_LINK_LENGTH } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { type Message, useLocalized, useT } from '../i18n'
 import { DataRequest } from '../wishes/DataRequest'
+import { ExportButton } from '../wishes/HistoryFiles'
+import { PcScript } from '../wishes/PcScript'
 import { BannerCard, NOT_SAVED } from '../wishes/WishHistory'
 import { EMPTY_HISTORY, importHistory } from '../wishes/history'
-import {
-  MAX_FILE_BYTES,
-  WarpFileError,
-  WARPS,
-  loadWarps,
-  mergeWarps,
-  parseWarpFile,
-  saveWarps,
-  summarizeWarps,
-} from './warps'
+import { readHistoryFile } from '../wishes/uigf'
+import { STAR_RAIL_FILE, WARPS, loadWarps, saveWarps, summarizeWarps } from './warps'
 
-const TOO_LARGE: Message = 'This file is too large to be a warp history.'
-const UNREADABLE: Message = 'This file could not be read.'
 const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
 const LINK_ROWS = 4
 
-// No trustworthy source gives a way to get this link on a phone. The one PC way a source gives
-// runs another tracker's own script, which the owner does not send players to.
+// No trustworthy source gives a way to get this link on a phone. On a PC, this site's own script
+// finds it where the open source tracker biuuu/star-rail-warp-export looks (see PcScript).
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
@@ -32,10 +24,11 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('Where to get the history')}</summary>
         <p>
           {t(
-            'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.',
+            'No trustworthy source gives a way to get this link on Android or iPhone. On a PC, the script below finds it; a file another warp tracker exported (UIGF or SRGF) can be read too.',
           )}
         </p>
       </details>
+      <PcScript game="starrail" />
       <DataRequest game="starrail" />
     </>
   )
@@ -65,17 +58,7 @@ export function WarpHistory(): JSX.Element {
     input.value = '' // the same file chosen again is read again
     if (!file) return
     void run(async () => {
-      if (file.size > MAX_FILE_BYTES) throw new Error(t(TOO_LARGE))
-      let fromFile
-      try {
-        fromFile = parseWarpFile(await file.text())
-      } catch (error) {
-        // A file the phone took back, or saved data this version cannot sort: say so, not nothing.
-        throw new Error(t(error instanceof WarpFileError ? error.reason : UNREADABLE), {
-          cause: error,
-        })
-      }
-      const { history, added } = mergeWarps(saved, fromFile)
+      const { history, added } = await readHistoryFile(file, saved, STAR_RAIL_FILE, t)
       const kept = keep(history)
       const summary = added
         ? t('{count} new warps imported.', { count: added })
@@ -186,6 +169,7 @@ export function WarpHistory(): JSX.Element {
                   </li>
                 ))}
               </ul>
+              <ExportButton saved={saved} format={STAR_RAIL_FILE} game="starrail" />
               <button type="button" className="secondary" onClick={forget}>
                 {t('Delete saved history')}
               </button>

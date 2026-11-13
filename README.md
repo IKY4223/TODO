@@ -63,9 +63,23 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   text of the error page the game's history shows offline and paste it in. Shows every banner's
   pity and each 5★ with the pulls it took. The steps for Android and iPhone are paimon.moe's
   own (see Credits), and both histories quote what HoYoverse's privacy policy says about asking for a copy
-  of one's data. Pulls are saved only on the device; the link, which
+  of one's data. A UIGF file (v4, or the older v2 and v3) another tracker exported can be read
+  instead, on the device. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
+- **History link on a PC** — both histories show this site's own PowerShell script in full, with
+  a button that copies it: pasted into PowerShell, it reads the game's log and web cache and
+  prints the history link. It sends nothing over the network and writes no file itself; CI runs it
+  against a made-up game on Windows, in Windows PowerShell 5.1 and PowerShell 7. Global servers
+  only.
+- **Save the history to a file** — both histories save to a UIGF v4 file that this site reads
+  back, so clearing the browser's data loses nothing. A Star Rail file keeps the server's time
+  offset and the item and pool ids HoYoverse sends. Genshin's history sends no item ids, and
+  warps saved before this version kept none, so those are written empty: trackers that look
+  items up by id may refuse them.
+- **Luck in the history** — each banner shows the pulls a 5★ took on average and the most pulls
+  in a row without one. The history reaches back about a year, so the first 5★ counts only
+  the pulls since then.
 - **Star Rail warp history** — import it with a warp history link, or choose a UIGF (v4) or SRGF
   file another warp tracker exported, read on the device and never sent anywhere. No trustworthy
   source gives a way to get the link on a phone. Shows each banner's pity and 5★ warps. Global
@@ -80,8 +94,6 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-0. Own PowerShell scripts, served from this site, that find the Genshin and Star Rail history
-   links on a PC, so the PC way comes back without sending players to another tracker.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
@@ -93,8 +105,10 @@ Planned, in order:
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
    Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
    page of each character once the site has an address.
-3. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
-   the imported history.
+3. Genshin: talent multipliers from game data and a best-artifact search.
+   Luck statistics, the rest: the share of 50/50s won on character banners, for both games. It
+   needs to know which 5★ characters are standard, which neither game data source here gives:
+   it waits for a source (an open tracker's data file, read and credited).
 4. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
@@ -246,3 +260,15 @@ MIT: see `LICENSE`. Game data, names and images belong to HoYoverse.
 The Genshin wish history steps for Android and iPhone are paimon.moe's, word for word in English
 and Russian: [paimon-moe](https://github.com/MadeBaruna/paimon-moe), MIT licence, copyright (c)
 2021 Made Baruna. The site itself links no other tracker, so players stay on it.
+
+History files follow the [UIGF standard](https://uigf.org/en/standards/uigf.html) (v4.2, and the
+older UIGF v3 and SRGF v1 for reading). The server offsets a Genshin export writes by the UID's
+first digit are those of [genshin-wish-export](https://github.com/biuuu/genshin-wish-export)
+(`src/main/UIGFJson.js`); a Star Rail export takes the offset HoYoverse's warp history sends, as
+[star-rail-warp-export](https://github.com/biuuu/star-rail-warp-export) does. Both are MIT
+licensed; nothing was copied from them.
+
+The PC scripts (`frontend/src/wishes/link-scripts`) look for the link where those two exporters
+do (`src/main/getData.js`): the game's own folder from its log in `AppData\LocalLow`, then the
+newest `webCaches\…\Cache\Cache_Data\data_2` under it. Their first step, opening the history in
+the game, is quoted from each exporter's `docs/README_EN.md`.

@@ -130,6 +130,21 @@ const RU = {
   'No warps found for this link.': 'По этой ссылке прыжков не найдено.',
   '{banner}: {count} warps read': '{banner}: прочитано прыжков: {count}',
   'This file could not be read.': 'Не удалось прочитать файл.',
+  'Or from a UIGF file': 'Или из файла UIGF',
+  'This file is not a UIGF file.': 'Это не файл UIGF.',
+  'This file holds no Genshin wishes.': 'В этом файле нет молитв Genshin.',
+  'This file does not say the star rank of each wish: export it again with every field.':
+    'В файле не указана редкость молитв: выгрузите его заново со всеми полями.',
+  'This file is too large to be a wish history.': 'Файл слишком большой для истории молитв.',
+  'Save to a file': 'Сохранить в файл',
+  'A UIGF file, which this page reads back. Keep it: clearing the browser’s data deletes the history saved here.':
+    'Файл UIGF, который эта страница читает обратно. Храните его: очистка данных браузера удаляет историю, сохранённую здесь.',
+  'At most {longest} warps in a row without a 5★': 'Больше всего прыжков подряд без 5★: {longest}',
+  'At most {longest} pulls in a row without a 5★': 'Больше всего молитв подряд без 5★: {longest}',
+  '{average} warps per 5★ on average · at most {longest} in a row without one':
+    'Прыжков на 5★ в среднем: {average} · больше всего подряд без 5★: {longest}',
+  '{average} pulls per 5★ on average · at most {longest} in a row without one':
+    'Молитв на 5★ в среднем: {average} · больше всего подряд без 5★: {longest}',
   'This browser kept its saved data: the history may come back on reload.':
     'Браузер не удалил сохранённые данные: история может вернуться после перезагрузки.',
   '{count} warps since the last 5★': 'Прыжков после последнего 5★: {count}',
@@ -240,8 +255,23 @@ const RU = {
   'A browser should open up. Copy the link and paste it below':
     'Должен открыться браузер. Скопируйте ссылку и вставьте ниже',
   'On Android': 'На Android',
-  'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
-    'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
+  'No trustworthy source gives a way to get this link on Android or iPhone. On a PC, the script below finds it; a file another warp tracker exported (UIGF or SRGF) can be read too.':
+    'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. На ПК её находит скрипт ниже; можно также прочитать файл, выгруженный другим трекером прыжков (UIGF или SRGF).',
+  'On a PC (Windows)': 'На ПК (Windows)',
+  'Open the wish history of the game': 'Откройте историю молитв в игре',
+  'Open the warp details page of the game': 'Откройте в игре страницу с историей прыжков',
+  'On the PC, open Windows PowerShell: press Win+X and choose Windows PowerShell, or Terminal on Windows 11':
+    'На ПК откройте Windows PowerShell: нажмите Win+X и выберите Windows PowerShell или, в Windows 11, Терминал',
+  'Copy the script below, paste it into PowerShell and press Enter':
+    'Скопируйте скрипт ниже, вставьте его в PowerShell и нажмите Enter',
+  'It prints the link and copies it: paste it into the box below':
+    'Он выведет и скопирует ссылку: вставьте её в поле ниже',
+  "The script reads the game's log and web cache and prints the link. It sends nothing over the network and writes no file itself. Read it before you run it.":
+    'Скрипт читает журнал и веб-кэш игры и выводит ссылку. Он ничего не отправляет в сеть и сам не записывает файлы. Прочитайте его перед запуском.',
+  'If the page says the link has expired, open the history in the game again and run the script again. Windows keeps copied text in its clipboard history (Win+V): delete the link there once it is imported.':
+    'Если страница скажет, что ссылка устарела, снова откройте историю в игре и запустите скрипт ещё раз. Windows хранит скопированный текст в журнале буфера обмена (Win+V): удалите ссылку оттуда после импорта.',
+  'Copy the script': 'Скопировать скрипт',
+  Copied: 'Скопировано',
   'The link': 'Ссылка',
   Home: 'Главная',
   'Every showcased character: final stats, relics, light cone and skill levels.':

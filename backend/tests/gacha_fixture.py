@@ -21,10 +21,13 @@ ANDROID_TEXT = (  # what Android's error page reads once the history page fails 
 def pull(
     pull_id: int, name: str, rank: int, *, banner: str = "301", kind: str = "Character"
 ) -> dict[str, str]:
+    # Star Rail sends an item id and the pool's id; Genshin leaves item_id empty and sends no pool.
+    warp = banner in {"1", "2", "11", "12", "21", "22"}
     return {
         "uid": UID,
         "gacha_type": banner,
-        "item_id": "",
+        **({"gacha_id": "2001"} if warp else {}),
+        "item_id": ("1308" if name == "Acheron" else "20000") if warp else "",
         "count": "1",
         "time": f"2026-10-01 12:{pull_id // 60 % 60:02d}:{pull_id % 60:02d}",
         "name": name,
@@ -73,6 +76,8 @@ def page(banner: str, end_id: str) -> dict[str, Any]:
             "size": str(PAGE_SIZE),
             "list": pulls[:PAGE_SIZE],
             "region": "os_euro",
+            # Star Rail tells the server's UTC offset; Genshin does not.
+            **({"region_time_zone": 1} if banner == "11" else {}),
         },
     }
 
