@@ -193,3 +193,19 @@ test('a unit that keeps advancing itself to the front stops instead of hanging',
   const runaway = unit('r', 100, { effects: [effect({ kind: 'advance', value: 1 })] })
   expect(simulate([runaway], 200).length).toBeLessThanOrEqual(1000)
 })
+
+test('a countdown that pauses its owner holds her turns, then lets her act at once', () => {
+  // Robin's Concerto: no turns of her own until the SPD 90 countdown acts, then she acts at once.
+  const robin = unit('r', 100, {
+    ultimateEvery: 1,
+    effects: [effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons' })],
+  })
+  const countdown = unit('cd', 90, { owner: 'r', later: true, timer: true, pausesOwner: true })
+  expect(order([robin, countdown, unit('t', 100)], 250)).toEqual([
+    '100 r!',
+    '100 t',
+    '200 t',
+    '211.1 cd',
+    '211.1 r!',
+  ])
+})

@@ -572,6 +572,64 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'enemies',
     off: true,
   },
+  // Robin's Concerto: the Ultimate brings a countdown (SPD 90) that holds her turns until it acts.
+  {
+    id: 'robin-concerto',
+    source: { character: 1309 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+  },
+  {
+    id: 'robin-e2',
+    source: { character: 1309 },
+    kind: 'spd_percent',
+    values: [0.16],
+    trigger: 'ultimate',
+    target: 'allies',
+    untilSummonLeaves: true, // while Concerto lasts
+    eidolon: 2,
+  },
+  // Garmentmaker gains SPD each time it attacks a target with Seam Stitch, here every turn.
+  // shortcut: Aglaea's own SPD from these stacks in Supreme Stance, and Garmentmaker leaving on
+  // its countdown, are not modelled.
+  {
+    id: 'garmentmaker-talent',
+    source: { character: 1402 },
+    kind: 'spd',
+    values: [44, 46.2, 48.4, 50.6, 52.8, 55, 57.2, 59.4, 61.6, 63.8],
+    trigger: 'summon',
+    target: 'self',
+    stacks: 6,
+    byLevel: 'memosprite_talent',
+    beforeEidolon: 4,
+  },
+  {
+    id: 'garmentmaker-talent-e4',
+    source: { character: 1402 },
+    kind: 'spd',
+    values: [44, 46.2, 48.4, 50.6, 52.8, 55, 57.2, 59.4, 61.6, 63.8],
+    trigger: 'summon',
+    target: 'self',
+    stacks: 7,
+    byLevel: 'memosprite_talent',
+    eidolon: 4,
+  },
+  {
+    id: 'sushang-e6',
+    source: { character: 1206 },
+    kind: 'spd_percent',
+    values: [
+      0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
+      0.225,
+    ],
+    trigger: 'start',
+    target: 'self',
+    turns: 2,
+    byLevel: 'talent',
+    eidolon: 6,
+  },
   {
     id: 'hanya-ultimate',
     source: { character: 1215 },
@@ -780,6 +838,7 @@ export interface Summon {
   readonly maxActions?: number
   readonly maxSpd?: number
   readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
+  readonly pausesOwner?: boolean // the owner takes no turn while it is here, and acts once it goes
 }
 
 // shortcut: summons keep the SPD and action count the game gives them, past the effects in
@@ -789,6 +848,7 @@ export const SUMMONS: readonly Summon[] = [
   { owner: 1204, kind: 'summon', spd: 60, maxSpd: 130 }, // Lightning-Lord, up to 10 hits
   { owner: 1222, kind: 'summon', spd: 90, later: true, maxActions: 5 }, // Fuyuan
   { owner: 1310, kind: 'countdown', spd: 70, later: true, blocksUltimate: true }, // Combustion
+  { owner: 1309, kind: 'countdown', spd: 90, later: true, pausesOwner: true }, // Concerto
   { owner: 1414, kind: 'summon', spd: 165 }, // Souldragon
   // Netherwing: Newbud, which fills Castorice's Ultimate, does not grow while it is here.
   { owner: 1407, kind: 'memosprite', spd: 165, later: true, arrival: 1, blocksUltimate: true },
