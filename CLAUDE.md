@@ -102,14 +102,11 @@ For a session picking the work up again.
 
 - State: PRs #1 to #16 are merged. `HANDOFF.md` holds the owner's task list and the plan of
   stages 17 to 22; `README.md` and this file win where they differ.
-- Next (stage 17, approved by the owner, in this order):
-  1. Export the saved history of both games to a UIGF v4 file that our import reads back.
-  2. Import UIGF files for Genshin, as Star Rail already does.
-  3. Luck statistics from the saved history: pulls per 5★, 50/50s won, the longest dry run.
-  4. Own PowerShell scripts, served from the site, that find the history link on a PC (README
-     plan item 0, approved): read the game's files only, send nothing, write nothing; where the
-     link lives comes from well-known open trackers' docs, named in the README.
-  Then stage 18, the rest of the effects table (README plan item 1).
+- Stage 17 is built (PR open, the owner merges it): UIGF export and Genshin UIGF import
+  (`frontend/src/wishes/uigf.ts`), luck per banner, and the PC link scripts
+  (`frontend/src/wishes/link-scripts`, run by the `link-scripts` CI job on Windows). Left for a
+  source: the share of 50/50s won (README plan, item 3).
+  Next: stage 18, the rest of the effects table (README plan item 1).
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed
