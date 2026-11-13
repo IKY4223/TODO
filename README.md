@@ -38,10 +38,10 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
 - **Start page** — what the toolkit does, built to the taste skill's plan: the hero with the
   product's own interface alone on the first screen, then one section a screen on a computer, and
   a UID field that opens the player's builds.
-- **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
-  current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
-  a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
-  page in place of the tab bar. A palette and type dealt by the taste skill: a green-black ground,
+- **Layout** — laid out for a computer first: the menu beside the page with an icon at every
+  entry, a tool's controls in a column on the left and its results on the right, cards side by
+  side. On a phone, a top bar, a menu and the current game's tools in a tab bar at the foot of
+  the screen; still usable 360px wide with 44px touch targets. A palette and type dealt by the taste skill: a green-black ground,
   bone text and a muted green accent in Geist, or its inverse as the light theme.
 - **Light and dark themes** — the app follows the device's setting until the player picks a
   theme under Settings in the menu; the pick is kept on the device.
