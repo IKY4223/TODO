@@ -92,14 +92,10 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #9 are merged. PR #10 holds stage 10: the daily `Game data` workflow (sync,
-  checks, pull request), the effect table checked against the data, and the Telegram bot
-  (`backend/app/telegram/`, long polling, not running anywhere: no host yet). Stage 11, on
-  `claude/happy-darwin-2l30x3` and stacked on PR #10, fixes PR #10's Docker build and adds shared
-  links to Star Rail builds, the light theme, Russian failures and a state file for the bot.
-- Next: what is left of the effects table (README plan, item 1), or the UIGF warp import
-  (item 4); a host for the bot and the site waits for the owner. The owner merges the workflow's
-  `Game data update` pull requests.
+- State: PRs #1 to #10 are merged. PR #11 (stage 11, from a scheduled session) and PR #12
+  (stage 12, built on #11 merged with main) are open; merging #12 merges #11 too.
+- Next: a host for the bot and the site, then the Mini App (README plan, item 2); or what is left
+  of the effects table (item 1). The owner merges the workflow's `Game data update` pull requests.
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed

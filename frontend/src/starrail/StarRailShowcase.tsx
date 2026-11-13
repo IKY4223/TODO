@@ -1,5 +1,5 @@
 import { type JSX, type SubmitEvent, useEffect, useRef, useState } from 'react'
-import { useAddress } from '../address'
+import { linked, useAddress } from '../address'
 import { RELIC_SUBSTATS, UID_PATTERN } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { useLanguage, useLocalized, useT, numberFormat } from '../i18n'
@@ -27,14 +27,8 @@ import { loadWanted, publishShowcase, relicScore, saveWanted, type SubstatKey } 
 // A player's showcase lives at #starrail/builds/700000001 and a character's own page one step
 // below it, #starrail/builds/700000001/1409, so either can be shared as a link.
 const LIST = '#starrail/builds'
-const UID = new RegExp(UID_PATTERN)
 const listOf = (uid: string): string => `${LIST}/${uid}`
 
-/** The UID and character an address (the part after "#") names, if it is one of these pages. */
-function linked(address: string): { readonly uid?: string; readonly character?: string } {
-  const [game, tool, uid = '', character] = address.split('/')
-  return `#${game}/${tool}` === LIST && UID.test(uid) ? { uid, character } : {}
-}
 const CHARACTER_ICON_SIZE = 56
 const ITEM_ICON_SIZE = 40
 
@@ -255,7 +249,7 @@ function Profile({ showcase }: { readonly showcase: Showcase }): JSX.Element {
 
 function ShowcaseResult({ showcase }: { readonly showcase: Showcase }): JSX.Element {
   const t = useT()
-  const { uid, character: chosen } = linked(useAddress())
+  const { uid, character: chosen } = linked(useAddress(), LIST)
   const selected =
     uid === showcase.uid ? showcase.characters.find(({ id }) => String(id) === chosen) : undefined
   if (selected) return <CharacterPage character={selected} back={listOf(showcase.uid)} />
@@ -289,7 +283,7 @@ export function StarRailShowcase(): JSX.Element {
   const t = useT()
   const localized = useLocalized()
   const language = useLanguage()
-  const target = linked(useAddress()).uid
+  const target = linked(useAddress(), LIST).uid
   const [uid, setUid] = useState(target ?? '')
   const asked = useRef<string | undefined>(undefined) // the UID last asked for
 

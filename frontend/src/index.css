@@ -231,14 +231,14 @@ nav a[aria-current] {
   font-weight: 600;
 }
 
-/* The current game's tools, in one row that scrolls sideways when the words run long. */
+/* The current game's tools. They wrap onto a second row rather than scroll: a tool scrolled out
+   of sight is one a player never finds. */
 .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0.75rem -1rem 0;
-  padding: 0 1rem 0.25rem;
-  overflow-x: auto;
-  scrollbar-width: none;
+  margin: 0.75rem 0 0;
+  padding: 0 0 0.25rem;
 }
 
 .tabs a {

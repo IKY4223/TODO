@@ -42,6 +42,7 @@ export interface Unit {
   readonly maxSpd?: number // SPD gains stop here
   readonly blocksUltimate?: boolean // its owner cannot use the Ultimate while it is here
   readonly timer?: boolean // a countdown, not a summon: effects on summons skip it
+  readonly pausesOwner?: boolean // its owner takes no turn while it is here, and acts once it goes
 }
 
 export interface Action {
@@ -167,6 +168,8 @@ function fire(states: readonly State[], source: State, trigger: UnitEffect['trig
 
 function leave(states: readonly State[], summoned: State): void {
   summoned.here = false
+  const owner = states.find(({ unit }) => unit.key === summoned.unit.owner)
+  if (owner && summoned.unit.pausesOwner) owner.gauge = 0
   for (const state of states) state.buffs = state.buffs.filter(({ until }) => until !== summoned)
 }
 
@@ -190,8 +193,11 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
   let time = 0
   for (;;) {
     const present = states.filter(({ here }) => here)
-    if (!present.length) return actions // a player may untick the whole team
-    const next = present.reduce((best, state) =>
+    const paused = (state: State): boolean =>
+      targets(states, state, 'summons').some(({ here, unit }) => here && unit.pausesOwner)
+    const ready = present.filter((state) => state.unit.owner || !paused(state))
+    if (!ready.length) return actions // a player may untick the whole team
+    const next = ready.reduce((best, state) =>
       state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
     )
     const elapsed = next.gauge / speedOf(next)

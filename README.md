@@ -28,7 +28,8 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   the others by a switch. Effects take the character's own skill levels and Eidolons; Jingliu's
   Syzygy brings Spectral Transmigration, Pearl's advance counts the team's Elation characters,
   and an enemy with the SPD you type in takes turns, slowed and delayed by Welt, Boothill and
-  Dan Heng. A buff gained again refreshes unless the game lets it stack.
+  Dan Heng. Robin's Concerto holds her turns until its countdown acts, and Garmentmaker
+  speeds up with each attack. A buff gained again refreshes unless the game lets it stack.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
@@ -48,6 +49,7 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   numbers are cut off the way the game prints them, not rounded.
 - **Genshin builds** — enter a UID and see every character in the player's showcase: final
   stats, talents, weapon and artifacts. Data comes from [Enka.Network](https://enka.network).
+  A player's builds can be shared as a link, as in Star Rail.
 - **Damage calculator** — for any imported character: enter a talent multiplier, pick the
   scaling stat, damage bonus, reaction and enemy, and get average, crit and non-crit damage.
   Multipliers are typed in by hand; shred, flat additions and transformative reactions are not
@@ -57,6 +59,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   pity and each 5★ with the pulls it took. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
+- **Star Rail warp history** — choose a UIGF (v4) or SRGF file that another warp tracker
+  exported: each banner's pity and 5★ warps, read on the device and never sent anywhere.
+  Collaboration warps count their pity apart from event warps until a source says they share it.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
@@ -68,9 +73,9 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 Planned, in order:
 
 1. Star Rail effects, the rest of the table:
-   - Robin's Concerto (its countdown, her paused turns, Eidolon 2), Aglaea's SPD stacks,
-     Robin • Summeretto's Summer Songbirds, Sushang's Eidolon 6, Castorice's Ardent Will,
-     Hanya's Eidolon 1, and the extra turns of Firefly's Eidolon 2 and Pearl's team of four;
+   - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
+     Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
+     and the extra turns of Firefly's Eidolon 2 and Pearl's team of four;
    - the later skill kits of Jingliu and Welt, told apart from the first ones;
    - debuffs by their base chance instead of always landing;
    - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
@@ -78,12 +83,9 @@ Planned, in order:
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
    Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
    page of each character once the site has an address.
-3. Share a Genshin build the same way; Star Rail builds can be shared already.
-4. Star Rail: warp history from a UIGF file exported by another tool, since the game gives
-   phones no way to copy the history link.
-5. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
+3. Genshin: talent multipliers from game data, a best-artifact search and luck statistics from
    the imported history.
-6. Zenless Zone Zero: undecided.
+4. Zenless Zone Zero: undecided.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source

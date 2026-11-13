@@ -3,8 +3,6 @@ WORKDIR /frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
-# A test checks the effect tables against the game data; the build type-checks tests too.
-COPY backend/app/starrail/gamedata.json /backend/app/starrail/gamedata.json
 RUN npm run build
 
 FROM python:3.13-slim

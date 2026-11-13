@@ -108,6 +108,34 @@ const RU = {
   Banner: 'Баннер',
   'Character Event Warp': 'Прыжок события: персонаж',
   'Light Cone Event Warp': 'Прыжок события: световой конус',
+  // Warp names as the exporter biuuu/star-rail-warp-export words them in Russian.
+  'Character Collaboration Warp': 'Совместный прыжок события: персонаж',
+  'Light Cone Collaboration Warp': 'Совместный прыжок события: световой конус',
+  'Regular Warp': 'Стандартный прыжок',
+  'Starter Warp': 'Прыжок новичка',
+  'Warp history': 'История прыжков',
+  'Honkai: Star Rail · from a UIGF or SRGF file · saved only on this device':
+    'Honkai: Star Rail · из файла UIGF или SRGF · хранится только на этом устройстве',
+  'Where to get the file': 'Где взять файл',
+  'Apps that track warps can export your history as a UIGF (v4) or SRGF file. Choose that file here: it is read on this device and never sent anywhere.':
+    'Приложения для учёта прыжков умеют выгружать историю в файл UIGF (v4) или SRGF. Выберите этот файл здесь: он читается на этом устройстве и никуда не отправляется.',
+  'UIGF or SRGF file': 'Файл UIGF или SRGF',
+  'This file is not a UIGF or SRGF file.': 'Это не файл UIGF или SRGF.',
+  'This file holds no Star Rail warps.': 'В этом файле нет прыжков Star Rail.',
+  'This file does not say the star rank of each warp: export it again with every field.':
+    'В файле не указана редкость прыжков: выгрузите его заново со всеми полями.',
+  'This file is too large to be a warp history.': 'Файл слишком большой для истории прыжков.',
+  '{count} new warps imported.': 'Импортировано новых прыжков: {count}.',
+  'No new warps.': 'Новых прыжков нет.',
+  'This file could not be read.': 'Не удалось прочитать файл.',
+  'This browser kept its saved data: the history may come back on reload.':
+    'Браузер не удалил сохранённые данные: история может вернуться после перезагрузки.',
+  '{count} warps since the last 5★': 'Прыжков после последнего 5★: {count}',
+  '{total} warps in total · {count} since the last 4★':
+    'Всего прыжков: {total} · после последнего 4★: {count}',
+  Account: 'Аккаунт',
+  'Delete the saved warp history from this device?':
+    'Удалить сохранённую историю прыжков с этого устройства?',
   Warps: 'Прыжки',
   Speed: 'Скорость',
   'Team speed': 'Скорость команды',

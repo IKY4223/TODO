@@ -90,6 +90,7 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
         maxActions: summon.maxActions,
         maxSpd: summon.maxSpd,
         blocksUltimate: summon.blocksUltimate,
+        pausesOwner: summon.pausesOwner,
         timer: summon.kind === 'countdown',
       }
     })

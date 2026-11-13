@@ -150,3 +150,17 @@ test('a character without known effects says so instead of staying silent', () =
     screen.getByText('No effects on the turn order are known for this character yet.'),
   ).toBeDefined()
 })
+
+test("Robin's Concerto holds her turns until its countdown acts", () => {
+  show([character(1309, 'Robin', 100), character(2, 'DPS', 100)])
+  fireEvent.change(screen.getAllByLabelText('Ultimate every N turns')[0] as HTMLElement, {
+    target: { value: '1' },
+  })
+  const robin = timeline().filter((line) => line.includes('Robin'))
+  // The Ultimate at 100 starts Concerto; the SPD 90 countdown acts at 211.1, and she with it.
+  expect(robin.slice(0, 3)).toEqual([
+    'Cycle 0100.0 · Robin · Ultimate',
+    '211.1 · Countdown of Robin',
+    '211.1 · Robin · Ultimate',
+  ])
+})
