@@ -116,17 +116,9 @@ const RU = {
   'Warp history': 'История прыжков',
   'Honkai: Star Rail · global servers · saved only on this device':
     'Honkai: Star Rail · глобальные серверы · хранится только на этом устройстве',
-  'In the game, open Warp and open the warp records. Wait for them to load.':
-    'В игре откройте Прыжки и откройте записи прыжков. Дождитесь загрузки.',
-  'Close the records and open them again. An error page appears.':
-    'Закройте записи и откройте их снова. Появится страница с ошибкой.',
   'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.':
     'По ссылке любой может читать вашу историю прыжков около суток. Приложение использует её для импорта и не сохраняет.',
   'On a Windows PC': 'На ПК с Windows',
-  'Open the warp records in the game. A warp tracker you trust, such as stardb.gg, gives a PowerShell command that finds the link: paste what it prints below. Run only commands from a source you trust.':
-    'Откройте в игре записи прыжков. Трекер прыжков, которому вы доверяете, например stardb.gg, даёт команду для PowerShell, которая находит ссылку: вставьте то, что она выведет, ниже. Запускайте только команды из источника, которому доверяете.',
-  'Or export the history to a UIGF or SRGF file with a warp exporter such as star-rail-warp-export or Starward, and choose the file below. It is read on this device and never sent anywhere.':
-    'Или выгрузите историю в файл UIGF или SRGF экспортёром прыжков, например star-rail-warp-export или Starward, и выберите файл ниже. Он читается на этом устройстве и никуда не отправляется.',
   'Or from a UIGF or SRGF file': 'Или из файла UIGF или SRGF',
   'UIGF or SRGF file': 'Файл UIGF или SRGF',
   'This file is not a UIGF or SRGF file.': 'Это не файл UIGF или SRGF.',
@@ -226,19 +218,52 @@ const RU = {
   '5★ pulls, newest first': '5★, сначала новые',
   Name: 'Имя',
   Pity: 'Гарант',
-  'How to get the link on Android': 'Как получить ссылку на Android',
-  'In the game, open Wish and tap History. Wait for it to load.':
-    'В игре откройте «Молитва» и нажмите «История». Дождитесь загрузки.',
-  'Turn off Wi-Fi and mobile data.': 'Выключите Wi-Fi и мобильный интернет.',
-  'Tap refresh at the top right. An error page appears.':
-    'Нажмите «обновить» справа вверху. Появится страница с ошибкой.',
-  'Press and hold its text, tap Select all, then Copy.':
-    'Зажмите текст, выберите «Выделить всё», затем «Копировать».',
-  'Turn the connection back on and paste the text below.':
-    'Включите интернет и вставьте текст ниже.',
   'On iPhone': 'На iPhone',
-  'The game gives iPhones no simple way to copy the link. Apps that record your traffic can capture it, but they need a certificate that lets them read everything your phone sends. Install one only from an app you trust, and remove it afterwards.':
-    'На iPhone игра не даёт простого способа скопировать ссылку. Её могут перехватить приложения, записывающие трафик, но им нужен сертификат, который позволяет читать всё, что отправляет телефон. Ставьте его только из приложения, которому доверяете, и потом удалите.',
+  // paimon.moe's own steps (MIT licence), its English and its Russian, word for word.
+  'Open Wish (in the game)': 'Откройте Молитвы (в игре)',
+  'Press History': 'Нажмите кнопку История',
+  'Wait for it to load': 'Подождите пока она загрузится',
+  'Turn off your Wi-Fi and data connection': 'Выключите Wi-Fi и Сотовые данные',
+  'Press refresh on top right corner': 'Нажмите обновить в правом верхнем углу',
+  'The page should display an error and show you some text with a black font':
+    'Страница должна выдать ошибку и показать текст с черным шрифтом',
+  "Hold the text and press select all, then copy that text (don't copy only some portion of the text)":
+    'Нажмите на текст и нажмите Выбрать все, затем скопируйте этот текст (скопируйте полностью!)',
+  'Turn on your Wi-Fi or data connection': 'Включите Wi-Fi или Сотовые данные',
+  'Paste the text to the textbox below': 'Вставьте текст ниже',
+  'Open Paimon menu': 'Откройте главное меню',
+  'Press Feedback': 'Нажмите Поддержка',
+  'Wait for it to load and a feedback page should open':
+    'Подождите пока загрузится информация о поддержке',
+  'Press In-game issue': 'Нажмите Игра',
+  'Press Co-Op Mode': 'Нажмите внизу Мультиплеер',
+  'There is a link on the bottom of the reply; press that': 'Внизу будет ссылка, нажмите на нее',
+  'A browser should open up. Copy the link and paste it below':
+    'Должен открыться браузер. Скопируйте ссылку и вставьте ниже',
+  'On Android': 'На Android',
+  'On a phone': 'На телефоне',
+  'Steps from': 'Шаги взяты с',
+  'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.':
+    'paimon.moe даёт команду PowerShell, которая копирует ссылку. Выполните шаги на его странице импорта и вставьте ссылку ниже.',
+  // stardb.gg's steps (https://stardb.gg/en/warp-import), translated.
+  'Start Honkai: Star Rail on your PC and open your Warp records history':
+    'Запустите Honkai: Star Rail на ПК и откройте историю записей прыжков',
+  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar":
+    'Откройте Windows PowerShell: найдите «PowerShell» в поиске Windows',
+  'Copy and paste this command into Powershell and press Enter (global servers):':
+    'Скопируйте эту команду в PowerShell и нажмите Enter (глобальные серверы):',
+  'Paste the output of the command into the input below':
+    'Вставьте то, что вывела команда, в поле ниже',
+  "The command runs stardb.gg's own script on your PC: use it only if you trust that site.":
+    'Команда запускает на вашем ПК скрипт stardb.gg: используйте её, только если доверяете этому сайту.',
+  'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
+    'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
+  'The link': 'Ссылка',
+  'Ask HoYoverse for your data': 'Запросить данные у HoYoverse',
+  "HoYoverse's privacy policy says you may have the right to ask for a copy of the personal data it holds, by a verifiable request to its Data Protection Office at privacy@hoyoverse.com. It does not say whether the history of pulls is part of that data.":
+    'В политике конфиденциальности HoYoverse сказано, что вы можете иметь право запросить копию ваших персональных данных, отправив подтверждаемый запрос в отдел защиты данных на privacy@hoyoverse.com. Входит ли в эти данные история круток, там не сказано.',
+  'Source:': 'Источник:',
+  'HoYoverse privacy policy': 'Политика конфиденциальности HoYoverse',
   'Text from the error page': 'Текст со страницы ошибки',
   'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.':
     'По ссылке любой может читать вашу историю молитв примерно сутки. Приложение использует её для импорта и не хранит.',
