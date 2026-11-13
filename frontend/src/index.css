@@ -232,6 +232,12 @@ h3 {
   font-size: 1.125rem;
 }
 
+/* Links in text take the accent, as the rest of the page does. */
+a {
+  color: var(--color-accent);
+  text-underline-offset: 0.2em;
+}
+
 nav a {
   -webkit-tap-highlight-color: transparent;
   display: grid;
