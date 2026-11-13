@@ -59,10 +59,7 @@ test('explains how to get the link on a phone', () => {
   render(<WishHistory />)
   expect(screen.getByText('Turn off your Wi-Fi and data connection')).toBeDefined()
   expect(screen.getByText('Press Co-Op Mode')).toBeDefined()
-  expect(screen.getByRole('link', { name: 'paimon.moe' })).toHaveProperty(
-    'href',
-    'https://paimon.moe/wish/import',
-  )
+  expect(screen.queryByRole('link', { name: 'paimon.moe' })).toBeNull() // players stay on this site
   expect(screen.getByText('On iPhone')).toBeDefined()
 })
 

@@ -22,39 +22,14 @@ const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
 const LINK_ROWS = 4
 
-// The steps stardb.gg gives, quoted (https://stardb.gg/en/warp-import). No trustworthy source
-// gives a way to get this link on a phone, so none is offered.
-const STARDB = 'https://stardb.gg/en/warp-import'
-const PC: readonly Message[] = [
-  'Start Honkai: Star Rail on your PC and open your Warp records history',
-  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar",
-  'Copy and paste this command into Powershell and press Enter (global servers):',
-]
-
+// No trustworthy source gives a way to get this link on a phone. The one PC way a source gives
+// runs another tracker's own script, which the owner does not send players to.
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
     <>
       <details open={open}>
-        <summary>{t('On a Windows PC')}</summary>
-        <ol>
-          {PC.map((step) => (
-            <li key={step}>{t(step)}</li>
-          ))}
-          <li>
-            <code>iwr -useb stardb.gg/warp | iex</code>
-          </li>
-          <li>{t('Paste the output of the command into the input below')}</li>
-        </ol>
-        <p className="hint">
-          {t(
-            "The command runs stardb.gg's own script on your PC: use it only if you trust that site.",
-          )}{' '}
-          {t('Steps from')} <a href={STARDB}>stardb.gg</a>
-        </p>
-      </details>
-      <details>
-        <summary>{t('On a phone')}</summary>
+        <summary>{t('Where to get the history')}</summary>
         <p>
           {t(
             'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.',
@@ -144,72 +119,80 @@ export function WarpHistory(): JSX.Element {
     <section aria-labelledby="warp-history-title">
       <h2 id="warp-history-title">{t('Warp history')}</h2>
       <p className="hint">{t('Honkai: Star Rail · global servers · saved only on this device')}</p>
-      <Instructions open={!pulls.length} />
-      <form onSubmit={submit}>
-        <label>
-          {t('The link')}
-          <textarea
-            name="link"
-            value={link}
-            onChange={(event) => setLink(event.target.value)}
-            rows={LINK_ROWS}
-            maxLength={MAX_LINK_LENGTH}
-            autoComplete="off"
-            spellCheck={false}
-            required
-          />
-        </label>
-        <p className="hint">
-          {t(
-            'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.',
-          )}
-        </p>
-        <button type="submit" disabled={state.status === 'loading'}>
-          {t('Import history')}
-        </button>
-      </form>
-      <label>
-        {t('Or from a UIGF or SRGF file')}
-        <input
-          type="file"
-          accept=".json,application/json"
-          disabled={state.status === 'loading'}
-          onChange={read}
-        />
-      </label>
-      {'message' in state && <p role="alert">{localized(state.message)}</p>}
-      <output>{state.status === 'loading' ? progress : 'data' in state ? state.data : ''}</output>
-      {saved.current && pulls.length ? (
-        <>
-          {accounts.length > 1 ? (
+      <div className="workspace">
+        <div className="controls">
+          <Instructions open={!pulls.length} />
+          <form onSubmit={submit}>
             <label>
-              {t('Account')}
-              <select
-                value={saved.current}
-                onChange={(event) => keep({ ...saved, current: event.target.value })}
-              >
-                {accounts.map((uid) => (
-                  <option key={uid} value={uid}>
-                    {uid}
-                  </option>
-                ))}
-              </select>
+              {t('The link')}
+              <textarea
+                name="link"
+                value={link}
+                onChange={(event) => setLink(event.target.value)}
+                rows={LINK_ROWS}
+                maxLength={MAX_LINK_LENGTH}
+                autoComplete="off"
+                spellCheck={false}
+                required
+              />
             </label>
-          ) : (
-            <p>UID {saved.current}</p>
-          )}
-          <ul className="cards">
-            {summarizeWarps(pulls).map((summary) => (
-              <li key={summary.banner}>
-                <BannerCard summary={summary} warps />
-              </li>
-            ))}
-          </ul>
-          <button type="button" className="secondary" onClick={forget}>
-            {t('Delete saved history')}
-          </button>
-        </>
-      ) : null}
+            <p className="hint">
+              {t(
+                'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.',
+              )}
+            </p>
+            <button type="submit" disabled={state.status === 'loading'}>
+              {t('Import history')}
+            </button>
+          </form>
+          <label>
+            {t('Or from a UIGF or SRGF file')}
+            <input
+              type="file"
+              accept=".json,application/json"
+              disabled={state.status === 'loading'}
+              onChange={read}
+            />
+          </label>
+        </div>
+        <div className="results">
+          {'message' in state && <p role="alert">{localized(state.message)}</p>}
+          <output>
+            {state.status === 'loading' ? progress : 'data' in state ? state.data : ''}
+          </output>
+          {saved.current && pulls.length ? (
+            <>
+              {accounts.length > 1 ? (
+                <label>
+                  {t('Account')}
+                  <select
+                    value={saved.current}
+                    onChange={(event) => keep({ ...saved, current: event.target.value })}
+                  >
+                    {accounts.map((uid) => (
+                      <option key={uid} value={uid}>
+                        {uid}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <p>UID {saved.current}</p>
+              )}
+              <ul className="cards">
+                {summarizeWarps(pulls).map((summary) => (
+                  <li key={summary.banner}>
+                    <BannerCard summary={summary} warps />
+                  </li>
+                ))}
+              </ul>
+              <button type="button" className="secondary" onClick={forget}>
+                {t('Delete saved history')}
+              </button>
+            </>
+          ) : null}
+        </div>
+      </div>
     </section>
   )
 }

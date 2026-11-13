@@ -6,6 +6,7 @@ from app.wishes.engine import (
     BANNERS,
     GENSHIN_CHARACTER,
     MILESTONE_CHANCES,
+    STAR_RAIL_CHARACTER,
     Banner,
     Forecast,
     five_star_rate,
@@ -153,3 +154,9 @@ def test_soft_pity_reproduces_the_published_consolidated_rate(name: str, publish
     chances = pull_distribution(banner, pity=0, guaranteed=True, copies=1)
     pulls_per_five_star = sum(pulls * chance for pulls, chance in enumerate(chances))
     assert 1 / pulls_per_five_star == pytest.approx(published, abs=0.0002)
+
+
+def test_the_start_page_quotes_the_warp_odds_the_engine_gives() -> None:
+    # frontend/src/Landing.tsx shows this as 51.0%: a change to the banner must change it too.
+    odds = forecast(STAR_RAIL_CHARACTER, pity=0, guaranteed=False, copies=1, pulls=80)
+    assert round(odds.probability, 3) == 0.51

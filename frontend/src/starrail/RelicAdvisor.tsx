@@ -161,49 +161,26 @@ export function RelicAdvisor(): JSX.Element {
       <p className="hint">
         {t('Honkai: Star Rail · is a relic worth leveling? Exact chances, not a simulation.')}
       </p>
-      <form onSubmit={submit}>
-        <label>
-          {t('Rarity')}
-          <select name="rarity">
-            {RARITIES.map((rarity) => (
-              <option key={rarity} value={rarity}>
-                {rarity}★
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t('Main stat')}
-          <select name="main" required defaultValue={NO_CHOICE}>
-            <option value={NO_CHOICE} disabled>
-              {t('Choose')}
-            </option>
-            {statKeys.map((key) => (
-              <option key={key} value={key}>
-                {statName(key, t)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t('Level')}
-          <select name="level">
-            {LEVELS.map((level) => (
-              <option key={level} value={level}>
-                +{level}
-              </option>
-            ))}
-          </select>
-        </label>
-        {SUBSTAT_SLOTS.map((slot) => (
-          <div key={slot} className="pair">
+      <div className="workspace">
+        <div className="controls">
+          <form onSubmit={submit}>
             <label>
-              {t('Substat {slot}', { slot })}
-              <select name="sub" required={slot < FIRST_OPTIONAL_SLOT} defaultValue={NO_CHOICE}>
-                <option value={NO_CHOICE} disabled={slot < FIRST_OPTIONAL_SLOT}>
-                  {slot < FIRST_OPTIONAL_SLOT ? t('Choose') : t('None')}
+              {t('Rarity')}
+              <select name="rarity">
+                {RARITIES.map((rarity) => (
+                  <option key={rarity} value={rarity}>
+                    {rarity}★
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {t('Main stat')}
+              <select name="main" required defaultValue={NO_CHOICE}>
+                <option value={NO_CHOICE} disabled>
+                  {t('Choose')}
                 </option>
-                {RELIC_SUBSTATS.map((key) => (
+                {statKeys.map((key) => (
                   <option key={key} value={key}>
                     {statName(key, t)}
                   </option>
@@ -211,86 +188,115 @@ export function RelicAdvisor(): JSX.Element {
               </select>
             </label>
             <label>
-              {t('Value {slot}', { slot })}
-              <input
-                name="value"
-                type="number"
-                inputMode="decimal"
-                min={0}
-                max={MAX_STAT_VALUE}
-                step="any"
-              />
+              {t('Level')}
+              <select name="level">
+                {LEVELS.map((level) => (
+                  <option key={level} value={level}>
+                    +{level}
+                  </option>
+                ))}
+              </select>
             </label>
-          </div>
-        ))}
-        <p className="hint">
-          {t(
-            'Values as the game shows them: 5.8 for 5.8%. They are only needed to compare relics or to set a goal. The game rounds values down, so the answer is slightly cautious.',
-          )}
-        </p>
-        <fieldset>
-          <legend>{t('Substats you want')}</legend>
-          {RELIC_SUBSTATS.map((key) => (
-            <label key={key} className="check">
-              <input
-                name="wanted"
-                type="checkbox"
-                value={key}
-                defaultChecked={WANTED_BY_DEFAULT.has(key)}
-              />
-              {statName(key, t)}
-            </label>
-          ))}
-        </fieldset>
-        <div className="pair">
-          <label>
-            {t('Goal stat')}
-            <select name="goal" defaultValue={NO_CHOICE}>
-              <option value={NO_CHOICE}>{t('No goal')}</option>
+            {SUBSTAT_SLOTS.map((slot) => (
+              <div key={slot} className="pair">
+                <label>
+                  {t('Substat {slot}', { slot })}
+                  <select name="sub" required={slot < FIRST_OPTIONAL_SLOT} defaultValue={NO_CHOICE}>
+                    <option value={NO_CHOICE} disabled={slot < FIRST_OPTIONAL_SLOT}>
+                      {slot < FIRST_OPTIONAL_SLOT ? t('Choose') : t('None')}
+                    </option>
+                    {RELIC_SUBSTATS.map((key) => (
+                      <option key={key} value={key}>
+                        {statName(key, t)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  {t('Value {slot}', { slot })}
+                  <input
+                    name="value"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    max={MAX_STAT_VALUE}
+                    step="any"
+                  />
+                </label>
+              </div>
+            ))}
+            <p className="hint">
+              {t(
+                'Values as the game shows them: 5.8 for 5.8%. They are only needed to compare relics or to set a goal. The game rounds values down, so the answer is slightly cautious.',
+              )}
+            </p>
+            <fieldset>
+              <legend>{t('Substats you want')}</legend>
               {RELIC_SUBSTATS.map((key) => (
-                <option key={key} value={key}>
+                <label key={key} className="check">
+                  <input
+                    name="wanted"
+                    type="checkbox"
+                    value={key}
+                    defaultChecked={WANTED_BY_DEFAULT.has(key)}
+                  />
                   {statName(key, t)}
-                </option>
+                </label>
               ))}
-            </select>
-          </label>
-          <label>
-            {t('Goal value')}
-            <input
-              name="goalValue"
-              type="number"
-              inputMode="decimal"
-              min={0}
-              max={MAX_STAT_VALUE}
-              step="any"
-            />
-          </label>
+            </fieldset>
+            <div className="pair">
+              <label>
+                {t('Goal stat')}
+                <select name="goal" defaultValue={NO_CHOICE}>
+                  <option value={NO_CHOICE}>{t('No goal')}</option>
+                  {RELIC_SUBSTATS.map((key) => (
+                    <option key={key} value={key}>
+                      {statName(key, t)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {t('Goal value')}
+                <input
+                  name="goalValue"
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  max={MAX_STAT_VALUE}
+                  step="any"
+                />
+              </label>
+            </div>
+            {rivals.length ? (
+              <label>
+                {t('Compare with')}
+                <select name="rival" defaultValue={NO_CHOICE}>
+                  <option value={NO_CHOICE}>{t('Nothing')}</option>
+                  {rivals.map(({ label }) => (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <p className="hint">
+                {t('Load your characters in Builds to compare with a relic they wear.')}
+              </p>
+            )}
+            <button type="submit" disabled={state.status === 'loading'}>
+              {t('Calculate')}
+            </button>
+          </form>
         </div>
-        {rivals.length ? (
-          <label>
-            {t('Compare with')}
-            <select name="rival" defaultValue={NO_CHOICE}>
-              <option value={NO_CHOICE}>{t('Nothing')}</option>
-              {rivals.map(({ label }) => (
-                <option key={label} value={label}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : (
-          <p className="hint">
-            {t('Load your characters in Builds to compare with a relic they wear.')}
-          </p>
-        )}
-        <button type="submit" disabled={state.status === 'loading'}>
-          {t('Calculate')}
-        </button>
-      </form>
-      {'message' in state && <p role="alert">{localized(state.message)}</p>}
-      <div aria-live="polite">
-        {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
-        {'data' in state && <ForecastResult forecast={state.data} goal={goal} />}
+        <div className="results">
+          {'message' in state && <p role="alert">{localized(state.message)}</p>}
+          <div aria-live="polite">
+            {state.status === 'loading' && <p className="hint">{t('Calculating…')}</p>}
+            {'data' in state && <ForecastResult forecast={state.data} goal={goal} />}
+          </div>
+        </div>
       </div>
     </section>
   )

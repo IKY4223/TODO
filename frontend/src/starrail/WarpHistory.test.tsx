@@ -119,8 +119,10 @@ test('imports warps with the link from the error page, and says how to get it', 
   })
   vi.stubGlobal('fetch', fetchMock)
   render(<WarpHistory />)
-  expect(screen.getByText('On a Windows PC')).toBeDefined()
-  expect(screen.getByText('iwr -useb stardb.gg/warp | iex')).toBeDefined()
+  expect(screen.getByText('Where to get the history')).toBeDefined()
+  expect(screen.queryAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
+    'https://hsr.hoyoverse.com/en-us/company/privacy',
+  ]) // no link sends players to another tracker
   expect(screen.getByText('Ask HoYoverse for your data')).toBeDefined()
   fireEvent.change(screen.getByLabelText('The link'), {
     target: { value: 'The webpage at https://example.org/?authkey=x#/log could not be loaded' },

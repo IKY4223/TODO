@@ -118,7 +118,6 @@ const RU = {
     'Honkai: Star Rail · глобальные серверы · хранится только на этом устройстве',
   'The link lets anyone read your warp history for about a day. This app uses it for the import and never keeps it.':
     'По ссылке любой может читать вашу историю прыжков около суток. Приложение использует её для импорта и не сохраняет.',
-  'On a Windows PC': 'На ПК с Windows',
   'Or from a UIGF or SRGF file': 'Или из файла UIGF или SRGF',
   'UIGF or SRGF file': 'Файл UIGF или SRGF',
   'This file is not a UIGF or SRGF file.': 'Это не файл UIGF или SRGF.',
@@ -219,7 +218,7 @@ const RU = {
   Name: 'Имя',
   Pity: 'Гарант',
   'On iPhone': 'На iPhone',
-  // paimon.moe's own steps (MIT licence), its English and its Russian, word for word.
+  // paimon.moe's own steps (MIT licence, credited in the README), its English and Russian.
   'Open Wish (in the game)': 'Откройте Молитвы (в игре)',
   'Press History': 'Нажмите кнопку История',
   'Wait for it to load': 'Подождите пока она загрузится',
@@ -241,24 +240,46 @@ const RU = {
   'A browser should open up. Copy the link and paste it below':
     'Должен открыться браузер. Скопируйте ссылку и вставьте ниже',
   'On Android': 'На Android',
-  'On a phone': 'На телефоне',
-  'Steps from': 'Шаги взяты с',
-  'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.':
-    'paimon.moe даёт команду PowerShell, которая копирует ссылку. Выполните шаги на его странице импорта и вставьте ссылку ниже.',
-  // stardb.gg's steps (https://stardb.gg/en/warp-import), translated.
-  'Start Honkai: Star Rail on your PC and open your Warp records history':
-    'Запустите Honkai: Star Rail на ПК и откройте историю записей прыжков',
-  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar":
-    'Откройте Windows PowerShell: найдите «PowerShell» в поиске Windows',
-  'Copy and paste this command into Powershell and press Enter (global servers):':
-    'Скопируйте эту команду в PowerShell и нажмите Enter (глобальные серверы):',
-  'Paste the output of the command into the input below':
-    'Вставьте то, что вывела команда, в поле ниже',
-  "The command runs stardb.gg's own script on your PC: use it only if you trust that site.":
-    'Команда запускает на вашем ПК скрипт stardb.gg: используйте её, только если доверяете этому сайту.',
   'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.':
     'Ни один надёжный источник не даёт способа получить эту ссылку на Android или iPhone. Трекер прыжков на ПК может выгрузить историю в файл UIGF или SRGF — эта страница читает его ниже.',
   'The link': 'Ссылка',
+  Home: 'Главная',
+  'Every showcased character: final stats, relics, light cone and skill levels.':
+    'Каждый персонаж с витрины: итоговые характеристики, реликвии, световой конус и уровни навыков.',
+  "The exact chance a relic's upgrades land on the substats you want.":
+    'Точный шанс, что улучшения реликвии попадут в нужные вам характеристики.',
+  'The exact odds of a featured 5★ with the warps you have.':
+    'Точный шанс получить 5★ с баннера за ваши прыжки.',
+  "Each banner's pity and 5★ warps, from a link or a UIGF file.":
+    'Гарант и 5★ каждого баннера — по ссылке или из файла UIGF.',
+  'The turn order of a team of four through Memory of Chaos cycles.':
+    'Порядок ходов команды из четырёх в циклах Зала забвения.',
+  'Final stats, talents, weapon and artifacts from the showcase.':
+    'Итоговые характеристики, таланты, оружие и артефакты с витрины.',
+  'The exact odds of a featured 5★ with the wishes you have.':
+    'Точный шанс получить 5★ с баннера за ваши молитвы.',
+  'The whole wish history, imported straight from a phone.':
+    'Вся история молитв — импорт прямо с телефона.',
+  'A history link is used once for the import and never kept.':
+    'Ссылка на историю используется один раз для импорта и не сохраняется.',
+  'Pulls are saved only in this browser, never on a server.':
+    'Крутки хранятся только в этом браузере, никогда на сервере.',
+  'No account and no cookies: a UID is all it asks for.':
+    'Ни аккаунта, ни cookie: нужен только UID.',
+  'Honkai: Star Rail · Genshin Impact': 'Honkai: Star Rail · Genshin Impact',
+  'Build, speed and warp tools for Star Rail and Genshin':
+    'Билды, скорость и прыжки для Star Rail и Genshin',
+  "Enter a UID and see every showcased character's final stats, relics and turn order. Warp odds are exact math, not a simulation.":
+    'Введите UID и увидите итоговые характеристики, реликвии и порядок ходов каждого персонажа с витрины. Шансы прыжков — точный расчёт, а не симуляция.',
+  'Open your builds': 'Открыть ваши билды',
+  'Plan team speed': 'Рассчитать скорость команды',
+  'The Speed tool': 'Инструмент «Скорость»',
+  'chance of a featured 5★ within 80 warps': 'шанс 5★ с баннера за 80 прыжков',
+  'Five tools for Honkai: Star Rail': 'Пять инструментов для Honkai: Star Rail',
+  'Three for Genshin Impact': 'Три для Genshin Impact',
+  'Your history stays on your device': 'Ваша история остаётся на вашем устройстве',
+  'Start with your UID': 'Начните с вашего UID',
+  'Where to get the history': 'Где взять историю',
   'Ask HoYoverse for your data': 'Запросить данные у HoYoverse',
   "HoYoverse's privacy policy says you may have the right to ask for a copy of the personal data it holds, by a verifiable request to its Data Protection Office at privacy@hoyoverse.com. It does not say whether the history of pulls is part of that data.":
     'В политике конфиденциальности HoYoverse сказано, что вы можете иметь право запросить копию ваших персональных данных, отправив подтверждаемый запрос в отдел защиты данных на privacy@hoyoverse.com. Входит ли в эти данные история круток, там не сказано.',

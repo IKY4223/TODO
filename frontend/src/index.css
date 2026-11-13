@@ -1,5 +1,5 @@
 /* The dealt typeface, served from this site: the page may load fonts only from its own origin. */
-@import '@fontsource-variable/geist';
+@import "@fontsource-variable/geist";
 
 :root {
   /* Dealt by the taste skill for a game tool (palette green-black-bone, type Geist, radius soft,
@@ -26,13 +26,13 @@
   --bar-height: 3.75rem;
   --tabs-height: 4rem; /* the tab bar at the foot of a phone's screen */
   color-scheme: dark;
-  font-family: 'Geist Variable', system-ui, sans-serif;
+  font-family: "Geist Variable", system-ui, sans-serif;
   line-height: 1.5;
 }
 
 /* The same roles on a light page, chosen in the menu or taken from the device (see theme.ts):
    the dealt palette's inverse, bone ground and green-black ink. */
-:root[data-theme='light'] {
+:root[data-theme="light"] {
   --color-background: #e3e2da;
   --color-card: #d3d2cb;
   --color-input: #ecebe5;
@@ -84,6 +84,8 @@ body {
 
 .brand {
   display: grid;
+  color: inherit;
+  text-decoration: none;
   flex: 1;
   min-width: 0;
   line-height: 1.2;
@@ -145,9 +147,18 @@ button.icon {
 
 .drawer a,
 .sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   justify-content: start;
   padding: 0 0.75rem;
   border-color: transparent;
+}
+
+/* In the menu the icon sits beside the name, without the tab bar's pill. */
+:is(.drawer, .sidebar) .tool-icon {
+  flex: none;
+  padding: 0;
 }
 
 /* On a wide screen the menu stays beside the page, and the page keeps to the middle of what is left. */
@@ -163,12 +174,6 @@ button.icon {
   overflow-y: auto;
   border-right: 1px solid var(--color-border);
   background: var(--color-card);
-}
-
-@media (min-width: 64rem) {
-  main {
-    margin-left: max(17rem, calc(50% - 20rem));
-  }
 }
 
 button.backdrop {
@@ -433,7 +438,7 @@ legend {
 }
 
 /* 16px text stops iOS from zooming on focus; 2.75rem is a 44px touch target. */
-input:not([type='checkbox']),
+input:not([type="checkbox"]),
 select,
 textarea,
 button {
@@ -454,7 +459,7 @@ button {
     transform 100ms;
 }
 
-:is(input:not([type='checkbox']), select, textarea):focus {
+:is(input:not([type="checkbox"]), select, textarea):focus {
   border-color: var(--color-accent);
   box-shadow: var(--ring);
 }
@@ -661,97 +666,97 @@ summary {
   background: var(--color-background);
 }
 
-[data-element='pyro'] {
+[data-element="pyro"] {
   --element: #f97316;
 }
 
-[data-element='hydro'] {
+[data-element="hydro"] {
   --element: #38bdf8;
 }
 
-[data-element='electro'] {
+[data-element="electro"] {
   --element: #c084fc;
 }
 
-[data-element='cryo'] {
+[data-element="cryo"] {
   --element: #a5f3fc;
 }
 
-[data-element='anemo'] {
+[data-element="anemo"] {
   --element: #5eead4;
 }
 
-[data-element='geo'] {
+[data-element="geo"] {
   --element: #facc15;
 }
 
-[data-element='dendro'] {
+[data-element="dendro"] {
   --element: #84cc16;
 }
 
 /* Star Rail elements; wind and ice reuse Genshin's anemo and cryo tones. */
-[data-element='physical'] {
+[data-element="physical"] {
   --element: #d1d5db;
 }
 
-[data-element='fire'] {
+[data-element="fire"] {
   --element: #f97316;
 }
 
-[data-element='ice'] {
+[data-element="ice"] {
   --element: #a5f3fc;
 }
 
-[data-element='lightning'] {
+[data-element="lightning"] {
   --element: #c084fc;
 }
 
-[data-element='wind'] {
+[data-element="wind"] {
   --element: #5eead4;
 }
 
-[data-element='quantum'] {
+[data-element="quantum"] {
   --element: #818cf8;
 }
 
-[data-element='imaginary'] {
+[data-element="imaginary"] {
   --element: #facc15;
 }
 
 /* On a light page the pale tones would vanish: the same hues, darker. */
-:root[data-theme='light'] :is([data-element='pyro'], [data-element='fire']) {
+:root[data-theme="light"] :is([data-element="pyro"], [data-element="fire"]) {
   --element: #c2410c;
 }
 
-:root[data-theme='light'] [data-element='hydro'] {
+:root[data-theme="light"] [data-element="hydro"] {
   --element: #0369a1;
 }
 
-:root[data-theme='light'] :is([data-element='electro'], [data-element='lightning']) {
+:root[data-theme="light"] :is([data-element="electro"], [data-element="lightning"]) {
   --element: #9333ea;
 }
 
-:root[data-theme='light'] :is([data-element='cryo'], [data-element='ice']) {
+:root[data-theme="light"] :is([data-element="cryo"], [data-element="ice"]) {
   --element: #0e7490;
 }
 
-:root[data-theme='light'] :is([data-element='anemo'], [data-element='wind']) {
+:root[data-theme="light"] :is([data-element="anemo"], [data-element="wind"]) {
   --element: #0f766e;
 }
 
-:root[data-theme='light'] :is([data-element='geo'], [data-element='imaginary']) {
+:root[data-theme="light"] :is([data-element="geo"], [data-element="imaginary"]) {
   --element: #a16207;
 }
 
-:root[data-theme='light'] [data-element='dendro'] {
+:root[data-theme="light"] [data-element="dendro"] {
   --element: #4d7c0f;
 }
 
-:root[data-theme='light'] [data-element='physical'] {
+:root[data-theme="light"] [data-element="physical"] {
   --element: #6b7280;
 }
 
-:root[data-theme='light'] [data-element='quantum'] {
+:root[data-theme="light"] [data-element="quantum"] {
   --element: #4f46e5;
 }
 
@@ -760,7 +765,7 @@ summary {
   margin-top: 1rem;
 }
 
-[role='alert'] {
+[role="alert"] {
   color: var(--color-destructive);
 }
 
@@ -790,4 +795,266 @@ footer {
 .share output,
 .share label {
   justify-self: stretch;
+}
+
+/* The start page, to the taste skill's plan: the hero alone on the first screen, then one
+   section a screen on a computer; linked cards lift 2px on hover; the hero enters once. */
+.landing-section,
+.landing-hero {
+  padding: 2.5rem 0;
+}
+
+.landing-hero {
+  display: grid;
+  gap: 2rem;
+}
+
+.landing-hero h2 {
+  margin: 0.5rem 0 1rem;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.landing-eyebrow {
+  margin: 0;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.landing-lede {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: 1.125rem;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.landing-button {
+  display: inline-grid;
+  place-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    transform 100ms,
+    filter 150ms;
+}
+
+.landing-button.secondary {
+  border-color: var(--color-control);
+  background: transparent;
+  color: var(--color-foreground);
+}
+
+.landing-button:hover {
+  filter: brightness(1.08);
+}
+
+.landing-button:active {
+  transform: scale(0.98);
+}
+
+/* The product's own interface, in a frame. */
+.app-frame {
+  margin: 0;
+  padding: 0 1.25rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  box-shadow: var(--shadow);
+}
+
+.app-frame-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 -1.25rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-muted-foreground);
+}
+
+.app-frame-bar .tool-icon {
+  padding: 0;
+  color: var(--color-accent);
+}
+
+.app-frame .chance {
+  margin-bottom: 0;
+}
+
+.app-frame .chance strong {
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+
+.landing-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-tool {
+  display: grid;
+  gap: 0.5rem;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  color: var(--color-foreground);
+  text-decoration: none;
+  transition:
+    transform 150ms ease-out,
+    border-color 150ms;
+}
+
+.landing-tool:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-control);
+}
+
+.landing-tool .tool-icon {
+  padding: 0;
+  color: var(--color-accent);
+}
+
+.landing-tool span {
+  color: var(--color-muted-foreground);
+}
+
+.landing-promises {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.landing-promises li {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.landing-close form {
+  max-width: 32rem;
+  margin-top: 1.5rem;
+}
+
+[data-enter] {
+  animation: enter 600ms ease-out both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* A computer's wide screen comes first (the owner's choice): the page beside the sidebar takes
+   the room it has, a tool's controls stay in a column on the left while its results fill the
+   rest, and cards sit side by side. */
+@media (min-width: 64rem) {
+  main {
+    max-width: 80rem;
+    margin-left: 16rem;
+    padding: 0.5rem 2.5rem 3rem;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+    margin-top: 1.5rem;
+  }
+
+  /* Settings stay in reach while long results scroll. */
+  .controls {
+    position: sticky;
+    top: calc(var(--bar-height) + 1rem);
+    /* A form taller than the screen scrolls on its own, so its button stays in reach. */
+    max-height: calc(100dvh - var(--bar-height) - 2rem);
+    overflow-y: auto;
+    padding: 0.25rem; /* room for the focus ring inside the scrolling box */
+  }
+
+  .results > :first-child {
+    margin-top: 0;
+  }
+
+  .cards {
+    grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* The player's UID and its button on one line, above the cards. */
+  section > form:has(> label > input[name="uid"]) {
+    grid-template-columns: minmax(0, 24rem) auto;
+    justify-content: start;
+    align-items: end;
+  }
+
+  .landing-hero,
+  .landing-section {
+    box-sizing: border-box;
+    min-height: calc(100vh - var(--bar-height));
+    align-content: center;
+  }
+
+  .landing-section {
+    display: grid;
+  }
+
+  .landing-hero {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .landing-promises {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    font-size: 1.75rem;
+  }
+
+  .landing-close form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-content: start;
+    align-items: end;
+  }
+
+  section > form:has(> label > input[name="uid"]) button,
+  .landing-close form button {
+    width: auto;
+    padding: 0 1.75rem;
+  }
+
+  /* Every tool of a game in one row. */
+  .landing-tools {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
 }

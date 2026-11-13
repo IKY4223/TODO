@@ -1,5 +1,6 @@
 import { type JSX, type ReactNode, useEffect, useState } from 'react'
 import { useAddress } from './address'
+import { Landing } from './Landing'
 import { ToolIcon, type ToolIconName } from './ui/ToolIcon'
 import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
@@ -66,6 +67,7 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 }
 
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
+const HOME = 'home'
 
 const THEME_LABELS = {
   system: 'As on the device',
@@ -94,7 +96,10 @@ function useWide(): boolean {
 }
 
 function App(): JSX.Element {
-  const here = locate(useAddress())
+  const address = useAddress()
+  const here = locate(address)
+  // The start page is the bare address, or #home; every tool keeps its own #game/tool address.
+  const home = address === '' || address === HOME
   const t = useT()
   const language = useLanguage()
   const [open, setOpen] = useState(false)
@@ -111,6 +116,12 @@ function App(): JSX.Element {
   }, [open])
 
   const menu = [
+    <nav key="home" aria-label={t('Home')}>
+      <a href={`#${HOME}`} aria-current={home ? 'page' : undefined} onClick={() => setOpen(false)}>
+        <ToolIcon name="home" />
+        <span>{t('Home')}</span>
+      </a>
+    </nav>,
     ...games.map((game) => (
       <nav key={game} aria-label={GAMES[game].label}>
         <h2>{GAMES[game].label}</h2>
@@ -118,10 +129,11 @@ function App(): JSX.Element {
           <a
             key={tool}
             href={href(game, tool)}
-            aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
+            aria-current={!home && game === here.game && tool === here.tool ? 'page' : undefined}
             onClick={() => setOpen(false)}
           >
-            {t(toolEntry(game, tool)?.label ?? 'Tools')}
+            <ToolIcon name={toolEntry(game, tool)?.icon ?? 'builds'} />
+            <span>{t(toolEntry(game, tool)?.label ?? 'Tools')}</span>
           </a>
         ))}
       </nav>
@@ -180,10 +192,10 @@ function App(): JSX.Element {
           />
           <circle cx="16" cy="24" r="2.5" fill="currentColor" />
         </svg>
-        <div className="brand">
+        <a className="brand" href={`#${HOME}`}>
           <h1>HoYo Toolkit</h1>
-          <span data-testid="game">{GAMES[here.game].label}</span>
-        </div>
+          <span data-testid="game">{home ? t('Home') : GAMES[here.game].label}</span>
+        </a>
         <select
           aria-label={t('Language')}
           value={language}
@@ -217,7 +229,7 @@ function App(): JSX.Element {
         </>
       ) : null}
       <main>
-        {wide ? null : (
+        {wide || home ? null : (
           <nav className="tabs" aria-label={t('Tools')}>
             {toolsOf(here.game).map((tool) => (
               <a
@@ -234,11 +246,14 @@ function App(): JSX.Element {
         {games.flatMap((game) =>
           toolsOf(game).map((tool) => (
             // Hidden, not unmounted: a loaded showcase or forecast survives switching tools.
-            <div key={href(game, tool)} hidden={game !== here.game || tool !== here.tool}>
+            <div key={href(game, tool)} hidden={home || game !== here.game || tool !== here.tool}>
               <ErrorBoundary>{toolEntry(game, tool)?.element}</ErrorBoundary>
             </div>
           )),
         )}
+        <div hidden={!home}>
+          <Landing />
+        </div>
         <footer>{t('Fan project. Not affiliated with HoYoverse.')}</footer>
       </main>
     </>

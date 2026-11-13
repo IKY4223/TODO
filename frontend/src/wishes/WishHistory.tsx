@@ -67,7 +67,9 @@ export function BannerCard(props: {
   )
 }
 
-// Word for word the steps paimon.moe gives (MIT licence), in its own English and Russian.
+// Word for word the steps paimon.moe gives (github.com/MadeBaruna/paimon-moe, MIT licence,
+// copyright (c) 2021 Made Baruna), in its own English and Russian. Credited in the README, not
+// linked: the owner keeps players on this site.
 const ANDROID: readonly Message[] = [
   'Open Wish (in the game)',
   'Press History',
@@ -88,7 +90,6 @@ const IPHONE: readonly Message[] = [
   'There is a link on the bottom of the reply; press that',
   'A browser should open up. Copy the link and paste it below',
 ]
-const PAIMON = 'https://paimon.moe/wish/import'
 
 function Steps({ steps }: { readonly steps: readonly Message[] }): JSX.Element {
   const t = useT()
@@ -113,17 +114,6 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
         <summary>{t('On iPhone')}</summary>
         <Steps steps={IPHONE} />
       </details>
-      <details>
-        <summary>{t('On a Windows PC')}</summary>
-        <p>
-          {t(
-            'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.',
-          )}
-        </p>
-      </details>
-      <p className="hint">
-        {t('Steps from')} <a href={PAIMON}>paimon.moe</a>
-      </p>
       <DataRequest game="genshin" />
     </>
   )
@@ -172,47 +162,53 @@ export function WishHistory(): JSX.Element {
     <section aria-labelledby="history-title">
       <h2 id="history-title">{t('Wish history')}</h2>
       <p className="hint">{t('Genshin Impact · global servers · saved only on this device')}</p>
-      <Instructions open={!pulls.length} />
-      <form onSubmit={submit}>
-        <label>
-          {t('Text from the error page')}
-          <textarea
-            name="link"
-            value={link}
-            onChange={(event) => setLink(event.target.value)}
-            rows={LINK_ROWS}
-            maxLength={MAX_LINK_LENGTH}
-            autoComplete="off"
-            spellCheck={false}
-            required
-          />
-        </label>
-        <p className="hint">
-          {t(
-            'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.',
-          )}
-        </p>
-        <button type="submit" disabled={state.status === 'loading'}>
-          {t('Import history')}
-        </button>
-      </form>
-      {'message' in state && <p role="alert">{localized(state.message)}</p>}
-      <output>{state.status === 'loading' ? progress : outcome}</output>
-      {saved.current && pulls.length ? (
-        <>
-          <p>UID {saved.current}</p>
-          <ul className="cards">
-            {summarize(pulls).map((summary) => (
-              <li key={summary.banner}>
-                <BannerCard summary={summary} />
-              </li>
-            ))}
-          </ul>
-          <button type="button" className="secondary" onClick={forget}>
-            {t('Delete saved history')}
-          </button>
-        </>
-      ) : null}
+      <div className="workspace">
+        <div className="controls">
+          <Instructions open={!pulls.length} />
+          <form onSubmit={submit}>
+            <label>
+              {t('Text from the error page')}
+              <textarea
+                name="link"
+                value={link}
+                onChange={(event) => setLink(event.target.value)}
+                rows={LINK_ROWS}
+                maxLength={MAX_LINK_LENGTH}
+                autoComplete="off"
+                spellCheck={false}
+                required
+              />
+            </label>
+            <p className="hint">
+              {t(
+                'The link lets anyone read your wish history for about a day. This app uses it for the import and never keeps it.',
+              )}
+            </p>
+            <button type="submit" disabled={state.status === 'loading'}>
+              {t('Import history')}
+            </button>
+          </form>
+        </div>
+        <div className="results">
+          {'message' in state && <p role="alert">{localized(state.message)}</p>}
+          <output>{state.status === 'loading' ? progress : outcome}</output>
+          {saved.current && pulls.length ? (
+            <>
+              <p>UID {saved.current}</p>
+              <ul className="cards">
+                {summarize(pulls).map((summary) => (
+                  <li key={summary.banner}>
+                    <BannerCard summary={summary} />
+                  </li>
+                ))}
+              </ul>
+              <button type="button" className="secondary" onClick={forget}>
+                {t('Delete saved history')}
+              </button>
+            </>
+          ) : null}
+        </div>
+      </div>
     </section>
   )
 }

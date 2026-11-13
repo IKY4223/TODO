@@ -35,10 +35,13 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
-- **Layout** — a top bar that stays in reach, a menu with every tool of every game, and the
-  current game's tools in a tab bar at the foot of the screen, an icon over each name. Built for
-  a phone first: 360px wide, 44px touch targets. On a wide screen the menu stays open beside the
-  page in place of the tab bar. A palette and type dealt by the taste skill: a green-black ground,
+- **Start page** — what the toolkit does, built to the taste skill's plan: the hero with the
+  product's own interface alone on the first screen, then one section a screen on a computer, and
+  a UID field that opens the player's builds.
+- **Layout** — laid out for a computer first: the menu beside the page with an icon at every
+  entry, a tool's controls in a column on the left and its results on the right, cards side by
+  side. On a phone, a top bar, a menu and the current game's tools in a tab bar at the foot of
+  the screen; still usable 360px wide with 44px touch targets. A palette and type dealt by the taste skill: a green-black ground,
   bone text and a muted green accent in Geist, or its inverse as the light theme.
 - **Light and dark themes** — the app follows the device's setting until the player picks a
   theme under Settings in the menu; the pick is kept on the device.
@@ -58,15 +61,15 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   modelled.
 - **Wish history** — import the whole wish history straight from a phone: on Android, copy the
   text of the error page the game's history shows offline and paste it in. Shows every banner's
-  pity and each 5★ with the pulls it took. The steps for Android, iPhone and PC are paimon.moe's
-  own (MIT), and both histories quote what HoYoverse's privacy policy says about asking for a copy
+  pity and each 5★ with the pulls it took. The steps for Android and iPhone are paimon.moe's
+  own (see Credits), and both histories quote what HoYoverse's privacy policy says about asking for a copy
   of one's data. Pulls are saved only on the device; the link, which
   opens the history to anyone for about a day, is used for the import and never kept. Global
   servers only.
-- **Star Rail warp history** — import it with the link from the warp records, found on a
-  Windows PC with stardb.gg's PowerShell command (no trustworthy source gives a way on a phone),
-  or choose a UIGF (v4) or SRGF file another warp tracker exported, read on the device and never
-  sent anywhere. Shows each banner's pity and 5★ warps. Global servers only.
+- **Star Rail warp history** — import it with a warp history link, or choose a UIGF (v4) or SRGF
+  file another warp tracker exported, read on the device and never sent anywhere. No trustworthy
+  source gives a way to get the link on a phone. Shows each banner's pity and 5★ warps. Global
+  servers only.
 - **Wish forecast** — chance to pull a featured 5★ character with the pulls you have, and how
   many pulls 50%, 90%, 99% and 100% take. Exact math, not a simulation. Capturing Radiance is
   not modelled, so real odds are slightly better.
@@ -77,10 +80,8 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-0. The rest of the taste skill's page plan, which this stage did not take: it is made for landing
-   pages (a hero alone on the first screen, one section per screen, photographs on every screen,
-   real product icons, its browser finish gate), which a phone tool of forms and cards does not
-   fit. Decide with the owner whether a landing page in front of the tools should take it.
+0. Own PowerShell scripts, served from this site, that find the Genshin and Star Rail history
+   links on a PC, so the PC way comes back without sending players to another tracker.
 1. Star Rail effects, the rest of the table:
    - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
      Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
@@ -239,3 +240,9 @@ acceptable use policy names Telegram bot frameworks among what it refuses. It ne
 ## Licence
 
 MIT: see `LICENSE`. Game data, names and images belong to HoYoverse.
+
+## Credits
+
+The Genshin wish history steps for Android and iPhone are paimon.moe's, word for word in English
+and Russian: [paimon-moe](https://github.com/MadeBaruna/paimon-moe), MIT licence, copyright (c)
+2021 Made Baruna. The site itself links no other tracker, so players stay on it.
