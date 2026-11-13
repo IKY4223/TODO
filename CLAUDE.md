@@ -69,7 +69,11 @@ have a lawyer read the texts before launch.
   the user asked for. Any analytics or ads need a consent banner first.
 - Terms of use: no warranty, and a warning that the game's terms may not allow third-party history
   tools; the user accepts that risk.
-- Enka.Network: read its current API rules (identification, caching, limits, credit) and follow them.
+- Enka.Network: its API rules (github.com/EnkaNetwork/API-docs, api.md) were read in November
+  2026: a custom User-Agent (done: `hoyo-toolkit`; add the site's address once it has one), cache
+  each UID until its `ttl` (done), no UID enumeration or mass queries (none), handle 400, 404, 424,
+  429, 500 and 503 (done). They state no credit, commercial-use or image terms; the Star Rail
+  endpoint is not documented there. Read them again before launch.
 - Security: install the `usestrix/strix` plugin and run it against the deployed site, along with
   the `claude-security` scan of the code. Fix what they find before launch.
 - Telegram: the bot's token is a secret (environment variable, never in the repository or logs);
