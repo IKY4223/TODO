@@ -46,7 +46,7 @@ const tools = (): (string | null)[] =>
 
 test('each game lists only its own tools', async () => {
   render(<App />)
-  expect(tools()).toEqual(['Builds', 'Relics', 'Warps', 'Speed'])
+  expect(tools()).toEqual(['Builds', 'Relics', 'Warps', 'History', 'Speed'])
   window.location.hash = '#genshin/builds'
   await screen.findByRole('link', { name: 'Wishes' })
   expect(tools()).toEqual(['Builds', 'Wishes', 'History'])
@@ -84,7 +84,7 @@ test('the menu closes after a choice, on Escape and on a tap outside', () => {
   expect(closed()).toBe(true)
 })
 
-test.each(['#toString', '#genshin/toString', '#starrail/history', '#genshin'])(
+test.each(['#toString', '#genshin/toString', '#starrail/wishes', '#genshin'])(
   'an unknown address %s falls back to a tool that exists',
   (address) => {
     window.location.hash = address

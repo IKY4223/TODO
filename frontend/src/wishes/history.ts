@@ -24,7 +24,7 @@ export interface FiveStar {
 }
 
 export interface BannerSummary {
-  readonly banner: Banner
+  readonly banner: string
   readonly label: Message
   readonly total: number
   /** Pulls since the last 5★. */
@@ -96,9 +96,7 @@ const isPull = (value: unknown): value is Pull =>
   isNumber(value.rank)
 
 const isPage = (value: unknown): value is Page =>
-  isRecord(value) &&
-  (value.uid === null || isString(value.uid)) &&
-  isArrayOf(value.pulls, isPull)
+  isRecord(value) && (value.uid === null || isString(value.uid)) && isArrayOf(value.pulls, isPull)
 
 const byId = (a: Pull, b: Pull): number => {
   const [x, y] = [BigInt(a.id), BigInt(b.id)]
@@ -160,7 +158,9 @@ export async function importHistory(
   saved: SavedHistory,
   options: ImportOptions = {},
 ): Promise<ImportResult> {
-  const known = new Set(Object.values(saved.accounts).flatMap((pulls) => pulls.map((pull) => pull.id)))
+  const known = new Set(
+    Object.values(saved.accounts).flatMap((pulls) => pulls.map((pull) => pull.id)),
+  )
   const wait = options.wait ?? pause
 
   const readFrom = async (index: number, sofar: BannerResult): Promise<BannerResult> => {
@@ -168,7 +168,10 @@ export async function importHistory(
     if (!banner) return sofar
     if (index) await wait(BANNER_DELAY_MS)
     const read = await readBanner(link, banner, known, { ...options, wait })
-    return readFrom(index + 1, { uid: sofar.uid ?? read.uid, pulls: [...sofar.pulls, ...read.pulls] })
+    return readFrom(index + 1, {
+      uid: sofar.uid ?? read.uid,
+      pulls: [...sofar.pulls, ...read.pulls],
+    })
   }
 
   const { uid, pulls } = await readFrom(0, { uid: null, pulls: [] })
@@ -178,12 +181,12 @@ export async function importHistory(
   return { history, added: pulls.length, uid }
 }
 
-function summarizeBanner(banner: Banner, pulls: readonly Pull[]): BannerSummary {
+function summarizeBanner(banner: string, label: Message, pulls: readonly Pull[]): BannerSummary {
   const fives = pulls.flatMap((pull, index) => (pull.rank === FIVE_STAR ? [index] : []))
   const lastFour = pulls.findLastIndex((pull) => pull.rank >= FOUR_STAR)
   return {
     banner,
-    label: BANNERS[banner],
+    label,
     total: pulls.length,
     pity5: pulls.length - 1 - (fives.at(-1) ?? -1),
     pity4: pulls.length - 1 - lastFour,
@@ -196,13 +199,31 @@ function summarizeBanner(banner: Banner, pulls: readonly Pull[]): BannerSummary 
   }
 }
 
-/** Per banner with any pulls: its pity counters and its 5★ pulls. `pulls` oldest first. */
-export function summarize(pulls: readonly Pull[]): BannerSummary[] {
-  const pool = (pull: Pull): string => SAME_POOL[pull.banner] ?? pull.banner
-  return banners
-    .map((banner) => summarizeBanner(banner, pulls.filter((pull) => pool(pull) === banner)))
+/**
+ * Per banner in `order` with any pulls: its pity counters and its 5★ pulls. `pulls` oldest first;
+ * `samePool` names banners whose pulls count toward another's pity.
+ */
+export function summarizeBanners<B extends string>(
+  pulls: readonly Pull[],
+  order: readonly B[],
+  labels: Readonly<Record<B, Message>>,
+  samePool: Readonly<Record<string, B>> = {},
+): BannerSummary[] {
+  const pool = (pull: Pull): string => samePool[pull.banner] ?? pull.banner
+  return order
+    .map((banner) =>
+      summarizeBanner(
+        banner,
+        labels[banner],
+        pulls.filter((pull) => pool(pull) === banner),
+      ),
+    )
     .filter((summary) => summary.total)
 }
+
+/** Per Genshin banner with any pulls: its pity counters and its 5★ pulls. `pulls` oldest first. */
+export const summarize = (pulls: readonly Pull[]): BannerSummary[] =>
+  summarizeBanners(pulls, banners, BANNERS, SAME_POOL)
 
 const isSavedHistory = (value: unknown): value is SavedHistory & { readonly version: number } =>
   isRecord(value) &&
@@ -211,13 +232,15 @@ const isSavedHistory = (value: unknown): value is SavedHistory & { readonly vers
   isRecord(value.accounts) &&
   Object.values(value.accounts).every((pulls) => isArrayOf(pulls, isPull))
 
-/** The history saved on this device. Storage can be off or corrupted: then it is empty. */
-export function loadHistory(storage?: Storage): SavedHistory {
+/** A history saved on this device under `key`. Storage can be off or corrupted: then it is empty. */
+export function loadSaved(key: string, storage?: Storage): SavedHistory {
   try {
     // Reached inside the `try`: where site data is blocked, reading window.localStorage throws.
     const store = storage ?? window.localStorage
-    const saved: unknown = JSON.parse(store.getItem(STORAGE_KEY) ?? 'null')
-    return isSavedHistory(saved) ? { current: saved.current, accounts: saved.accounts } : EMPTY_HISTORY
+    const saved: unknown = JSON.parse(store.getItem(key) ?? 'null')
+    return isSavedHistory(saved)
+      ? { current: saved.current, accounts: saved.accounts }
+      : EMPTY_HISTORY
   } catch {
     // Private browsing, blocked site data or a corrupted entry: start from nothing.
     return EMPTY_HISTORY
@@ -225,12 +248,17 @@ export function loadHistory(storage?: Storage): SavedHistory {
 }
 
 /** False when the browser refuses to keep it: the history then lasts until the page closes. */
-export function saveHistory(history: SavedHistory, storage?: Storage): boolean {
+export function saveSaved(key: string, history: SavedHistory, storage?: Storage): boolean {
   try {
     const store = storage ?? window.localStorage
-    store.setItem(STORAGE_KEY, JSON.stringify({ version: STORAGE_VERSION, ...history }))
+    store.setItem(key, JSON.stringify({ version: STORAGE_VERSION, ...history }))
     return true
   } catch {
     return false
   }
 }
+
+/** The Genshin wish history saved on this device. */
+export const loadHistory = (storage?: Storage): SavedHistory => loadSaved(STORAGE_KEY, storage)
+export const saveHistory = (history: SavedHistory, storage?: Storage): boolean =>
+  saveSaved(STORAGE_KEY, history, storage)

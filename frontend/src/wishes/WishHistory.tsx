@@ -14,9 +14,9 @@ import {
 const LINK_ROWS = 4
 const DELETE_QUESTION =
   'Delete the saved wish history from this device? Pulls older than a year cannot be imported again.'
-const NOT_SAVED = ' This browser does not keep site data, so the history lasts until this page closes.'
+export const NOT_SAVED = ' This browser does not keep site data, so the history lasts until this page closes.'
 
-function BannerCard({ summary }: { readonly summary: BannerSummary }): JSX.Element {
+export function BannerCard({ summary }: { readonly summary: BannerSummary }): JSX.Element {
   const t = useT()
   return (
     <article className="card">

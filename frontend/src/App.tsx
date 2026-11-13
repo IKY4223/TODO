@@ -5,6 +5,7 @@ import { languageLabel, languages, type Message, setLanguage, useLanguage, useT 
 import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { SpeedPlanner } from './starrail/SpeedPlanner'
+import { WarpHistory } from './starrail/WarpHistory'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
 import { THEMES, type Theme, useTheme } from './theme'
 import { WishForecast } from './wishes/WishForecast'
@@ -30,6 +31,7 @@ const GAMES = {
       builds: { label: 'Builds', element: <StarRailShowcase /> },
       relics: { label: 'Relics', element: <RelicAdvisor /> },
       warps: { label: 'Warps', element: <WishForecast game="starrail" /> },
+      history: { label: 'History', element: <WarpHistory /> },
       speed: { label: 'Speed', element: <SpeedPlanner /> },
     },
   },

@@ -332,7 +332,10 @@ test('opens a shared link to a character and shares it on', async ({ page }) => 
   await expect(tool.getByRole('heading', { level: 2, name: 'Hyacine' })).toBeVisible()
   await expect(tool.getByLabel('UID')).toHaveValue(UID)
   await tool.getByRole('button', { name: 'Share link' }).click()
-  await expect(page.locator('body')).toHaveAttribute('data-shared', new URL(address, page.url()).href)
+  await expect(page.locator('body')).toHaveAttribute(
+    'data-shared',
+    new URL(address, page.url()).href,
+  )
   expectPhoneFriendly(await measureLayout(page), MIN_PAGE_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   await tool.getByRole('link', { name: '← All characters' }).click()
@@ -469,5 +472,35 @@ test('on a wide screen the menu stays beside the page', async ({ page }) => {
   ])
   expect((main?.x ?? 0) >= (aside?.x ?? 0) + (aside?.width ?? 0)).toBe(true)
   expect((await measureLayout(page)).overflows).toBe(false)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+})
+
+const warp = (id: string, rank_type: string, name: string) => ({
+  gacha_id: '1',
+  gacha_type: '11',
+  item_id: '1308',
+  time: '2025-01-01 12:00:00',
+  name,
+  item_type: 'Character',
+  rank_type,
+  id,
+})
+
+test('imports Star Rail warps from a UIGF file chosen on the phone', async ({ page }) => {
+  await page.goto('/#starrail/history')
+  const uigf = {
+    info: { export_timestamp: 1, export_app: 'test', export_app_version: '1', version: 'v4.0' },
+    hkrpg: [{ uid: UID, timezone: 8, list: [warp('1', '3', 'Arrows'), warp('2', '5', 'Acheron')] }],
+  }
+  const tool = shown(page)
+  await tool.getByLabel('UIGF or SRGF file').setInputFiles({
+    name: 'warps.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(uigf)),
+  })
+  await expect(tool.getByText('2 new warps imported.')).toBeVisible()
+  await expect(tool.getByRole('heading', { name: 'Character Event Warp' })).toBeVisible()
+  await expect(tool.getByRole('cell', { name: 'Acheron' })).toBeVisible()
+  expectPhoneFriendly(await measureLayout(page), 3)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
