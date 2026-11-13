@@ -30,7 +30,7 @@ export function PcScript({ game }: { readonly game: keyof typeof SCRIPTS }): JSX
     }
   }
   return (
-    <details>
+    <details className="pc-script">
       <summary>{t('On a PC (Windows)')}</summary>
       <ol>
         {[OPEN[game], ...STEPS].map((step) => (

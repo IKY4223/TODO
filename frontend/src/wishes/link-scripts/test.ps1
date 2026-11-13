@@ -57,7 +57,9 @@ foreach ($game in $games) {
   $before = @(Get-ChildItem -Recurse -Force $root).Count
   $out = Run $name $user
   $newest = & $link 'NEWEST' '&timestamp=300'
-  Expect "$name prints the newest link of the newest cache, whole" ($out.Split("`n") -contains $newest)
+  $whole = $out.Split("`n") -contains $newest
+  Expect "$name prints the newest link of the newest cache, whole" $whole
+  if (-not $whole) { Write-Output "It printed:`n$out" }
   Expect "$name prints no other link" (-not ($out -match 'authkey=(OLD|FIRST|LAST)'))
   Expect "$name writes no file" ((@(Get-ChildItem -Recurse -Force $root).Count) -eq $before)
 

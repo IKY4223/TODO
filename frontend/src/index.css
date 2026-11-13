@@ -1017,6 +1017,22 @@ footer {
     padding: 0.25rem; /* room for the focus ring inside the scrolling box */
   }
 
+  /* An open PC script takes the page's whole width to be read; the results move below it and
+     the form keeps its usual width. */
+  .workspace:has(.pc-script[open]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workspace:has(.pc-script[open]) .controls {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .workspace:has(.pc-script[open]) .controls > :not(.pc-script) {
+    max-width: 26rem;
+  }
+
   .results > :first-child {
     margin-top: 0;
   }

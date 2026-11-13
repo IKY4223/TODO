@@ -50,6 +50,7 @@ jobs:
         shell: powershell
         run: ./frontend/src/wishes/link-scripts/test.ps1
       - name: PowerShell 7
+        if: success() || failure() # also when 5.1 fails, to tell the two apart
         shell: pwsh
         run: ./frontend/src/wishes/link-scripts/test.ps1
 

@@ -22,11 +22,14 @@
     Write-Host 'Папки игры нет в журнале: запустите игру и выполните это снова.'
     return
   }
-  # Strings, not Join-Path: a drive the log names may be gone. Brackets in a folder name are
-  # escaped, or Get-Item would read them as a pattern.
-  $folder = [WildcardPattern]::Escape($game.Value.TrimEnd('/')) + '/webCaches'
-  $caches = @(Get-Item -Path "$folder/Cache/Cache_Data/data_2", "$folder/*/Cache/Cache_Data/data_2" `
-    -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+  # webCaches/Cache/... or webCaches/<version>/Cache/..., listed by exact paths: no wildcards,
+  # which brackets in a folder name would break, and no error if the drive in the log is gone.
+  $folder = $game.Value.TrimEnd('/') + '/webCaches'
+  $paths = @("$folder/Cache/Cache_Data/data_2") + @(
+    Get-ChildItem -LiteralPath $folder -Directory -ErrorAction SilentlyContinue |
+      ForEach-Object { "$($_.FullName)/Cache/Cache_Data/data_2" })
+  $caches = @($paths | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } |
+    ForEach-Object { Get-Item -LiteralPath $_ } | Sort-Object LastWriteTime -Descending)
   # Printable characters only, so a match never runs into the binary bytes around it.
   $links = @(if ($caches.Count) {
     [regex]::Matches((Read-Shared $caches[0].FullName),

@@ -621,6 +621,14 @@ for (const [address, game] of [
     )
     // The script's long lines wrap: the page stays as wide as the screen.
     expect((await measureLayout(page)).overflows).toBe(false)
+    // On a computer the open script takes the page's width, not the form's narrow column.
+    await page.setViewportSize({ width: 1280, height: 800 })
+    const [box, main] = await Promise.all([
+      tool.locator('pre.script').boundingBox(),
+      page.getByRole('main').boundingBox(),
+    ])
+    expect(box?.width ?? 0).toBeGreaterThan((main?.width ?? 0) * 0.8)
+    expect((await measureLayout(page)).overflows).toBe(false)
     await page.getByLabel('Language').selectOption('ru')
     await expect(tool.getByRole('button', { name: 'Скопировано' })).toBeVisible()
     expect((await measureLayout(page)).overflows).toBe(false)
