@@ -6,6 +6,7 @@ import { CharacterShowcase } from './showcase/CharacterShowcase'
 import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { SpeedPlanner } from './starrail/SpeedPlanner'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
+import { THEMES, type Theme, useTheme } from './theme'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
 
@@ -62,6 +63,12 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 
+const THEME_LABELS = {
+  system: 'As on the device',
+  dark: 'Dark',
+  light: 'Light',
+} as const satisfies Record<Theme, Message>
+
 const MENU = 'menu'
 const CLOSE_KEY = 'Escape'
 // From this width the menu stays open beside the page and the tabs go.
@@ -88,6 +95,7 @@ function App(): JSX.Element {
   const language = useLanguage()
   const [open, setOpen] = useState(false)
   const wide = useWide()
+  const [theme, setTheme] = useTheme()
 
   useEffect(() => {
     if (!open) return undefined
@@ -98,21 +106,42 @@ function App(): JSX.Element {
     return (): void => document.removeEventListener('keydown', closeOnEscape)
   }, [open])
 
-  const menu = games.map((game) => (
-    <nav key={game} aria-label={GAMES[game].label}>
-      <h2>{GAMES[game].label}</h2>
-      {toolsOf(game).map((tool) => (
-        <a
-          key={tool}
-          href={href(game, tool)}
-          aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
-          onClick={() => setOpen(false)}
+  const menu = [
+    ...games.map((game) => (
+      <nav key={game} aria-label={GAMES[game].label}>
+        <h2>{GAMES[game].label}</h2>
+        {toolsOf(game).map((tool) => (
+          <a
+            key={tool}
+            href={href(game, tool)}
+            aria-current={game === here.game && tool === here.tool ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
+            {t(toolEntry(game, tool)?.label ?? 'Tools')}
+          </a>
+        ))}
+      </nav>
+    )),
+    <section key="settings" aria-label={t('Settings')}>
+      <h2>{t('Settings')}</h2>
+      <label>
+        {t('Theme')}
+        <select
+          value={theme}
+          onChange={(event) => {
+            const choice = THEMES.find((known) => known === event.target.value)
+            if (choice) setTheme(choice)
+          }}
         >
-          {t(toolEntry(game, tool)?.label ?? 'Tools')}
-        </a>
-      ))}
-    </nav>
-  ))
+          {THEMES.map((choice) => (
+            <option key={choice} value={choice}>
+              {t(THEME_LABELS[choice])}
+            </option>
+          ))}
+        </select>
+      </label>
+    </section>,
+  ]
 
   return (
     <>

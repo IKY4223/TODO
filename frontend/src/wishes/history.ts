@@ -212,9 +212,11 @@ const isSavedHistory = (value: unknown): value is SavedHistory & { readonly vers
   Object.values(value.accounts).every((pulls) => isArrayOf(pulls, isPull))
 
 /** The history saved on this device. Storage can be off or corrupted: then it is empty. */
-export function loadHistory(storage: Storage = window.localStorage): SavedHistory {
+export function loadHistory(storage?: Storage): SavedHistory {
   try {
-    const saved: unknown = JSON.parse(storage.getItem(STORAGE_KEY) ?? 'null')
+    // Reached inside the `try`: where site data is blocked, reading window.localStorage throws.
+    const store = storage ?? window.localStorage
+    const saved: unknown = JSON.parse(store.getItem(STORAGE_KEY) ?? 'null')
     return isSavedHistory(saved) ? { current: saved.current, accounts: saved.accounts } : EMPTY_HISTORY
   } catch {
     // Private browsing, blocked site data or a corrupted entry: start from nothing.
@@ -223,9 +225,10 @@ export function loadHistory(storage: Storage = window.localStorage): SavedHistor
 }
 
 /** False when the browser refuses to keep it: the history then lasts until the page closes. */
-export function saveHistory(history: SavedHistory, storage: Storage = window.localStorage): boolean {
+export function saveHistory(history: SavedHistory, storage?: Storage): boolean {
   try {
-    storage.setItem(STORAGE_KEY, JSON.stringify({ version: STORAGE_VERSION, ...history }))
+    const store = storage ?? window.localStorage
+    store.setItem(STORAGE_KEY, JSON.stringify({ version: STORAGE_VERSION, ...history }))
     return true
   } catch {
     return false

@@ -316,6 +316,34 @@ test('opens a character page and comes back with the back button', async ({ page
   expect(problems).toEqual([])
 })
 
+test('opens a shared link to a character and shares it on', async ({ page }) => {
+  // The phone's share sheet, recorded: a test cannot tap through the real one. The page is
+  // already open, and a link that changes only the part after "#" does not reload it.
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'share', {
+      value: async (data: ShareData) => {
+        document.body.dataset.shared = data.url
+      },
+    })
+  })
+  const address = `/#starrail/builds/${UID}/1409`
+  await page.goto(address)
+  const tool = shown(page)
+  await expect(tool.getByRole('heading', { level: 2, name: 'Hyacine' })).toBeVisible()
+  await expect(tool.getByLabel('UID')).toHaveValue(UID)
+  await tool.getByRole('button', { name: 'Share link' }).click()
+  await expect(page.locator('body')).toHaveAttribute('data-shared', new URL(address, page.url()).href)
+  expectPhoneFriendly(await measureLayout(page), MIN_PAGE_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await tool.getByRole('link', { name: '← All characters' }).click()
+  await expect(tool.getByRole('heading', { level: 3 })).toHaveText([
+    'Trailblazer',
+    'Hyacine',
+    'March 7th',
+  ])
+  expect(problems).toEqual([])
+})
+
 test('tells what the upgrades a relic has left can bring', async ({ page }) => {
   // Load the showcase first: the advisor compares with the relics its characters wear.
   await openStarRail(page)
@@ -382,6 +410,44 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   expect(problems).toEqual([])
 })
+
+test('takes a light theme from the device or the menu, readable in both', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/#starrail/builds')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await loadShowcase(page)
+  await page.evaluate(() => {
+    for (const details of document.querySelectorAll('details')) details.open = true
+  })
+  // The scan checks every text's contrast against the light background.
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+
+  await page.getByRole('button', { name: 'Menu' }).click()
+  await page.getByLabel('Theme').selectOption('dark')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.getByLabel('Theme').selectOption('light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.reload()
+  // The player's choice outlasts the device's preference and a reload.
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.getByRole('button', { name: 'Menu' }).click()
+  expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'genshin/history']) {
+  test(`#${address} stays readable in the light theme`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' })
+    await openStarRail(page)
+    await loadShowcase(page) // so the Speed and Relics tools have characters to show
+    await expect(card(page, 'Hyacine')).toBeVisible()
+    await page.goto(`/#${address}`)
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+    expect(problems).toEqual([])
+  })
+}
 
 test('Star Rail is where the app opens', async ({ page }) => {
   await page.goto('/')

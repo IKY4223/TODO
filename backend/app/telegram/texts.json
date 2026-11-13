@@ -18,5 +18,14 @@
     "empty": "Витрина пуста: поставьте персонажей на витрину в профиле игры.",
     "lang": "Язык: русский.",
     "slow": "Слишком много запросов: попробуйте через {seconds} с."
+  },
+  "reasons_ru": {
+    "Enka.Network does not accept this UID.": "Enka.Network не принимает этот UID.",
+    "Player not found. Check the UID.": "Игрок не найден. Проверьте UID.",
+    "The game is under maintenance. Try again later.": "В игре техработы. Попробуйте позже.",
+    "Too many requests to Enka.Network. Try again in a minute.": "Слишком много запросов к Enka.Network. Попробуйте через минуту.",
+    "Enka.Network is not responding. Try again later.": "Enka.Network не отвечает. Попробуйте позже.",
+    "Enka.Network sent data this app cannot read.": "Enka.Network прислал данные, которые бот не может прочитать.",
+    "The bot is looking up many players right now: try in a minute.": "Бот сейчас ищет много игроков: попробуйте через минуту."
   }
 }

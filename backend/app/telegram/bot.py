@@ -1,7 +1,8 @@
 """What the bot answers, and one round of reading and answering messages.
 
-shortcut: the offset and the chats' languages live in memory, so a restart forgets a /lang
-choice and answers the last batch of messages again; keep them in a store once the bot has a host.
+shortcut: the state file is written after each batch, so a bot stopped between sending its
+replies and writing the file answers that batch again after a restart; save per update if
+that ever matters.
 """
 
 import json
@@ -33,15 +34,18 @@ WARP = re.compile(r"/warp(?:@\w+)?\s+(\d{1,6})(?:\s+(\d{1,3}))?(?:\s+(g))?", re.
 LANG = re.compile(r"/lang(?:@\w+)?\s+(en|ru)", re.IGNORECASE)
 
 # The replies in each language: data, so the Russian sits apart from the code.
-TEXTS: dict[Language, dict[str, str]] = json.loads(
-    (Path(__file__).parent / "texts.json").read_text(encoding="utf-8")
-)
+_TEXTS = json.loads((Path(__file__).parent / "texts.json").read_text(encoding="utf-8"))
+TEXTS: dict[Language, dict[str, str]] = {"en": _TEXTS["en"], "ru": _TEXTS["ru"]}
+# The API gives its reasons for a failure in English; these are the same reasons in Russian.
+REASONS_RU: dict[str, str] = _TEXTS["reasons_ru"]
+LANGUAGES: tuple[Language, ...] = ("en", "ru")
 
 
 @dataclass(frozen=True)
 class Reply:
     text: str
     language: Language
+    chosen: bool = False  # the chat asked for this language with /lang
 
 
 def _decimal(value: float, language: Language) -> str:
@@ -54,8 +58,8 @@ def _showcase(uid: str, language: Language, load: LoadShowcase) -> str:
     try:
         showcase = load(uid)[language]
     except HTTPException as error:
-        # shortcut: the reasons come from the API in English; translate them with the site's texts.
-        return str(error.detail)
+        reason = str(error.detail)
+        return REASONS_RU.get(reason, reason) if language == "ru" else reason
     lines = [texts["player"].format(level=showcase.trailblaze_level, nickname=showcase.nickname)]
     for character in showcase.characters:
         spd = next((stat.value for stat in character.stats if stat.key == "spd"), 0.0)
@@ -88,7 +92,7 @@ def answer(text: str, language: Language, load: LoadShowcase) -> Reply:
     text = text.strip()
     if lang := LANG.fullmatch(text):
         chosen: Language = "ru" if lang[1].lower() == "ru" else "en"
-        return Reply(TEXTS[chosen]["lang"], chosen)
+        return Reply(TEXTS[chosen]["lang"], chosen, chosen=True)
     if re.fullmatch(UID_PATTERN, text):
         return Reply(_showcase(text, language, load), language)
     if warp := WARP.fullmatch(text):
@@ -100,10 +104,48 @@ def answer(text: str, language: Language, load: LoadShowcase) -> Reply:
 
 @dataclass
 class Chats:
-    """What the bot remembers between polls."""
+    """What the bot remembers between polls, and, given a file, between runs.
+
+    Only chats that chose a language with /lang are kept, by their id: the others take the
+    language of their Telegram app each time.
+    """
 
     offset: int = 0  # the first update not yet answered
     languages: dict[int, Language] = field(default_factory=dict)
+    path: Path | None = None
+
+    @classmethod
+    def load(cls, path: Path) -> "Chats":
+        try:
+            saved = json.loads(path.read_text(encoding="utf-8"))
+            offset = saved["offset"]
+            languages = {int(chat): language for chat, language in saved["languages"].items()}
+        except FileNotFoundError:
+            return cls(path=path)
+        except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+            logger.warning("The bot's state file is unreadable, so it starts afresh: %s", error)
+            return cls(path=path)
+        if not isinstance(offset, int) or any(
+            value not in LANGUAGES for value in languages.values()
+        ):
+            logger.warning("The bot's state file holds odd values, so it starts afresh")
+            return cls(path=path)
+        return cls(offset=offset, languages=languages, path=path)
+
+    def save(self) -> None:
+        """Write the state down; a disk that refuses costs a restart's memory, not the bot."""
+        if self.path is None:
+            return
+        temporary = self.path.with_name(self.path.name + ".tmp")
+        state = {"offset": self.offset, "languages": self.languages}
+        try:
+            # Chat ids are personal: only the bot's own user may read the file.
+            temporary.touch(mode=0o600)
+            temporary.chmod(0o600)  # also when an older run left the file behind
+            temporary.write_text(json.dumps(state), encoding="utf-8")
+            temporary.replace(self.path)  # whole or not at all, even if the bot stops midway
+        except OSError as error:
+            logger.warning("The bot could not save its state: %s", error.strerror)
 
 
 def _handle(
@@ -131,7 +173,8 @@ def _handle(
         reply = Reply(TEXTS[language]["slow"].format(seconds=math.ceil(wait)), language)
     else:
         reply = answer(text, language, load)
-    chats.languages[chat_id] = reply.language
+    if reply.chosen:
+        chats.languages[chat_id] = reply.language
     try:
         call("sendMessage", {"chat_id": chat_id, "text": reply.text})
     except TelegramError as error:  # a chat that blocked the bot, say: the others still get theirs
@@ -157,4 +200,6 @@ def poll_once(call: Call, load: LoadShowcase, limiter: RateLimiter, chats: Chats
             _handle(update, call, load, limiter, chats)
         except Exception:  # one message that breaks the bot must not stop it for everyone
             logger.exception("The bot could not answer an update")
+    if updates:
+        chats.save()
     return True

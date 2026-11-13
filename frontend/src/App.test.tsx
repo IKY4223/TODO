@@ -128,3 +128,23 @@ test('on a wide screen the menu stays open beside the page in place of the tabs'
     Reflect.deleteProperty(window, 'matchMedia')
   }
 })
+
+test('the menu switches between a dark and a light theme and remembers it', () => {
+  render(<App />)
+  openMenu()
+  const theme = screen.getByLabelText('Theme')
+  expect((theme as HTMLSelectElement).value).toBe('system')
+  expect(document.documentElement.dataset.theme).toBe('dark') // jsdom prefers no light theme
+  fireEvent.change(theme, { target: { value: 'light' } })
+  expect(document.documentElement.dataset.theme).toBe('light')
+  expect(localStorage.getItem('theme')).toBe('light')
+  fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
+  const options = within(screen.getByLabelText('Тема')).getAllByRole('option')
+  expect(options.map((option) => option.textContent)).toEqual([
+    'Как на устройстве',
+    'Тёмная',
+    'Светлая',
+  ])
+  fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
+  localStorage.removeItem('theme')
+})
