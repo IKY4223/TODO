@@ -1,7 +1,6 @@
 # HoYo Toolkit: finds the Genshin Impact wish history link on this PC. / Находит ссылку на историю молитв Genshin Impact.
 # It reads two of the game's own files and prints the link. It sends nothing over the network and
-# writes no file; it copies the link to the clipboard. Where the files are and how the link is
-# found: biuuu/genshin-wish-export (MIT licence), src/main/getData.js.
+# writes no file itself; it copies the link to the clipboard.
 & {
   $ErrorActionPreference = 'Stop'
   function Read-Shared([string] $Path) {
@@ -17,24 +16,38 @@
   }
   # The game writes its own folder into the log, as C:/.../GenshinImpact_Data.
   # Global servers only: the China client's folder, YuanShen_Data, is left out.
-  $game = [regex]::Match((Read-Shared $log), '\w:/.+GenshinImpact_Data')
+  $game = [regex]::Match((Read-Shared $log), '(?i)\w:/.+GenshinImpact_Data')
   if (-not $game.Success) {
     Write-Host 'The game folder is not in its log: start the game, then run this again.'
     Write-Host 'Папки игры нет в журнале: запустите игру и выполните это снова.'
     return
   }
-  $caches = @(Get-Item -Path (Join-Path $game.Value 'webCaches\Cache\Cache_Data\data_2'),
-    (Join-Path $game.Value 'webCaches\*\Cache\Cache_Data\data_2') -ErrorAction SilentlyContinue |
-    Sort-Object LastWriteTime -Descending)
+  # Strings, not Join-Path: a drive the log names may be gone. Brackets in a folder name are
+  # escaped, or Get-Item would read them as a pattern.
+  $folder = [WildcardPattern]::Escape($game.Value.TrimEnd('/')) + '/webCaches'
+  $caches = @(Get-Item -Path "$folder/Cache/Cache_Data/data_2", "$folder/*/Cache/Cache_Data/data_2" `
+    -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+  # Printable characters only, so a match never runs into the binary bytes around it.
   $links = @(if ($caches.Count) {
-    [regex]::Matches((Read-Shared $caches[0].FullName), 'https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+')
+    [regex]::Matches((Read-Shared $caches[0].FullName),
+      'https://[!-~]+?auth_appid=webview_gacha[!-~]+?authkey=[!-~]+?game_biz=hk4e_\w+') |
+      ForEach-Object { $_.Value }
   })
   if (-not $links.Count) {
     Write-Host 'No link found: open the wish history in the game, then run this again.'
     Write-Host 'Ссылка не найдена: откройте историю молитв в игре и выполните это снова.'
     return
   }
-  $link = $links[$links.Count - 1].Value # the newest one
+  # The cache reuses its space, so the last link in it is not always the newest: a link that
+  # carries the time it was made wins, the last one otherwise.
+  $link = $links[-1]
+  $newest = -1
+  foreach ($candidate in $links) {
+    if ($candidate -match 'timestamp=(\d+)' -and [long] $Matches[1] -ge $newest) {
+      $newest = [long] $Matches[1]
+      $link = $candidate
+    }
+  }
   try {
     Set-Clipboard -Value $link
     Write-Host 'The link is copied. Paste it into the HoYo Toolkit page:'

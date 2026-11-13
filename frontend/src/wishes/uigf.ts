@@ -23,7 +23,7 @@ export interface HistoryFileFormat {
   readonly tooLarge: Message
 }
 
-export const MAX_FILE_BYTES = 20_000_000 // years of pulls are a few MB
+const MAX_FILE_BYTES = 20_000_000 // years of pulls are a few MB
 
 const UNREADABLE: Message = 'This file could not be read.'
 
@@ -172,7 +172,7 @@ const UID_TAIL = 8 // a UID is its server's one or two digits, then eight more
 /** The UTC offset of the server a UID plays on, in hours. */
 export const serverOffset = (uid: string): number => OFFSETS[uid.slice(0, -UID_TAIL)] ?? ASIA_OFFSET
 
-export const EXPORT_APP = 'HoYo Toolkit'
+const EXPORT_APP = 'HoYo Toolkit'
 // Raised when what an export writes changes.
 const EXPORT_APP_VERSION = '1.0'
 const UIGF_VERSION = 'v4.2'
@@ -190,8 +190,10 @@ export interface Uigf {
   readonly hkrpg?: readonly UigfAccount[]
 }
 
-// shortcut: Genshin's history sends no item ids, so its pulls are written with an empty one;
-// apps that look items up by id instead of name may need to fill them in.
+// shortcut: Genshin's history sends no item ids, so its pulls are written with an empty one, and
+// Star Rail warps saved before the app kept ids have empty ones too (a link import stops at the
+// first warp already saved). Apps that look items up by id may refuse those; this site reads
+// them by name. A table from names to ids in the game data would fill them in.
 function toItem(pull: Pull, format: HistoryFileFormat): Record<string, string> {
   const common = {
     gacha_type: pull.banner,

@@ -137,8 +137,8 @@ const RU = {
     'В файле не указана редкость молитв: выгрузите его заново со всеми полями.',
   'This file is too large to be a wish history.': 'Файл слишком большой для истории молитв.',
   'Save to a file': 'Сохранить в файл',
-  'A UIGF file, which this page and other trackers read. Keep it: clearing the browser’s data deletes the history saved here.':
-    'Файл UIGF: его читают эта страница и другие трекеры. Храните его: очистка данных браузера удаляет историю, сохранённую здесь.',
+  'A UIGF file, which this page reads back. Keep it: clearing the browser’s data deletes the history saved here.':
+    'Файл UIGF, который эта страница читает обратно. Храните его: очистка данных браузера удаляет историю, сохранённую здесь.',
   'At most {longest} warps in a row without a 5★': 'Больше всего прыжков подряд без 5★: {longest}',
   'At most {longest} pulls in a row without a 5★': 'Больше всего молитв подряд без 5★: {longest}',
   '{average} warps per 5★ on average · at most {longest} in a row without one':
@@ -265,9 +265,11 @@ const RU = {
   'Copy the script below, paste it into PowerShell and press Enter':
     'Скопируйте скрипт ниже, вставьте его в PowerShell и нажмите Enter',
   'It prints the link and copies it: paste it into the box below':
-    'Он выведет ссылку и скопирует её: вставьте её в поле ниже',
-  "The script reads the game's log and web cache and prints the link. It sends nothing over the network and changes no file. Read it before you run it.":
-    'Скрипт читает журнал и веб-кэш игры и выводит ссылку. Он ничего не отправляет в сеть и не меняет файлы. Прочитайте его перед запуском.',
+    'Он выведет и скопирует ссылку: вставьте её в поле ниже',
+  "The script reads the game's log and web cache and prints the link. It sends nothing over the network and writes no file itself. Read it before you run it.":
+    'Скрипт читает журнал и веб-кэш игры и выводит ссылку. Он ничего не отправляет в сеть и сам не записывает файлы. Прочитайте его перед запуском.',
+  'If the page says the link has expired, open the history in the game again and run the script again. Windows keeps copied text in its clipboard history (Win+V): delete the link there once it is imported.':
+    'Если страница скажет, что ссылка устарела, снова откройте историю в игре и запустите скрипт ещё раз. Windows хранит скопированный текст в журнале буфера обмена (Win+V): удалите ссылку оттуда после импорта.',
   'Copy the script': 'Скопировать скрипт',
   Copied: 'Скопировано',
   'The link': 'Ссылка',

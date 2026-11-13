@@ -2,6 +2,7 @@ import { type JSX, useState } from 'react'
 import { type Message, useT } from '../i18n'
 import { SCRIPTS } from './link-scripts'
 
+// Credited here and in the README, not in the script itself, which the page shows to players.
 // The first step is the game's, quoted from the README of the open source tracker each script
 // follows (biuuu/genshin-wish-export and biuuu/star-rail-warp-export, docs/README_EN.md): the
 // history page writes its link into the game's cache. The rest is how to run this site's script.
@@ -38,7 +39,12 @@ export function PcScript({ game }: { readonly game: keyof typeof SCRIPTS }): JSX
       </ol>
       <p className="hint">
         {t(
-          "The script reads the game's log and web cache and prints the link. It sends nothing over the network and changes no file. Read it before you run it.",
+          "The script reads the game's log and web cache and prints the link. It sends nothing over the network and writes no file itself. Read it before you run it.",
+        )}
+      </p>
+      <p className="hint">
+        {t(
+          'If the page says the link has expired, open the history in the game again and run the script again. Windows keeps copied text in its clipboard history (Win+V): delete the link there once it is imported.',
         )}
       </p>
       <button type="button" className="secondary" onClick={() => void copy()}>

@@ -69,15 +69,17 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   servers only.
 - **History link on a PC** — both histories show this site's own PowerShell script in full, with
   a button that copies it: pasted into PowerShell, it reads the game's log and web cache and
-  prints the history link. It sends nothing over the network and changes no file; CI runs it
+  prints the history link. It sends nothing over the network and writes no file itself; CI runs it
   against a made-up game on Windows, in Windows PowerShell 5.1 and PowerShell 7. Global servers
   only.
-- **Save the history to a file** — both histories save to a UIGF v4 file that this site and other
-  trackers read, so clearing the browser's data loses nothing. A Star Rail file keeps the
-  server's time offset and the item and pool ids HoYoverse sends; Genshin's history sends no
-  item ids, so its file has empty ones.
+- **Save the history to a file** — both histories save to a UIGF v4 file that this site reads
+  back, so clearing the browser's data loses nothing. A Star Rail file keeps the server's time
+  offset and the item and pool ids HoYoverse sends. Genshin's history sends no item ids, and
+  warps saved before this version kept none, so those are written empty: trackers that look
+  items up by id may refuse them.
 - **Luck in the history** — each banner shows the pulls a 5★ took on average and the most pulls
-  in a row without one.
+  in a row without one. The history reaches back about a year, so the first 5★ counts only
+  the pulls since then.
 - **Star Rail warp history** — import it with a warp history link, or choose a UIGF (v4) or SRGF
   file another warp tracker exported, read on the device and never sent anywhere. No trustworthy
   source gives a way to get the link on a phone. Shows each banner's pity and 5★ warps. Global

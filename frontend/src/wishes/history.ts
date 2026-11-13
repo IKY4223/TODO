@@ -224,6 +224,10 @@ function summarizeBanner(banner: string, label: Message, pulls: readonly Pull[])
     return { id, name, time, pity: index - (fives[n - 1] ?? -1) }
   })
   const pity5 = pulls.length - 1 - (fives.at(-1) ?? -1)
+  // shortcut: the history reaches back about a year, so the first 5★'s pity counts only the pulls
+  // since then: the average and the longest run can read low for an older account.
+  // shortcut: the share of 50/50s won is left out: it needs to know which 5★ are standard, which
+  // neither game data source here gives (README plan, item 3).
   const pities = fiveStars.map(({ pity }) => pity)
   return {
     banner,

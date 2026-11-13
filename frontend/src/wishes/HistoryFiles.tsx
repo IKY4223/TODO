@@ -33,7 +33,7 @@ export function ExportButton(props: {
       </button>
       <p className="hint">
         {t(
-          'A UIGF file, which this page and other trackers read. Keep it: clearing the browser’s data deletes the history saved here.',
+          'A UIGF file, which this page reads back. Keep it: clearing the browser’s data deletes the history saved here.',
         )}
       </p>
     </div>

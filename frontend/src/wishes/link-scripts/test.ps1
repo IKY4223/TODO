@@ -11,10 +11,13 @@ function Run([string] $Script, [string] $UserFolder) {
   $env:USERPROFILE = $UserFolder
   # Run as a player runs it: the text pasted into PowerShell, not the file.
   $text = [IO.File]::ReadAllText((Join-Path $PSScriptRoot $Script), [Text.Encoding]::UTF8)
-  try { (& ([scriptblock]::Create($text)) 6>&1 | Out-String) } finally { $env:USERPROFILE = $saved }
+  # Each line as it was written: Out-String would break a long link at the console's width.
+  try { (& ([scriptblock]::Create($text)) 6>&1 | ForEach-Object { "$_" }) -join "`n" }
+  finally { $env:USERPROFILE = $saved }
 }
 function Write-Fake([string] $Path, [string] $Text) {
-  New-Item -ItemType Directory -Force -Path (Split-Path $Path) | Out-Null
+  # .NET, not New-Item: the made-up folder has brackets, which cmdlets read as a pattern.
+  [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($Path)) | Out-Null
   [IO.File]::WriteAllText($Path, $Text)
 }
 
@@ -34,25 +37,30 @@ foreach ($game in $games) {
 
   Expect "$name says when the game never ran" ((Run $name $user) -match 'log was not found')
 
-  $data = Join-Path $root "Game\$($game.Data)"
+  # Brackets in the folder name, and the case the log may write it in.
+  $data = Join-Path $root "Games [HoYo]\$($game.Data.ToLower())"
   $log = Join-Path $user $game.Log
   Write-Fake $log "Loading player data from $($data.Replace('\', '/'))/data.unity3d`n"
   Expect "$name says when the history was never opened" ((Run $name $user) -match 'No link found')
 
-  $link = { param($key) "$($game.Page)?authkey_ver=1&sign_type=2&auth_appid=webview_gacha&lang=en&authkey=$key&game_biz=$($game.Biz)" }
-  # An older cache folder and a newer one, each with binary noise around its links.
+  $link = { param($key, $time = '')
+    "$($game.Page)?authkey_ver=1&sign_type=2&auth_appid=webview_gacha$time&lang=en&authkey=$key&game_biz=$($game.Biz)" }
+  # An older cache folder and a newer one. Binary noise and other cached addresses surround the
+  # links; the newest link, by the time it carries, is not the last one in the file.
   $old = Join-Path $data 'webCaches\2.30.0.0\Cache\Cache_Data\data_2'
   $new = Join-Path $data 'webCaches\2.31.0.0\Cache\Cache_Data\data_2'
-  $noise = "`0$([char]1)$([char]200)`0"
+  $noise = "`0$([char]1)https://example.com/a.js$([char]200)`0"
   Write-Fake $old "$noise$(& $link 'OLD')$noise"
-  Write-Fake $new "$noise$(& $link 'FIRST')$noise$(& $link 'NEWEST')$noise"
-  (Get-Item $old).LastWriteTime = (Get-Date).AddDays(-1)
+  Write-Fake $new ("$noise$(& $link 'FIRST' '&timestamp=100')$noise$(& $link 'NEWEST' '&timestamp=300')" +
+    "$noise$(& $link 'LAST' '&timestamp=200')$noise")
+  [IO.File]::SetLastWriteTime($old, (Get-Date).AddDays(-1))
   $before = @(Get-ChildItem -Recurse -Force $root).Count
   $out = Run $name $user
-  Expect "$name prints the newest link of the newest cache" ($out.Contains((& $link 'NEWEST')))
-  Expect "$name prints no other link" (-not ($out -match 'authkey=(OLD|FIRST)'))
+  $newest = & $link 'NEWEST' '&timestamp=300'
+  Expect "$name prints the newest link of the newest cache, whole" ($out.Split("`n") -contains $newest)
+  Expect "$name prints no other link" (-not ($out -match 'authkey=(OLD|FIRST|LAST)'))
   Expect "$name writes no file" ((@(Get-ChildItem -Recurse -Force $root).Count) -eq $before)
 
-  Remove-Item -Recurse -Force $root
+  Remove-Item -LiteralPath $root -Recurse -Force
 }
 if ($failures) { throw "$failures check(s) failed" }
