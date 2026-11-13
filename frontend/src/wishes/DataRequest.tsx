@@ -1,10 +1,14 @@
 import type { JSX } from 'react'
 import { useT } from '../i18n'
 
-const POLICY = 'https://hsr.hoyoverse.com/en-us/company/privacy'
+// The same HoYoverse policy, as each game's site publishes it.
+const POLICIES = {
+  genshin: 'https://genshin.hoyoverse.com/en/company/privacy',
+  starrail: 'https://hsr.hoyoverse.com/en-us/company/privacy',
+} as const
 
 /** What HoYoverse's privacy policy says about asking for a copy of one's data, and no more. */
-export function DataRequest(): JSX.Element {
+export function DataRequest({ game }: { readonly game: keyof typeof POLICIES }): JSX.Element {
   const t = useT()
   return (
     <details>
@@ -15,7 +19,7 @@ export function DataRequest(): JSX.Element {
         )}
       </p>
       <p className="hint">
-        {t('Source:')} <a href={POLICY}>{t('HoYoverse privacy policy')}</a>
+        {t('Source:')} <a href={POLICIES[game]}>{t('HoYoverse privacy policy')}</a>
       </p>
     </details>
   )

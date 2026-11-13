@@ -61,7 +61,7 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
           )}
         </p>
       </details>
-      <DataRequest />
+      <DataRequest game="starrail" />
     </>
   )
 }

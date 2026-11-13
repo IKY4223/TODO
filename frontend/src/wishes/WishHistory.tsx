@@ -124,7 +124,7 @@ function Instructions({ open }: { readonly open: boolean }): JSX.Element {
       <p className="hint">
         {t('Steps from')} <a href={PAIMON}>paimon.moe</a>
       </p>
-      <DataRequest />
+      <DataRequest game="genshin" />
     </>
   )
 }
