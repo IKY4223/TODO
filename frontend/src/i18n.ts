@@ -127,6 +127,9 @@ const RU = {
   'This file is too large to be a warp history.': 'Файл слишком большой для истории прыжков.',
   '{count} new warps imported.': 'Импортировано новых прыжков: {count}.',
   'No new warps.': 'Новых прыжков нет.',
+  '{count} warps since the last 5★': 'Прыжков после последнего 5★: {count}',
+  '{total} warps in total · {count} since the last 4★':
+    'Всего прыжков: {total} · после последнего 4★: {count}',
   Account: 'Аккаунт',
   'Delete the saved warp history from this device?':
     'Удалить сохранённую историю прыжков с этого устройства?',

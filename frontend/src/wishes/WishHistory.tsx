@@ -14,21 +14,33 @@ import {
 const LINK_ROWS = 4
 const DELETE_QUESTION =
   'Delete the saved wish history from this device? Pulls older than a year cannot be imported again.'
-export const NOT_SAVED = ' This browser does not keep site data, so the history lasts until this page closes.'
+export const NOT_SAVED =
+  ' This browser does not keep site data, so the history lasts until this page closes.'
 
-export function BannerCard({ summary }: { readonly summary: BannerSummary }): JSX.Element {
+export function BannerCard(props: {
+  readonly summary: BannerSummary
+  /** Star Rail's pulls are warps, and Russian names them apart from Genshin's wishes. */
+  readonly warps?: boolean
+}): JSX.Element {
+  const { summary, warps = false } = props
   const t = useT()
   return (
     <article className="card">
       <h3>{t(summary.label)}</h3>
       <p>
-        <strong>{t('{count} pulls since the last 5★', { count: summary.pity5 })}</strong>
+        <strong>
+          {t(warps ? '{count} warps since the last 5★' : '{count} pulls since the last 5★', {
+            count: summary.pity5,
+          })}
+        </strong>
       </p>
       <p className="hint">
-        {t('{total} pulls in total · {count} since the last 4★', {
-          total: summary.total,
-          count: summary.pity4,
-        })}
+        {t(
+          warps
+            ? '{total} warps in total · {count} since the last 4★'
+            : '{total} pulls in total · {count} since the last 4★',
+          { total: summary.total, count: summary.pity4 },
+        )}
       </p>
       {summary.fiveStars.length ? (
         <table>

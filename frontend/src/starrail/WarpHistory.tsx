@@ -100,7 +100,7 @@ export function WarpHistory(): JSX.Element {
           <ul className="cards">
             {summarizeWarps(pulls).map((summary) => (
               <li key={summary.banner}>
-                <BannerCard summary={summary} />
+                <BannerCard summary={summary} warps />
               </li>
             ))}
           </ul>
