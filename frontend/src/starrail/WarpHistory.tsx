@@ -2,6 +2,7 @@ import { type ChangeEvent, type JSX, type SubmitEvent, useState } from 'react'
 import { MAX_LINK_LENGTH } from '../api/limits'
 import { useRequest } from '../api/useRequest'
 import { type Message, useLocalized, useT } from '../i18n'
+import { DataRequest } from '../wishes/DataRequest'
 import { BannerCard, NOT_SAVED } from '../wishes/WishHistory'
 import { EMPTY_HISTORY, importHistory } from '../wishes/history'
 import {
@@ -21,41 +22,46 @@ const NOT_DELETED: Message =
   'This browser kept its saved data: the history may come back on reload.'
 const LINK_ROWS = 4
 
+// The steps stardb.gg gives, quoted (https://stardb.gg/en/warp-import). No trustworthy source
+// gives a way to get this link on a phone, so none is offered.
+const STARDB = 'https://stardb.gg/en/warp-import'
+const PC: readonly Message[] = [
+  'Start Honkai: Star Rail on your PC and open your Warp records history',
+  "Open Windows Powershell. You can do this by searching for 'PowerShell' in the Windows search bar",
+  'Copy and paste this command into Powershell and press Enter (global servers):',
+]
+
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
     <>
       <details open={open}>
-        <summary>{t('How to get the link on Android')}</summary>
-        <ol>
-          <li>{t('In the game, open Warp and open the warp records. Wait for them to load.')}</li>
-          <li>{t('Turn off Wi-Fi and mobile data.')}</li>
-          <li>{t('Close the records and open them again. An error page appears.')}</li>
-          <li>{t('Press and hold its text, tap Select all, then Copy.')}</li>
-          <li>{t('Turn the connection back on and paste the text below.')}</li>
-        </ol>
-      </details>
-      <details>
         <summary>{t('On a Windows PC')}</summary>
-        <p>
+        <ol>
+          {PC.map((step) => (
+            <li key={step}>{t(step)}</li>
+          ))}
+          <li>
+            <code>iwr -useb stardb.gg/warp | iex</code>
+          </li>
+          <li>{t('Paste the output of the command into the input below')}</li>
+        </ol>
+        <p className="hint">
           {t(
-            'Open the warp records in the game. A warp tracker you trust, such as stardb.gg, gives a PowerShell command that finds the link: paste what it prints below. Run only commands from a source you trust.',
-          )}
-        </p>
-        <p>
-          {t(
-            'Or export the history to a UIGF or SRGF file with a warp exporter such as star-rail-warp-export or Starward, and choose the file below. It is read on this device and never sent anywhere.',
-          )}
+            "The command runs stardb.gg's own script on your PC: use it only if you trust that site.",
+          )}{' '}
+          {t('Steps from')} <a href={STARDB}>stardb.gg</a>
         </p>
       </details>
       <details>
-        <summary>{t('On iPhone')}</summary>
+        <summary>{t('On a phone')}</summary>
         <p>
           {t(
-            'The game gives iPhones no simple way to copy the link. Apps that record your traffic can capture it, but they need a certificate that lets them read everything your phone sends. Install one only from an app you trust, and remove it afterwards.',
+            'No trustworthy source gives a way to get this link on Android or iPhone. A warp tracker on a PC can export the history to a UIGF or SRGF file, which this page reads below.',
           )}
         </p>
       </details>
+      <DataRequest game="starrail" />
     </>
   )
 }
@@ -141,7 +147,7 @@ export function WarpHistory(): JSX.Element {
       <Instructions open={!pulls.length} />
       <form onSubmit={submit}>
         <label>
-          {t('Text from the error page')}
+          {t('The link')}
           <textarea
             name="link"
             value={link}

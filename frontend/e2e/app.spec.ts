@@ -516,7 +516,7 @@ test('imports Star Rail warps with the link from the error page', async ({ page 
   const tool = shown(page)
   await expect(tool.getByText('On a Windows PC')).toBeVisible()
   await tool
-    .getByLabel('Text from the error page')
+    .getByLabel('The link')
     .fill(ANDROID_TEXT.replace('genshin/event/e20190909gacha-v3', 'hkrpg/event/e20211215gacha-v2'))
   await tool.getByRole('button', { name: 'Import history' }).click()
   await expect(tool.getByText('5 new warps imported.')).toBeVisible({ timeout: 20_000 })

@@ -1,7 +1,8 @@
 import { type JSX, type SubmitEvent, useState } from 'react'
 import { MAX_LINK_LENGTH } from '../api/limits'
 import { useRequest } from '../api/useRequest'
-import { useLocalized, useT } from '../i18n'
+import { type Message, useLocalized, useT } from '../i18n'
+import { DataRequest } from './DataRequest'
 import {
   type BannerSummary,
   EMPTY_HISTORY,
@@ -66,28 +67,64 @@ export function BannerCard(props: {
   )
 }
 
+// Word for word the steps paimon.moe gives (MIT licence), in its own English and Russian.
+const ANDROID: readonly Message[] = [
+  'Open Wish (in the game)',
+  'Press History',
+  'Wait for it to load',
+  'Turn off your Wi-Fi and data connection',
+  'Press refresh on top right corner',
+  'The page should display an error and show you some text with a black font',
+  "Hold the text and press select all, then copy that text (don't copy only some portion of the text)",
+  'Turn on your Wi-Fi or data connection',
+  'Paste the text to the textbox below',
+]
+const IPHONE: readonly Message[] = [
+  'Open Paimon menu',
+  'Press Feedback',
+  'Wait for it to load and a feedback page should open',
+  'Press In-game issue',
+  'Press Co-Op Mode',
+  'There is a link on the bottom of the reply; press that',
+  'A browser should open up. Copy the link and paste it below',
+]
+const PAIMON = 'https://paimon.moe/wish/import'
+
+function Steps({ steps }: { readonly steps: readonly Message[] }): JSX.Element {
+  const t = useT()
+  return (
+    <ol>
+      {steps.map((step) => (
+        <li key={step}>{t(step)}</li>
+      ))}
+    </ol>
+  )
+}
+
 function Instructions({ open }: { readonly open: boolean }): JSX.Element {
   const t = useT()
   return (
     <>
       <details open={open}>
-        <summary>{t('How to get the link on Android')}</summary>
-        <ol>
-          <li>{t('In the game, open Wish and tap History. Wait for it to load.')}</li>
-          <li>{t('Turn off Wi-Fi and mobile data.')}</li>
-          <li>{t('Tap refresh at the top right. An error page appears.')}</li>
-          <li>{t('Press and hold its text, tap Select all, then Copy.')}</li>
-          <li>{t('Turn the connection back on and paste the text below.')}</li>
-        </ol>
+        <summary>{t('On Android')}</summary>
+        <Steps steps={ANDROID} />
       </details>
       <details>
         <summary>{t('On iPhone')}</summary>
+        <Steps steps={IPHONE} />
+      </details>
+      <details>
+        <summary>{t('On a Windows PC')}</summary>
         <p>
           {t(
-            'The game gives iPhones no simple way to copy the link. Apps that record your traffic can capture it, but they need a certificate that lets them read everything your phone sends. Install one only from an app you trust, and remove it afterwards.',
+            'paimon.moe gives a PowerShell command that copies the link. Follow the steps on its import page, then paste the link below.',
           )}
         </p>
       </details>
+      <p className="hint">
+        {t('Steps from')} <a href={PAIMON}>paimon.moe</a>
+      </p>
+      <DataRequest game="genshin" />
     </>
   )
 }
