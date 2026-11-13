@@ -13,6 +13,9 @@ import {
 } from './warps'
 
 const TOO_LARGE: Message = 'This file is too large to be a warp history.'
+const UNREADABLE: Message = 'This file could not be read.'
+const NOT_DELETED: Message =
+  'This browser kept its saved data: the history may come back on reload.'
 
 /** Star Rail warp history, imported from a UIGF or SRGF file another app exported. */
 export function WarpHistory(): JSX.Element {
@@ -47,15 +50,14 @@ export function WarpHistory(): JSX.Element {
         : t('No new warps.')
       setOutcome(summary + (kept ? '' : t(NOT_SAVED)))
     } catch (error) {
-      if (!(error instanceof WarpFileError)) throw error
-      setProblem(error.reason)
+      // A file the phone took back, or saved data this version cannot sort: say so, not nothing.
+      setProblem(error instanceof WarpFileError ? error.reason : UNREADABLE)
     }
   }
 
   const forget = (): void => {
     if (!window.confirm(t('Delete the saved warp history from this device?'))) return
-    keep(EMPTY_HISTORY)
-    setOutcome('')
+    setOutcome(keep(EMPTY_HISTORY) ? '' : t(NOT_DELETED))
   }
 
   return (

@@ -93,3 +93,14 @@ test('each warp banner keeps its own pity, character events first', () => {
     { id: '3', name: 'Acheron', pity: 2, time: '2025-01-01 12:00:00' },
   ])
 })
+
+test('a warp the file lists twice counts once', () => {
+  const twice = parseWarpFile(
+    uigf([item('1', '11', '5'), item('1', '11', '5'), item('2', '11', '3')]),
+  )
+  expect(twice['700000001']?.map(({ id }) => id)).toEqual(['1', '2'])
+})
+
+test('a banner type is only one of the warp banners, not any key an object has', () => {
+  expect(reason(uigf([item('1', 'toString', '5')]))).toBe('This file is not a UIGF or SRGF file.')
+})

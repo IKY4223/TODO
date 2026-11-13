@@ -1,7 +1,7 @@
 // Star Rail warp history from a file another app exported: UIGF v4 (its `hkrpg` section) or the
 // older SRGF v1. Specs: https://uigf.org/en/standards/uigf.html, .../srgf.html. The file is read in
 // the browser and never sent anywhere.
-import { isArrayOf, isRecord, isString } from '../api/http'
+import { isArrayOf, isKeyOf, isRecord, isString } from '../api/http'
 import type { Message } from '../i18n'
 import {
   type BannerSummary,
@@ -47,7 +47,7 @@ const NO_WARPS: Message = 'This file holds no Star Rail warps.'
 const NO_RANKS: Message =
   'This file does not say the star rank of each warp: export it again with every field.'
 
-const isBanner = (value: unknown): value is WarpBanner => isString(value) && value in WARP_BANNERS
+const isBanner = (value: unknown): value is WarpBanner => isKeyOf(WARP_BANNERS, value)
 const isUid = (value: unknown): value is string | number =>
   (isString(value) && ID.test(value)) || (Number.isSafeInteger(value) && Number(value) > 0)
 
@@ -99,7 +99,11 @@ export function parseWarpFile(text: string): Record<string, Pull[]> {
       throw new WarpFileError(NOT_A_FILE)
     }
     const uid = String(account.uid)
-    read[uid] = [...(read[uid] ?? []), ...account.list.map(toPull)].toSorted(byId)
+    // A warp listed twice, or an account listed twice, counts each warp once.
+    const unique = new Map(
+      [...(read[uid] ?? []), ...account.list.map(toPull)].map((pull) => [pull.id, pull]),
+    )
+    read[uid] = [...unique.values()].toSorted(byId)
   }
   if (!Object.values(read).some((pulls) => pulls.length)) throw new WarpFileError(NO_WARPS)
   return read

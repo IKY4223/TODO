@@ -75,3 +75,23 @@ test('with several accounts one is picked, and the history can be deleted', asyn
   fireEvent.click(screen.getByRole('button', { name: 'Delete saved history' }))
   expect(screen.queryByLabelText('Account')).toBeNull()
 })
+
+test('a file the phone cannot read, or a delete the browser refuses, says so', async () => {
+  render(<WarpHistory />)
+  const unreadable = new File(['{}'], 'gone.json')
+  Object.defineProperty(unreadable, 'text', {
+    value: async () => Promise.reject(new Error('gone')),
+  })
+  choose(unreadable)
+  expect((await screen.findByRole('alert')).textContent).toBe('This file could not be read.')
+  choose(file({ '700000001': [warp('1', '1', '4')] }))
+  await screen.findByText('1 new warps imported.')
+  vi.spyOn(window, 'confirm').mockReturnValue(true)
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    throw new Error('blocked')
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'Delete saved history' }))
+  expect(
+    screen.getByText('This browser kept its saved data: the history may come back on reload.'),
+  ).toBeDefined()
+})
