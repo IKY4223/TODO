@@ -94,7 +94,9 @@ test('a file the phone cannot read, or a delete the browser refuses, says so', a
   })
   fireEvent.click(screen.getByRole('button', { name: 'Delete saved history' }))
   expect(
-    screen.getByText('This browser kept its saved data: the history may come back on reload.'),
+    await screen.findByText(
+      'This browser kept its saved data: the history may come back on reload.',
+    ),
   ).toBeDefined()
 })
 
@@ -123,6 +125,8 @@ test('imports warps with the link from the error page, and says how to get it', 
     target: { value: 'The webpage at https://example.org/?authkey=x#/log could not be loaded' },
   })
   fireEvent.click(screen.getByRole('button', { name: 'Import history' }))
+  // A file merged meanwhile would be lost when the import saves its own copy of the store.
+  expect(screen.getByLabelText('Or from a UIGF or SRGF file')).toHaveProperty('disabled', true)
   await vi.runAllTimersAsync()
   expect(await screen.findByText('1 new warps imported.')).toBeDefined()
   expect(screen.getByRole('heading', { name: 'Character Event Warp' })).toBeDefined()

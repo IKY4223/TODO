@@ -68,8 +68,6 @@ export function WarpHistory(): JSX.Element {
   const [link, setLink] = useState('')
   const [progress, setProgress] = useState('')
   const [state, run] = useRequest<string>()
-  const [outcome, setOutcome] = useState('')
-  const [problem, setProblem] = useState<Message>()
   const pulls = saved.current ? (saved.accounts[saved.current] ?? []) : []
   const accounts = Object.keys(saved.accounts)
 
@@ -78,34 +76,36 @@ export function WarpHistory(): JSX.Element {
     return saveWarps(history)
   }
 
-  const read = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
+  // Every action reports through one request, so only the latest outcome is on screen, and a
+  // file is not merged while a link import, holding an older copy of the store, is running.
+  const read = (event: ChangeEvent<HTMLInputElement>): void => {
     const input = event.currentTarget
     const file = input.files?.[0]
     input.value = '' // the same file chosen again is read again
     if (!file) return
-    setOutcome('')
-    setProblem(undefined)
-    if (file.size > MAX_FILE_BYTES) {
-      setProblem(TOO_LARGE)
-      return
-    }
-    try {
-      const { history, added } = mergeWarps(saved, parseWarpFile(await file.text()))
+    void run(async () => {
+      if (file.size > MAX_FILE_BYTES) throw new Error(t(TOO_LARGE))
+      let fromFile
+      try {
+        fromFile = parseWarpFile(await file.text())
+      } catch (error) {
+        // A file the phone took back, or saved data this version cannot sort: say so, not nothing.
+        throw new Error(t(error instanceof WarpFileError ? error.reason : UNREADABLE), {
+          cause: error,
+        })
+      }
+      const { history, added } = mergeWarps(saved, fromFile)
       const kept = keep(history)
       const summary = added
         ? t('{count} new warps imported.', { count: added })
         : t('No new warps.')
-      setOutcome(summary + (kept ? '' : t(NOT_SAVED)))
-    } catch (error) {
-      // A file the phone took back, or saved data this version cannot sort: say so, not nothing.
-      setProblem(error instanceof WarpFileError ? error.reason : UNREADABLE)
-    }
+      return summary + (kept ? '' : t(NOT_SAVED))
+    })
   }
 
   const submit = (event: SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    setOutcome('')
-    setProblem(undefined)
+    setProgress('')
     void run(async () => {
       const result = await importHistory(
         link,
@@ -128,7 +128,10 @@ export function WarpHistory(): JSX.Element {
 
   const forget = (): void => {
     if (!window.confirm(t('Delete the saved warp history from this device?'))) return
-    setOutcome(keep(EMPTY_HISTORY) ? '' : t(NOT_DELETED))
+    void run(async () => {
+      if (!keep(EMPTY_HISTORY)) throw new Error(t(NOT_DELETED))
+      return ''
+    })
   }
 
   return (
@@ -159,15 +162,17 @@ export function WarpHistory(): JSX.Element {
           {t('Import history')}
         </button>
       </form>
-      {'message' in state && <p role="alert">{localized(state.message)}</p>}
-      {state.status === 'loading' ? <output>{progress}</output> : null}
-      {'data' in state ? <output>{state.data}</output> : null}
       <label>
         {t('Or from a UIGF or SRGF file')}
-        <input type="file" accept=".json,application/json" onChange={(event) => void read(event)} />
+        <input
+          type="file"
+          accept=".json,application/json"
+          disabled={state.status === 'loading'}
+          onChange={read}
+        />
       </label>
-      {problem ? <p role="alert">{t(problem)}</p> : null}
-      <output>{outcome}</output>
+      {'message' in state && <p role="alert">{localized(state.message)}</p>}
+      <output>{state.status === 'loading' ? progress : 'data' in state ? state.data : ''}</output>
       {saved.current && pulls.length ? (
         <>
           {accounts.length > 1 ? (
