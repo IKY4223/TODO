@@ -1011,6 +1011,7 @@ footer {
   /* The player's UID and its button on one line, above the cards. */
   section > form:has(> label > input[name="uid"]) {
     grid-template-columns: minmax(0, 24rem) auto;
+    justify-content: start;
     align-items: end;
   }
 
@@ -1038,6 +1039,7 @@ footer {
 
   .landing-close form {
     grid-template-columns: minmax(0, 1fr) auto;
+    justify-content: start;
     align-items: end;
   }
 
