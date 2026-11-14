@@ -519,19 +519,17 @@ for (const address of ['starrail/relics', 'starrail/warps', 'starrail/speed', 'g
 
 test('the app opens on a start page that leads to a player', async ({ page }) => {
   await page.goto('/')
-  await expect(
-    page.getByRole('heading', { name: 'Build, speed and warp tools for Star Rail and Genshin' }),
-  ).toBeVisible()
-  const start = page.locator('.landing-close')
+  await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible()
+  const start = page.locator('.home')
+  await expect(start.getByText('No history saved on this device yet.')).toHaveCount(2)
   await start.getByLabel('UID').fill(UID)
   await start.getByRole('button', { name: 'Load characters' }).click()
   await expect(card(page, 'Hyacine')).toBeVisible()
   expectPhoneFriendly(await measureLayout(page), 3)
-  await page.goto('/')
-  // The hero fades in once; contrast is read when it has.
-  await page.evaluate(async () =>
-    Promise.all(document.getAnimations().map(async (a) => a.finished)),
-  )
+  // Back on the start page, by the site's name in the bar, the profile just loaded is on it.
+  await page.getByRole('banner').getByRole('link', { name: /HoYo Toolkit/ }).click()
+  await expect(start.locator('.home-team')).toContainText('Hyacine')
+  expectPhoneFriendly(await measureLayout(page), 3)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   await page.emulateMedia({ colorScheme: 'light' })
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
@@ -586,17 +584,17 @@ test("the tools' signs and the site's icon are served as images", async ({ page 
   const signs = await page
     .locator('[data-icon]')
     .evaluateAll((icons) => [...new Set(icons.map((icon) => icon.getAttribute('data-icon')))])
-  // The start page stays mounted, hidden, with the tools of both games on it.
-  const tools = ['builds', 'history', 'relics', 'speed', 'warps']
-  expect(signs.toSorted()).toEqual(['gi-builds', 'gi-history', 'gi-wishes', ...tools].toSorted())
+  expect(signs.toSorted()).toEqual(['builds', 'history', 'relics', 'speed', 'warps'])
   // A missing file would come back as the app's own page: the type tells them apart.
-  const files = [...signs, 'home', 'logo'].map((sign) => `/icons/${sign}.png`)
+  const others = ['home', 'gi-builds', 'gi-wishes', 'gi-history']
+  const files = [...signs, ...others].map((sign) => `/icons/${sign}.png`)
   const types = await Promise.all(
-    [...files, '/favicon.png'].map(
+    files.map(
       async (path) => (await page.request.get(path)).headers()['content-type'],
     ),
   )
   expect(types).toEqual(types.map(() => 'image/png'))
+  expect((await page.request.get('/favicon.svg')).headers()['content-type']).toBe('image/svg+xml')
   // The sign is painted through a mask, in the colour of the text.
   const mask = await page
     .locator('[data-icon="warps"]')

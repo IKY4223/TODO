@@ -42,8 +42,9 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
-- **Start page** — what the toolkit does: the hero with the product's own interface on the first
-  screen, the tools of each game close below it, and a UID field that opens the player's builds.
+- **Start page** — the player's own desk, not an advertisement: a UID field that opens the
+  builds, the profile loaded in this visit with its characters, the pity each saved warp and wish
+  history stands at, and every tool of each game.
 - **Layout** — laid out for a computer first, to fill its screen: the menu beside the page, a
   tool's fields side by side across the page so a form is seen whole without scrolling, its
   results across the width below, cards side by side, and the Speed tool's turn order beside the
@@ -52,8 +53,8 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   choice: a neutral grey ground, near-white text and a blue accent in Geist, or a light grey
   ground with white cards as the light theme.
 - **Icons** — the tools carry the game's own signs: Honkai: Star Rail's phone menu icons and its
-  speed stat icon, painted in the text colour, and the Stellar Jade as the site's icon (see
-  Credits).
+  speed stat icon, and Genshin's Paimon menu icons, painted in the text colour (see Credits).
+  The site's own mark and browser icon are drawn for it: a four-pointed star.
 - **Light and dark themes** — the app follows the device's setting until the player taps the
   theme button in the top bar, which switches to the other theme; a long press, a right click or
   the keyboard's menu key goes back to the device's. The pick is kept on the device.
@@ -120,18 +121,17 @@ Planned, in order:
    - Aglaea's Eidolon 4 stack from her own attacks; Pearl's Eidolon 2 advance for the other
      Elation characters; Hanya's Eidolon 1 taken as once each of her turns; Castorice's Ardent
      Will spent on Netherwing's first two turns.
-2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
-   Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
-   page of each character once the site has an address.
-3. Genshin: talent multipliers from game data and a best-artifact search.
+2. Genshin: talent multipliers from game data and a best-artifact search.
    Luck statistics, the rest: the share of 50/50s won on character banners, for both games. It
    needs to know which 5★ characters are standard, which neither game data source here gives:
    it waits for a source (an open tracker's data file, read and credited).
-4. Zenless Zone Zero: undecided.
+3. Zenless Zone Zero: undecided.
+
+The Telegram bot is out of the plan, by the owner's choice (November 2026): no host, no Mini
+App. Its code stays as it is; see "Telegram bot" below.
 
 Found by the site review of November 2026 and left for later, small:
 
-- The start page's sample of the Speed tool keeps English names and a decimal point in Russian.
 - "3 action(s)" and "2 stack(s)" in the Speed tool's effect texts want proper plurals.
 
 Reference implementations to check game mechanics against (read, never copied):
@@ -277,16 +277,14 @@ acceptable use policy names Telegram bot frameworks among what it refuses. It ne
 ## Licence
 
 MIT: see `LICENSE`. Game data, names and images belong to HoYoverse and are not under this
-licence: that includes the game's icons in `frontend/public/icons` and
-`frontend/public/favicon.png`. HoYoverse has given no permission for them; they are used the
+licence: that includes the game's icons in `frontend/public/icons`. HoYoverse has given no permission for them; they are used the
 way fan tools commonly use game art, and come out if HoYoverse asks.
 
 ## Credits
 
-The tool icons and the site's icon are the game's: the phone menu signs, the speed stat icon and
-the Stellar Jade of Honkai: Star Rail, taken from
-[StarRailRes](https://github.com/Mar-7th/StarRailRes) (`icon/sign`, `icon/property`,
-`icon/item/900001.png`). Genshin's tools carry Genshin Impact's Paimon menu icons (Character,
+The tool icons are the games' own: the phone menu signs and the speed stat icon of Honkai: Star
+Rail, taken from [StarRailRes](https://github.com/Mar-7th/StarRailRes) (`icon/sign`,
+`icon/property`). Genshin's tools carry Genshin Impact's Paimon menu icons (Character,
 Wish, Adventurer Handbook), from the files the
 [Genshin Impact Wiki](https://genshin-impact.fandom.com/wiki/Paimon_Menu) on Fandom keeps,
 turned into white marks. All of them belong to HoYoverse.
