@@ -9480,6 +9480,118 @@
    ],
    "rarity": 5
   },
+  "1511": {
+   "eidolons": [
+    {},
+    {},
+    {
+     "1": 1,
+     "3": 2,
+     "420": 1
+    },
+    {},
+    {
+     "2": 2,
+     "4": 2,
+     "420": 1
+    },
+    {}
+   ],
+   "element": "Quantum",
+   "icon": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1511.png",
+   "name": {
+    "en": "Aeon ★ Aha",
+    "ru": "Эон ★ Аха"
+   },
+   "path": "Elation",
+   "promotions": [
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 92.4,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 69.3,
+     "HPAdd": 7.128,
+     "HPBase": 142.56,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 129.36,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 97.02,
+     "HPAdd": 7.128,
+     "HPBase": 199.584,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 166.32,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 124.74,
+     "HPAdd": 7.128,
+     "HPBase": 256.608,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 203.28,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 152.46,
+     "HPAdd": 7.128,
+     "HPBase": 313.632,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 240.24,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 180.18,
+     "HPAdd": 7.128,
+     "HPBase": 370.656,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 277.2,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 207.9,
+     "HPAdd": 7.128,
+     "HPBase": 427.68,
+     "SpeedBase": 94
+    },
+    {
+     "AttackAdd": 4.62,
+     "AttackBase": 314.16,
+     "BaseAggro": 100,
+     "CriticalChance": 0.05,
+     "CriticalDamage": 0.5,
+     "DefenceAdd": 3.465,
+     "DefenceBase": 235.62,
+     "HPAdd": 7.128,
+     "HPBase": 484.704,
+     "SpeedBase": 94
+    }
+   ],
+   "rarity": 5
+  },
   "1512": {
    "eidolons": [
     {},
@@ -18488,6 +18600,79 @@
    ],
    "rarity": 4
   },
+  "22009": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/22009.png",
+   "name": {
+    "en": "See You at the World's End!",
+    "ru": "Встретимся на краю света!"
+   },
+   "passive": [
+    {},
+    {},
+    {},
+    {},
+    {}
+   ],
+   "promotions": [
+    {
+     "BaseAttack": 21.6,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 18,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 38.4,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 47.52,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 39.6,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 84.48,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 82.08,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 68.4,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 145.92,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 116.64,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 97.2,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 207.36,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 151.2,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 126,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 268.8,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 185.76,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 154.8,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 330.24,
+     "BaseHPAdd": 5.76
+    },
+    {
+     "BaseAttack": 220.32,
+     "BaseAttackAdd": 3.24,
+     "BaseDefence": 183.6,
+     "BaseDefenceAdd": 2.7,
+     "BaseHP": 391.68,
+     "BaseHPAdd": 5.76
+    }
+   ],
+   "rarity": 4
+  },
   "23000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23000.png",
    "name": {
@@ -23853,6 +24038,89 @@
    ],
    "rarity": 5
   },
+  "23065": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/23065.png",
+   "name": {
+    "en": "Upon the First Echo of \"Aha\"",
+    "ru": "Когда раздаётся первое «аха»"
+   },
+   "passive": [
+    {
+     "BaseSpeed": 12
+    },
+    {
+     "BaseSpeed": 14
+    },
+    {
+     "BaseSpeed": 16
+    },
+    {
+     "BaseSpeed": 18
+    },
+    {
+     "BaseSpeed": 20
+    }
+   ],
+   "promotions": [
+    {
+     "BaseAttack": 26.4,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 24,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 43.2,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 58.08,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 52.8,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 95.04,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 100.32,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 91.2,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 164.16,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 142.56,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 129.6,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 233.28,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 184.8,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 168,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 302.4,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 227.04,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 206.4,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 371.52,
+     "BaseHPAdd": 6.48
+    },
+    {
+     "BaseAttack": 269.28,
+     "BaseAttackAdd": 3.96,
+     "BaseDefence": 244.8,
+     "BaseDefenceAdd": 3.6,
+     "BaseHP": 440.64,
+     "BaseHPAdd": 6.48
+    }
+   ],
+   "rarity": 5
+  },
   "24000": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/LightConeIcons/24000.png",
    "name": {
@@ -25136,6 +25404,8 @@
   "200162": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200162.png",
   "200163": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200163.png",
   "200164": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200164.png",
+  "200165": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200165.png",
+  "200166": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/200166.png",
   "201001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1001.png",
   "201002": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1002.png",
   "201003": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1003.png",
@@ -25222,6 +25492,7 @@
   "201508": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1508.png",
   "201509": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1509.png",
   "201510": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1510.png",
+  "201511": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1511.png",
   "201512": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1512.png",
   "201513": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/1513.png",
   "202001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202001.png",
@@ -25274,10 +25545,15 @@
   "202053": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202053.png",
   "202054": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202054.png",
   "202055": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202055.png",
+  "202056": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202056.png",
+  "202057": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202057.png",
+  "202058": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202058.png",
+  "202059": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Series/202059.png",
   "202060": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1140701.png",
   "202061": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1150101.png",
   "202062": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1150501.png",
   "202063": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1140901.png",
+  "202064": "/ui/hsr/SpriteOutput/AvatarRoundIcon/AvatarSkin/1151101.png",
   "208001": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8001.png",
   "208002": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8002.png",
   "208003": "/ui/hsr/SpriteOutput/AvatarRoundIcon/Avatar/8003.png",
@@ -26826,6 +27102,38 @@
    "slot": "OBJECT",
    "sub_group": 2
   },
+  "33295": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_5.png",
+   "main_group": 25,
+   "rarity": 2,
+   "set": 329,
+   "slot": "NECK",
+   "sub_group": 2
+  },
+  "33296": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_6.png",
+   "main_group": 26,
+   "rarity": 2,
+   "set": 329,
+   "slot": "OBJECT",
+   "sub_group": 2
+  },
+  "33305": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_5.png",
+   "main_group": 25,
+   "rarity": 2,
+   "set": 330,
+   "slot": "NECK",
+   "sub_group": 2
+  },
+  "33306": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_6.png",
+   "main_group": 26,
+   "rarity": 2,
+   "set": 330,
+   "slot": "OBJECT",
+   "sub_group": 2
+  },
   "41011": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
    "main_group": 31,
@@ -28362,6 +28670,38 @@
    "slot": "OBJECT",
    "sub_group": 3
   },
+  "43295": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_5.png",
+   "main_group": 35,
+   "rarity": 3,
+   "set": 329,
+   "slot": "NECK",
+   "sub_group": 3
+  },
+  "43296": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_6.png",
+   "main_group": 36,
+   "rarity": 3,
+   "set": 329,
+   "slot": "OBJECT",
+   "sub_group": 3
+  },
+  "43305": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_5.png",
+   "main_group": 35,
+   "rarity": 3,
+   "set": 330,
+   "slot": "NECK",
+   "sub_group": 3
+  },
+  "43306": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_6.png",
+   "main_group": 36,
+   "rarity": 3,
+   "set": 330,
+   "slot": "OBJECT",
+   "sub_group": 3
+  },
   "51011": {
    "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_101_1.png",
    "main_group": 41,
@@ -29895,6 +30235,38 @@
    "main_group": 46,
    "rarity": 4,
    "set": 328,
+   "slot": "OBJECT",
+   "sub_group": 4
+  },
+  "53295": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_5.png",
+   "main_group": 45,
+   "rarity": 4,
+   "set": 329,
+   "slot": "NECK",
+   "sub_group": 4
+  },
+  "53296": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_6.png",
+   "main_group": 46,
+   "rarity": 4,
+   "set": 329,
+   "slot": "OBJECT",
+   "sub_group": 4
+  },
+  "53305": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_5.png",
+   "main_group": 45,
+   "rarity": 4,
+   "set": 330,
+   "slot": "NECK",
+   "sub_group": 4
+  },
+  "53306": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_6.png",
+   "main_group": 46,
+   "rarity": 4,
+   "set": 330,
    "slot": "OBJECT",
    "sub_group": 4
   },
@@ -31481,6 +31853,38 @@
    "set": 328,
    "slot": "OBJECT",
    "sub_group": 5
+  },
+  "63295": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_5.png",
+   "main_group": 55,
+   "rarity": 5,
+   "set": 329,
+   "slot": "NECK",
+   "sub_group": 5
+  },
+  "63296": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_329_6.png",
+   "main_group": 56,
+   "rarity": 5,
+   "set": 329,
+   "slot": "OBJECT",
+   "sub_group": 5
+  },
+  "63305": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_5.png",
+   "main_group": 55,
+   "rarity": 5,
+   "set": 330,
+   "slot": "NECK",
+   "sub_group": 5
+  },
+  "63306": {
+   "icon": "/ui/hsr/SpriteOutput/ItemIcon/RelicIcons/IconRelic_330_6.png",
+   "main_group": 56,
+   "rarity": 5,
+   "set": 330,
+   "slot": "OBJECT",
+   "sub_group": 5
   }
  },
  "set_bonuses": {
@@ -31821,6 +32225,16 @@
   },
   "328": {
    "2": {}
+  },
+  "329": {
+   "2": {
+    "SpeedAddedRatio": 0.06
+   }
+  },
+  "330": {
+   "2": {
+    "SpeedAddedRatio": 0.06
+   }
   }
  },
  "sets": {
@@ -32071,6 +32485,14 @@
   "328": {
    "en": "Cosmic Life Sciences Institute",
    "ru": "Институт биологических исследований"
+  },
+  "329": {
+   "en": "God's Moment of Joy",
+   "ru": "Миг радости бога"
+  },
+  "330": {
+   "en": "Subspace ASC Center",
+   "ru": "Подпространственный центр контроля аномалий"
   }
  },
  "sub_affixes": {
@@ -35203,6 +35625,36 @@
   },
   "1510210": {
    "AttackAddedRatio": 0.08
+  },
+  "1511201": {
+   "CriticalDamageBase": 0.053
+  },
+  "1511202": {
+   "CriticalChanceBase": 0.026999999
+  },
+  "1511203": {
+   "CriticalDamageBase": 0.053
+  },
+  "1511204": {
+   "SpeedDelta": 2
+  },
+  "1511205": {
+   "CriticalDamageBase": 0.08
+  },
+  "1511206": {
+   "CriticalChanceBase": 0.04
+  },
+  "1511207": {
+   "CriticalDamageBase": 0.08
+  },
+  "1511208": {
+   "SpeedDelta": 3
+  },
+  "1511209": {
+   "CriticalChanceBase": 0.053
+  },
+  "1511210": {
+   "CriticalDamageBase": 0.107
   },
   "1512201": {
    "SpeedDelta": 2
