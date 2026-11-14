@@ -19,6 +19,9 @@ export interface UnitEffect extends Pick<
   | 'withoutSummon'
   | 'once'
   | 'stacks'
+  | 'cooldown'
+  | 'charges'
+  | 'duringSummon'
 > {
   readonly value: number
 }
@@ -69,8 +72,11 @@ interface State {
   actions: number | undefined // actions left before a summon leaves; undefined: no limit
   buffs: Buff[]
   readonly fired: Set<UnitEffect> // effects that happen once and did
+  readonly lastFired: Map<UnitEffect, number> // the turn an effect with a cooldown last fired on
+  readonly spent: Map<UnitEffect, number> // charges used since the summon was brought in
   stacks: number
   inState: boolean
+  extraTurns: number // extra turns waiting to be taken at once
 }
 
 function speedOf({ unit, buffs }: State): number {
@@ -93,6 +99,7 @@ function targets(
   const sourceCharacter = source.unit.owner ?? source.unit.key
   if (target === 'summons') return summonsOf(states, new Set([sourceCharacter]))
   if (target === 'enemies') return states.filter(({ unit }) => unit.enemy)
+  if (target === 'owner') return states.filter(({ unit }) => unit.key === source.unit.owner)
   const picked = {
     self: [source],
     allies: characters,
@@ -116,6 +123,26 @@ function summon(target: State, actions: number): void {
   target.here = true
   target.gauge = GAUGE * (1 - (target.unit.arrival ?? 0))
   target.actions = Math.min(maxActions, actions)
+  target.spent.clear()
+}
+
+/** Whether an effect limited by `once`, a cooldown or charges may fire now; counts it if so. */
+function mayFire(source: State, effect: UnitEffect): boolean {
+  if (effect.once) {
+    if (source.fired.has(effect)) return false
+    source.fired.add(effect)
+  }
+  if (effect.cooldown !== undefined) {
+    const last = source.lastFired.get(effect)
+    if (last !== undefined && source.turns - last <= effect.cooldown) return false
+    source.lastFired.set(effect, source.turns)
+  }
+  if (effect.charges !== undefined) {
+    const spent = source.spent.get(effect) ?? 0
+    if (spent >= effect.charges) return false
+    source.spent.set(effect, spent + 1)
+  }
+  return true
 }
 
 const away = (states: readonly State[], source: State): boolean =>
@@ -143,13 +170,12 @@ function addBuff(target: State, effect: UnitEffect, until: State | undefined): v
 
 function apply(states: readonly State[], source: State, effect: UnitEffect): void {
   if (effect.withoutSummon && !away(states, source)) return
-  if (effect.once) {
-    if (source.fired.has(effect)) return
-    source.fired.add(effect)
-  }
+  if (effect.duringSummon && away(states, source)) return
+  if (!effect.value || !mayFire(source, effect)) return
   for (const target of targets(states, source, effect.target, effect.withSummons)) {
     if (effect.kind === 'summon') summon(target, effect.value)
     else if (!target.here) continue
+    else if (effect.kind === 'extra') target.extraTurns += 1
     else if (effect.kind === 'stack') gain(states, target, effect.value)
     else if (effect.kind === 'advance')
       target.gauge = Math.max(0, target.gauge - effect.value * GAUGE)
@@ -184,8 +210,11 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
     actions: undefined,
     buffs: [],
     fired: new Set(),
+    lastFired: new Map(),
+    spent: new Map(),
     stacks: 0,
     inState: false,
+    extraTurns: 0,
   }))
   for (const state of states) fire(states, state, 'always')
   for (const state of states) fire(states, state, 'start')
@@ -197,14 +226,19 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       targets(states, state, 'summons').some(({ here, unit }) => here && unit.pausesOwner)
     const ready = present.filter((state) => state.unit.owner || !paused(state))
     if (!ready.length) return actions // a player may untick the whole team
-    const next = ready.reduce((best, state) =>
-      state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
-    )
-    const elapsed = next.gauge / speedOf(next)
+    // An extra turn comes first, at once, and leaves the unit's place on the gauge as it was.
+    const extra = present.find(({ extraTurns }) => extraTurns > 0)
+    const next =
+      extra ??
+      ready.reduce((best, state) =>
+        state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
+      )
+    const elapsed = extra ? 0 : next.gauge / speedOf(next)
     if (time + elapsed > until || actions.length >= MAX_ACTIONS) return actions
     time += elapsed
     for (const state of present) state.gauge -= speedOf(state) * elapsed
-    next.gauge = GAUGE
+    if (extra) extra.extraTurns -= 1
+    else next.gauge = GAUGE
     next.turns += 1
     next.sinceUltimate += 1
     // shortcut: a buff wears off at the end of its bearer's turn, the one it was gained on

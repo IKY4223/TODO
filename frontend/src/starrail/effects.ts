@@ -131,8 +131,8 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
 ]
 
 export type Trigger = 'start' | 'turn' | 'ultimate' | 'always' | 'summon' | 'state'
-// summons: the source's own
-export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' | 'enemies'
+// summons: the source's own. owner: from a summon, the character it belongs to.
+export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' | 'enemies' | 'owner'
 
 /** What an effect does to the turn order. */
 export interface TurnEffect {
@@ -140,8 +140,8 @@ export interface TurnEffect {
   readonly source: Source
   // summon: brings the source's summons in with `values` actions, or adds them if already there.
   // delay: pushes the target's action back. slow: SPD minus this share of its base. stack: adds
-  // stacks such as Syzygy.
-  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon' | 'delay' | 'slow' | 'stack'
+  // stacks such as Syzygy. extra: the target takes one extra turn at once, its gauge untouched.
+  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon' | 'delay' | 'slow' | 'stack' | 'extra'
   readonly values: readonly number[] // one, or one per superimposition for a light cone
   readonly trigger: Trigger
   readonly target: Target
@@ -153,6 +153,9 @@ export interface TurnEffect {
   readonly untilSummonLeaves?: boolean // the buff ends when the source's summon leaves
   readonly withoutSummon?: boolean // works only while the source's summon is away
   readonly once?: boolean // happens on the first trigger only
+  readonly cooldown?: number // after firing, waits this many of the source's turns to fire again
+  readonly charges?: number // a summon's effect: works this many times each time it is brought in
+  readonly duringSummon?: boolean // works only while the source's summon is here
   readonly stacks?: number // a buff gained again adds up to this many; without it, it refreshes
   readonly byLevel?: SkillKind // `values` are one per level of this skill, from level 1
   readonly eidolon?: number // works from this Eidolon on
@@ -164,6 +167,12 @@ export interface TurnEffect {
   // ticks whether it landed.
   readonly chance?: readonly number[]
 }
+
+// Hanya's Ultimate: SPD as a share of hers, by Ultimate level.
+const HANYA_ULTIMATE_SPD = [
+  0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
+  0.225,
+]
 
 // Welt's Skill: its base chance to Slow, by Skill level.
 const WELT_SKILL_CHANCE = [
@@ -292,6 +301,20 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     untilSummonLeaves: true, // Complete Combustion ends on the countdown's turn
     byLevel: 'ultimate',
   },
+  // Eidolon 2: an Enhanced attack that defeats an enemy or breaks its Weakness gives an extra
+  // turn, again after 1 turn. Whether it does depends on the battle: the player switches it on.
+  {
+    id: 'firefly-e2',
+    source: { character: 1310 },
+    kind: 'extra',
+    values: [1],
+    trigger: 'turn',
+    target: 'self',
+    duringSummon: true, // in Complete Combustion, while its countdown is here
+    cooldown: 1,
+    off: true,
+    eidolon: 2,
+  },
   {
     id: 'firefly-countdown',
     source: { character: 1310 },
@@ -371,6 +394,18 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [3],
     trigger: 'ultimate',
     target: 'summons',
+  },
+  // Eidolon 2: summoning Netherwing gives 2 stacks of Ardent Will, each spent on its Skill to
+  // advance Castorice 100%. shortcut: spent on Netherwing's first two turns; it may hold them.
+  {
+    id: 'castorice-e2',
+    source: { character: 1407 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'summon',
+    target: 'owner',
+    charges: 2,
+    eidolon: 2,
   },
   {
     id: 'castorice-technique',
@@ -478,12 +513,21 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'self',
     off: true,
   },
-  // shortcut: with 4 or more Elation characters the target also gains an extra turn; not modelled.
   {
     id: 'pearl-ultimate',
     source: { character: 1503 },
     kind: 'advance',
     values: [0.1, 0.15, 0.3],
+    trigger: 'ultimate',
+    target: 'chosen',
+    byElation: true,
+  },
+  // With 4 or more Elation characters the "Aesthetic Archetype" also gains 1 extra turn.
+  {
+    id: 'pearl-ultimate-extra',
+    source: { character: 1503 },
+    kind: 'extra',
+    values: [0, 0, 0, 1],
     trigger: 'ultimate',
     target: 'chosen',
     byElation: true,
@@ -690,15 +734,37 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     id: 'hanya-ultimate',
     source: { character: 1215 },
     kind: 'spd',
-    values: [
-      0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
-      0.225,
-    ],
+    values: HANYA_ULTIMATE_SPD,
     trigger: 'ultimate',
     target: 'chosen',
     turns: 2,
     ofSourceSpd: true,
     byLevel: 'ultimate',
+    beforeEidolon: 4,
+  },
+  {
+    id: 'hanya-ultimate-e4',
+    source: { character: 1215 },
+    kind: 'spd',
+    values: HANYA_ULTIMATE_SPD,
+    trigger: 'ultimate',
+    target: 'chosen',
+    turns: 3, // Eidolon 4: one more turn
+    ofSourceSpd: true,
+    byLevel: 'ultimate',
+    eidolon: 4,
+  },
+  // Eidolon 1: when the ally with her Ultimate defeats an enemy, at most once a turn. Whether one
+  // falls depends on the battle: the player switches it on, taken as once each of her turns.
+  {
+    id: 'hanya-e1',
+    source: { character: 1215 },
+    kind: 'advance',
+    values: [0.15],
+    trigger: 'turn',
+    target: 'self',
+    off: true,
+    eidolon: 1,
   },
   {
     id: 'sushang-talent',

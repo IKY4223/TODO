@@ -209,3 +209,51 @@ test('a countdown that pauses its owner holds her turns, then lets her act at on
     '211.1 r!',
   ])
 })
+
+test('an extra turn comes at once and keeps the unit in its place on the gauge', () => {
+  // Pearl's Ultimate with four Elation characters: the chosen ally takes one extra turn.
+  const pearl = unit('pearl', 100, {
+    ultimateEvery: 1,
+    chosen: 'dps',
+    effects: [effect({ kind: 'extra', value: 1, trigger: 'ultimate', target: 'chosen' })],
+  })
+  expect(order([pearl, unit('dps', 80)], 260)).toEqual([
+    '100 pearl!',
+    '100 dps', // the extra turn
+    '125 dps', // its own turn, where the gauge had it
+    '200 pearl!',
+    '200 dps',
+    '250 dps',
+  ])
+})
+
+test('an effect with a cooldown fires again only after that many turns', () => {
+  // Firefly's Eidolon 2: an extra turn, again after 1 turn.
+  const firefly = unit('ff', 100, {
+    effects: [effect({ kind: 'extra', value: 1, cooldown: 1 })],
+  })
+  expect(order([firefly], 210)).toEqual(['100 ff', '100 ff', '200 ff', '200 ff'])
+})
+
+test('an effect a summon has on its owner works its number of times', () => {
+  // Castorice's Eidolon 2: two stacks of Ardent Will, each advancing her 100% on Netherwing's turn.
+  const castorice = unit('cas', 100, {
+    effects: [effect({ kind: 'summon', value: 9, target: 'summons', once: true })],
+  })
+  const netherwing = unit('nw', 165, {
+    owner: 'cas',
+    later: true,
+    arrival: 1,
+    effects: [
+      effect({ kind: 'advance', value: 1, trigger: 'summon', target: 'owner', charges: 2 }),
+    ],
+  })
+  expect(order([castorice, netherwing], 230)).toEqual([
+    '100 cas',
+    '100 nw', // arrives with 100% advance and advances Castorice: one stack spent
+    '100 cas',
+    '160.6 nw', // the second stack
+    '160.6 cas',
+    '221.2 nw', // no stacks left
+  ])
+})

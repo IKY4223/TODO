@@ -179,3 +179,15 @@ test("Jingliu enters her state with one more Syzygy in the later kit, and one mo
   expect(syzygyBonus(later)).toBe(1)
   expect(syzygyBonus({ ...later, eidolon: 6 })).toBe(2)
 })
+
+test("Pearl's extra turn needs four Elation characters; Hanya's Eidolon 4 adds a turn", () => {
+  const elation = (id: number) => as(id, { path: 'elation' })
+  const pearl = elation(1503)
+  const three = [pearl, elation(2), elation(3)]
+  expect(turnValue(turn('pearl-ultimate-extra'), pearl, three)).toBe(0)
+  expect(turnValue(turn('pearl-ultimate-extra'), pearl, [...three, elation(4)])).toBe(1)
+  expect(turnValue(turn('hanya-ultimate'), as(1215, { eidolon: 4 }), [])).toBeUndefined()
+  expect(turn('hanya-ultimate-e4').turns).toBe(3)
+  expect(turnValue(turn('firefly-e2'), as(1310, { eidolon: 2 }), [])).toBe(1)
+  expect(turnValue(turn('castorice-e2'), as(1407, { eidolon: 1 }), [])).toBeUndefined()
+})

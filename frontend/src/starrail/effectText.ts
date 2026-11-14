@@ -66,6 +66,7 @@ const TARGETS = {
   teammates: 'Teammates',
   chosen: 'Chosen ally',
   summons: 'Own summon',
+  owner: 'Its owner',
   enemies: 'Enemies',
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
@@ -88,6 +89,7 @@ export function turnEffectText(
     delay: t('action delay +{value}', { value: amount }),
     slow: t('SPD −{value}', { value: amount }),
     stack: t('{value} stack(s)', { value: amount }),
+    extra: t('one extra turn'),
   }[effect.kind]
   const notes = [
     effect.turns ? t('lasts {turns} turn(s)', { turns: effect.turns }) : '',
@@ -95,6 +97,9 @@ export function turnEffectText(
     effect.withoutSummon ? t('outside its state') : '',
     effect.minSpd ? t('SPD at least {spd}', { spd: effect.minSpd }) : '',
     effect.once ? t('once') : '',
+    effect.cooldown ? t('again after {turns} turn(s)', { turns: effect.cooldown }) : '',
+    effect.charges ? t('{count} time(s) each time it comes', { count: effect.charges }) : '',
+    effect.duringSummon ? t('in its state') : '',
     effect.eidolon ? t('from Eidolon {eidolon}', { eidolon: effect.eidolon }) : '',
     effect.byElation ? t('by Elation characters on the team') : '',
     chance === undefined
