@@ -51,19 +51,19 @@ const STAR_RAIL: readonly Tool[] = [
 const GENSHIN: readonly Tool[] = [
   {
     href: '#genshin/builds',
-    icon: 'builds',
+    icon: 'gi-builds',
     name: 'Builds',
     does: 'Final stats, talents, weapon and artifacts from the showcase.',
   },
   {
     href: '#genshin/wishes',
-    icon: 'warps',
+    icon: 'gi-wishes',
     name: 'Wishes',
     does: 'The exact odds of a featured 5★ with the wishes you have.',
   },
   {
     href: '#genshin/history',
-    icon: 'history',
+    icon: 'gi-history',
     name: 'History',
     does: 'The whole wish history, imported straight from a phone.',
   },

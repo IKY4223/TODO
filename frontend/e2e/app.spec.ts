@@ -586,9 +586,11 @@ test("the tools' signs and the site's icon are served as images", async ({ page 
   const signs = await page
     .locator('[data-icon]')
     .evaluateAll((icons) => [...new Set(icons.map((icon) => icon.getAttribute('data-icon')))])
-  expect(signs.toSorted()).toEqual(['builds', 'history', 'relics', 'speed', 'warps'])
+  // The start page stays mounted, hidden, with the tools of both games on it.
+  const tools = ['builds', 'history', 'relics', 'speed', 'warps']
+  expect(signs.toSorted()).toEqual(['gi-builds', 'gi-history', 'gi-wishes', ...tools].toSorted())
   // A missing file would come back as the app's own page: the type tells them apart.
-  const files = [...signs.map((sign) => `/icons/${sign}.png`), '/icons/home.png', '/icons/logo.png']
+  const files = [...signs, 'home', 'logo'].map((sign) => `/icons/${sign}.png`)
   const types = await Promise.all(
     [...files, '/favicon.png'].map(
       async (path) => (await page.request.get(path)).headers()['content-type'],
@@ -601,6 +603,13 @@ test("the tools' signs and the site's icon are served as images", async ({ page 
     .first()
     .evaluate((icon) => getComputedStyle(icon, '::before').maskImage)
   expect(mask).toContain('/icons/warps.png')
+  // The theme button's icon sits in the middle of the button, not pushed to its right.
+  const [button, icon] = await Promise.all([
+    page.getByRole('button', { name: /^Theme/ }).boundingBox(),
+    page.getByRole('button', { name: /^Theme/ }).locator('svg').boundingBox(),
+  ])
+  const middle = (box: typeof button): number => (box?.x ?? 0) + (box?.width ?? 0) / 2
+  expect(Math.abs(middle(button) - middle(icon))).toBeLessThan(1)
 })
 
 const warp = (id: string, rank_type: string, name: string) => ({

@@ -2,10 +2,22 @@ import type { JSX } from 'react'
 import { isKeyOf } from '../api/http'
 
 // The tools' icons are the game's own: Honkai: Star Rail's phone menu signs and its speed stat
-// icon, from Mar-7th/StarRailRes (icon/sign and icon/property), served from public/icons. They
+// icon, from Mar-7th/StarRailRes (icon/sign and icon/property), and Genshin Impact's Paimon menu
+// icons (Character, Wish, Adventurer Handbook) as the Genshin Impact Wiki on Fandom keeps them,
+// turned into white marks. All are served from public/icons. They
 // belong to HoYoverse, not to this project's licence. index.css paints each as a mask, so it
 // takes the text colour in both themes.
-const GLYPHS = ['home', 'builds', 'relics', 'warps', 'history', 'speed'] as const
+const GLYPHS = [
+  'home',
+  'builds',
+  'relics',
+  'warps',
+  'history',
+  'speed',
+  'gi-builds',
+  'gi-wishes',
+  'gi-history',
+] as const
 
 // The theme button's icons are drawn for this app on a 24px grid: the game has none for it.
 const PATHS = {

@@ -101,6 +101,11 @@ body {
   width: auto;
 }
 
+/* The theme button's icon sits in the middle: no room kept for a tab's pill around it. */
+button.icon .tool-icon {
+  padding: 0;
+}
+
 button.icon {
   display: grid;
   flex: none;
@@ -351,6 +356,18 @@ nav a[aria-current] {
 
 .tool-icon[data-icon="speed"] {
   --sign: url("/icons/speed.png");
+}
+
+.tool-icon[data-icon="gi-builds"] {
+  --sign: url("/icons/gi-builds.png");
+}
+
+.tool-icon[data-icon="gi-wishes"] {
+  --sign: url("/icons/gi-wishes.png");
+}
+
+.tool-icon[data-icon="gi-history"] {
+  --sign: url("/icons/gi-history.png");
 }
 
 form {
@@ -850,7 +867,7 @@ footer {
   justify-self: stretch;
 }
 
-/* The start page, to the taste skill's plan: the hero alone on the first screen, then one
+/* The start page: the hero alone on the first screen, then one
    section a screen on a computer; linked cards lift 2px on hover; the hero enters once. */
 .landing-section,
 .landing-hero {

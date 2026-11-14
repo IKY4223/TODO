@@ -105,11 +105,11 @@ For a session picking the work up again.
 
 - State: PRs #1 to #17 are merged. `HANDOFF.md` holds the owner's task list and the plan of
   stages 17 to 22; `README.md` and this file win where they differ.
-- PR #19 (open, the owner merges it) holds the owner's November 2026 choices: tool icons are the
-  game's phone menu signs from StarRailRes (`frontend/public/icons`, painted through a CSS mask;
-  Genshin has no such signs in a reachable source, so it shares them), the Stellar Jade as the
-  site's icon, a plain grey and blue palette instead of the taste skill's green and bone, and a
-  wide-screen layout that fills the screen (fields across the page, results below).
+- PR #19 is merged: the owner's November 2026 choices. Tool icons are the games' own menu signs
+  (`frontend/public/icons`, painted through a CSS mask): Star Rail's from StarRailRes, Genshin's
+  from the Genshin Impact Wiki on Fandom (`gi-*.png`). The Stellar Jade is the site's icon. The
+  palette is plain grey and blue. The wide-screen layout fills the screen (fields across the
+  page, results below).
 - Stage 18 is merged: the theme switch in the top bar, and the
   effects table's rest (Aglaea's Supreme Stance, Robin • Summeretto's Fever, extra turns, later
   kits of Welt and Jingliu by trace ids, base chances). Left: Ultimates by energy (needs a source).
@@ -127,10 +127,9 @@ For a session picking the work up again.
 - The effect table is `frontend/src/starrail/effects.ts`; the turn order simulator is
   `frontend/src/starrail/turns.ts`; final stats are `backend/app/starrail/stats.py`. Star Rail
   numbers are cut off, not rounded, as the game prints them.
-- Skills: `ui-ux-pro-max` is installed. `design-taste-frontend` (Leonxlnx/taste-skill) is installed
-  by the Default environment's setup script, pinned to commit f6b7657; review a newer commit
-  before moving the pin, since a skill steers the session. The owner replaced its palette with
-  plain grey and blue: do not bring its colours back. The
+- Skills: `ui-ux-pro-max` is installed. The owner removed the taste skill
+  (`design-taste-frontend`) in November 2026 and replaced its palette with plain grey and blue:
+  do not bring the skill or its colours back. The
   owner asked for headroom and get-shit-done; neither was installed (headroom proxies model
   traffic, which a cloud session cannot route; get-shit-done is archived and moved to
   `open-gsd/gsd-core`, and adds hooks and a workflow of its own).
