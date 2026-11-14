@@ -49,7 +49,7 @@ export function applyTheme(theme: Theme): void {
 
 /** The theme on screen and a way to pick one: shown, saved and kept in step with the device
  * while the player has not picked one. */
-export function useTheme(): readonly ['dark' | 'light', (theme: Theme) => void] {
+export function useTheme(): readonly ['dark' | 'light', Theme, (theme: Theme) => void] {
   const [theme, setTheme] = useState(loadTheme)
   // The device's own theme, kept in state so a change on the device redraws the page's controls.
   const [deviceLight, setDeviceLight] = useState(() => deviceQuery()?.matches ?? false)
@@ -69,5 +69,5 @@ export function useTheme(): readonly ['dark' | 'light', (theme: Theme) => void] 
     setTheme(next)
   }
   const shown = theme === 'system' ? (deviceLight ? 'light' : 'dark') : theme
-  return [shown, choose]
+  return [shown, theme, choose]
 }

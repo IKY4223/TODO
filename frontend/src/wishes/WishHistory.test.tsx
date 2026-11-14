@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import type { Pull } from './history'
 import { WishHistory } from './WishHistory'
@@ -55,8 +55,12 @@ const characterOnly = (banner: string): Response =>
 
 async function importFrom(text: string): Promise<void> {
   fireEvent.change(screen.getByLabelText('Text from the error page'), { target: { value: text } })
-  fireEvent.click(screen.getByRole('button', { name: 'Import history' }))
+  const button = screen.getByRole('button', { name: 'Import history' })
+  fireEvent.click(button)
   await vi.runAllTimersAsync()
+  // Reading a response's body is no timer: under load it can still be running here, so wait
+  // for the import to end, when its button is enabled again.
+  await waitFor(() => expect(button).toHaveProperty('disabled', false))
 }
 
 test('explains how to get the link on a phone', () => {

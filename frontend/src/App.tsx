@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode, useEffect, useState } from 'react'
+import { type JSX, type ReactNode, useEffect, useRef, useState } from 'react'
 import { useAddress } from './address'
 import { Landing } from './Landing'
 import { ToolIcon, type ToolIconName } from './ui/ToolIcon'
@@ -9,7 +9,7 @@ import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { SpeedPlanner } from './starrail/SpeedPlanner'
 import { WarpHistory } from './starrail/WarpHistory'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
-import { useTheme } from './theme'
+import { type Theme, useTheme } from './theme'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
 
@@ -69,6 +69,15 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 const HOME = 'home'
 
+// A press this long on the theme button goes back to the device's theme.
+const HOLD_MS = 500
+const THEME_MODES = {
+  system: 'as on the device',
+  dark: 'dark',
+  light: 'light',
+} as const satisfies Record<Theme, Message>
+const THEME_ICONS = { system: 'auto', dark: 'moon', light: 'sun' } as const
+
 const MENU = 'menu'
 const CLOSE_KEY = 'Escape'
 // From this width the menu stays open beside the page and the tabs go.
@@ -98,7 +107,18 @@ function App(): JSX.Element {
   const language = useLanguage()
   const [open, setOpen] = useState(false)
   const wide = useWide()
-  const [theme, setTheme] = useTheme() // the theme on screen
+  const [shownTheme, theme, setTheme] = useTheme()
+  const hold = useRef<number | undefined>(undefined)
+  const held = useRef(false)
+  // A long press goes back to the device's theme; the click that ends it then does nothing.
+  const press = (): void => {
+    held.current = false
+    hold.current = window.setTimeout(() => {
+      held.current = true
+      setTheme('system')
+    }, HOLD_MS)
+  }
+  const release = (): void => window.clearTimeout(hold.current)
 
   useEffect(() => {
     if (!open) return undefined
@@ -171,14 +191,27 @@ function App(): JSX.Element {
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{home ? t('Home') : GAMES[here.game].label}</span>
         </a>
-        {/* One tap to the other theme; the device's theme until then. */}
+        {/* A tap: the other theme. A long press or a right click: the device's theme again. */}
         <button
           type="button"
           className="icon"
-          aria-label={t(theme === 'light' ? 'Dark theme' : 'Light theme')}
-          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          aria-label={t('Theme: {mode}', { mode: t(THEME_MODES[theme]) })}
+          title={t('Tap for the other theme; hold or right-click for the one on the device')}
+          onPointerDown={press}
+          onPointerUp={release}
+          onPointerLeave={release}
+          onPointerCancel={release}
+          // A right click, the keyboard's menu key or Shift+F10 do what a long press does.
+          onContextMenu={(event) => {
+            event.preventDefault()
+            setTheme('system')
+          }}
+          onClick={() => {
+            if (held.current) held.current = false
+            else setTheme(shownTheme === 'light' ? 'dark' : 'light')
+          }}
         >
-          <ToolIcon name={theme === 'light' ? 'moon' : 'sun'} />
+          <ToolIcon name={THEME_ICONS[theme]} />
         </button>
         <select
           aria-label={t('Language')}

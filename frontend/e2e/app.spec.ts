@@ -481,15 +481,23 @@ test('takes a light theme from the device or the top bar, readable in both', asy
   // The scan checks every text's contrast against the light background.
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 
-  // One tap in the top bar to the other theme, and back.
-  await page.getByRole('button', { name: 'Dark theme' }).click()
+  // One tap in the top bar to the other theme, and back; a long press back to the device's.
+  const theme = page.getByRole('button', { name: /^Theme: / })
+  await theme.click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.getByRole('button', { name: 'Light theme' }).click()
+  await expect(theme).toHaveAccessibleName('Theme: dark')
+  await theme.click()
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   // The player's choice outlasts the device's preference and a reload.
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-  await expect(page.getByRole('button', { name: 'Dark theme' })).toBeVisible()
+  await expect(theme).toHaveAccessibleName('Theme: light')
+  // A long press goes back to the device's theme, dark by now.
+  await theme.dispatchEvent('pointerdown')
+  await page.waitForTimeout(700)
+  await theme.dispatchEvent('pointerup')
+  await expect(theme).toHaveAccessibleName('Theme: as on the device')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await page.getByRole('button', { name: 'Menu' }).click()
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])

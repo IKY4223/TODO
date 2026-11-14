@@ -1,23 +1,35 @@
 import type { JSX } from 'react'
 
-// Line icons drawn for this app on a 24px grid: stroke only, so they take the text colour.
+// Drawn for this app on a 24px grid after the games' own motifs, not taken from them: stroke
+// only, so they take the text colour.
 const PATHS = {
-  // A house: the start page.
-  home: 'M4 11l8-7 8 7v9h-5v-6H9v6H4Z',
-  // A person: builds and showcases.
-  builds: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
-  // A gem: relics.
-  relics: 'M6 3h12l3 6-9 12L3 9l3-6Zm-3 6h18M9 3l3 18 3-18',
-  // A four-pointed star: warps and wishes.
+  // The arc of the logo: the start page.
+  home:
+    'M4.5 16a7.5 7.5 0 0 1 15 0M13.6 16a1.6 1.6 0 1 1-3.2 0 1.6 1.6 0 0 1 3.2 0Z',
+  // A character's card: builds and showcases.
+  builds:
+    'M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7.5 18.5a4.5 4.5 0 0 1 9 0',
+  // A Planar Ornament sphere with its orbit: relics.
+  relics:
+    'M17.5 12a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0ZM2.6 15.4A10 3.4 -20 0 1 21.4 8.6A10 3.4 -20 0 1 2.6 15.4Z',
+  // A pass with a star: warps and wishes.
   warps:
-    'M12 2c.9 5.1 4.9 9.1 10 10-5.1.9-9.1 4.9-10 10-.9-5.1-4.9-9.1-10-10 5.1-.9 9.1-4.9 10-10Z',
-  // A clock turning back: history.
-  history: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-2v5l3 2',
-  // A gauge: speed.
-  speed: 'M3.5 18a9 9 0 1 1 17 0M12 16l4.5-5.5M12 16h.01',
-  // A sun and a crescent moon: the theme a tap switches to.
-  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
-  moon: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z',
+    'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6ZM12 8.2c.45 2 1.8 3.35 3.8 3.8-2 .45-3.35 1.8-3.8 3.8-.45-2-1.8-3.35-3.8-3.8 2-.45 3.35-1.8 3.8-3.8Z',
+  // A page of records: history.
+  history:
+    'M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM9 8h6M9 12h6M9 16h3.5',
+  // The action order, read top down: speed.
+  speed:
+    'M4 5.5h9M4 12h6M4 18.5h3.5M17.5 4v16M14.5 17l3 3 3-3',
+  // The light theme.
+  sun:
+    'M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6',
+  // The dark theme.
+  moon:
+    'M20 14.6A8.2 8.2 0 1 1 9.4 4a6.6 6.6 0 0 0 10.6 10.6Z',
+  // Half light, half dark: the theme on the device.
+  auto:
+    'M20.5 12a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0ZM12 3.5v17',
 } as const
 
 export type ToolIconName = keyof typeof PATHS

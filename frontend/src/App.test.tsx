@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App'
 
 // The tools' tests start in Star Rail's builds; the start page's tests clear the address.
@@ -159,18 +159,45 @@ test('on a wide screen the menu stays open beside the page in place of the tabs'
 test('the top bar switches between a dark and a light theme and remembers it', () => {
   render(<App />)
   expect(document.documentElement.dataset.theme).toBe('dark') // jsdom prefers no light theme
-  fireEvent.click(screen.getByRole('button', { name: 'Light theme' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Theme: as on the device' }))
   expect(document.documentElement.dataset.theme).toBe('light')
   expect(localStorage.getItem('theme')).toBe('light')
   fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
-  fireEvent.click(screen.getByRole('button', { name: 'Тёмная тема' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Тема: светлая' }))
   expect(document.documentElement.dataset.theme).toBe('dark')
   expect(localStorage.getItem('theme')).toBe('dark')
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
   localStorage.removeItem('theme')
 })
 
-test("the theme button follows the device's change while the player has not picked one", () => {
+test('holding the theme button goes back to the device\'s theme', () => {
+  vi.useFakeTimers()
+  try {
+    render(<App />)
+    const button = screen.getByRole('button', { name: 'Theme: as on the device' })
+    fireEvent.click(button)
+    expect(localStorage.getItem('theme')).toBe('light')
+    fireEvent.pointerDown(button)
+    act(() => vi.advanceTimersByTime(600))
+    fireEvent.pointerUp(button)
+    fireEvent.click(button) // the click a long press ends with changes nothing more
+    expect(localStorage.getItem('theme')).toBe('system')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(screen.getByRole('button', { name: 'Theme: as on the device' })).toBeDefined()
+    fireEvent.pointerDown(button)
+    act(() => vi.advanceTimersByTime(200)) // a short press is a tap
+    fireEvent.pointerUp(button)
+    fireEvent.click(button)
+    expect(localStorage.getItem('theme')).toBe('light')
+    fireEvent.contextMenu(button) // a right click, or the keyboard's menu key
+    expect(localStorage.getItem('theme')).toBe('system')
+  } finally {
+    vi.useRealTimers()
+    localStorage.removeItem('theme')
+  }
+})
+
+test("a tap switches from the theme on screen, which follows the device's change", () => {
   const listeners = new Set<() => void>()
   const light = {
     matches: false,
@@ -182,12 +209,13 @@ test("the theme button follows the device's change while the player has not pick
     media.includes('color-scheme') ? light : other) as unknown as typeof window.matchMedia
   try {
     render(<App />)
-    expect(screen.getByRole('button', { name: 'Light theme' })).toBeDefined()
     light.matches = true // the device turns light
     for (const listener of listeners) act(listener)
     expect(document.documentElement.dataset.theme).toBe('light')
-    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeDefined()
+    fireEvent.click(screen.getByRole('button', { name: 'Theme: as on the device' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
   } finally {
     Reflect.deleteProperty(window, 'matchMedia')
+    localStorage.removeItem('theme')
   }
 })

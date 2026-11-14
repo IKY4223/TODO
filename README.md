@@ -51,7 +51,8 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   the screen; still usable 360px wide with 44px touch targets. A palette and type dealt by the taste skill: a green-black ground,
   bone text and a muted green accent in Geist, or its inverse as the light theme.
 - **Light and dark themes** — the app follows the device's setting until the player taps the
-  sun or moon in the top bar, which switches to the other theme; the pick is kept on the device.
+  theme button in the top bar, which switches to the other theme; a long press, a right click or
+  the keyboard's menu key goes back to the device's. The pick is kept on the device.
 - **Share a Star Rail build** — every showcase and character page has its own address
   (`#starrail/builds/UID` and `#starrail/builds/UID/CHARACTER`), and a Share link button hands
   it to the phone's share sheet or copies it. Whoever opens the link sees the same page, loaded
