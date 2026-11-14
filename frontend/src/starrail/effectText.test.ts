@@ -75,6 +75,12 @@ test('describes stat effects with their tiers or the superimposition value', () 
   expect(statEffectText(stat('warrior-goddess'), CHARACTER, t)).toBe('SPD +6%, CRIT DMG +15%')
 })
 
+test('a debuff with a base chance says it', () => {
+  expect(turnEffectText(turn('welt-skill'), 0.1, t, 0.75)).toBe(
+    'Every turn · Enemies: SPD −10% · lasts 2 turn(s) · lands at a base chance of 75%',
+  )
+})
+
 test('describes turn effects', () => {
   expect(turnEffectText(turn('bronya-skill'), 1, t)).toBe(
     'Every turn · Chosen ally: action advance +100%',

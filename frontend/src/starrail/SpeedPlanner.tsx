@@ -1,7 +1,16 @@
 import { type JSX, useState } from 'react'
 import { numberFormat, useT } from '../i18n'
 import { Icon } from '../ui/Icon'
-import { SUMMONS, SYZYGY, TURN_EFFECTS, baseOf, statOf, turnValue } from './effects'
+import {
+  SUMMONS,
+  SYZYGY,
+  TURN_EFFECTS,
+  baseOf,
+  chanceOf,
+  statOf,
+  syzygyBonus,
+  turnValue,
+} from './effects'
 import { sourceName, turnEffectText } from './effectText'
 import { nextBreakpoint } from './speed'
 import type { StarRailCharacter } from './starrail'
@@ -73,7 +82,7 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
       effects: active.filter(({ effect }) => effect.trigger !== 'summon').map(toUnit),
       stacks:
         character.id === SYZYGY.character
-          ? { enter: SYZYGY.enter, bonus: character.eidolon >= SYZYGY.bonusFrom ? 1 : 0 }
+          ? { enter: SYZYGY.enter, bonus: syzygyBonus(character) }
           : undefined,
     }
     const summons = SUMMONS.filter(({ owner }) => owner === character.id).map((summon): Unit => {
@@ -282,7 +291,7 @@ export function SpeedPlanner(): JSX.Element {
                             <span>
                               <strong>{sourceName(effect.source, character, t)}</strong>
                               <br />
-                              {turnEffectText(effect, value, t)}
+                              {turnEffectText(effect, value, t, chanceOf(effect, character))}
                             </span>
                           </label>
                         ))}

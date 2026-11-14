@@ -190,6 +190,7 @@ const RU = {
   '{value} stack(s)': 'стаков: {value}',
   once: 'один раз',
   'from Eidolon {eidolon}': 'с эйдолона {eidolon}',
+  'lands at a base chance of {chance}': 'попадает с базовым шансом {chance}',
   'by Elation characters on the team': 'по числу персонажей Радости в команде',
   'outside its state': 'вне особого состояния',
   'At battle start': 'В начале боя',

@@ -158,7 +158,17 @@ export interface TurnEffect {
   readonly eidolon?: number // works from this Eidolon on
   readonly beforeEidolon?: number // works below this Eidolon only: a higher one changes it
   readonly byElation?: boolean // `values` are one per Elation character on the team, from 1
+  // Which of the character's skill kits it belongs to, when a later one changed it.
+  readonly kit?: 'first' | 'later'
+  // A debuff's base chance to land: one, or one per level of the `byLevel` skill. The player
+  // ticks whether it landed.
+  readonly chance?: readonly number[]
 }
+
+// Welt's Skill: its base chance to Slow, by Skill level.
+const WELT_SKILL_CHANCE = [
+  0.65, 0.66, 0.67, 0.68, 0.69, 0.7, 0.7125, 0.725, 0.7375, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8,
+]
 
 // "Every turn" assumes the Skill is used every turn, "On Ultimate" the Ultimate every few turns.
 export const TURN_EFFECTS: readonly TurnEffect[] = [
@@ -451,7 +461,6 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'self',
     eidolon: 6,
   },
-  // shortcut: Jingliu's later kit (more stacks on entering) is not told apart from the first one.
   {
     id: 'jingliu-talent',
     source: { character: 1212 },
@@ -479,8 +488,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'chosen',
     byElation: true,
   },
-  // On enemies. shortcut: debuffs are taken to land, their base chance aside; Welt's and Jingliu's
-  // later kits are not told apart from the first ones.
+  // On enemies. A debuff with a base chance has its box ticked as landed; the player unticks it.
   {
     id: 'welt-skill',
     source: { character: 1004 },
@@ -489,6 +497,21 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    byLevel: 'skill',
+    chance: WELT_SKILL_CHANCE,
+    beforeEidolon: 4,
+  },
+  {
+    id: 'welt-skill-e4',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.1],
+    trigger: 'turn',
+    target: 'enemies',
+    turns: 2,
+    byLevel: 'skill',
+    chance: WELT_SKILL_CHANCE.map((chance) => chance + 0.35),
+    eidolon: 4,
   },
   {
     id: 'welt-ultimate',
@@ -501,6 +524,25 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'ultimate',
     target: 'enemies',
     byLevel: 'ultimate',
+    chance: [1],
+    kit: 'first',
+  },
+  // The later kit delays less on the Ultimate and adds "Weightless".
+  // shortcut: Weightless also delays a target 4% each time it is attacked, up to 8 times a turn;
+  // how often depends on the team's hits, so it is left out.
+  {
+    id: 'welt-ultimate-later',
+    source: { character: 1004 },
+    kind: 'delay',
+    values: [
+      0.06, 0.066, 0.072, 0.078, 0.084, 0.09, 0.0975, 0.105, 0.1125, 0.12, 0.126, 0.132, 0.138,
+      0.144, 0.15,
+    ],
+    trigger: 'ultimate',
+    target: 'enemies',
+    byLevel: 'ultimate',
+    chance: [1],
+    kit: 'later',
   },
   {
     id: 'welt-ultimate-slow',
@@ -510,6 +552,17 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'ultimate',
     target: 'enemies',
     turns: 1,
+    chance: [1],
+  },
+  {
+    id: 'welt-weightless',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.05],
+    trigger: 'ultimate',
+    target: 'enemies',
+    turns: 2,
+    kit: 'later',
   },
   {
     id: 'welt-technique',
@@ -518,6 +571,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [0.2],
     trigger: 'start',
     target: 'enemies',
+    chance: [1],
     off: true,
   },
   {
@@ -540,6 +594,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    chance: [1],
     off: true,
     beforeEidolon: 6,
   },
@@ -551,6 +606,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    chance: [1],
     off: true,
     eidolon: 6,
   },
@@ -880,6 +936,26 @@ export function valueFor(
 }
 
 const ASSUMED_LEVEL = 10 // when the showcase lacks the skill's level
+// The game data lists a later kit's traces under the first kit's ids with a leading 1: 1004101
+// becomes 11004101. A showcase with such a trace has the later kit.
+const LATER_KIT_TRACE = 10_000_000
+
+const kitOf = (character: StarRailCharacter): 'first' | 'later' =>
+  character.points.some(({ id }) => id >= LATER_KIT_TRACE) ? 'later' : 'first'
+
+const levelOf = (character: StarRailCharacter, kind: SkillKind): number =>
+  character.skills.find((skill) => skill.kind === kind)?.level ?? ASSUMED_LEVEL
+
+const byCount = (values: readonly number[], count: number): number | undefined =>
+  values[Math.min(count, values.length) - 1]
+
+/** A debuff's base chance to land for this character, or undefined when it has none. */
+export function chanceOf(effect: TurnEffect, character: StarRailCharacter): number | undefined {
+  if (!effect.chance) return undefined
+  return effect.byLevel && effect.chance.length > 1
+    ? byCount(effect.chance, levelOf(character, effect.byLevel))
+    : effect.chance[0]
+}
 
 /** The value a turn effect has for this character in this team, or undefined when it does not apply. */
 export function turnValue(
@@ -892,15 +968,19 @@ export function turnValue(
   if (value === undefined) return undefined
   if (eidolon < (effect.eidolon ?? 0) || eidolon >= (effect.beforeEidolon ?? Infinity))
     return undefined
-  const pick = (count: number): number | undefined =>
-    effect.values[Math.min(count, effect.values.length) - 1]
-  if (effect.byLevel) {
-    const skill = character.skills.find(({ kind }) => kind === effect.byLevel)
-    return pick(skill?.level ?? ASSUMED_LEVEL)
-  }
-  if (effect.byElation) return pick(team.filter(({ path }) => path === 'elation').length)
+  if (effect.kit && effect.kit !== kitOf(character)) return undefined
+  if (effect.byLevel && effect.values.length > 1)
+    return byCount(effect.values, levelOf(character, effect.byLevel))
+  if (effect.byElation)
+    return byCount(effect.values, team.filter(({ path }) => path === 'elation').length)
   return value
 }
+
+/** The Syzygy Jingliu gains on entering Spectral Transmigration: one in the later kit, one at E6.
+ * shortcut: the later kit's Syzygy from allies taking damage or losing HP 20 times is left out;
+ * how soon it comes depends on the battle. */
+export const syzygyBonus = (character: StarRailCharacter): number =>
+  Number(kitOf(character) === 'later') + Number(character.eidolon >= SYZYGY.bonusFrom)
 
 export const statOf = (character: StarRailCharacter, key: string): number =>
   character.stats.find((stat) => stat.key === key)?.value ?? 0

@@ -70,7 +70,13 @@ const TARGETS = {
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
 /** "On Ultimate · All allies: SPD +12% · lasts 1 turn(s)" */
-export function turnEffectText(effect: TurnEffect, value: number, t: Translate): string {
+/** What a turn effect does; `chance` is a debuff's base chance to land, from chanceOf. */
+export function turnEffectText(
+  effect: TurnEffect,
+  value: number,
+  t: Translate,
+  chance?: number,
+): string {
   const amount = ['spd', 'summon', 'stack'].includes(effect.kind)
     ? plain.format(value)
     : percent.format(value)
@@ -91,6 +97,9 @@ export function turnEffectText(effect: TurnEffect, value: number, t: Translate):
     effect.once ? t('once') : '',
     effect.eidolon ? t('from Eidolon {eidolon}', { eidolon: effect.eidolon }) : '',
     effect.byElation ? t('by Elation characters on the team') : '',
+    chance === undefined
+      ? ''
+      : t('lands at a base chance of {chance}', { chance: percent.format(chance) }),
   ]
     .filter(Boolean)
     .map((note) => ` · ${note}`)
