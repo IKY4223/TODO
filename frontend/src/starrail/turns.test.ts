@@ -119,7 +119,7 @@ test('a buff tied to a summon ends when it leaves, and blocks the Ultimate meanw
   const firefly = unit('ff', 100, {
     ultimateEvery: 1,
     effects: [
-      effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons' }),
+      effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true }),
       effect({ kind: 'spd', value: 60, trigger: 'ultimate', untilSummonLeaves: true }),
       effect({ kind: 'advance', value: 0.25, withoutSummon: true }),
     ],
@@ -198,7 +198,7 @@ test('a countdown that pauses its owner holds her turns, then lets her act at on
   // Robin's Concerto: no turns of her own until the SPD 90 countdown acts, then she acts at once.
   const robin = unit('r', 100, {
     ultimateEvery: 1,
-    effects: [effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons' })],
+    effects: [effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true })],
   })
   const countdown = unit('cd', 90, { owner: 'r', later: true, timer: true, pausesOwner: true })
   expect(order([robin, countdown, unit('t', 100)], 250)).toEqual([
@@ -256,4 +256,66 @@ test('an effect a summon has on its owner works its number of times', () => {
     '160.6 cas',
     '221.2 nw', // no stacks left
   ])
+})
+
+// Aglaea: the Ultimate brings a SPD 100 countdown; when it acts, Garmentmaker leaves with all but
+// one of its SPD stacks. Meanwhile she gains SPD per stack Garmentmaker holds.
+const aglaea = (effects: UnitEffect[]): Unit[] => [
+  unit('ag', 100, { ultimateEvery: 1, effects }),
+  unit('gm', 50, {
+    owner: 'ag',
+    retains: 1,
+    effects: [effect({ kind: 'spd', value: 10, trigger: 'summon', stacks: 6, id: 'gm-stack' })],
+  }),
+  unit('cd', 100, { owner: 'ag', later: true, timer: true, dismisses: true, maxActions: 1 }),
+]
+const COUNTDOWN = effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true })
+
+test('a countdown brought in again starts over', () => {
+  expect(order(aglaea([COUNTDOWN]), 420)).toEqual([
+    '100 ag!',
+    '200 ag!', // the countdown came at 100 and would act at 200, but Aglaea, first, resets it
+    '200 gm', // 50 SPD, then 60
+    '300 ag!',
+    '366.7 gm', // 70 SPD
+    '400 ag!',
+  ])
+})
+
+test("a countdown that dismisses sends its owner's other summons away when it acts", () => {
+  const once = { ...COUNTDOWN, once: true }
+  expect(order(aglaea([once]), 520)).toEqual([
+    '100 ag!',
+    '200 ag!',
+    '200 gm', // a tie: Garmentmaker is listed before the countdown
+    '200 cd', // ... which then sends it away
+    '300 ag!',
+    '400 ag!',
+    '500 ag!',
+  ])
+})
+
+test("a buff counted per stack of the summon's grows as the summon gains them", () => {
+  const stance = effect({
+    kind: 'spd_percent',
+    value: 0.1,
+    trigger: 'ultimate',
+    perStackOf: 'gm-stack',
+  })
+  // Without a countdown: one Garmentmaker stack at 200 puts Aglaea at 110, two at 366.7 at 120.
+  expect(order(aglaea([stance]).slice(0, 2), 400)).toEqual([
+    '100 ag!',
+    '200 ag!',
+    '200 gm',
+    '290.9 ag!',
+    '366.7 gm',
+    '380.6 ag!',
+  ])
+})
+
+test('a summon brought in to stay has no count of actions', () => {
+  const skill = effect({ kind: 'summon', value: 1, target: 'summons', stays: true, once: true })
+  const owner = unit('o', 100, { effects: [skill] })
+  const pet = unit('p', 100, { owner: 'o', later: true })
+  expect(order([owner, pet], 310)).toEqual(['100 o', '200 o', '200 p', '300 o', '300 p'])
 })

@@ -156,6 +156,10 @@ export interface TurnEffect {
   readonly cooldown?: number // after firing, waits this many of the source's turns to fire again
   readonly charges?: number // a summon's effect: works this many times each time it is brought in
   readonly duringSummon?: boolean // works only while the source's summon is here
+  readonly countdown?: boolean // a summon effect for the source's countdown, not its summons
+  readonly stays?: boolean // a summon effect: brought in with no count of actions
+  // A buff counted once per stack the source's summon holds of buffs whose id starts with this.
+  readonly perStackOf?: string
   readonly stacks?: number // a buff gained again adds up to this many; without it, it refreshes
   readonly byLevel?: SkillKind // `values` are one per level of this skill, from level 1
   readonly eidolon?: number // works from this Eidolon on
@@ -322,6 +326,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [1],
     trigger: 'ultimate',
     target: 'summons',
+    countdown: true,
   },
   // Lightning-Lord: each Hit Per Action adds SPD 10 for its next turn.
   {
@@ -680,6 +685,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [1],
     trigger: 'ultimate',
     target: 'summons',
+    countdown: true,
   },
   {
     id: 'robin-e2',
@@ -691,9 +697,61 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     untilSummonLeaves: true, // while Concerto lasts
     eidolon: 2,
   },
+  // Aglaea's Skill brings Garmentmaker back when it is away, and she acts at once.
+  {
+    id: 'aglaea-skill',
+    source: { character: 1402 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'turn',
+    target: 'self',
+    withoutSummon: true,
+  },
+  {
+    id: 'aglaea-skill-summon',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'turn',
+    target: 'summons',
+    stays: true,
+  },
+  // The Ultimate: Supreme Stance, with a SPD 100 countdown; when it acts, Garmentmaker leaves and
+  // the stance ends. Meanwhile Aglaea gains SPD for each of Garmentmaker's SPD stacks.
+  {
+    id: 'aglaea-ultimate-summon',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+    stays: true,
+  },
+  {
+    id: 'aglaea-countdown',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+    countdown: true,
+  },
+  {
+    id: 'aglaea-supreme-stance',
+    source: { character: 1402 },
+    kind: 'spd_percent',
+    values: [
+      0.1, 0.105, 0.11, 0.115, 0.12, 0.125, 0.1313, 0.1375, 0.1437, 0.15, 0.155, 0.16, 0.165, 0.17,
+      0.175,
+    ],
+    trigger: 'ultimate',
+    target: 'self',
+    untilSummonLeaves: true,
+    perStackOf: 'garmentmaker-talent',
+    byLevel: 'ultimate',
+  },
   // Garmentmaker gains SPD each time it attacks a target with Seam Stitch, here every turn.
-  // shortcut: Aglaea's own SPD from these stacks in Supreme Stance, and Garmentmaker leaving on
-  // its countdown, are not modelled.
+  // shortcut: Eidolon 4 also gives it a stack when Aglaea attacks; left out.
   {
     id: 'garmentmaker-talent',
     source: { character: 1402 },
@@ -961,6 +1019,8 @@ export interface Summon {
   readonly maxSpd?: number
   readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
   readonly pausesOwner?: boolean // the owner takes no turn while it is here, and acts once it goes
+  readonly dismisses?: boolean // a countdown whose turn sends the owner's other summons away
+  readonly retains?: { readonly count: number; readonly trace: number } // stacks kept on leaving
 }
 
 // shortcut: summons keep the SPD and action count the game gives them, past the effects in
@@ -975,7 +1035,17 @@ export const SUMMONS: readonly Summon[] = [
   // Netherwing: Newbud, which fills Castorice's Ultimate, does not grow while it is here.
   { owner: 1407, kind: 'memosprite', spd: 165, later: true, arrival: 1, blocksUltimate: true },
   { owner: 1413, kind: 'memosprite', spd: 160 }, // Evey
-  { owner: 1402, kind: 'memosprite', spd: 0.35, ofOwner: true }, // Garmentmaker
+  // Garmentmaker: back with 100% advance; the trace Last Thread of Fate keeps one SPD stack when
+  // it leaves. Then the countdown of Supreme Stance (SPD 100), which sends it away.
+  {
+    owner: 1402,
+    kind: 'memosprite',
+    spd: 0.35,
+    ofOwner: true,
+    arrival: 1,
+    retains: { count: 1, trace: 1402102 },
+  },
+  { owner: 1402, kind: 'countdown', spd: 100, later: true, dismisses: true },
   { owner: 8007, kind: 'memosprite', spd: 130 }, // Mem
   { owner: 8008, kind: 'memosprite', spd: 130 }, // Mem
 ]

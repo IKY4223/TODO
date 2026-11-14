@@ -164,3 +164,41 @@ test("Robin's Concerto holds her turns until its countdown acts", () => {
     '211.1 · Robin · Ultimate',
   ])
 })
+
+test("Aglaea's countdown ends Supreme Stance and sends Garmentmaker away until her Skill", () => {
+  show([character(1402, 'Aglaea', 160)])
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '3' } })
+  expect(timeline().slice(3)).toEqual([
+    // The Ultimate: she acts again at once, and a SPD 100 countdown starts.
+    '187.5 · Aglaea · Ultimate',
+    '187.5 · Aglaea',
+    // In Supreme Stance: +15% of her base SPD for Garmentmaker's one stack, 184 SPD.
+    '241.8 · Aglaea',
+    'Cycle 2262.0 · Memosprite of Aglaea',
+    // The countdown sends Garmentmaker away; her Skill brings it back, with 100% advance.
+    '287.5 · Countdown of Aglaea',
+    '293.7 · Aglaea · Ultimate',
+    '293.7 · Aglaea',
+    '293.7 · Memosprite of Aglaea',
+    '348.0 · Aglaea',
+  ])
+})
+
+test('Pearl gives the chosen ally an extra turn with four Elation characters', () => {
+  const elation = { path: 'elation' } as const
+  show([
+    character(1503, 'Pearl', 100, elation),
+    character(2, 'Ally', 90, elation),
+    character(3, 'Third', 80, elation),
+    character(4, 'Fourth', 70, elation),
+  ])
+  const [pearlUltimate] = screen.getAllByLabelText('Ultimate every N turns')
+  if (!pearlUltimate) throw new Error('Pearl has no Ultimate setting')
+  fireEvent.change(pearlUltimate, { target: { value: '1' } })
+  // Pearl's Ultimate goes to the first ally: a 30% advance, then one extra turn at once.
+  expect(timeline().slice(0, 3)).toEqual([
+    'Cycle 0100.0 · Pearl · Ultimate',
+    '100.0 · Ally',
+    '100.0 · Ally',
+  ])
+})

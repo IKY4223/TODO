@@ -49,17 +49,9 @@ const effectsOf = (
     return [{ effect, value: effect.ofSourceSpd ? value * statOf(character, 'spd') : value }]
   })
 
+// Every field the simulator reads is the table's own: copied whole, so a new one is not missed.
 const toUnit = ({ effect, value }: ReturnType<typeof effectsOf>[number]): UnitEffect => ({
-  id: effect.id,
-  kind: effect.kind,
-  trigger: effect.trigger,
-  target: effect.target,
-  turns: effect.turns,
-  withSummons: effect.withSummons,
-  untilSummonLeaves: effect.untilSummonLeaves,
-  withoutSummon: effect.withoutSummon,
-  once: effect.once,
-  stacks: effect.stacks,
+  ...effect,
   value,
 })
 
@@ -85,24 +77,31 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
           ? { enter: SYZYGY.enter, bonus: syzygyBonus(character) }
           : undefined,
     }
-    const summons = SUMMONS.filter(({ owner }) => owner === character.id).map((summon): Unit => {
-      const summonSpd = summon.ofOwner ? summon.spd * spd : summon.spd
-      return {
-        key: unit.key + SUMMON,
-        spd: summonSpd,
-        baseSpd: summonSpd,
-        owner: unit.key,
-        ultimateEvery: 0,
-        effects: active.filter(({ effect }) => effect.trigger === 'summon').map(toUnit),
-        later: summon.later,
-        arrival: summon.arrival,
-        maxActions: summon.maxActions,
-        maxSpd: summon.maxSpd,
-        blocksUltimate: summon.blocksUltimate,
-        pausesOwner: summon.pausesOwner,
-        timer: summon.kind === 'countdown',
-      }
-    })
+    const summons = SUMMONS.filter(({ owner }) => owner === character.id).map(
+      (summon, index): Unit => {
+        const summonSpd = summon.ofOwner ? summon.spd * spd : summon.spd
+        const { retains } = summon
+        return {
+          // A second summon, such as Aglaea's countdown, gets its number.
+          key: unit.key + SUMMON + (index ? String(index) : ''),
+          spd: summonSpd,
+          baseSpd: summonSpd,
+          owner: unit.key,
+          ultimateEvery: 0,
+          later: summon.later,
+          arrival: summon.arrival,
+          maxActions: summon.maxActions,
+          maxSpd: summon.maxSpd,
+          blocksUltimate: summon.blocksUltimate,
+          pausesOwner: summon.pausesOwner,
+          timer: summon.kind === 'countdown',
+          dismisses: summon.dismisses,
+          retains:
+            retains && character.points.some(({ id }) => id === retains.trace) ? retains.count : 0,
+          effects: active.filter(({ effect }) => effect.trigger === 'summon').map(toUnit),
+        }
+      },
+    )
     return [unit, ...summons]
   })
 }
@@ -145,10 +144,11 @@ export function SpeedPlanner(): JSX.Element {
   const actions = simulate([...unitsOf(team, settingsOf), ...enemy], LAST)
   const nameOf = (key: string): string => {
     if (key === ENEMY) return t('Enemy')
-    const character = team.find(({ id }) => String(id) === key.replace(SUMMON, ''))
+    const [own = '', index = ''] = key.split(SUMMON)
+    const character = team.find(({ id }) => String(id) === own)
     if (!character) return key
-    if (!key.endsWith(SUMMON)) return character.name
-    const kind = SUMMONS.find(({ owner }) => owner === character.id)?.kind
+    if (!key.includes(SUMMON)) return character.name
+    const kind = SUMMONS.filter(({ owner }) => owner === character.id)[Number(index)]?.kind
     const names = {
       memosprite: 'Memosprite of {name}',
       summon: 'Summon of {name}',
