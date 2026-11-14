@@ -33,11 +33,14 @@ export function saveTheme(theme: Theme, storage?: Storage): void {
 const deviceQuery = (): MediaQueryList | undefined =>
   typeof window.matchMedia === 'function' ? window.matchMedia(LIGHT) : undefined
 
+/** The theme on screen: the device's while the player has not picked one. */
+export const shownTheme = (theme: Theme): 'dark' | 'light' =>
+  theme === 'light' || (theme === 'system' && (deviceQuery()?.matches ?? false)) ? 'light' : 'dark'
+
 /** Shows a theme: index.css keys its colours off `data-theme` on the root element. */
 export function applyTheme(theme: Theme): void {
-  const light = theme === 'light' || (theme === 'system' && (deviceQuery()?.matches ?? false))
   const root = document.documentElement
-  root.dataset.theme = light ? 'light' : 'dark'
+  root.dataset.theme = shownTheme(theme)
   // The phone's own bar above the page takes the page's background.
   const background = getComputedStyle(root).getPropertyValue('--color-background').trim()
   if (background)

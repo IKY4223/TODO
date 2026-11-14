@@ -156,22 +156,16 @@ test('on a wide screen the menu stays open beside the page in place of the tabs'
   }
 })
 
-test('the menu switches between a dark and a light theme and remembers it', () => {
+test('the top bar switches between a dark and a light theme and remembers it', () => {
   render(<App />)
-  openMenu()
-  const theme = screen.getByLabelText('Theme')
-  expect((theme as HTMLSelectElement).value).toBe('system')
   expect(document.documentElement.dataset.theme).toBe('dark') // jsdom prefers no light theme
-  fireEvent.change(theme, { target: { value: 'light' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Light theme' }))
   expect(document.documentElement.dataset.theme).toBe('light')
   expect(localStorage.getItem('theme')).toBe('light')
   fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
-  const options = within(screen.getByLabelText('Тема')).getAllByRole('option')
-  expect(options.map((option) => option.textContent)).toEqual([
-    'Как на устройстве',
-    'Тёмная',
-    'Светлая',
-  ])
+  fireEvent.click(screen.getByRole('button', { name: 'Тёмная тема' }))
+  expect(document.documentElement.dataset.theme).toBe('dark')
+  expect(localStorage.getItem('theme')).toBe('dark')
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
   localStorage.removeItem('theme')
 })

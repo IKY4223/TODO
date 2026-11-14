@@ -417,7 +417,7 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
   expect(problems).toEqual([])
 })
 
-test('takes a light theme from the device or the menu, readable in both', async ({ page }) => {
+test('takes a light theme from the device or the top bar, readable in both', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
   await page.goto('/#starrail/builds')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
@@ -428,14 +428,15 @@ test('takes a light theme from the device or the menu, readable in both', async 
   // The scan checks every text's contrast against the light background.
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 
-  await page.getByRole('button', { name: 'Menu' }).click()
-  await page.getByLabel('Theme').selectOption('dark')
+  // One tap in the top bar to the other theme, and back.
+  await page.getByRole('button', { name: 'Dark theme' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.getByLabel('Theme').selectOption('light')
+  await page.getByRole('button', { name: 'Light theme' }).click()
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   // The player's choice outlasts the device's preference and a reload.
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.getByRole('button', { name: 'Dark theme' })).toBeVisible()
   await page.getByRole('button', { name: 'Menu' }).click()
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])

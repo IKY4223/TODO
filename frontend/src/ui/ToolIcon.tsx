@@ -15,6 +15,9 @@ const PATHS = {
   history: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-2v5l3 2',
   // A gauge: speed.
   speed: 'M3.5 18a9 9 0 1 1 17 0M12 16l4.5-5.5M12 16h.01',
+  // A sun and a crescent moon: the theme a tap switches to.
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+  moon: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z',
 } as const
 
 export type ToolIconName = keyof typeof PATHS
