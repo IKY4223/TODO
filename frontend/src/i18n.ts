@@ -192,6 +192,7 @@ const RU = {
   'from Eidolon {eidolon}': 'с эйдолона {eidolon}',
   'lands at a base chance of {chance}': 'попадает с базовым шансом {chance}',
   'Its owner': 'Его владелец',
+  'comes in': 'появляется',
   'one extra turn': 'один дополнительный ход',
   'again after {turns} turn(s)': 'снова через ходов: {turns}',
   '{count} time(s) each time it comes': 'раз за каждый призыв: {count}',

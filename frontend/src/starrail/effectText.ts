@@ -85,7 +85,7 @@ export function turnEffectText(
     advance: t('action advance +{value}', { value: amount }),
     spd: t('SPD +{value}', { value: amount }),
     spd_percent: t('SPD +{value}', { value: amount }),
-    summon: t('comes in with {value} action(s)', { value: amount }),
+    summon: effect.stays ? t('comes in') : t('comes in with {value} action(s)', { value: amount }),
     delay: t('action delay +{value}', { value: amount }),
     slow: t('SPD −{value}', { value: amount }),
     stack: t('{value} stack(s)', { value: amount }),

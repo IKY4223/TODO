@@ -30,6 +30,13 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   and an enemy with the SPD you type in takes turns, slowed and delayed by Welt, Boothill and
   Dan Heng. Robin's Concerto holds her turns until its countdown acts, and Garmentmaker
   speeds up with each attack. A buff gained again refreshes unless the game lets it stack.
+  Aglaea's Supreme Stance gives her SPD per Garmentmaker stack until its SPD 100 countdown sends
+  Garmentmaker away; Robin • Summeretto's Vibes bring Fever, with the Summer Songbirds and a
+  countdown taking turns while she waits. Extra turns come at once: Pearl's with four Elation
+  characters, Firefly's Eidolon 2. Castorice's Eidolon 2 advances her twice per Netherwing, and
+  Hanya's Eidolons 1 and 4 count. Welt's and Jingliu's later skill kits are told apart from the
+  first ones by the showcase's traces, and each debuff says its base chance to land, with a box
+  for whether it did.
 - **Star Rail relic advisor** — describe a 4★ or 5★ relic and pick the substats you want: the app
   gives the exact chance that its remaining upgrades land on them, that a stat reaches a goal
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
@@ -94,14 +101,12 @@ Character, weapon, light cone, artifact and relic images are loaded from Enka.Ne
 
 Planned, in order:
 
-1. Star Rail effects, the rest of the table:
-   - Aglaea's own SPD from Garmentmaker's stacks and Garmentmaker leaving on its countdown,
-     Robin • Summeretto's Summer Songbirds and Fever, Castorice's Ardent Will, Hanya's Eidolon 1,
-     and the extra turns of Firefly's Eidolon 2 and Pearl's team of four;
-   - the later skill kits of Jingliu and Welt, told apart from the first ones;
-   - debuffs by their base chance instead of always landing;
-   - Ultimates timed by energy instead of a fixed beat. This needs each skill's energy gain,
-     which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
+1. Star Rail effects: Ultimates timed by energy instead of a fixed beat. This needs each skill's
+   energy gain, which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
+   Left out of the effects built so far, each with a `shortcut:` comment in
+   `frontend/src/starrail/effects.ts`: Welt's Weightless delay per hit taken, the later Jingliu's
+   Syzygy from allies losing HP, Robin • Summeretto's Vibes from the Special Guest and her
+   Technique, and Aglaea's Eidolon 4 stack from her own attacks.
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
    Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
    page of each character once the site has an address.
