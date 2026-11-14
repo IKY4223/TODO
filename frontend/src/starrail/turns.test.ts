@@ -319,3 +319,34 @@ test('a summon brought in to stay has no count of actions', () => {
   const pet = unit('p', 100, { owner: 'o', later: true })
   expect(order([owner, pet], 310)).toEqual(['100 o', '200 o', '200 p', '300 o', '300 p'])
 })
+
+// Robin • Summeretto: allies' actions give Vibes; at 12 with Bessie on the field, Fever begins:
+// the Songbirds and a SPD 140 countdown take turns while she waits. Each countdown turn takes half
+// the Vibes, at least 12; at 0 Fever ends and she acts.
+const FEVER = { cap: 50, enter: 12, perSkill: 6, onEnter: 0, drainShare: 0.5, drainMin: 12 }
+
+test('Vibes from allies bring Fever, whose countdown spends them until it ends', () => {
+  const robin = unit('rs', 100, { fever: FEVER })
+  const songbirds = unit('sb', 180, { owner: 'rs', later: true })
+  const countdown = unit('cd', 140, { owner: 'rs', later: true, timer: true, pausesOwner: true })
+  const ally = unit('ally', 200)
+  expect(order([robin, songbirds, countdown, ally], 455)).toEqual([
+    '50 ally', // 1 Vibe
+    '100 rs', // her Skill: Bessie comes
+    '100 ally', // 2
+    '150 ally', // 3
+    '200 rs', // Skill: 9 Vibes
+    '200 ally', // 10
+    '250 ally', // 11
+    '300 rs', // 17: Fever, the Songbirds and the countdown come
+    '300 ally', // 18
+    '350 ally', // 19; Robin's own turn, due at 400, waits
+    '355.6 sb', // 20
+    '371.4 cd', // 8
+    '400 ally', // 9
+    '411.1 sb', // 10
+    '442.9 cd', // 0: Fever ends, the Songbirds and the countdown leave
+    '442.9 rs', // ... and she acts at once
+    '450 ally',
+  ])
+})

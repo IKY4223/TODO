@@ -4,6 +4,7 @@
 // short table first); anything else is left to the player to switch off or add by hand.
 // shortcut: no table entry means no effect; extend the table when a character needs one.
 import type { Relic, StarRailCharacter } from './starrail'
+import type { Unit } from './turns'
 
 type SkillKind = StarRailCharacter['skills'][number]['kind']
 
@@ -1007,6 +1008,36 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
 /** Jingliu's Syzygy: Spectral Transmigration at 2 stacks; Eidolon 6 adds one on entering. */
 export const SYZYGY = { character: 1212, enter: 2, bonusFrom: 6 } as const
 
+/** Robin • Summeretto's Vibes and Fever, from her Talent and Memosprite Talent: Vibes cap 50 (70 from
+ * Eidolon 2), Fever at 12 (Paddie joins), 6 per Skill, a countdown that takes 50% (at least 12);
+ * Eidolon 4 adds 12 on entering.
+ * shortcut: every ally action counts as an attack for Vibes; the Special Guest's 2 more, the
+ * Technique's 6, Eidolon 2's first-gain bonus and Eidolon 4's Songbirds SPD are left out, and she
+ * acts at once when Fever ends (her 50% advance then makes no difference). */
+export const FEVER = {
+  character: 1512,
+  cap: 50,
+  capBonus: { eidolon: 2, value: 20 },
+  enter: 12,
+  perSkill: 6,
+  onEnter: { eidolon: 4, value: 12 },
+  drainShare: 0.5,
+  drainMin: 12,
+} as const
+
+/** The Fever settings for a Robin • Summeretto at her Eidolon. */
+export const feverOf = (character: StarRailCharacter): NonNullable<Unit['fever']> | undefined =>
+  character.id === FEVER.character
+    ? {
+        cap: FEVER.cap + (character.eidolon >= FEVER.capBonus.eidolon ? FEVER.capBonus.value : 0),
+        enter: FEVER.enter,
+        perSkill: FEVER.perSkill,
+        onEnter: character.eidolon >= FEVER.onEnter.eidolon ? FEVER.onEnter.value : 0,
+        drainShare: FEVER.drainShare,
+        drainMin: FEVER.drainMin,
+      }
+    : undefined
+
 /** A summon, memosprite or countdown that takes its own turns. */
 export interface Summon {
   readonly owner: number
@@ -1046,6 +1077,10 @@ export const SUMMONS: readonly Summon[] = [
     retains: { count: 1, trace: 1402102 },
   },
   { owner: 1402, kind: 'countdown', spd: 100, later: true, dismisses: true },
+  // Robin • Summeretto's Summer Songbirds (180% of her SPD) and Fever countdown (SPD 140): both
+  // come with Fever (see FEVER), and she waits until it ends.
+  { owner: 1512, kind: 'memosprite', spd: 1.8, ofOwner: true, later: true },
+  { owner: 1512, kind: 'countdown', spd: 140, later: true, pausesOwner: true },
   { owner: 8007, kind: 'memosprite', spd: 130 }, // Mem
   { owner: 8008, kind: 'memosprite', spd: 130 }, // Mem
 ]

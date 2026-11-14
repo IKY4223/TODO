@@ -41,6 +41,18 @@ export interface Unit {
   // Stacks such as Jingliu's Syzygy: one per turn and per Ultimate outside the state; at `enter`
   // the state begins with `bonus` more, and each turn in it spends one until none are left.
   readonly stacks?: { readonly enter: number; readonly bonus: number }
+  // Robin • Summeretto's Vibes: one per action of an ally or their summon, `perSkill` on each of
+  // her turns once her first Skill has brought Bessie. At `enter`, Fever: her summons and
+  // countdown come (`onEnter` Vibes more) and she waits. Each countdown turn takes `drainShare` of
+  // the Vibes, at least `drainMin`; at 0 Fever ends and they all leave.
+  readonly fever?: {
+    readonly cap: number
+    readonly enter: number
+    readonly perSkill: number
+    readonly onEnter: number
+    readonly drainShare: number
+    readonly drainMin: number
+  }
   // For summons:
   readonly later?: boolean // away until a "summon" effect brings it in
   readonly arrival?: number // the action advance it gets each time it is brought in
@@ -83,6 +95,8 @@ interface State {
   stacks: number
   inState: boolean
   extraTurns: number // extra turns waiting to be taken at once
+  vibes: number
+  bessie: boolean // Robin • Summeretto's first Skill has brought her
 }
 
 const timesOf = ({ per }: Buff): number =>
@@ -236,6 +250,40 @@ function leave(states: readonly State[], summoned: State): void {
       if (other !== summoned && other.here) leave(states, other)
 }
 
+/** Fever, for a unit that has it: Vibes gained, and the state begun when they reach `enter`. */
+function feverAfter(states: readonly State[], acting: State): void {
+  for (const state of states) {
+    const { fever } = state.unit
+    if (!fever) continue
+    const countdown = targets(states, state, 'summons').find(({ unit }) => unit.timer)
+    const inFever = countdown?.here ?? false
+    if (acting === state) {
+      if (state.bessie) state.vibes += fever.perSkill
+      state.bessie = true
+    } else if (!acting.unit.enemy && !acting.unit.timer) state.vibes += 1
+    state.vibes = Math.min(fever.cap, state.vibes)
+    if (inFever || !state.bessie || state.vibes < fever.enter) continue
+    state.vibes = Math.min(fever.cap, state.vibes + fever.onEnter)
+    for (const summoned of targets(states, state, 'summons')) {
+      summoned.here = true
+      summoned.gauge = GAUGE
+      summoned.actions = undefined
+    }
+  }
+}
+
+/** A Fever countdown's turn: it takes Vibes, and at none ends Fever. */
+function feverDrain(states: readonly State[], countdown: State): void {
+  const owner = states.find(({ unit }) => unit.key === countdown.unit.owner)
+  const fever = owner?.unit.fever
+  if (!owner || !fever) return
+  owner.vibes -= Math.max(fever.drainMin, owner.vibes * fever.drainShare)
+  if (owner.vibes > 0) return
+  owner.vibes = 0
+  owner.bessie = false
+  for (const summoned of targets(states, owner, 'summons')) if (summoned.here) leave(states, summoned)
+}
+
 /** Every action taken until `until` action value, in order. Ties go to the unit listed first. */
 export function simulate(units: readonly Unit[], until: number): Action[] {
   const states: State[] = units.map((unit) => ({
@@ -252,6 +300,8 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
     stacks: 0,
     inState: false,
     extraTurns: 0,
+    vibes: 0,
+    bessie: false,
   }))
   for (const state of states) fire(states, state, 'always')
   for (const state of states) fire(states, state, 'start')
@@ -293,7 +343,10 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       next.actions -= 1
       if (next.actions <= 0) leave(states, next)
     }
-    if (next.unit.timer) continue // a countdown only marks the end of its owner's state
+    if (next.unit.timer) {
+      feverDrain(states, next)
+      continue // a countdown only marks the end of its owner's state
+    }
     if (next.inState) {
       next.stacks -= 1
       if (next.stacks <= 0) next.inState = false
@@ -305,5 +358,6 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       fire(states, next, 'ultimate')
       gain(states, next, 1)
     }
+    feverAfter(states, next)
   }
 }

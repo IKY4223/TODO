@@ -202,3 +202,21 @@ test('Pearl gives the chosen ally an extra turn with four Elation characters', (
     '100.0 · Ally',
   ])
 })
+
+test("Robin • Summeretto's Fever: allies' Vibes bring the Songbirds and a countdown while she waits", () => {
+  show([character(1512, 'Robin • Summeretto', 100), character(2, 'Ally', 300)])
+  const [robinUltimate] = screen.getAllByLabelText('Ultimate every N turns')
+  if (!robinUltimate) throw new Error('Robin has no Ultimate setting')
+  fireEvent.change(robinUltimate, { target: { value: '0' } })
+  // The ally's sixth action brings the twelfth Vibe at 200, her own turn at 300 waits.
+  expect(timeline().slice(9)).toEqual([
+    'Cycle 2255.6 · Memosprite of Robin • Summeretto',
+    '266.7 · Ally',
+    '271.4 · Countdown of Robin • Summeretto', // 15 Vibes, minus 12
+    '300.0 · Ally · Ultimate',
+    '311.1 · Memosprite of Robin • Summeretto',
+    '333.3 · Ally',
+    '342.9 · Countdown of Robin • Summeretto', // none left: Fever ends
+    '342.9 · Robin • Summeretto',
+  ])
+})

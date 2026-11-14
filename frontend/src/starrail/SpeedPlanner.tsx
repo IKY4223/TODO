@@ -7,6 +7,7 @@ import {
   TURN_EFFECTS,
   baseOf,
   chanceOf,
+  feverOf,
   statOf,
   syzygyBonus,
   turnValue,
@@ -76,6 +77,7 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
         character.id === SYZYGY.character
           ? { enter: SYZYGY.enter, bonus: syzygyBonus(character) }
           : undefined,
+      fever: feverOf(character),
     }
     const summons = SUMMONS.filter(({ owner }) => owner === character.id).map(
       (summon, index): Unit => {
