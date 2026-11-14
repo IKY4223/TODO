@@ -555,6 +555,54 @@ test('on a wide screen the menu stays beside the page', async ({ page }) => {
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 })
 
+test('on a wide screen a form is seen whole and the turn order sits beside the team', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/') // a fresh page, as a computer opens it: the address alone would not reload
+  await page.goto('/#starrail/relics')
+  // The longest form of the site: every field down to its button fits one screen.
+  await expect(shown(page).getByRole('button', { name: 'Calculate' })).toBeInViewport({ ratio: 1 })
+  await page.goto('/#starrail/history')
+  await expect(shown(page).getByRole('button', { name: 'Import history' })).toBeInViewport({
+    ratio: 1,
+  })
+  await page.goto('/#starrail/builds')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine')).toBeVisible()
+  await page.getByRole('complementary').getByRole('link', { name: 'Speed' }).click()
+  const [team, order] = await Promise.all([
+    shown(page).locator('.cards').boundingBox(),
+    shown(page).getByRole('heading', { name: 'Turn order' }).boundingBox(),
+  ])
+  expect(order?.x ?? 0).toBeGreaterThanOrEqual((team?.x ?? 0) + (team?.width ?? 0))
+  expect((await measureLayout(page)).overflows).toBe(false)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test("the tools' signs and the site's icon are served as images", async ({ page }) => {
+  await page.goto('/#starrail/builds')
+  const signs = await page
+    .locator('[data-icon]')
+    .evaluateAll((icons) => [...new Set(icons.map((icon) => icon.getAttribute('data-icon')))])
+  expect(signs.toSorted()).toEqual(['builds', 'history', 'relics', 'speed', 'warps'])
+  // A missing file would come back as the app's own page: the type tells them apart.
+  const files = [...signs.map((sign) => `/icons/${sign}.png`), '/icons/home.png', '/icons/logo.png']
+  const types = await Promise.all(
+    [...files, '/favicon.png'].map(
+      async (path) => (await page.request.get(path)).headers()['content-type'],
+    ),
+  )
+  expect(types).toEqual(types.map(() => 'image/png'))
+  // The sign is painted through a mask, in the colour of the text.
+  const mask = await page
+    .locator('[data-icon="warps"]')
+    .first()
+    .evaluate((icon) => getComputedStyle(icon, '::before').maskImage)
+  expect(mask).toContain('/icons/warps.png')
+})
+
 const warp = (id: string, rank_type: string, name: string) => ({
   gacha_id: '1',
   gacha_type: '11',

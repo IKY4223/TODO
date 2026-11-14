@@ -176,17 +176,8 @@ function App(): JSX.Element {
             </svg>
           </button>
         )}
-        {/* The dealt mark: an arc, in the accent colour. */}
-        <svg className="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
-          <path
-            d="M6 24a10 10 0 0 1 20 0"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
-          <circle cx="16" cy="24" r="2.5" fill="currentColor" />
-        </svg>
+        {/* The site's mark is the game's Stellar Jade (StarRailRes, icon/item/900001). */}
+        <img className="logo" src="/icons/logo.png" width="32" height="32" alt="" />
         <a className="brand" href={`#${HOME}`}>
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{home ? t('Home') : GAMES[here.game].label}</span>

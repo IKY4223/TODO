@@ -79,6 +79,14 @@ test('each game lists only its own tools', async () => {
   expect(tools()).toEqual(['Builds', 'Wishes', 'History'])
 })
 
+test("each tool carries the game's own sign", () => {
+  render(<App />)
+  const signs = within(screen.getByRole('navigation', { name: 'Tools' }))
+    .getAllByRole('link')
+    .map((link) => link.querySelector('[data-icon]')?.getAttribute('data-icon'))
+  expect(signs).toEqual(['builds', 'relics', 'warps', 'history', 'speed'])
+})
+
 test('the menu lists every tool of every game and marks where you are', () => {
   render(<App />)
   const button = screen.getByRole('button', { name: 'Menu' })

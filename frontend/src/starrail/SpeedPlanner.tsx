@@ -308,24 +308,26 @@ export function SpeedPlanner(): JSX.Element {
               )
             })}
           </ul>
-          <h3>{t('Turn order')}</h3>
-          <ol className="timeline">
-            {actions.map(({ time, unit, ultimate, turn }, index) => {
-              const cycle = CYCLE_ENDS.findIndex((end) => time <= end)
-              const starts =
-                index === 0 ||
-                cycle !== CYCLE_ENDS.findIndex((end) => (actions[index - 1]?.time ?? 0) <= end)
-              return (
-                <li key={`${unit}#${turn}`} className={starts ? 'cycle-start' : undefined}>
-                  {starts ? <strong>{t('Cycle {cycle}', { cycle })}</strong> : null}
-                  <span>
-                    {speed.format(time)} · {nameOf(unit)}
-                    {ultimate ? ` · ${t('Ultimate')}` : ''}
-                  </span>
-                </li>
-              )
-            })}
-          </ol>
+          <div className="turn-order">
+            <h3>{t('Turn order')}</h3>
+            <ol className="timeline">
+              {actions.map(({ time, unit, ultimate, turn }, index) => {
+                const cycle = CYCLE_ENDS.findIndex((end) => time <= end)
+                const starts =
+                  index === 0 ||
+                  cycle !== CYCLE_ENDS.findIndex((end) => (actions[index - 1]?.time ?? 0) <= end)
+                return (
+                  <li key={`${unit}#${turn}`} className={starts ? 'cycle-start' : undefined}>
+                    {starts ? <strong>{t('Cycle {cycle}', { cycle })}</strong> : null}
+                    <span>
+                      {speed.format(time)} · {nameOf(unit)}
+                      {ultimate ? ` · ${t('Ultimate')}` : ''}
+                    </span>
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
         </>
       ) : (
         <p className="hint">{t('Load your characters in Builds to see their turns.')}</p>

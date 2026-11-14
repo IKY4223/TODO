@@ -104,7 +104,9 @@ export function WarpHistory(): JSX.Element {
       <p className="hint">{t('Honkai: Star Rail · global servers · saved only on this device')}</p>
       <div className="workspace">
         <div className="controls">
-          <Instructions open={!pulls.length} />
+          <div className="instructions">
+            <Instructions open={!pulls.length} />
+          </div>
           <form onSubmit={submit}>
             <label>
               {t('The link')}

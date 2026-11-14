@@ -42,14 +42,18 @@ The app opens on Honkai: Star Rail; Genshin Impact is one tap away.
   (SPD 10, say), and that the relic ends up better than the one a character wears. Relics in
   Builds get a score from the substats you mark as wanted. The upgrade rules are community
   estimates; a simulation in the tests checks the exact math.
-- **Start page** — what the toolkit does, built to the taste skill's plan: the hero with the
-  product's own interface alone on the first screen, then one section a screen on a computer, and
-  a UID field that opens the player's builds.
-- **Layout** — laid out for a computer first: the menu beside the page with an icon at every
-  entry, a tool's controls in a column on the left and its results on the right, cards side by
-  side. On a phone, a top bar, a menu and the current game's tools in a tab bar at the foot of
-  the screen; still usable 360px wide with 44px touch targets. A palette and type dealt by the taste skill: a green-black ground,
-  bone text and a muted green accent in Geist, or its inverse as the light theme.
+- **Start page** — what the toolkit does: the hero with the product's own interface on the first
+  screen, the tools of each game close below it, and a UID field that opens the player's builds.
+- **Layout** — laid out for a computer first, to fill its screen: the menu beside the page, a
+  tool's fields side by side across the page so a form is seen whole without scrolling, its
+  results across the width below, cards side by side, and the Speed tool's turn order beside the
+  team. On a phone, a top bar, a menu and the current game's tools in a tab bar at the foot of
+  the screen; still usable 360px wide with 44px touch targets. Plain colours, by the owner's
+  choice: a neutral grey ground, near-white text and a blue accent in Geist, or a light grey
+  ground with white cards as the light theme.
+- **Icons** — the tools carry the game's own signs: Honkai: Star Rail's phone menu icons and its
+  speed stat icon, painted in the text colour, and the Stellar Jade as the site's icon (see
+  Credits).
 - **Light and dark themes** — the app follows the device's setting until the player taps the
   theme button in the top bar, which switches to the other theme; a long press, a right click or
   the keyboard's menu key goes back to the device's. The pick is kept on the device.
@@ -124,6 +128,13 @@ Planned, in order:
    needs to know which 5★ characters are standard, which neither game data source here gives:
    it waits for a source (an open tracker's data file, read and credited).
 4. Zenless Zone Zero: undecided.
+
+Found by the site review of November 2026 and left for later, small:
+
+- Genshin's tools carry Star Rail's signs: no source reachable from here has Genshin's own menu
+  icons. Swap them in when one is found.
+- The start page's sample of the Speed tool keeps English names and a decimal point in Russian.
+- "3 action(s)" and "2 stack(s)" in the Speed tool's effect texts want proper plurals.
 
 Reference implementations to check game mechanics against (read, never copied):
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) for game data and texts, and the open source
@@ -267,9 +278,17 @@ acceptable use policy names Telegram bot frameworks among what it refuses. It ne
 
 ## Licence
 
-MIT: see `LICENSE`. Game data, names and images belong to HoYoverse.
+MIT: see `LICENSE`. Game data, names and images belong to HoYoverse and are not under this
+licence: that includes the game's icons in `frontend/public/icons` and
+`frontend/public/favicon.png`. HoYoverse has given no permission for them; they are used the
+way fan tools commonly use game art, and come out if HoYoverse asks.
 
 ## Credits
+
+The tool icons and the site's icon are the game's: the phone menu signs, the speed stat icon and
+the Stellar Jade of Honkai: Star Rail, taken from
+[StarRailRes](https://github.com/Mar-7th/StarRailRes) (`icon/sign`, `icon/property`,
+`icon/item/900001.png`). They belong to HoYoverse.
 
 The Genshin wish history steps for Android and iPhone are paimon.moe's, word for word in English
 and Russian: [paimon-moe](https://github.com/MadeBaruna/paimon-moe), MIT licence, copyright (c)

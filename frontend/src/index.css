@@ -2,27 +2,29 @@
 @import "@fontsource-variable/geist";
 
 :root {
-  /* Dealt by the taste skill for a game tool (palette green-black-bone, type Geist, radius soft,
-     pill buttons): a green-black ground, bone text, a muted green accent. No violet, by the
-     owner's choice. Text keeps 4.5:1 on the ground and on cards; control outlines 3:1. */
-  --color-background: #161c1a;
-  --color-card: #1f2725;
-  --color-input: #121715;
-  --color-border: #2e3834; /* outlines of cards and dividers */
-  --color-control: #66716b; /* outlines of things to tap or type in: 3:1 against a card */
-  --color-foreground: #e3e2da;
-  --color-muted-foreground: #8e948d;
-  --color-primary: #9fc7b8; /* filled buttons, under dark text */
-  --color-on-primary: #161c1a;
-  --color-accent: #9fc7b8; /* text and marks */
-  --color-accent-soft: rgb(159 199 184 / 14%);
+  /* Plain colours, by the owner's choice (November 2026): a neutral grey ground, near-white
+     text and a blue accent. Text keeps 4.5:1 on the ground and on cards; control outlines 3:1. */
+  --color-background: #121316;
+  --color-card: #1c1e22;
+  --color-input: #0e0f11;
+  --color-border: #2c2f35; /* outlines of cards and dividers */
+  --color-control: #6b7079; /* outlines of things to tap or type in: 3:1 against a card */
+  --color-foreground: #ececec;
+  --color-muted-foreground: #9a9da3;
+  --color-primary: #8ab4ff; /* filled buttons, under dark text */
+  --color-on-primary: #0b1220;
+  --color-accent: #8ab4ff; /* text and marks */
+  --color-accent-soft: rgb(138 180 255 / 14%);
   --color-destructive: #f28b82;
-  --color-bar: rgb(22 28 26 / 92%); /* the top and tab bars, over the page scrolling under them */
+  --color-bar: rgb(
+    18 19 22 / 92%
+  ); /* the top and tab bars, over the page scrolling under them */
   --radius: 8px; /* fields, and the corners of small parts */
   --radius-card: 20px;
   --radius-button: 999px;
-  --shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 0.5rem 1.5rem rgb(0 0 0 / 30%);
-  --ring: 0 0 0 3px rgb(159 199 184 / 30%); /* around a field being typed in */
+  --shadow:
+    0 1px 0 rgb(255 255 255 / 3%) inset, 0 0.5rem 1.5rem rgb(0 0 0 / 30%);
+  --ring: 0 0 0 3px rgb(138 180 255 / 30%); /* around a field being typed in */
   --bar-height: 3.75rem;
   --tabs-height: 4rem; /* the tab bar at the foot of a phone's screen */
   color-scheme: dark;
@@ -30,24 +32,24 @@
   line-height: 1.5;
 }
 
-/* The same roles on a light page, chosen in the menu or taken from the device (see theme.ts):
-   the dealt palette's inverse, bone ground and green-black ink. */
+/* The same roles on a light page, chosen in the top bar or taken from the device (see
+   theme.ts): a light grey ground, white cards, near-black text and a deeper blue. */
 :root[data-theme="light"] {
-  --color-background: #e3e2da;
-  --color-card: #d3d2cb;
-  --color-input: #ecebe5;
-  --color-border: #c4c3bb;
-  --color-control: #6f746e;
-  --color-foreground: #161c1a;
-  --color-muted-foreground: #555a55;
-  --color-primary: #161c1a;
-  --color-on-primary: #e3e2da;
-  --color-accent: #28503f;
-  --color-accent-soft: rgb(40 80 63 / 12%);
+  --color-background: #f4f5f7;
+  --color-card: #fff;
+  --color-input: #fff;
+  --color-border: #d9dce1;
+  --color-control: #6b7280;
+  --color-foreground: #16181d;
+  --color-muted-foreground: #555b66;
+  --color-primary: #1d4ed8;
+  --color-on-primary: #fff;
+  --color-accent: #1d4ed8;
+  --color-accent-soft: rgb(29 78 216 / 10%);
   --color-destructive: #a2261b;
-  --color-bar: rgb(227 226 218 / 92%);
-  --shadow: 0 0.5rem 1.5rem rgb(22 28 26 / 10%);
-  --ring: 0 0 0 3px rgb(40 80 63 / 25%);
+  --color-bar: rgb(244 245 247 / 92%);
+  --shadow: 0 0.5rem 1.5rem rgb(16 24 40 / 10%);
+  --ring: 0 0 0 3px rgb(29 78 216 / 25%);
   color-scheme: light;
 }
 
@@ -79,7 +81,6 @@ body {
 
 .logo {
   flex: none;
-  color: var(--color-accent);
 }
 
 .brand {
@@ -312,6 +313,44 @@ nav a[aria-current] {
 .tool-icon {
   padding: 0.125rem 0.875rem;
   transition: background-color 150ms;
+}
+
+/* A tool's icon is the game's own sign, painted in the text colour through a mask. */
+.tool-icon[data-icon] {
+  display: inline-block;
+}
+
+.tool-icon[data-icon]::before {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: currentcolor;
+  content: "";
+  mask: var(--sign) center / contain no-repeat;
+}
+
+.tool-icon[data-icon="home"] {
+  --sign: url("/icons/home.png");
+}
+
+.tool-icon[data-icon="builds"] {
+  --sign: url("/icons/builds.png");
+}
+
+.tool-icon[data-icon="relics"] {
+  --sign: url("/icons/relics.png");
+}
+
+.tool-icon[data-icon="warps"] {
+  --sign: url("/icons/warps.png");
+}
+
+.tool-icon[data-icon="history"] {
+  --sign: url("/icons/history.png");
+}
+
+.tool-icon[data-icon="speed"] {
+  --sign: url("/icons/speed.png");
 }
 
 form {
@@ -925,6 +964,7 @@ footer {
 
 .landing-tool {
   display: grid;
+  align-content: start; /* cards of one row are as tall as the tallest: each starts at its top */
   gap: 0.5rem;
   height: 100%;
   box-sizing: border-box;
@@ -990,7 +1030,7 @@ footer {
    rest, and cards sit side by side. */
 @media (min-width: 64rem) {
   main {
-    max-width: 80rem;
+    max-width: none;
     margin-left: 16rem;
     padding: 0.5rem 2.5rem 3rem;
   }
@@ -999,42 +1039,93 @@ footer {
     font-size: 2.25rem;
   }
 
+  /* A tool's controls spread across the screen instead of running down one narrow column, so a
+     form is seen whole without scrolling; its results fill the width below. */
   .workspace {
-    display: grid;
-    grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
-    gap: 2.5rem;
-    align-items: start;
     margin-top: 1.5rem;
   }
 
-  /* Settings stay in reach while long results scroll. */
   .controls {
-    position: sticky;
-    top: calc(var(--bar-height) + 1rem);
-    /* A form taller than the screen scrolls on its own, so its button stays in reach. */
-    max-height: calc(100dvh - var(--bar-height) - 2rem);
-    overflow-y: auto;
-    padding: 0.25rem; /* room for the focus ring inside the scrolling box */
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2.5rem;
+    align-items: start;
   }
 
-  /* An open PC script takes the page's whole width to be read; the results move below it and
-     the form keeps its usual width. */
-  .workspace:has(.pc-script[open]) {
+  /* A calculator's form: its fields side by side, its notes and groups of boxes across. */
+  .controls > form:only-child {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1rem 1.5rem;
+    align-items: end;
+  }
+
+  .controls > form:only-child > :is(.hint, fieldset) {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+
+  .controls > form:only-child > fieldset {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+
+  /* A history page: how to get the history on the left, where to put it on the right. */
+  .instructions {
+    grid-row: span 2;
+  }
+
+  /* An open PC script takes the page's whole width to be read; the form keeps its usual width
+     below it. */
+  .controls:has(.pc-script[open]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .workspace:has(.pc-script[open]) .controls {
-    position: static;
-    max-height: none;
-    overflow: visible;
-  }
-
-  .workspace:has(.pc-script[open]) .controls > :not(.pc-script) {
+  .controls:has(.pc-script[open]) > :not(.instructions),
+  .controls:has(.pc-script[open]) .instructions > :not(.pc-script) {
     max-width: 26rem;
   }
 
-  .workspace:has(.pc-script[open]) .pc-script > button {
+  .controls:has(.pc-script[open]) .pc-script > button {
     width: auto;
+  }
+
+  .results {
+    margin-top: 2rem;
+  }
+
+  /* The Speed tool: the team's cards with the turn order they give beside them. */
+  section:has(> .turn-order) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    column-gap: 2.5rem;
+    align-items: start;
+  }
+
+  /* The team's boxes in a row, and a number's field no wider than a number needs. */
+  section:has(> .turn-order) > fieldset {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+
+  section:has(> .turn-order) > label {
+    max-width: 17rem;
+  }
+
+  section:has(> .turn-order) > * {
+    grid-column: 1 / -1;
+  }
+
+  /* Narrower cards than elsewhere, so a team of four sits two or four to a row. */
+  section:has(> .turn-order) > .cards {
+    grid-column: 1;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  }
+
+  section:has(> .turn-order) > .turn-order {
+    grid-column: 2;
+  }
+
+  .turn-order .timeline {
+    margin: 0;
   }
 
   .results > :first-child {
@@ -1053,18 +1144,12 @@ footer {
     align-items: end;
   }
 
-  .landing-hero,
-  .landing-section {
-    box-sizing: border-box;
-    min-height: calc(100vh - var(--bar-height));
-    align-content: center;
-  }
-
-  .landing-section {
-    display: grid;
-  }
-
+  /* The hero takes the first screen; the sections after it follow closely, so a wide screen
+     is not left empty between them. */
   .landing-hero {
+    box-sizing: border-box;
+    min-height: calc(100vh - var(--bar-height) - 9rem);
+    align-content: center;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     align-items: center;
     gap: 3rem;
