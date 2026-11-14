@@ -64,7 +64,10 @@ have a lawyer read the texts before launch.
 - Licence: MIT, chosen by the owner (`LICENSE`). Still to do: list the licences of dependencies.
 - Disclaimer: "Fan project, not affiliated with HoYoverse" stays visible. Read HoYoverse's current
   fan content policy; no ads, payments or donations until it is confirmed allowed. Game images
-  come from Enka.Network and belong to HoYoverse.
+  come from Enka.Network and belong to HoYoverse. The tool icons and the site's icon are game
+  art kept in the repository (`frontend/public/icons`, `favicon.png`), used without HoYoverse's
+  permission, as fan tools commonly do: decide before launch whether to keep them, and take them
+  out if HoYoverse asks.
 - Privacy policy, written for what the app really does: UIDs, IP addresses (rate limits and server
   logs), the pasted wish history link (used once, never kept), pulls kept in the browser's local
   storage, and the third parties involved (Enka.Network, HoYoverse, the host). Name who is
@@ -102,7 +105,12 @@ For a session picking the work up again.
 
 - State: PRs #1 to #17 are merged. `HANDOFF.md` holds the owner's task list and the plan of
   stages 17 to 22; `README.md` and this file win where they differ.
-- Stage 18 is built (PR open, the owner merges it): the theme switch in the top bar, and the
+- PR #19 (open, the owner merges it) holds the owner's November 2026 choices: tool icons are the
+  game's phone menu signs from StarRailRes (`frontend/public/icons`, painted through a CSS mask;
+  Genshin has no such signs in a reachable source, so it shares them), the Stellar Jade as the
+  site's icon, a plain grey and blue palette instead of the taste skill's green and bone, and a
+  wide-screen layout that fills the screen (fields across the page, results below).
+- Stage 18 is merged: the theme switch in the top bar, and the
   effects table's rest (Aglaea's Supreme Stance, Robin • Summeretto's Fever, extra turns, later
   kits of Welt and Jingliu by trace ids, base chances). Left: Ultimates by energy (needs a source).
   Next, by HANDOFF.md: stage 19, a host for the bot and the Mini App (README plan item 2).
@@ -121,8 +129,8 @@ For a session picking the work up again.
   numbers are cut off, not rounded, as the game prints them.
 - Skills: `ui-ux-pro-max` is installed. `design-taste-frontend` (Leonxlnx/taste-skill) is installed
   by the Default environment's setup script, pinned to commit f6b7657; review a newer commit
-  before moving the pin, since a skill steers the session. Its rule against violet conflicts with
-  the current palette: ask the owner before following it. The
+  before moving the pin, since a skill steers the session. The owner replaced its palette with
+  plain grey and blue: do not bring its colours back. The
   owner asked for headroom and get-shit-done; neither was installed (headroom proxies model
   traffic, which a cloud session cannot route; get-shit-done is archived and moved to
   `open-gsd/gsd-core`, and adds hooks and a workflow of its own).

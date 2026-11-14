@@ -481,15 +481,23 @@ test('takes a light theme from the device or the top bar, readable in both', asy
   // The scan checks every text's contrast against the light background.
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 
-  // One tap in the top bar to the other theme, and back.
-  await page.getByRole('button', { name: 'Dark theme' }).click()
+  // One tap in the top bar to the other theme, and back; a long press back to the device's.
+  const theme = page.getByRole('button', { name: /^Theme: / })
+  await theme.click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.getByRole('button', { name: 'Light theme' }).click()
+  await expect(theme).toHaveAccessibleName('Theme: dark')
+  await theme.click()
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   // The player's choice outlasts the device's preference and a reload.
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-  await expect(page.getByRole('button', { name: 'Dark theme' })).toBeVisible()
+  await expect(theme).toHaveAccessibleName('Theme: light')
+  // A long press goes back to the device's theme, dark by now.
+  await theme.dispatchEvent('pointerdown')
+  await page.waitForTimeout(700)
+  await theme.dispatchEvent('pointerup')
+  await expect(theme).toHaveAccessibleName('Theme: as on the device')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await page.getByRole('button', { name: 'Menu' }).click()
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
@@ -545,6 +553,54 @@ test('on a wide screen the menu stays beside the page', async ({ page }) => {
   expect((main?.x ?? 0) >= (aside?.x ?? 0) + (aside?.width ?? 0)).toBe(true)
   expect((await measureLayout(page)).overflows).toBe(false)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+})
+
+test('on a wide screen a form is seen whole and the turn order sits beside the team', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/') // a fresh page, as a computer opens it: the address alone would not reload
+  await page.goto('/#starrail/relics')
+  // The longest form of the site: every field down to its button fits one screen.
+  await expect(shown(page).getByRole('button', { name: 'Calculate' })).toBeInViewport({ ratio: 1 })
+  await page.goto('/#starrail/history')
+  await expect(shown(page).getByRole('button', { name: 'Import history' })).toBeInViewport({
+    ratio: 1,
+  })
+  await page.goto('/#starrail/builds')
+  await loadShowcase(page)
+  await expect(card(page, 'Hyacine')).toBeVisible()
+  await page.getByRole('complementary').getByRole('link', { name: 'Speed' }).click()
+  const [team, order] = await Promise.all([
+    shown(page).locator('.cards').boundingBox(),
+    shown(page).getByRole('heading', { name: 'Turn order' }).boundingBox(),
+  ])
+  expect(order?.x ?? 0).toBeGreaterThanOrEqual((team?.x ?? 0) + (team?.width ?? 0))
+  expect((await measureLayout(page)).overflows).toBe(false)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test("the tools' signs and the site's icon are served as images", async ({ page }) => {
+  await page.goto('/#starrail/builds')
+  const signs = await page
+    .locator('[data-icon]')
+    .evaluateAll((icons) => [...new Set(icons.map((icon) => icon.getAttribute('data-icon')))])
+  expect(signs.toSorted()).toEqual(['builds', 'history', 'relics', 'speed', 'warps'])
+  // A missing file would come back as the app's own page: the type tells them apart.
+  const files = [...signs.map((sign) => `/icons/${sign}.png`), '/icons/home.png', '/icons/logo.png']
+  const types = await Promise.all(
+    [...files, '/favicon.png'].map(
+      async (path) => (await page.request.get(path)).headers()['content-type'],
+    ),
+  )
+  expect(types).toEqual(types.map(() => 'image/png'))
+  // The sign is painted through a mask, in the colour of the text.
+  const mask = await page
+    .locator('[data-icon="warps"]')
+    .first()
+    .evaluate((icon) => getComputedStyle(icon, '::before').maskImage)
+  expect(mask).toContain('/icons/warps.png')
 })
 
 const warp = (id: string, rank_type: string, name: string) => ({
