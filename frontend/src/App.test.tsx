@@ -87,6 +87,15 @@ test("each tool carries the game's own sign", () => {
   expect(signs).toEqual(['builds', 'relics', 'warps', 'history', 'speed'])
 })
 
+test('Genshin tools carry Genshin signs', async () => {
+  window.location.hash = '#genshin/builds'
+  render(<App />)
+  const signs = within(await screen.findByRole('navigation', { name: 'Tools' }))
+    .getAllByRole('link')
+    .map((link) => link.querySelector('[data-icon]')?.getAttribute('data-icon'))
+  expect(signs).toEqual(['gi-builds', 'gi-wishes', 'gi-history'])
+})
+
 test('the menu lists every tool of every game and marks where you are', () => {
   render(<App />)
   const button = screen.getByRole('button', { name: 'Menu' })

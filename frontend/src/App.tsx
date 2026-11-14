@@ -41,9 +41,9 @@ const GAMES = {
   genshin: {
     label: 'Genshin',
     tools: {
-      builds: { label: 'Builds', icon: 'builds', element: <CharacterShowcase /> },
-      wishes: { label: 'Wishes', icon: 'warps', element: <WishForecast game="genshin" /> },
-      history: { label: 'History', icon: 'history', element: <WishHistory /> },
+      builds: { label: 'Builds', icon: 'gi-builds', element: <CharacterShowcase /> },
+      wishes: { label: 'Wishes', icon: 'gi-wishes', element: <WishForecast game="genshin" /> },
+      history: { label: 'History', icon: 'gi-history', element: <WishHistory /> },
     },
   },
 } as const satisfies Record<string, GameEntry>

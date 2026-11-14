@@ -131,8 +131,6 @@ Planned, in order:
 
 Found by the site review of November 2026 and left for later, small:
 
-- Genshin's tools carry Star Rail's signs: no source reachable from here has Genshin's own menu
-  icons. Swap them in when one is found.
 - The start page's sample of the Speed tool keeps English names and a decimal point in Russian.
 - "3 action(s)" and "2 stack(s)" in the Speed tool's effect texts want proper plurals.
 
@@ -288,7 +286,10 @@ way fan tools commonly use game art, and come out if HoYoverse asks.
 The tool icons and the site's icon are the game's: the phone menu signs, the speed stat icon and
 the Stellar Jade of Honkai: Star Rail, taken from
 [StarRailRes](https://github.com/Mar-7th/StarRailRes) (`icon/sign`, `icon/property`,
-`icon/item/900001.png`). They belong to HoYoverse.
+`icon/item/900001.png`). Genshin's tools carry Genshin Impact's Paimon menu icons (Character,
+Wish, Adventurer Handbook), from the files the
+[Genshin Impact Wiki](https://genshin-impact.fandom.com/wiki/Paimon_Menu) on Fandom keeps,
+turned into white marks. All of them belong to HoYoverse.
 
 The Genshin wish history steps for Android and iPhone are paimon.moe's, word for word in English
 and Russian: [paimon-moe](https://github.com/MadeBaruna/paimon-moe), MIT licence, copyright (c)
