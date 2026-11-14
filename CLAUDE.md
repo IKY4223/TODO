@@ -65,7 +65,7 @@ have a lawyer read the texts before launch.
 - Disclaimer: "Fan project, not affiliated with HoYoverse" stays visible. Read HoYoverse's current
   fan content policy; no ads, payments or donations until it is confirmed allowed. Game images
   come from Enka.Network and belong to HoYoverse. The tool icons and the site's icon are game
-  art kept in the repository (`frontend/public/icons`, `favicon.png`), used without HoYoverse's
+  art kept in the repository (`frontend/public/icons`), used without HoYoverse's
   permission, as fan tools commonly do: decide before launch whether to keep them, and take them
   out if HoYoverse asks.
 - Privacy policy, written for what the app really does: UIDs, IP addresses (rate limits and server
@@ -107,13 +107,17 @@ For a session picking the work up again.
   stages 17 to 22; `README.md` and this file win where they differ.
 - PR #19 is merged: the owner's November 2026 choices. Tool icons are the games' own menu signs
   (`frontend/public/icons`, painted through a CSS mask): Star Rail's from StarRailRes, Genshin's
-  from the Genshin Impact Wiki on Fandom (`gi-*.png`). The Stellar Jade is the site's icon. The
+  from the Genshin Impact Wiki on Fandom (`gi-*.png`). The site's mark and browser icon are a
+  four-pointed star drawn for it (the owner did not like the Stellar Jade there). The
   palette is plain grey and blue. The wide-screen layout fills the screen (fields across the
   page, results below).
 - Stage 18 is merged: the theme switch in the top bar, and the
   effects table's rest (Aglaea's Supreme Stance, Robin • Summeretto's Fever, extra turns, later
   kits of Welt and Jingliu by trace ids, base chances). Left: Ultimates by energy (needs a source).
-  Next, by HANDOFF.md: stage 19, a host for the bot and the Mini App (README plan item 2).
+  The owner took the Telegram bot's host and Mini App out of the plan (November 2026); the bot's
+  code stays. Next, by HANDOFF.md: stage 20, Genshin (README plan item 2).
+- The start page is the player's desk (`frontend/src/Home.tsx`), not a landing page, by the
+  owner's choice: the profile loaded in this visit, each saved history's pity, the tools.
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed

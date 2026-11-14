@@ -156,7 +156,6 @@ def test_soft_pity_reproduces_the_published_consolidated_rate(name: str, publish
     assert 1 / pulls_per_five_star == pytest.approx(published, abs=0.0002)
 
 
-def test_the_start_page_quotes_the_warp_odds_the_engine_gives() -> None:
-    # frontend/src/Landing.tsx shows this as 51.0%: a change to the banner must change it too.
+def test_a_featured_five_star_within_80_warps_is_about_even() -> None:
     odds = forecast(STAR_RAIL_CHARACTER, pity=0, guaranteed=False, copies=1, pulls=80)
     assert round(odds.probability, 3) == 0.51

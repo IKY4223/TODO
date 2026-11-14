@@ -1,6 +1,8 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App'
+import { saveWarps } from './starrail/warps'
+import { EMPTY_HISTORY } from './wishes/history'
 
 // The tools' tests start in Star Rail's builds; the start page's tests clear the address.
 beforeEach(() => {
@@ -28,13 +30,28 @@ test('opens on the start page, which leads into the tools', () => {
   render(<App />)
   expect(game()).toBe('Home')
   expect(screen.queryByRole('navigation', { name: 'Tools' })).toBeNull()
-  expect(
-    screen.getByRole('heading', { name: 'Build, speed and warp tools for Star Rail and Genshin' }),
-  ).toBeDefined()
-  expect(screen.getByRole('link', { name: 'Open your builds' })).toHaveProperty(
+  expect(screen.getByRole('heading', { name: 'Home' })).toBeDefined()
+  // No history is saved yet: both games say so and lead to their tools.
+  expect(screen.getAllByText('No history saved on this device yet.')).toHaveLength(2)
+  expect(screen.getByRole('link', { name: 'Warp history' })).toHaveProperty(
     'hash',
-    '#starrail/builds',
+    '#starrail/history',
   )
+  expect(screen.getByRole('link', { name: /^Wishes/ })).toHaveProperty('hash', '#genshin/wishes')
+})
+
+test('the start page shows where each saved banner stands', () => {
+  const pull = { id: '1', banner: '11', time: '2026-11-01 10:00:00', name: 'Arrow', kind: '', rank: 3 }
+  saveWarps({ current: '700000001', accounts: { '700000001': [pull, { ...pull, id: '2' }] } })
+  try {
+    window.location.hash = ''
+    render(<App />)
+    const pity = screen.getByRole('link', { name: 'Warp history' }).closest('article')
+    if (!pity) throw new Error('no warp history card on the start page')
+    expect(within(pity).getByText('Character Event Warp').nextSibling?.textContent).toBe('2')
+  } finally {
+    saveWarps(EMPTY_HISTORY)
+  }
 })
 
 test('the start page sends a UID to its builds', () => {
@@ -42,7 +59,7 @@ test('the start page sends a UID to its builds', () => {
   render(<App />)
   const uid = screen
     .getAllByLabelText('UID')
-    .find((input) => input.getAttribute('name') === 'landing-uid')
+    .find((input) => input.getAttribute('name') === 'home-uid')
   if (!uid) throw new Error('no UID field on the start page')
   fireEvent.change(uid, { target: { value: '12' } })
   fireEvent.submit(uid.closest('form') as HTMLFormElement)

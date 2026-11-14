@@ -1,6 +1,6 @@
 import { type JSX, type ReactNode, useEffect, useRef, useState } from 'react'
 import { useAddress } from './address'
-import { Landing } from './Landing'
+import { Home } from './Home'
 import { ToolIcon, type ToolIconName } from './ui/ToolIcon'
 import { ErrorBoundary } from './ErrorBoundary'
 import { languageLabel, languages, type Message, setLanguage, useLanguage, useT } from './i18n'
@@ -176,8 +176,10 @@ function App(): JSX.Element {
             </svg>
           </button>
         )}
-        {/* The site's mark is the game's Stellar Jade (StarRailRes, icon/item/900001). */}
-        <img className="logo" src="/icons/logo.png" width="32" height="32" alt="" />
+        {/* The site's mark, drawn for it: a four-pointed star in the accent colour. */}
+        <svg className="logo" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+          <path d="M16 2c1.6 8 6 12.4 14 14-8 1.6-12.4 6-14 14-1.6-8-6-12.4-14-14 8-1.6 12.4-6 14-14Z" fill="currentColor" />
+        </svg>
         <a className="brand" href={`#${HOME}`}>
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{home ? t('Home') : GAMES[here.game].label}</span>
@@ -259,9 +261,8 @@ function App(): JSX.Element {
             </div>
           )),
         )}
-        <div hidden={!home}>
-          <Landing />
-        </div>
+        {/* Mounted on each visit, so it shows the histories as they are saved now. */}
+        {home ? <Home /> : null}
         <footer>{t('Fan project. Not affiliated with HoYoverse.')}</footer>
       </main>
     </>
