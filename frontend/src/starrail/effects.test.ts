@@ -184,7 +184,7 @@ test("Pearl's extra turn needs four Elation characters; Hanya's Eidolon 4 adds a
   const elation = (id: number) => as(id, { path: 'elation' })
   const pearl = elation(1503)
   const three = [pearl, elation(2), elation(3)]
-  expect(turnValue(turn('pearl-ultimate-extra'), pearl, three)).toBe(0)
+  expect(turnValue(turn('pearl-ultimate-extra'), pearl, three)).toBeUndefined()
   expect(turnValue(turn('pearl-ultimate-extra'), pearl, [...three, elation(4)])).toBe(1)
   expect(turnValue(turn('hanya-ultimate'), as(1215, { eidolon: 4 }), [])).toBeUndefined()
   expect(turn('hanya-ultimate-e4').turns).toBe(3)

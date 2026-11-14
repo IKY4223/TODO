@@ -308,6 +308,8 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
   },
   // Eidolon 2: an Enhanced attack that defeats an enemy or breaks its Weakness gives an extra
   // turn, again after 1 turn. Whether it does depends on the battle: the player switches it on.
+  // shortcut: the later kit's countdown delay of 10% per Weakness Break (up to 3 times in each
+  // Complete Combustion) is left out: how many breaks come depends on the battle.
   {
     id: 'firefly-e2',
     source: { character: 1310 },
@@ -402,7 +404,8 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'summons',
   },
   // Eidolon 2: summoning Netherwing gives 2 stacks of Ardent Will, each spent on its Skill to
-  // advance Castorice 100%. shortcut: spent on Netherwing's first two turns; it may hold them.
+  // advance Castorice 100%. shortcut: spent on Netherwing's first two turns; the player may hold
+  // them for later.
   {
     id: 'castorice-e2',
     source: { character: 1407 },
@@ -529,6 +532,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     byElation: true,
   },
   // With 4 or more Elation characters the "Aesthetic Archetype" also gains 1 extra turn.
+  // shortcut: Eidolon 2's advance for the team's other Elation characters is left out.
   {
     id: 'pearl-ultimate-extra',
     source: { character: 1503 },
@@ -539,6 +543,8 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     byElation: true,
   },
   // On enemies. A debuff with a base chance has its box ticked as landed; the player unticks it.
+  // shortcut: the chance is shown, not weighed against the enemy's Effect RES and the source's
+  // Effect Hit Rate; the player decides whether it landed.
   {
     id: 'welt-skill',
     source: { character: 1004 },
@@ -698,7 +704,9 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     untilSummonLeaves: true, // while Concerto lasts
     eidolon: 2,
   },
-  // Aglaea's Skill brings Garmentmaker back when it is away, and she acts at once.
+  // Aglaea's Skill brings Garmentmaker back when it is away, and she acts at once. The advance
+  // must come first: it only works while Garmentmaker is away, which the summon then ends.
+  // Her Technique has it on the field from the start of battle.
   {
     id: 'aglaea-skill',
     source: { character: 1402 },
@@ -716,6 +724,16 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'summons',
     stays: true,
+  },
+  {
+    id: 'aglaea-technique',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'start',
+    target: 'summons',
+    stays: true,
+    off: true,
   },
   // The Ultimate: Supreme Stance, with a SPD 100 countdown; when it acts, Garmentmaker leaves and
   // the stance ends. Meanwhile Aglaea gains SPD for each of Garmentmaker's SPD stacks.
@@ -813,8 +831,9 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     byLevel: 'ultimate',
     eidolon: 4,
   },
-  // Eidolon 1: when the ally with her Ultimate defeats an enemy, at most once a turn. Whether one
-  // falls depends on the battle: the player switches it on, taken as once each of her turns.
+  // Eidolon 1: when the ally with her Ultimate defeats an enemy, at most once a turn.
+  // shortcut: whether one falls depends on the battle: the player switches it on, and it is taken
+  // as once each of her own turns.
   {
     id: 'hanya-e1',
     source: { character: 1215 },
@@ -1014,6 +1033,8 @@ export const SYZYGY = { character: 1212, enter: 2, bonusFrom: 6 } as const
  * shortcut: every ally action counts as an attack for Vibes; the Special Guest's 2 more, the
  * Technique's 6, Eidolon 2's first-gain bonus and Eidolon 4's Songbirds SPD are left out, and she
  * acts at once when Fever ends (her 50% advance then makes no difference). */
+// shortcut: her Ultimate waits for her own turn, which Fever holds back; in the game she can use
+// it during Fever too, and Eidolon 6 stores two.
 export const FEVER = {
   character: 1512,
   cap: 50,
@@ -1051,7 +1072,8 @@ export interface Summon {
   readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
   readonly pausesOwner?: boolean // the owner takes no turn while it is here, and acts once it goes
   readonly dismisses?: boolean // a countdown whose turn sends the owner's other summons away
-  readonly retains?: { readonly count: number; readonly trace: number } // stacks kept on leaving
+  // Stacks of buffs whose id starts with `of` kept on leaving, given the trace that grants it.
+  readonly retains?: { readonly count: number; readonly of: string; readonly trace: number }
 }
 
 // shortcut: summons keep the SPD and action count the game gives them, past the effects in
@@ -1073,8 +1095,9 @@ export const SUMMONS: readonly Summon[] = [
     kind: 'memosprite',
     spd: 0.35,
     ofOwner: true,
+    later: true,
     arrival: 1,
-    retains: { count: 1, trace: 1402102 },
+    retains: { count: 1, of: 'garmentmaker-talent', trace: 1402102 },
   },
   { owner: 1402, kind: 'countdown', spd: 100, later: true, dismisses: true },
   // Robin • Summeretto's Summer Songbirds (180% of her SPD) and Fever countdown (SPD 140): both
@@ -1142,8 +1165,9 @@ export function turnValue(
   if (effect.kit && effect.kit !== kitOf(character)) return undefined
   if (effect.byLevel && effect.values.length > 1)
     return byCount(effect.values, levelOf(character, effect.byLevel))
+  // A value of 0 by Elation count: not enough Elation characters for it yet.
   if (effect.byElation)
-    return byCount(effect.values, team.filter(({ path }) => path === 'elation').length)
+    return byCount(effect.values, team.filter(({ path }) => path === 'elation').length) || undefined
   return value
 }
 

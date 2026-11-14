@@ -62,7 +62,8 @@ export interface Unit {
   readonly timer?: boolean // a countdown, not a summon: effects on summons skip it
   readonly pausesOwner?: boolean // its owner takes no turn while it is here, and acts once it goes
   readonly dismisses?: boolean // a countdown whose turn sends its owner's other summons away
-  readonly retains?: number // a summon that leaves keeps this many of its newest buffs
+  // A summon that leaves keeps this many of its newest buffs whose id starts with `of`.
+  readonly retains?: { readonly count: number; readonly of: string }
 }
 
 export interface Action {
@@ -207,11 +208,11 @@ function addBuff(
 function apply(states: readonly State[], source: State, effect: UnitEffect): void {
   if (effect.withoutSummon && !away(states, source)) return
   if (effect.duringSummon && away(states, source)) return
-  if (!effect.value || !mayFire(source, effect)) return
+  if (!mayFire(source, effect)) return
   const summons = targets(states, source, 'summons')
   const chosen = targets(states, source, effect.target, effect.withSummons).filter(
-    // A summon effect brings in either the countdown or the summons, never both.
-    ({ unit }) => effect.kind !== 'summon' || Boolean(unit.timer) === Boolean(effect.countdown),
+    // Aimed at its summons, an effect reaches either the countdown or the others, never both.
+    ({ unit }) => effect.target !== 'summons' || Boolean(unit.timer) === Boolean(effect.countdown),
   )
   for (const target of chosen) {
     if (effect.kind === 'summon') summon(target, effect)
@@ -240,8 +241,9 @@ function fire(states: readonly State[], source: State, trigger: UnitEffect['trig
 
 function leave(states: readonly State[], summoned: State): void {
   summoned.here = false
-  const { retains = 0 } = summoned.unit
-  summoned.buffs = retains ? summoned.buffs.slice(-retains) : []
+  const { retains } = summoned.unit
+  const kept = retains ? summoned.buffs.filter(({ id }) => id.startsWith(retains.of)) : []
+  summoned.buffs = retains ? kept.slice(-retains.count) : []
   const owner = states.find(({ unit }) => unit.key === summoned.unit.owner)
   if (owner && summoned.unit.pausesOwner) owner.gauge = 0
   for (const state of states) state.buffs = state.buffs.filter(({ until }) => until !== summoned)
@@ -314,7 +316,7 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
     const ready = present.filter((state) => state.unit.owner || !paused(state))
     if (!ready.length) return actions // a player may untick the whole team
     // An extra turn comes first, at once, and leaves the unit's place on the gauge as it was.
-    const extra = present.find(({ extraTurns }) => extraTurns > 0)
+    const extra = ready.find(({ extraTurns }) => extraTurns > 0)
     const next =
       extra ??
       ready.reduce((best, state) =>

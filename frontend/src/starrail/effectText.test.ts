@@ -79,6 +79,9 @@ test('a summon brought in to stay says no count of actions', () => {
   expect(turnEffectText(turn('aglaea-skill-summon'), 1, t)).toBe(
     'Every turn · Own summon: comes in',
   )
+  expect(turnEffectText(turn('aglaea-countdown'), 1, t)).toBe(
+    'On Ultimate · Own countdown: comes in with 1 action(s)',
+  )
 })
 
 test('a debuff with a base chance says it', () => {

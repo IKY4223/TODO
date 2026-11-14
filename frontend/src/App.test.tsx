@@ -169,3 +169,25 @@ test('the top bar switches between a dark and a light theme and remembers it', (
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
   localStorage.removeItem('theme')
 })
+
+test("the theme button follows the device's change while the player has not picked one", () => {
+  const listeners = new Set<() => void>()
+  const light = {
+    matches: false,
+    addEventListener: (_: string, listener: () => void) => listeners.add(listener),
+    removeEventListener: (_: string, listener: () => void) => listeners.delete(listener),
+  }
+  const other = { matches: false, addEventListener: () => {}, removeEventListener: () => {} }
+  window.matchMedia = ((media: string) =>
+    media.includes('color-scheme') ? light : other) as unknown as typeof window.matchMedia
+  try {
+    render(<App />)
+    expect(screen.getByRole('button', { name: 'Light theme' })).toBeDefined()
+    light.matches = true // the device turns light
+    for (const listener of listeners) act(listener)
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeDefined()
+  } finally {
+    Reflect.deleteProperty(window, 'matchMedia')
+  }
+})

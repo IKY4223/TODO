@@ -9,7 +9,7 @@ import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { SpeedPlanner } from './starrail/SpeedPlanner'
 import { WarpHistory } from './starrail/WarpHistory'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
-import { shownTheme, useTheme } from './theme'
+import { useTheme } from './theme'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
 
@@ -98,7 +98,7 @@ function App(): JSX.Element {
   const language = useLanguage()
   const [open, setOpen] = useState(false)
   const wide = useWide()
-  const [theme, setTheme] = useTheme()
+  const [theme, setTheme] = useTheme() // the theme on screen
 
   useEffect(() => {
     if (!open) return undefined
@@ -175,10 +175,10 @@ function App(): JSX.Element {
         <button
           type="button"
           className="icon"
-          aria-label={t(shownTheme(theme) === 'light' ? 'Dark theme' : 'Light theme')}
-          onClick={() => setTheme(shownTheme(theme) === 'light' ? 'dark' : 'light')}
+          aria-label={t(theme === 'light' ? 'Dark theme' : 'Light theme')}
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
         >
-          <ToolIcon name={shownTheme(theme) === 'light' ? 'moon' : 'sun'} />
+          <ToolIcon name={theme === 'light' ? 'moon' : 'sun'} />
         </button>
         <select
           aria-label={t('Language')}

@@ -104,9 +104,17 @@ Planned, in order:
 1. Star Rail effects: Ultimates timed by energy instead of a fixed beat. This needs each skill's
    energy gain, which neither StarRailRes nor Enka.Network's store gives: it waits for a source.
    Left out of the effects built so far, each with a `shortcut:` comment in
-   `frontend/src/starrail/effects.ts`: Welt's Weightless delay per hit taken, the later Jingliu's
-   Syzygy from allies losing HP, Robin • Summeretto's Vibes from the Special Guest and her
-   Technique, and Aglaea's Eidolon 4 stack from her own attacks.
+   `frontend/src/starrail/effects.ts`, as each depends on the battle or waits its turn:
+   - debuffs weighed by Effect Hit Rate against the enemy's Effect RES (the base chance is shown
+     and the player ticks whether it landed);
+   - Welt's Weightless delay per hit taken; the later Jingliu's Syzygy from allies losing HP; the
+     later Firefly's countdown delay per Weakness Break;
+   - Robin • Summeretto's Vibes from the Special Guest, her Technique and Eidolon 2's first gain,
+     Eidolon 4's Songbirds SPD, her Ultimate during Fever (and Eidolon 6's two stored), and the
+     50% advance when Fever ends (she acts at once then anyway);
+   - Aglaea's Eidolon 4 stack from her own attacks; Pearl's Eidolon 2 advance for the other
+     Elation characters; Hanya's Eidolon 1 taken as once each of her turns; Castorice's Ardent
+     Will spent on Netherwing's first two turns.
 2. Telegram: a host to run the bot on, then a Telegram Mini App that opens the site inside
    Telegram (it needs the site hosted over HTTPS), and the bot's replies linking to the shared
    page of each character once the site has an address.

@@ -88,8 +88,13 @@ test('the Ultimate comes on the chosen beat', () => {
 
 test('memosprites and summons take their own turns', () => {
   show([character(1402, 'Aglaea', 200)])
-  // Garmentmaker runs at 35% of Aglaea's SPD: 70, a turn at 142.9.
-  expect(timeline()).toContain('142.9 · Memosprite of Aglaea')
+  // Her Skill brings Garmentmaker at 50 with 100% advance; it runs at 35% of her SPD, 70, plus
+  // a SPD stack after each turn.
+  expect(timeline().slice(0, 3)).toEqual([
+    'Cycle 050.0 · Aglaea',
+    '50.0 · Aglaea',
+    '50.0 · Memosprite of Aglaea',
+  ])
 })
 
 test('a team has at most four members', () => {
@@ -167,20 +172,28 @@ test("Robin's Concerto holds her turns until its countdown acts", () => {
 
 test("Aglaea's countdown ends Supreme Stance and sends Garmentmaker away until her Skill", () => {
   show([character(1402, 'Aglaea', 160)])
-  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '3' } })
-  expect(timeline().slice(3)).toEqual([
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '4' } })
+  expect(timeline()).toEqual([
+    // No Technique: her first Skill brings Garmentmaker, with 100% advance, and she acts again.
+    'Cycle 062.5 · Aglaea',
+    '62.5 · Aglaea',
+    '62.5 · Memosprite of Aglaea',
+    '125.0 · Aglaea',
+    '146.0 · Memosprite of Aglaea',
     // The Ultimate: she acts again at once, and a SPD 100 countdown starts.
-    '187.5 · Aglaea · Ultimate',
+    'Cycle 1187.5 · Aglaea · Ultimate',
     '187.5 · Aglaea',
-    // In Supreme Stance: +15% of her base SPD for Garmentmaker's one stack, 184 SPD.
-    '241.8 · Aglaea',
-    'Cycle 2262.0 · Memosprite of Aglaea',
-    // The countdown sends Garmentmaker away; her Skill brings it back, with 100% advance.
+    // In Supreme Stance: +15% of her base SPD for each of Garmentmaker's stacks.
+    '200.4 · Memosprite of Aglaea',
+    '231.9 · Aglaea',
+    '240.9 · Memosprite of Aglaea',
+    'Cycle 2271.8 · Aglaea',
+    '273.0 · Memosprite of Aglaea',
+    // The countdown sends Garmentmaker away; her Skill brings it back.
     '287.5 · Countdown of Aglaea',
-    '293.7 · Aglaea · Ultimate',
-    '293.7 · Aglaea',
-    '293.7 · Memosprite of Aglaea',
-    '348.0 · Aglaea',
+    '322.8 · Aglaea · Ultimate',
+    '322.8 · Aglaea',
+    '322.8 · Memosprite of Aglaea',
   ])
 })
 

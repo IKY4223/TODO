@@ -264,7 +264,7 @@ const aglaea = (effects: UnitEffect[]): Unit[] => [
   unit('ag', 100, { ultimateEvery: 1, effects }),
   unit('gm', 50, {
     owner: 'ag',
-    retains: 1,
+    retains: { count: 1, of: 'gm-stack' },
     effects: [effect({ kind: 'spd', value: 10, trigger: 'summon', stacks: 6, id: 'gm-stack' })],
   }),
   unit('cd', 100, { owner: 'ag', later: true, timer: true, dismisses: true, maxActions: 1 }),

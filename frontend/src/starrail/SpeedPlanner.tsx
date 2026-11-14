@@ -99,7 +99,7 @@ function unitsOf(team: readonly StarRailCharacter[], settings: (id: number) => S
           timer: summon.kind === 'countdown',
           dismisses: summon.dismisses,
           retains:
-            retains && character.points.some(({ id }) => id === retains.trace) ? retains.count : 0,
+            retains && character.points.some(({ id }) => id === retains.trace) ? retains : undefined,
           effects: active.filter(({ effect }) => effect.trigger === 'summon').map(toUnit),
         }
       },

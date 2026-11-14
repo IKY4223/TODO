@@ -109,5 +109,6 @@ export function turnEffectText(
     .filter(Boolean)
     .map((note) => ` · ${note}`)
     .join('')
-  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${notes}`
+  const target = effect.countdown ? t('Own countdown') : t(TARGETS[effect.target])
+  return `${t(TRIGGERS[effect.trigger])} · ${target}: ${what}${notes}`
 }
