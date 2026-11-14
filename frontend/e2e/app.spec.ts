@@ -152,6 +152,59 @@ test('shows final stats and plans team speed from the loaded showcase', async ({
   expect(problems).toEqual([])
 })
 
+// A made-up showcase served in place of the API's: the fixture account has none of these.
+const member = (id: number, name: string, spd: number, eidolon = 0) => ({
+  id,
+  name,
+  element: null,
+  path: null,
+  rarity: 5,
+  level: 80,
+  eidolon,
+  light_cone: null,
+  relics: [],
+  stats: [{ key: 'spd', value: spd }],
+  bases: [{ key: 'spd', value: spd }],
+  skills: [],
+  points: [],
+  icon: null,
+})
+
+test("plans Aglaea's Supreme Stance and says each debuff's base chance", async ({ page }) => {
+  await page.route('**/api/starrail/showcase/**', async (route) =>
+    route.fulfill({
+      json: {
+        uid: UID,
+        nickname: 'Trailblazer',
+        signature: '',
+        avatar: null,
+        trailblaze_level: 70,
+        equilibrium_level: 6,
+        record: null,
+        characters: [member(1402, 'Aglaea', 160), member(1004, 'Welt', 120)],
+      },
+    }),
+  )
+  await page.goto(`/#starrail/builds/${UID}`)
+  await expect(card(page, 'Aglaea')).toBeVisible()
+  await page.goto('/#starrail/speed')
+  const tool = shown(page)
+  await expect(
+    tool.getByText('Every turn · Enemies: SPD −10% · lasts 2 turn(s) · lands at a base chance of 75%'),
+  ).toBeVisible()
+  await expect(tool.getByText('On Ultimate · Own countdown: comes in with 1 action(s)')).toBeVisible()
+  await tool.getByLabel('Ultimate every N turns').first().selectOption('4')
+  await expect(tool.locator('.timeline')).toContainText('Countdown of Aglaea')
+  await expect(tool.locator('.timeline')).toContainText('Memosprite of Aglaea')
+  expectPhoneFriendly(await measureLayout(page), MIN_SPEED_CONTROLS)
+  // Russian runs longer: the effect texts must still fit.
+  await page.getByLabel('Language').selectOption('ru')
+  await expect(tool.getByText(/попадает с базовым шансом 75\s?%/)).toBeVisible()
+  expectPhoneFriendly(await measureLayout(page), MIN_SPEED_CONTROLS)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  expect(problems).toEqual([])
+})
+
 test('keeps a loaded showcase across tools and the back button', async ({ page }) => {
   await loadShowcase(page)
   await expect(card(page, 'Amber')).toBeVisible()
@@ -417,7 +470,7 @@ test('shows Star Rail in Russian and keeps the choice', async ({ page }) => {
   expect(problems).toEqual([])
 })
 
-test('takes a light theme from the device or the menu, readable in both', async ({ page }) => {
+test('takes a light theme from the device or the top bar, readable in both', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
   await page.goto('/#starrail/builds')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
@@ -428,14 +481,15 @@ test('takes a light theme from the device or the menu, readable in both', async 
   // The scan checks every text's contrast against the light background.
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
 
-  await page.getByRole('button', { name: 'Menu' }).click()
-  await page.getByLabel('Theme').selectOption('dark')
+  // One tap in the top bar to the other theme, and back.
+  await page.getByRole('button', { name: 'Dark theme' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.getByLabel('Theme').selectOption('light')
+  await page.getByRole('button', { name: 'Light theme' }).click()
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.reload()
   // The player's choice outlasts the device's preference and a reload.
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.getByRole('button', { name: 'Dark theme' })).toBeVisible()
   await page.getByRole('button', { name: 'Menu' }).click()
   expectPhoneFriendly(await measureLayout(page), MIN_STARRAIL_CONTROLS)
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])

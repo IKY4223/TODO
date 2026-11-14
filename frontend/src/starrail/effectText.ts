@@ -66,11 +66,18 @@ const TARGETS = {
   teammates: 'Teammates',
   chosen: 'Chosen ally',
   summons: 'Own summon',
+  owner: 'Its owner',
   enemies: 'Enemies',
 } as const satisfies Record<Target, Parameters<Translate>[0]>
 
 /** "On Ultimate · All allies: SPD +12% · lasts 1 turn(s)" */
-export function turnEffectText(effect: TurnEffect, value: number, t: Translate): string {
+/** What a turn effect does; `chance` is a debuff's base chance to land, from chanceOf. */
+export function turnEffectText(
+  effect: TurnEffect,
+  value: number,
+  t: Translate,
+  chance?: number,
+): string {
   const amount = ['spd', 'summon', 'stack'].includes(effect.kind)
     ? plain.format(value)
     : percent.format(value)
@@ -78,10 +85,11 @@ export function turnEffectText(effect: TurnEffect, value: number, t: Translate):
     advance: t('action advance +{value}', { value: amount }),
     spd: t('SPD +{value}', { value: amount }),
     spd_percent: t('SPD +{value}', { value: amount }),
-    summon: t('comes in with {value} action(s)', { value: amount }),
+    summon: effect.stays ? t('comes in') : t('comes in with {value} action(s)', { value: amount }),
     delay: t('action delay +{value}', { value: amount }),
     slow: t('SPD −{value}', { value: amount }),
     stack: t('{value} stack(s)', { value: amount }),
+    extra: t('one extra turn'),
   }[effect.kind]
   const notes = [
     effect.turns ? t('lasts {turns} turn(s)', { turns: effect.turns }) : '',
@@ -89,11 +97,18 @@ export function turnEffectText(effect: TurnEffect, value: number, t: Translate):
     effect.withoutSummon ? t('outside its state') : '',
     effect.minSpd ? t('SPD at least {spd}', { spd: effect.minSpd }) : '',
     effect.once ? t('once') : '',
+    effect.cooldown ? t('again after {turns} turn(s)', { turns: effect.cooldown }) : '',
+    effect.charges ? t('{count} time(s) each time it comes', { count: effect.charges }) : '',
+    effect.duringSummon ? t('in its state') : '',
     effect.eidolon ? t('from Eidolon {eidolon}', { eidolon: effect.eidolon }) : '',
     effect.byElation ? t('by Elation characters on the team') : '',
+    chance === undefined
+      ? ''
+      : t('lands at a base chance of {chance}', { chance: percent.format(chance) }),
   ]
     .filter(Boolean)
     .map((note) => ` · ${note}`)
     .join('')
-  return `${t(TRIGGERS[effect.trigger])} · ${t(TARGETS[effect.target])}: ${what}${notes}`
+  const target = effect.countdown ? t('Own countdown') : t(TARGETS[effect.target])
+  return `${t(TRIGGERS[effect.trigger])} · ${target}: ${what}${notes}`
 }

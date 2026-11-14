@@ -5,6 +5,8 @@ import {
   statEffectsOf,
   tierValue,
   turnValue,
+  chanceOf,
+  syzygyBonus,
   valueFor,
   withEffects,
 } from './effects'
@@ -149,4 +151,43 @@ test("Pearl's advance grows with the Elation characters on the team", () => {
   const other = as(2, { path: 'elation' })
   expect(turnValue(turn('pearl-ultimate'), pearl, [pearl])).toBe(0.1)
   expect(turnValue(turn('pearl-ultimate'), pearl, [pearl, other, HYACINE])).toBe(0.15)
+})
+
+// The game data lists a later kit's traces under ids with a leading 1: 11004101 for Welt.
+const WELT = as(1004)
+const LATER_WELT = { ...WELT, points: [{ id: 11004101, level: 1 }] }
+
+test("a later kit's effects replace the first kit's, told apart by its trace ids", () => {
+  expect(turnValue(turn('welt-ultimate'), WELT, [WELT])).toBe(0.4)
+  expect(turnValue(turn('welt-ultimate'), LATER_WELT, [LATER_WELT])).toBeUndefined()
+  expect(turnValue(turn('welt-ultimate-later'), LATER_WELT, [LATER_WELT])).toBe(0.12)
+  expect(turnValue(turn('welt-ultimate-later'), WELT, [WELT])).toBeUndefined()
+  expect(turnValue(turn('welt-weightless'), LATER_WELT, [LATER_WELT])).toBe(0.05)
+})
+
+test("a debuff says its base chance at the character's skill level, Eidolons added", () => {
+  expect(chanceOf(turn('welt-skill'), WELT)).toBe(0.75)
+  expect(chanceOf(turn('welt-skill-e4'), { ...WELT, eidolon: 4 })).toBeCloseTo(1.1)
+  expect(chanceOf(turn('welt-ultimate'), WELT)).toBe(1)
+  expect(chanceOf(turn('boothill-ultimate'), WELT)).toBeUndefined() // a delay with no chance
+})
+
+test("Jingliu enters her state with one more Syzygy in the later kit, and one more from Eidolon 6", () => {
+  const jingliu = as(1212)
+  const later = { ...jingliu, points: [{ id: 11212102, level: 1 }] }
+  expect(syzygyBonus(jingliu)).toBe(0)
+  expect(syzygyBonus(later)).toBe(1)
+  expect(syzygyBonus({ ...later, eidolon: 6 })).toBe(2)
+})
+
+test("Pearl's extra turn needs four Elation characters; Hanya's Eidolon 4 adds a turn", () => {
+  const elation = (id: number) => as(id, { path: 'elation' })
+  const pearl = elation(1503)
+  const three = [pearl, elation(2), elation(3)]
+  expect(turnValue(turn('pearl-ultimate-extra'), pearl, three)).toBeUndefined()
+  expect(turnValue(turn('pearl-ultimate-extra'), pearl, [...three, elation(4)])).toBe(1)
+  expect(turnValue(turn('hanya-ultimate'), as(1215, { eidolon: 4 }), [])).toBeUndefined()
+  expect(turn('hanya-ultimate-e4').turns).toBe(3)
+  expect(turnValue(turn('firefly-e2'), as(1310, { eidolon: 2 }), [])).toBe(1)
+  expect(turnValue(turn('castorice-e2'), as(1407, { eidolon: 1 }), [])).toBeUndefined()
 })

@@ -119,7 +119,7 @@ test('a buff tied to a summon ends when it leaves, and blocks the Ultimate meanw
   const firefly = unit('ff', 100, {
     ultimateEvery: 1,
     effects: [
-      effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons' }),
+      effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true }),
       effect({ kind: 'spd', value: 60, trigger: 'ultimate', untilSummonLeaves: true }),
       effect({ kind: 'advance', value: 0.25, withoutSummon: true }),
     ],
@@ -198,7 +198,7 @@ test('a countdown that pauses its owner holds her turns, then lets her act at on
   // Robin's Concerto: no turns of her own until the SPD 90 countdown acts, then she acts at once.
   const robin = unit('r', 100, {
     ultimateEvery: 1,
-    effects: [effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons' })],
+    effects: [effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true })],
   })
   const countdown = unit('cd', 90, { owner: 'r', later: true, timer: true, pausesOwner: true })
   expect(order([robin, countdown, unit('t', 100)], 250)).toEqual([
@@ -207,5 +207,146 @@ test('a countdown that pauses its owner holds her turns, then lets her act at on
     '200 t',
     '211.1 cd',
     '211.1 r!',
+  ])
+})
+
+test('an extra turn comes at once and keeps the unit in its place on the gauge', () => {
+  // Pearl's Ultimate with four Elation characters: the chosen ally takes one extra turn.
+  const pearl = unit('pearl', 100, {
+    ultimateEvery: 1,
+    chosen: 'dps',
+    effects: [effect({ kind: 'extra', value: 1, trigger: 'ultimate', target: 'chosen' })],
+  })
+  expect(order([pearl, unit('dps', 80)], 260)).toEqual([
+    '100 pearl!',
+    '100 dps', // the extra turn
+    '125 dps', // its own turn, where the gauge had it
+    '200 pearl!',
+    '200 dps',
+    '250 dps',
+  ])
+})
+
+test('an effect with a cooldown fires again only after that many turns', () => {
+  // Firefly's Eidolon 2: an extra turn, again after 1 turn.
+  const firefly = unit('ff', 100, {
+    effects: [effect({ kind: 'extra', value: 1, cooldown: 1 })],
+  })
+  expect(order([firefly], 210)).toEqual(['100 ff', '100 ff', '200 ff', '200 ff'])
+})
+
+test('an effect a summon has on its owner works its number of times', () => {
+  // Castorice's Eidolon 2: two stacks of Ardent Will, each advancing her 100% on Netherwing's turn.
+  const castorice = unit('cas', 100, {
+    effects: [effect({ kind: 'summon', value: 9, target: 'summons', once: true })],
+  })
+  const netherwing = unit('nw', 165, {
+    owner: 'cas',
+    later: true,
+    arrival: 1,
+    effects: [
+      effect({ kind: 'advance', value: 1, trigger: 'summon', target: 'owner', charges: 2 }),
+    ],
+  })
+  expect(order([castorice, netherwing], 230)).toEqual([
+    '100 cas',
+    '100 nw', // arrives with 100% advance and advances Castorice: one stack spent
+    '100 cas',
+    '160.6 nw', // the second stack
+    '160.6 cas',
+    '221.2 nw', // no stacks left
+  ])
+})
+
+// Aglaea: the Ultimate brings a SPD 100 countdown; when it acts, Garmentmaker leaves with all but
+// one of its SPD stacks. Meanwhile she gains SPD per stack Garmentmaker holds.
+const aglaea = (effects: UnitEffect[]): Unit[] => [
+  unit('ag', 100, { ultimateEvery: 1, effects }),
+  unit('gm', 50, {
+    owner: 'ag',
+    retains: { count: 1, of: 'gm-stack' },
+    effects: [effect({ kind: 'spd', value: 10, trigger: 'summon', stacks: 6, id: 'gm-stack' })],
+  }),
+  unit('cd', 100, { owner: 'ag', later: true, timer: true, dismisses: true, maxActions: 1 }),
+]
+const COUNTDOWN = effect({ kind: 'summon', value: 1, trigger: 'ultimate', target: 'summons', countdown: true })
+
+test('a countdown brought in again starts over', () => {
+  expect(order(aglaea([COUNTDOWN]), 420)).toEqual([
+    '100 ag!',
+    '200 ag!', // the countdown came at 100 and would act at 200, but Aglaea, first, resets it
+    '200 gm', // 50 SPD, then 60
+    '300 ag!',
+    '366.7 gm', // 70 SPD
+    '400 ag!',
+  ])
+})
+
+test("a countdown that dismisses sends its owner's other summons away when it acts", () => {
+  const once = { ...COUNTDOWN, once: true }
+  expect(order(aglaea([once]), 520)).toEqual([
+    '100 ag!',
+    '200 ag!',
+    '200 gm', // a tie: Garmentmaker is listed before the countdown
+    '200 cd', // ... which then sends it away
+    '300 ag!',
+    '400 ag!',
+    '500 ag!',
+  ])
+})
+
+test("a buff counted per stack of the summon's grows as the summon gains them", () => {
+  const stance = effect({
+    kind: 'spd_percent',
+    value: 0.1,
+    trigger: 'ultimate',
+    perStackOf: 'gm-stack',
+  })
+  // Without a countdown: one Garmentmaker stack at 200 puts Aglaea at 110, two at 366.7 at 120.
+  expect(order(aglaea([stance]).slice(0, 2), 400)).toEqual([
+    '100 ag!',
+    '200 ag!',
+    '200 gm',
+    '290.9 ag!',
+    '366.7 gm',
+    '380.6 ag!',
+  ])
+})
+
+test('a summon brought in to stay has no count of actions', () => {
+  const skill = effect({ kind: 'summon', value: 1, target: 'summons', stays: true, once: true })
+  const owner = unit('o', 100, { effects: [skill] })
+  const pet = unit('p', 100, { owner: 'o', later: true })
+  expect(order([owner, pet], 310)).toEqual(['100 o', '200 o', '200 p', '300 o', '300 p'])
+})
+
+// Robin • Summeretto: allies' actions give Vibes; at 12 with Bessie on the field, Fever begins:
+// the Songbirds and a SPD 140 countdown take turns while she waits. Each countdown turn takes half
+// the Vibes, at least 12; at 0 Fever ends and she acts.
+const FEVER = { cap: 50, enter: 12, perSkill: 6, onEnter: 0, drainShare: 0.5, drainMin: 12 }
+
+test('Vibes from allies bring Fever, whose countdown spends them until it ends', () => {
+  const robin = unit('rs', 100, { fever: FEVER })
+  const songbirds = unit('sb', 180, { owner: 'rs', later: true })
+  const countdown = unit('cd', 140, { owner: 'rs', later: true, timer: true, pausesOwner: true })
+  const ally = unit('ally', 200)
+  expect(order([robin, songbirds, countdown, ally], 455)).toEqual([
+    '50 ally', // 1 Vibe
+    '100 rs', // her Skill: Bessie comes
+    '100 ally', // 2
+    '150 ally', // 3
+    '200 rs', // Skill: 9 Vibes
+    '200 ally', // 10
+    '250 ally', // 11
+    '300 rs', // 17: Fever, the Songbirds and the countdown come
+    '300 ally', // 18
+    '350 ally', // 19; Robin's own turn, due at 400, waits
+    '355.6 sb', // 20
+    '371.4 cd', // 8
+    '400 ally', // 9
+    '411.1 sb', // 10
+    '442.9 cd', // 0: Fever ends, the Songbirds and the countdown leave
+    '442.9 rs', // ... and she acts at once
+    '450 ally',
   ])
 })

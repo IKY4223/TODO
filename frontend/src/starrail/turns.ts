@@ -19,6 +19,12 @@ export interface UnitEffect extends Pick<
   | 'withoutSummon'
   | 'once'
   | 'stacks'
+  | 'cooldown'
+  | 'charges'
+  | 'duringSummon'
+  | 'countdown'
+  | 'stays'
+  | 'perStackOf'
 > {
   readonly value: number
 }
@@ -35,6 +41,18 @@ export interface Unit {
   // Stacks such as Jingliu's Syzygy: one per turn and per Ultimate outside the state; at `enter`
   // the state begins with `bonus` more, and each turn in it spends one until none are left.
   readonly stacks?: { readonly enter: number; readonly bonus: number }
+  // Robin • Summeretto's Vibes: one per action of an ally or their summon, `perSkill` on each of
+  // her turns once her first Skill has brought Bessie. At `enter`, Fever: her summons and
+  // countdown come (`onEnter` Vibes more) and she waits. Each countdown turn takes `drainShare` of
+  // the Vibes, at least `drainMin`; at 0 Fever ends and they all leave.
+  readonly fever?: {
+    readonly cap: number
+    readonly enter: number
+    readonly perSkill: number
+    readonly onEnter: number
+    readonly drainShare: number
+    readonly drainMin: number
+  }
   // For summons:
   readonly later?: boolean // away until a "summon" effect brings it in
   readonly arrival?: number // the action advance it gets each time it is brought in
@@ -43,6 +61,9 @@ export interface Unit {
   readonly blocksUltimate?: boolean // its owner cannot use the Ultimate while it is here
   readonly timer?: boolean // a countdown, not a summon: effects on summons skip it
   readonly pausesOwner?: boolean // its owner takes no turn while it is here, and acts once it goes
+  readonly dismisses?: boolean // a countdown whose turn sends its owner's other summons away
+  // A summon that leaves keeps this many of its newest buffs whose id starts with `of`.
+  readonly retains?: { readonly count: number; readonly of: string }
 }
 
 export interface Action {
@@ -58,6 +79,7 @@ interface Buff {
   readonly flat: number
   left: number | undefined // the bearer's turns still to come; undefined: for good
   readonly until?: State // ends when this summon leaves
+  readonly per?: { readonly state: State; readonly id: string } // counted per stack it holds
 }
 
 interface State {
@@ -69,13 +91,25 @@ interface State {
   actions: number | undefined // actions left before a summon leaves; undefined: no limit
   buffs: Buff[]
   readonly fired: Set<UnitEffect> // effects that happen once and did
+  readonly lastFired: Map<UnitEffect, number> // the turn an effect with a cooldown last fired on
+  readonly spent: Map<UnitEffect, number> // charges used since the summon was brought in
   stacks: number
   inState: boolean
+  extraTurns: number // extra turns waiting to be taken at once
+  vibes: number
+  bessie: boolean // Robin • Summeretto's first Skill has brought her
 }
+
+const timesOf = ({ per }: Buff): number =>
+  per ? per.state.buffs.filter(({ id }) => id.startsWith(per.id)).length : 1
 
 function speedOf({ unit, buffs }: State): number {
   const spd =
-    unit.spd + buffs.reduce((sum, buff) => sum + buff.percent * unit.baseSpd + buff.flat, 0)
+    unit.spd +
+    buffs.reduce(
+      (sum, buff) => sum + (buff.percent * unit.baseSpd + buff.flat) * timesOf(buff),
+      0,
+    )
   // A unit slowed to nothing still crawls: it keeps the order finite.
   return Math.max(1, Math.min(spd, unit.maxSpd ?? spd))
 }
@@ -93,6 +127,7 @@ function targets(
   const sourceCharacter = source.unit.owner ?? source.unit.key
   if (target === 'summons') return summonsOf(states, new Set([sourceCharacter]))
   if (target === 'enemies') return states.filter(({ unit }) => unit.enemy)
+  if (target === 'owner') return states.filter(({ unit }) => unit.key === source.unit.owner)
   const picked = {
     self: [source],
     allies: characters,
@@ -107,15 +142,39 @@ function targets(
   return [...picked, ...summonsOf(states, owners).filter(({ unit }) => !unit.timer)]
 }
 
-function summon(target: State, actions: number): void {
-  const { maxActions = Infinity } = target.unit
+function summon(target: State, effect: UnitEffect): void {
+  const { maxActions = Infinity, timer } = target.unit
+  const actions = effect.stays ? undefined : effect.value
   if (target.here) {
-    target.actions = Math.min(maxActions, (target.actions ?? 0) + actions)
+    // A countdown brought in again starts over, as Aglaea's Ultimate resets hers.
+    if (timer) target.gauge = GAUGE
+    else if (actions !== undefined && target.actions !== undefined)
+      target.actions = Math.min(maxActions, target.actions + actions)
     return
   }
   target.here = true
   target.gauge = GAUGE * (1 - (target.unit.arrival ?? 0))
-  target.actions = Math.min(maxActions, actions)
+  target.actions = actions === undefined ? undefined : Math.min(maxActions, actions)
+  target.spent.clear()
+}
+
+/** Whether an effect limited by `once`, a cooldown or charges may fire now; counts it if so. */
+function mayFire(source: State, effect: UnitEffect): boolean {
+  if (effect.once) {
+    if (source.fired.has(effect)) return false
+    source.fired.add(effect)
+  }
+  if (effect.cooldown !== undefined) {
+    const last = source.lastFired.get(effect)
+    if (last !== undefined && source.turns - last <= effect.cooldown) return false
+    source.lastFired.set(effect, source.turns)
+  }
+  if (effect.charges !== undefined) {
+    const spent = source.spent.get(effect) ?? 0
+    if (spent >= effect.charges) return false
+    source.spent.set(effect, spent + 1)
+  }
+  return true
 }
 
 const away = (states: readonly State[], source: State): boolean =>
@@ -131,32 +190,46 @@ function gain(states: readonly State[], state: State, stacks: number): void {
   fire(states, state, 'state')
 }
 
-function addBuff(target: State, effect: UnitEffect, until: State | undefined): void {
+function addBuff(
+  target: State,
+  effect: UnitEffect,
+  until: State | undefined,
+  per: Buff['per'],
+): void {
   const percent =
     effect.kind === 'spd_percent' ? effect.value : effect.kind === 'slow' ? -effect.value : 0
   const flat = effect.kind === 'spd' ? effect.value : 0
   const same = target.buffs.filter(({ id }) => id === effect.id)
   const extra = same.length - (effect.stacks ?? 1) + 1
   if (extra > 0) target.buffs = target.buffs.filter((old) => !same.slice(0, extra).includes(old))
-  target.buffs.push({ id: effect.id, percent, flat, left: effect.turns, until })
+  target.buffs.push({ id: effect.id, percent, flat, left: effect.turns, until, per })
 }
 
 function apply(states: readonly State[], source: State, effect: UnitEffect): void {
   if (effect.withoutSummon && !away(states, source)) return
-  if (effect.once) {
-    if (source.fired.has(effect)) return
-    source.fired.add(effect)
-  }
-  for (const target of targets(states, source, effect.target, effect.withSummons)) {
-    if (effect.kind === 'summon') summon(target, effect.value)
+  if (effect.duringSummon && away(states, source)) return
+  if (!mayFire(source, effect)) return
+  const summons = targets(states, source, 'summons')
+  const chosen = targets(states, source, effect.target, effect.withSummons).filter(
+    // Aimed at its summons, an effect reaches either the countdown or the others, never both.
+    ({ unit }) => effect.target !== 'summons' || Boolean(unit.timer) === Boolean(effect.countdown),
+  )
+  for (const target of chosen) {
+    if (effect.kind === 'summon') summon(target, effect)
     else if (!target.here) continue
+    else if (effect.kind === 'extra') target.extraTurns += 1
     else if (effect.kind === 'stack') gain(states, target, effect.value)
     else if (effect.kind === 'advance')
       target.gauge = Math.max(0, target.gauge - effect.value * GAUGE)
     else if (effect.kind === 'delay') target.gauge += effect.value * GAUGE
     else {
-      const until = effect.untilSummonLeaves ? targets(states, source, 'summons')[0] : undefined
-      addBuff(target, effect, until)
+      // Tied to the countdown where there is one: it marks the end of the owner's state.
+      const until = effect.untilSummonLeaves
+        ? (summons.find(({ unit }) => unit.timer) ?? summons[0])
+        : undefined
+      const holder = summons.find(({ unit }) => !unit.timer)
+      const per = effect.perStackOf && holder ? { state: holder, id: effect.perStackOf } : undefined
+      addBuff(target, effect, until, per)
     }
   }
 }
@@ -168,9 +241,49 @@ function fire(states: readonly State[], source: State, trigger: UnitEffect['trig
 
 function leave(states: readonly State[], summoned: State): void {
   summoned.here = false
+  const { retains } = summoned.unit
+  const kept = retains ? summoned.buffs.filter(({ id }) => id.startsWith(retains.of)) : []
+  summoned.buffs = retains ? kept.slice(-retains.count) : []
   const owner = states.find(({ unit }) => unit.key === summoned.unit.owner)
   if (owner && summoned.unit.pausesOwner) owner.gauge = 0
   for (const state of states) state.buffs = state.buffs.filter(({ until }) => until !== summoned)
+  if (owner && summoned.unit.dismisses)
+    for (const other of targets(states, owner, 'summons'))
+      if (other !== summoned && other.here) leave(states, other)
+}
+
+/** Fever, for a unit that has it: Vibes gained, and the state begun when they reach `enter`. */
+function feverAfter(states: readonly State[], acting: State): void {
+  for (const state of states) {
+    const { fever } = state.unit
+    if (!fever) continue
+    const countdown = targets(states, state, 'summons').find(({ unit }) => unit.timer)
+    const inFever = countdown?.here ?? false
+    if (acting === state) {
+      if (state.bessie) state.vibes += fever.perSkill
+      state.bessie = true
+    } else if (!acting.unit.enemy && !acting.unit.timer) state.vibes += 1
+    state.vibes = Math.min(fever.cap, state.vibes)
+    if (inFever || !state.bessie || state.vibes < fever.enter) continue
+    state.vibes = Math.min(fever.cap, state.vibes + fever.onEnter)
+    for (const summoned of targets(states, state, 'summons')) {
+      summoned.here = true
+      summoned.gauge = GAUGE
+      summoned.actions = undefined
+    }
+  }
+}
+
+/** A Fever countdown's turn: it takes Vibes, and at none ends Fever. */
+function feverDrain(states: readonly State[], countdown: State): void {
+  const owner = states.find(({ unit }) => unit.key === countdown.unit.owner)
+  const fever = owner?.unit.fever
+  if (!owner || !fever) return
+  owner.vibes -= Math.max(fever.drainMin, owner.vibes * fever.drainShare)
+  if (owner.vibes > 0) return
+  owner.vibes = 0
+  owner.bessie = false
+  for (const summoned of targets(states, owner, 'summons')) if (summoned.here) leave(states, summoned)
 }
 
 /** Every action taken until `until` action value, in order. Ties go to the unit listed first. */
@@ -184,8 +297,13 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
     actions: undefined,
     buffs: [],
     fired: new Set(),
+    lastFired: new Map(),
+    spent: new Map(),
     stacks: 0,
     inState: false,
+    extraTurns: 0,
+    vibes: 0,
+    bessie: false,
   }))
   for (const state of states) fire(states, state, 'always')
   for (const state of states) fire(states, state, 'start')
@@ -197,14 +315,19 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       targets(states, state, 'summons').some(({ here, unit }) => here && unit.pausesOwner)
     const ready = present.filter((state) => state.unit.owner || !paused(state))
     if (!ready.length) return actions // a player may untick the whole team
-    const next = ready.reduce((best, state) =>
-      state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
-    )
-    const elapsed = next.gauge / speedOf(next)
+    // An extra turn comes first, at once, and leaves the unit's place on the gauge as it was.
+    const extra = ready.find(({ extraTurns }) => extraTurns > 0)
+    const next =
+      extra ??
+      ready.reduce((best, state) =>
+        state.gauge / speedOf(state) < best.gauge / speedOf(best) ? state : best,
+      )
+    const elapsed = extra ? 0 : next.gauge / speedOf(next)
     if (time + elapsed > until || actions.length >= MAX_ACTIONS) return actions
     time += elapsed
     for (const state of present) state.gauge -= speedOf(state) * elapsed
-    next.gauge = GAUGE
+    if (extra) extra.extraTurns -= 1
+    else next.gauge = GAUGE
     next.turns += 1
     next.sinceUltimate += 1
     // shortcut: a buff wears off at the end of its bearer's turn, the one it was gained on
@@ -222,7 +345,10 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       next.actions -= 1
       if (next.actions <= 0) leave(states, next)
     }
-    if (next.unit.timer) continue // a countdown only marks the end of its owner's state
+    if (next.unit.timer) {
+      feverDrain(states, next)
+      continue // a countdown only marks the end of its owner's state
+    }
     if (next.inState) {
       next.stacks -= 1
       if (next.stacks <= 0) next.inState = false
@@ -234,5 +360,6 @@ export function simulate(units: readonly Unit[], until: number): Action[] {
       fire(states, next, 'ultimate')
       gain(states, next, 1)
     }
+    feverAfter(states, next)
   }
 }

@@ -9,7 +9,7 @@ import { RelicAdvisor } from './starrail/RelicAdvisor'
 import { SpeedPlanner } from './starrail/SpeedPlanner'
 import { WarpHistory } from './starrail/WarpHistory'
 import { StarRailShowcase } from './starrail/StarRailShowcase'
-import { THEMES, type Theme, useTheme } from './theme'
+import { useTheme } from './theme'
 import { WishForecast } from './wishes/WishForecast'
 import { WishHistory } from './wishes/WishHistory'
 
@@ -69,12 +69,6 @@ function locate(address: string): { readonly game: Game; readonly tool: string }
 const href = (game: Game, tool: string): string => `#${game}${SEPARATOR}${tool}`
 const HOME = 'home'
 
-const THEME_LABELS = {
-  system: 'As on the device',
-  dark: 'Dark',
-  light: 'Light',
-} as const satisfies Record<Theme, Message>
-
 const MENU = 'menu'
 const CLOSE_KEY = 'Escape'
 // From this width the menu stays open beside the page and the tabs go.
@@ -104,7 +98,7 @@ function App(): JSX.Element {
   const language = useLanguage()
   const [open, setOpen] = useState(false)
   const wide = useWide()
-  const [theme, setTheme] = useTheme()
+  const [theme, setTheme] = useTheme() // the theme on screen
 
   useEffect(() => {
     if (!open) return undefined
@@ -138,25 +132,6 @@ function App(): JSX.Element {
         ))}
       </nav>
     )),
-    <section key="settings" aria-label={t('Settings')}>
-      <h2>{t('Settings')}</h2>
-      <label>
-        {t('Theme')}
-        <select
-          value={theme}
-          onChange={(event) => {
-            const choice = THEMES.find((known) => known === event.target.value)
-            if (choice) setTheme(choice)
-          }}
-        >
-          {THEMES.map((choice) => (
-            <option key={choice} value={choice}>
-              {t(THEME_LABELS[choice])}
-            </option>
-          ))}
-        </select>
-      </label>
-    </section>,
   ]
 
   return (
@@ -196,6 +171,15 @@ function App(): JSX.Element {
           <h1>HoYo Toolkit</h1>
           <span data-testid="game">{home ? t('Home') : GAMES[here.game].label}</span>
         </a>
+        {/* One tap to the other theme; the device's theme until then. */}
+        <button
+          type="button"
+          className="icon"
+          aria-label={t(theme === 'light' ? 'Dark theme' : 'Light theme')}
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        >
+          <ToolIcon name={theme === 'light' ? 'moon' : 'sun'} />
+        </button>
         <select
           aria-label={t('Language')}
           value={language}

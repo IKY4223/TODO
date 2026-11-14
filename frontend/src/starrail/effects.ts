@@ -4,6 +4,7 @@
 // short table first); anything else is left to the player to switch off or add by hand.
 // shortcut: no table entry means no effect; extend the table when a character needs one.
 import type { Relic, StarRailCharacter } from './starrail'
+import type { Unit } from './turns'
 
 type SkillKind = StarRailCharacter['skills'][number]['kind']
 
@@ -131,8 +132,8 @@ export const STAT_EFFECTS: readonly StatEffect[] = [
 ]
 
 export type Trigger = 'start' | 'turn' | 'ultimate' | 'always' | 'summon' | 'state'
-// summons: the source's own
-export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' | 'enemies'
+// summons: the source's own. owner: from a summon, the character it belongs to.
+export type Target = 'self' | 'allies' | 'teammates' | 'chosen' | 'summons' | 'enemies' | 'owner'
 
 /** What an effect does to the turn order. */
 export interface TurnEffect {
@@ -140,8 +141,8 @@ export interface TurnEffect {
   readonly source: Source
   // summon: brings the source's summons in with `values` actions, or adds them if already there.
   // delay: pushes the target's action back. slow: SPD minus this share of its base. stack: adds
-  // stacks such as Syzygy.
-  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon' | 'delay' | 'slow' | 'stack'
+  // stacks such as Syzygy. extra: the target takes one extra turn at once, its gauge untouched.
+  readonly kind: 'advance' | 'spd_percent' | 'spd' | 'summon' | 'delay' | 'slow' | 'stack' | 'extra'
   readonly values: readonly number[] // one, or one per superimposition for a light cone
   readonly trigger: Trigger
   readonly target: Target
@@ -153,12 +154,35 @@ export interface TurnEffect {
   readonly untilSummonLeaves?: boolean // the buff ends when the source's summon leaves
   readonly withoutSummon?: boolean // works only while the source's summon is away
   readonly once?: boolean // happens on the first trigger only
+  readonly cooldown?: number // after firing, waits this many of the source's turns to fire again
+  readonly charges?: number // a summon's effect: works this many times each time it is brought in
+  readonly duringSummon?: boolean // works only while the source's summon is here
+  readonly countdown?: boolean // a summon effect for the source's countdown, not its summons
+  readonly stays?: boolean // a summon effect: brought in with no count of actions
+  // A buff counted once per stack the source's summon holds of buffs whose id starts with this.
+  readonly perStackOf?: string
   readonly stacks?: number // a buff gained again adds up to this many; without it, it refreshes
   readonly byLevel?: SkillKind // `values` are one per level of this skill, from level 1
   readonly eidolon?: number // works from this Eidolon on
   readonly beforeEidolon?: number // works below this Eidolon only: a higher one changes it
   readonly byElation?: boolean // `values` are one per Elation character on the team, from 1
+  // Which of the character's skill kits it belongs to, when a later one changed it.
+  readonly kit?: 'first' | 'later'
+  // A debuff's base chance to land: one, or one per level of the `byLevel` skill. The player
+  // ticks whether it landed.
+  readonly chance?: readonly number[]
 }
+
+// Hanya's Ultimate: SPD as a share of hers, by Ultimate level.
+const HANYA_ULTIMATE_SPD = [
+  0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
+  0.225,
+]
+
+// Welt's Skill: its base chance to Slow, by Skill level.
+const WELT_SKILL_CHANCE = [
+  0.65, 0.66, 0.67, 0.68, 0.69, 0.7, 0.7125, 0.725, 0.7375, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8,
+]
 
 // "Every turn" assumes the Skill is used every turn, "On Ultimate" the Ultimate every few turns.
 export const TURN_EFFECTS: readonly TurnEffect[] = [
@@ -282,6 +306,22 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     untilSummonLeaves: true, // Complete Combustion ends on the countdown's turn
     byLevel: 'ultimate',
   },
+  // Eidolon 2: an Enhanced attack that defeats an enemy or breaks its Weakness gives an extra
+  // turn, again after 1 turn. Whether it does depends on the battle: the player switches it on.
+  // shortcut: the later kit's countdown delay of 10% per Weakness Break (up to 3 times in each
+  // Complete Combustion) is left out: how many breaks come depends on the battle.
+  {
+    id: 'firefly-e2',
+    source: { character: 1310 },
+    kind: 'extra',
+    values: [1],
+    trigger: 'turn',
+    target: 'self',
+    duringSummon: true, // in Complete Combustion, while its countdown is here
+    cooldown: 1,
+    off: true,
+    eidolon: 2,
+  },
   {
     id: 'firefly-countdown',
     source: { character: 1310 },
@@ -289,6 +329,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [1],
     trigger: 'ultimate',
     target: 'summons',
+    countdown: true,
   },
   // Lightning-Lord: each Hit Per Action adds SPD 10 for its next turn.
   {
@@ -361,6 +402,19 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [3],
     trigger: 'ultimate',
     target: 'summons',
+  },
+  // Eidolon 2: summoning Netherwing gives 2 stacks of Ardent Will, each spent on its Skill to
+  // advance Castorice 100%. shortcut: spent on Netherwing's first two turns; the player may hold
+  // them for later.
+  {
+    id: 'castorice-e2',
+    source: { character: 1407 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'summon',
+    target: 'owner',
+    charges: 2,
+    eidolon: 2,
   },
   {
     id: 'castorice-technique',
@@ -451,7 +505,6 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'self',
     eidolon: 6,
   },
-  // shortcut: Jingliu's later kit (more stacks on entering) is not told apart from the first one.
   {
     id: 'jingliu-talent',
     source: { character: 1212 },
@@ -469,7 +522,6 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'self',
     off: true,
   },
-  // shortcut: with 4 or more Elation characters the target also gains an extra turn; not modelled.
   {
     id: 'pearl-ultimate',
     source: { character: 1503 },
@@ -479,8 +531,20 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     target: 'chosen',
     byElation: true,
   },
-  // On enemies. shortcut: debuffs are taken to land, their base chance aside; Welt's and Jingliu's
-  // later kits are not told apart from the first ones.
+  // With 4 or more Elation characters the "Aesthetic Archetype" also gains 1 extra turn.
+  // shortcut: Eidolon 2's advance for the team's other Elation characters is left out.
+  {
+    id: 'pearl-ultimate-extra',
+    source: { character: 1503 },
+    kind: 'extra',
+    values: [0, 0, 0, 1],
+    trigger: 'ultimate',
+    target: 'chosen',
+    byElation: true,
+  },
+  // On enemies. A debuff with a base chance has its box ticked as landed; the player unticks it.
+  // shortcut: the chance is shown, not weighed against the enemy's Effect RES and the source's
+  // Effect Hit Rate; the player decides whether it landed.
   {
     id: 'welt-skill',
     source: { character: 1004 },
@@ -489,6 +553,21 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    byLevel: 'skill',
+    chance: WELT_SKILL_CHANCE,
+    beforeEidolon: 4,
+  },
+  {
+    id: 'welt-skill-e4',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.1],
+    trigger: 'turn',
+    target: 'enemies',
+    turns: 2,
+    byLevel: 'skill',
+    chance: WELT_SKILL_CHANCE.map((chance) => chance + 0.35),
+    eidolon: 4,
   },
   {
     id: 'welt-ultimate',
@@ -501,6 +580,25 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'ultimate',
     target: 'enemies',
     byLevel: 'ultimate',
+    chance: [1],
+    kit: 'first',
+  },
+  // The later kit delays less on the Ultimate and adds "Weightless".
+  // shortcut: Weightless also delays a target 4% each time it is attacked, up to 8 times a turn;
+  // how often depends on the team's hits, so it is left out.
+  {
+    id: 'welt-ultimate-later',
+    source: { character: 1004 },
+    kind: 'delay',
+    values: [
+      0.06, 0.066, 0.072, 0.078, 0.084, 0.09, 0.0975, 0.105, 0.1125, 0.12, 0.126, 0.132, 0.138,
+      0.144, 0.15,
+    ],
+    trigger: 'ultimate',
+    target: 'enemies',
+    byLevel: 'ultimate',
+    chance: [1],
+    kit: 'later',
   },
   {
     id: 'welt-ultimate-slow',
@@ -510,6 +608,17 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'ultimate',
     target: 'enemies',
     turns: 1,
+    chance: [1],
+  },
+  {
+    id: 'welt-weightless',
+    source: { character: 1004 },
+    kind: 'slow',
+    values: [0.05],
+    trigger: 'ultimate',
+    target: 'enemies',
+    turns: 2,
+    kit: 'later',
   },
   {
     id: 'welt-technique',
@@ -518,6 +627,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [0.2],
     trigger: 'start',
     target: 'enemies',
+    chance: [1],
     off: true,
   },
   {
@@ -540,6 +650,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    chance: [1],
     off: true,
     beforeEidolon: 6,
   },
@@ -551,6 +662,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     trigger: 'turn',
     target: 'enemies',
     turns: 2,
+    chance: [1],
     off: true,
     eidolon: 6,
   },
@@ -580,6 +692,7 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     values: [1],
     trigger: 'ultimate',
     target: 'summons',
+    countdown: true,
   },
   {
     id: 'robin-e2',
@@ -591,9 +704,73 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     untilSummonLeaves: true, // while Concerto lasts
     eidolon: 2,
   },
+  // Aglaea's Skill brings Garmentmaker back when it is away, and she acts at once. The advance
+  // must come first: it only works while Garmentmaker is away, which the summon then ends.
+  // Her Technique has it on the field from the start of battle.
+  {
+    id: 'aglaea-skill',
+    source: { character: 1402 },
+    kind: 'advance',
+    values: [1],
+    trigger: 'turn',
+    target: 'self',
+    withoutSummon: true,
+  },
+  {
+    id: 'aglaea-skill-summon',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'turn',
+    target: 'summons',
+    stays: true,
+  },
+  {
+    id: 'aglaea-technique',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'start',
+    target: 'summons',
+    stays: true,
+    off: true,
+  },
+  // The Ultimate: Supreme Stance, with a SPD 100 countdown; when it acts, Garmentmaker leaves and
+  // the stance ends. Meanwhile Aglaea gains SPD for each of Garmentmaker's SPD stacks.
+  {
+    id: 'aglaea-ultimate-summon',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+    stays: true,
+  },
+  {
+    id: 'aglaea-countdown',
+    source: { character: 1402 },
+    kind: 'summon',
+    values: [1],
+    trigger: 'ultimate',
+    target: 'summons',
+    countdown: true,
+  },
+  {
+    id: 'aglaea-supreme-stance',
+    source: { character: 1402 },
+    kind: 'spd_percent',
+    values: [
+      0.1, 0.105, 0.11, 0.115, 0.12, 0.125, 0.1313, 0.1375, 0.1437, 0.15, 0.155, 0.16, 0.165, 0.17,
+      0.175,
+    ],
+    trigger: 'ultimate',
+    target: 'self',
+    untilSummonLeaves: true,
+    perStackOf: 'garmentmaker-talent',
+    byLevel: 'ultimate',
+  },
   // Garmentmaker gains SPD each time it attacks a target with Seam Stitch, here every turn.
-  // shortcut: Aglaea's own SPD from these stacks in Supreme Stance, and Garmentmaker leaving on
-  // its countdown, are not modelled.
+  // shortcut: Eidolon 4 also gives it a stack when Aglaea attacks; left out.
   {
     id: 'garmentmaker-talent',
     source: { character: 1402 },
@@ -634,15 +811,38 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
     id: 'hanya-ultimate',
     source: { character: 1215 },
     kind: 'spd',
-    values: [
-      0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.1812, 0.1875, 0.1938, 0.2, 0.205, 0.21, 0.215, 0.22,
-      0.225,
-    ],
+    values: HANYA_ULTIMATE_SPD,
     trigger: 'ultimate',
     target: 'chosen',
     turns: 2,
     ofSourceSpd: true,
     byLevel: 'ultimate',
+    beforeEidolon: 4,
+  },
+  {
+    id: 'hanya-ultimate-e4',
+    source: { character: 1215 },
+    kind: 'spd',
+    values: HANYA_ULTIMATE_SPD,
+    trigger: 'ultimate',
+    target: 'chosen',
+    turns: 3, // Eidolon 4: one more turn
+    ofSourceSpd: true,
+    byLevel: 'ultimate',
+    eidolon: 4,
+  },
+  // Eidolon 1: when the ally with her Ultimate defeats an enemy, at most once a turn.
+  // shortcut: whether one falls depends on the battle: the player switches it on, and it is taken
+  // as once each of her own turns.
+  {
+    id: 'hanya-e1',
+    source: { character: 1215 },
+    kind: 'advance',
+    values: [0.15],
+    trigger: 'turn',
+    target: 'self',
+    off: true,
+    eidolon: 1,
   },
   {
     id: 'sushang-talent',
@@ -827,6 +1027,38 @@ export const TURN_EFFECTS: readonly TurnEffect[] = [
 /** Jingliu's Syzygy: Spectral Transmigration at 2 stacks; Eidolon 6 adds one on entering. */
 export const SYZYGY = { character: 1212, enter: 2, bonusFrom: 6 } as const
 
+/** Robin • Summeretto's Vibes and Fever, from her Talent and Memosprite Talent: Vibes cap 50 (70 from
+ * Eidolon 2), Fever at 12 (Paddie joins), 6 per Skill, a countdown that takes 50% (at least 12);
+ * Eidolon 4 adds 12 on entering.
+ * shortcut: every ally action counts as an attack for Vibes; the Special Guest's 2 more, the
+ * Technique's 6, Eidolon 2's first-gain bonus and Eidolon 4's Songbirds SPD are left out, and she
+ * acts at once when Fever ends (her 50% advance then makes no difference). */
+// shortcut: her Ultimate waits for her own turn, which Fever holds back; in the game she can use
+// it during Fever too, and Eidolon 6 stores two.
+export const FEVER = {
+  character: 1512,
+  cap: 50,
+  capBonus: { eidolon: 2, value: 20 },
+  enter: 12,
+  perSkill: 6,
+  onEnter: { eidolon: 4, value: 12 },
+  drainShare: 0.5,
+  drainMin: 12,
+} as const
+
+/** The Fever settings for a Robin • Summeretto at her Eidolon. */
+export const feverOf = (character: StarRailCharacter): NonNullable<Unit['fever']> | undefined =>
+  character.id === FEVER.character
+    ? {
+        cap: FEVER.cap + (character.eidolon >= FEVER.capBonus.eidolon ? FEVER.capBonus.value : 0),
+        enter: FEVER.enter,
+        perSkill: FEVER.perSkill,
+        onEnter: character.eidolon >= FEVER.onEnter.eidolon ? FEVER.onEnter.value : 0,
+        drainShare: FEVER.drainShare,
+        drainMin: FEVER.drainMin,
+      }
+    : undefined
+
 /** A summon, memosprite or countdown that takes its own turns. */
 export interface Summon {
   readonly owner: number
@@ -839,6 +1071,9 @@ export interface Summon {
   readonly maxSpd?: number
   readonly blocksUltimate?: boolean // the owner cannot use the Ultimate while it is here
   readonly pausesOwner?: boolean // the owner takes no turn while it is here, and acts once it goes
+  readonly dismisses?: boolean // a countdown whose turn sends the owner's other summons away
+  // Stacks of buffs whose id starts with `of` kept on leaving, given the trace that grants it.
+  readonly retains?: { readonly count: number; readonly of: string; readonly trace: number }
 }
 
 // shortcut: summons keep the SPD and action count the game gives them, past the effects in
@@ -853,7 +1088,22 @@ export const SUMMONS: readonly Summon[] = [
   // Netherwing: Newbud, which fills Castorice's Ultimate, does not grow while it is here.
   { owner: 1407, kind: 'memosprite', spd: 165, later: true, arrival: 1, blocksUltimate: true },
   { owner: 1413, kind: 'memosprite', spd: 160 }, // Evey
-  { owner: 1402, kind: 'memosprite', spd: 0.35, ofOwner: true }, // Garmentmaker
+  // Garmentmaker: back with 100% advance; the trace Last Thread of Fate keeps one SPD stack when
+  // it leaves. Then the countdown of Supreme Stance (SPD 100), which sends it away.
+  {
+    owner: 1402,
+    kind: 'memosprite',
+    spd: 0.35,
+    ofOwner: true,
+    later: true,
+    arrival: 1,
+    retains: { count: 1, of: 'garmentmaker-talent', trace: 1402102 },
+  },
+  { owner: 1402, kind: 'countdown', spd: 100, later: true, dismisses: true },
+  // Robin • Summeretto's Summer Songbirds (180% of her SPD) and Fever countdown (SPD 140): both
+  // come with Fever (see FEVER), and she waits until it ends.
+  { owner: 1512, kind: 'memosprite', spd: 1.8, ofOwner: true, later: true },
+  { owner: 1512, kind: 'countdown', spd: 140, later: true, pausesOwner: true },
   { owner: 8007, kind: 'memosprite', spd: 130 }, // Mem
   { owner: 8008, kind: 'memosprite', spd: 130 }, // Mem
 ]
@@ -880,6 +1130,26 @@ export function valueFor(
 }
 
 const ASSUMED_LEVEL = 10 // when the showcase lacks the skill's level
+// The game data lists a later kit's traces under the first kit's ids with a leading 1: 1004101
+// becomes 11004101. A showcase with such a trace has the later kit.
+const LATER_KIT_TRACE = 10_000_000
+
+const kitOf = (character: StarRailCharacter): 'first' | 'later' =>
+  character.points.some(({ id }) => id >= LATER_KIT_TRACE) ? 'later' : 'first'
+
+const levelOf = (character: StarRailCharacter, kind: SkillKind): number =>
+  character.skills.find((skill) => skill.kind === kind)?.level ?? ASSUMED_LEVEL
+
+const byCount = (values: readonly number[], count: number): number | undefined =>
+  values[Math.min(count, values.length) - 1]
+
+/** A debuff's base chance to land for this character, or undefined when it has none. */
+export function chanceOf(effect: TurnEffect, character: StarRailCharacter): number | undefined {
+  if (!effect.chance) return undefined
+  return effect.byLevel && effect.chance.length > 1
+    ? byCount(effect.chance, levelOf(character, effect.byLevel))
+    : effect.chance[0]
+}
 
 /** The value a turn effect has for this character in this team, or undefined when it does not apply. */
 export function turnValue(
@@ -892,15 +1162,20 @@ export function turnValue(
   if (value === undefined) return undefined
   if (eidolon < (effect.eidolon ?? 0) || eidolon >= (effect.beforeEidolon ?? Infinity))
     return undefined
-  const pick = (count: number): number | undefined =>
-    effect.values[Math.min(count, effect.values.length) - 1]
-  if (effect.byLevel) {
-    const skill = character.skills.find(({ kind }) => kind === effect.byLevel)
-    return pick(skill?.level ?? ASSUMED_LEVEL)
-  }
-  if (effect.byElation) return pick(team.filter(({ path }) => path === 'elation').length)
+  if (effect.kit && effect.kit !== kitOf(character)) return undefined
+  if (effect.byLevel && effect.values.length > 1)
+    return byCount(effect.values, levelOf(character, effect.byLevel))
+  // A value of 0 by Elation count: not enough Elation characters for it yet.
+  if (effect.byElation)
+    return byCount(effect.values, team.filter(({ path }) => path === 'elation').length) || undefined
   return value
 }
+
+/** The Syzygy Jingliu gains on entering Spectral Transmigration: one in the later kit, one at E6.
+ * shortcut: the later kit's Syzygy from allies taking damage or losing HP 20 times is left out;
+ * how soon it comes depends on the battle. */
+export const syzygyBonus = (character: StarRailCharacter): number =>
+  Number(kitOf(character) === 'later') + Number(character.eidolon >= SYZYGY.bonusFrom)
 
 export const statOf = (character: StarRailCharacter, key: string): number =>
   character.stats.find((stat) => stat.key === key)?.value ?? 0

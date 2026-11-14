@@ -100,13 +100,12 @@ Remind the owner of these until they confirm them.
 
 For a session picking the work up again.
 
-- State: PRs #1 to #16 are merged. `HANDOFF.md` holds the owner's task list and the plan of
+- State: PRs #1 to #17 are merged. `HANDOFF.md` holds the owner's task list and the plan of
   stages 17 to 22; `README.md` and this file win where they differ.
-- Stage 17 is built (PR open, the owner merges it): UIGF export and Genshin UIGF import
-  (`frontend/src/wishes/uigf.ts`), luck per banner, and the PC link scripts
-  (`frontend/src/wishes/link-scripts`, run by the `link-scripts` CI job on Windows). Left for a
-  source: the share of 50/50s won (README plan, item 3).
-  Next: stage 18, the rest of the effects table (README plan item 1).
+- Stage 18 is built (PR open, the owner merges it): the theme switch in the top bar, and the
+  effects table's rest (Aglaea's Supreme Stance, Robin • Summeretto's Fever, extra turns, later
+  kits of Welt and Jingliu by trace ids, base chances). Left: Ultimates by energy (needs a source).
+  Next, by HANDOFF.md: stage 19, a host for the bot and the Mini App (README plan item 2).
 - The owner writes in Russian and reads replies on a phone. Keep the UI English and Russian.
 - GitHub tools: pass owner `iky4223` and repo `todo---hoyo-toolkit` (the old name `todo` is
   refused since November 2026). Repository settings cannot be changed

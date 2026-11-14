@@ -156,22 +156,38 @@ test('on a wide screen the menu stays open beside the page in place of the tabs'
   }
 })
 
-test('the menu switches between a dark and a light theme and remembers it', () => {
+test('the top bar switches between a dark and a light theme and remembers it', () => {
   render(<App />)
-  openMenu()
-  const theme = screen.getByLabelText('Theme')
-  expect((theme as HTMLSelectElement).value).toBe('system')
   expect(document.documentElement.dataset.theme).toBe('dark') // jsdom prefers no light theme
-  fireEvent.change(theme, { target: { value: 'light' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Light theme' }))
   expect(document.documentElement.dataset.theme).toBe('light')
   expect(localStorage.getItem('theme')).toBe('light')
   fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'ru' } })
-  const options = within(screen.getByLabelText('Тема')).getAllByRole('option')
-  expect(options.map((option) => option.textContent)).toEqual([
-    'Как на устройстве',
-    'Тёмная',
-    'Светлая',
-  ])
+  fireEvent.click(screen.getByRole('button', { name: 'Тёмная тема' }))
+  expect(document.documentElement.dataset.theme).toBe('dark')
+  expect(localStorage.getItem('theme')).toBe('dark')
   fireEvent.change(screen.getByLabelText('Язык'), { target: { value: 'en' } })
   localStorage.removeItem('theme')
+})
+
+test("the theme button follows the device's change while the player has not picked one", () => {
+  const listeners = new Set<() => void>()
+  const light = {
+    matches: false,
+    addEventListener: (_: string, listener: () => void) => listeners.add(listener),
+    removeEventListener: (_: string, listener: () => void) => listeners.delete(listener),
+  }
+  const other = { matches: false, addEventListener: () => {}, removeEventListener: () => {} }
+  window.matchMedia = ((media: string) =>
+    media.includes('color-scheme') ? light : other) as unknown as typeof window.matchMedia
+  try {
+    render(<App />)
+    expect(screen.getByRole('button', { name: 'Light theme' })).toBeDefined()
+    light.matches = true // the device turns light
+    for (const listener of listeners) act(listener)
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeDefined()
+  } finally {
+    Reflect.deleteProperty(window, 'matchMedia')
+  }
 })

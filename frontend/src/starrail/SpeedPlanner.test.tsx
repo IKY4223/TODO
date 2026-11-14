@@ -88,8 +88,13 @@ test('the Ultimate comes on the chosen beat', () => {
 
 test('memosprites and summons take their own turns', () => {
   show([character(1402, 'Aglaea', 200)])
-  // Garmentmaker runs at 35% of Aglaea's SPD: 70, a turn at 142.9.
-  expect(timeline()).toContain('142.9 · Memosprite of Aglaea')
+  // Her Skill brings Garmentmaker at 50 with 100% advance; it runs at 35% of her SPD, 70, plus
+  // a SPD stack after each turn.
+  expect(timeline().slice(0, 3)).toEqual([
+    'Cycle 050.0 · Aglaea',
+    '50.0 · Aglaea',
+    '50.0 · Memosprite of Aglaea',
+  ])
 })
 
 test('a team has at most four members', () => {
@@ -162,5 +167,69 @@ test("Robin's Concerto holds her turns until its countdown acts", () => {
     'Cycle 0100.0 · Robin · Ultimate',
     '211.1 · Countdown of Robin',
     '211.1 · Robin · Ultimate',
+  ])
+})
+
+test("Aglaea's countdown ends Supreme Stance and sends Garmentmaker away until her Skill", () => {
+  show([character(1402, 'Aglaea', 160)])
+  fireEvent.change(screen.getByLabelText('Ultimate every N turns'), { target: { value: '4' } })
+  expect(timeline()).toEqual([
+    // No Technique: her first Skill brings Garmentmaker, with 100% advance, and she acts again.
+    'Cycle 062.5 · Aglaea',
+    '62.5 · Aglaea',
+    '62.5 · Memosprite of Aglaea',
+    '125.0 · Aglaea',
+    '146.0 · Memosprite of Aglaea',
+    // The Ultimate: she acts again at once, and a SPD 100 countdown starts.
+    'Cycle 1187.5 · Aglaea · Ultimate',
+    '187.5 · Aglaea',
+    // In Supreme Stance: +15% of her base SPD for each of Garmentmaker's stacks.
+    '200.4 · Memosprite of Aglaea',
+    '231.9 · Aglaea',
+    '240.9 · Memosprite of Aglaea',
+    'Cycle 2271.8 · Aglaea',
+    '273.0 · Memosprite of Aglaea',
+    // The countdown sends Garmentmaker away; her Skill brings it back.
+    '287.5 · Countdown of Aglaea',
+    '322.8 · Aglaea · Ultimate',
+    '322.8 · Aglaea',
+    '322.8 · Memosprite of Aglaea',
+  ])
+})
+
+test('Pearl gives the chosen ally an extra turn with four Elation characters', () => {
+  const elation = { path: 'elation' } as const
+  show([
+    character(1503, 'Pearl', 100, elation),
+    character(2, 'Ally', 90, elation),
+    character(3, 'Third', 80, elation),
+    character(4, 'Fourth', 70, elation),
+  ])
+  const [pearlUltimate] = screen.getAllByLabelText('Ultimate every N turns')
+  if (!pearlUltimate) throw new Error('Pearl has no Ultimate setting')
+  fireEvent.change(pearlUltimate, { target: { value: '1' } })
+  // Pearl's Ultimate goes to the first ally: a 30% advance, then one extra turn at once.
+  expect(timeline().slice(0, 3)).toEqual([
+    'Cycle 0100.0 · Pearl · Ultimate',
+    '100.0 · Ally',
+    '100.0 · Ally',
+  ])
+})
+
+test("Robin • Summeretto's Fever: allies' Vibes bring the Songbirds and a countdown while she waits", () => {
+  show([character(1512, 'Robin • Summeretto', 100), character(2, 'Ally', 300)])
+  const [robinUltimate] = screen.getAllByLabelText('Ultimate every N turns')
+  if (!robinUltimate) throw new Error('Robin has no Ultimate setting')
+  fireEvent.change(robinUltimate, { target: { value: '0' } })
+  // The ally's sixth action brings the twelfth Vibe at 200, her own turn at 300 waits.
+  expect(timeline().slice(9)).toEqual([
+    'Cycle 2255.6 · Memosprite of Robin • Summeretto',
+    '266.7 · Ally',
+    '271.4 · Countdown of Robin • Summeretto', // 15 Vibes, minus 12
+    '300.0 · Ally · Ultimate',
+    '311.1 · Memosprite of Robin • Summeretto',
+    '333.3 · Ally',
+    '342.9 · Countdown of Robin • Summeretto', // none left: Fever ends
+    '342.9 · Robin • Summeretto',
   ])
 })
